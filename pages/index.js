@@ -17,21 +17,13 @@ export async function getStaticProps() {
   const res = await fetch(`${origin}/api/technologists`);
   const technologists = await res.json();
 
-  let uniqueRole = new Set();
-  technologists.map((d) => uniqueRole.add(d.role));
-
-  let uniqueLocation = new Set();
-  technologists.map((d) => uniqueLocation.add(d.location));
-
-  let roles = Array.from(uniqueRole).map((e) => {
-    return { label: e, active: false, category: "role" };
+  let roles = technologists.map((technologist) => {
+    return { label: technologist.role, active: false, category: "role" };
   });
 
-  let locations = Array.from(uniqueLocation)
-    .sort()
-    .map((e) => {
-      return { label: e, active: false, category: "location" };
-    });
+  let locations = technologists.map((technologist) => {
+    return { label: technologist.location, active: false, category: "location" };
+  });
 
   let filters = roles.concat(locations);
 
@@ -178,11 +170,8 @@ function Content({ technologists, handleOpenFilter, className, onClick }) {
 
   return (
     <div className={className} onClick={onClick}>
-         <HitLogo/>
+      <HitLogo />
       <Nav />
-
-   
-
       <Title className="title m0 p0" text="Hawaiians*in&nbsp;Technology" />
       <motion.div
         initial={{ opacity: 0 }}
