@@ -200,7 +200,7 @@ function Content({ technologists, handleOpenFilter, className, onClick }) {
                   e.preventDefault();
                 }}
               >
-                Role <FilterSVG />
+                Role / Background <FilterSVG />
               </td>
               <td className="thsize-link"></td>
             </tr>
