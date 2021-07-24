@@ -19,6 +19,12 @@ export default function Filter({
   handleCloseFilter,
   categoryName,
 }) {
+
+  let countItems = {};
+  items.forEach(item => {
+    countItems[item.label] = countItems[item.label] + 1 || 1
+  })
+
   return (
     <motion.div
       variants={sidebarAnimation}
@@ -45,24 +51,31 @@ export default function Filter({
           <CloseSVG />
         </a>
         <h3>
-          {categoryName.charAt(0).charAt(0).toUpperCase() +
-            categoryName.slice(1)}
+          FILTER
         </h3>
 
-        {items.sort((a, b)=>{
+        {items.sort((a, b) => {
           if (a.label > b.label) return 1;
           if (a.label < b.label) return -1;
           return 0;
-        }).map((item, i) => (
-          <FilterItem
-            key={`${item.label}-${i}`}
-            label={item.label}
-            active={item.active}
-            onClick={() => {
-              handleFilterClick(item);
-            }}
-          />
-        ))}
+        }).filter((curr, index, self) => (
+          index === self.findIndex((t) => (
+            t.label === curr.label
+          ))
+        ))
+          .map((item, i) => {
+            return (
+              <FilterItem
+                key={`${item.label}-${i}`}
+                label={item.label}
+                active={item.active}
+                count={countItems[item.label]}
+                onClick={() => {
+                  handleFilterClick(item);
+                }}
+              />
+            )
+          })}
       </div>
       <style jsx>{`
         .sidebar {
@@ -83,24 +96,32 @@ export default function Filter({
 
         h3 {
           margin-top: 4rem;
-          font-weight: 500;
+          font-size: 0.9rem;
+          letter-spacing: 0.075rem;
+          font-weight: 600;
+          text-transform: uppercase;
         }
       `}</style>
     </motion.div>
   );
 }
 
-function FilterItem({ label, active, onClick }) {
+function FilterItem({ label, active, onClick, count }) {
   return (
     <div className="filterItem" onClick={onClick}>
-      {label}
+      <div>
+        {label}
+        <span className="filterItem__count">
+          ({count})
+        </span>
+      </div>
       <div className={`check ${active ? "active" : ""}`}>
         <CheckSVG />
       </div>
       <style jsx>{`
         .filterItem {
           cursor: pointer;
-          font-size: 1.7rem;
+          font-size: 1.2rem;
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -108,6 +129,11 @@ function FilterItem({ label, active, onClick }) {
         }
 
         .filterItem:hover {
+          color: var(--color-link);
+        }
+        .filterItem__count {
+          font-size: 0.75em;
+          margin-left: 0.5rem;
           color: var(--color-link);
         }
 
