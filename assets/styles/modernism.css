@@ -2,6 +2,7 @@
   --color-brand: #cc6c13;
   --color-link: var(--color-brand);
   --color-text: #353535;
+  --color-border: #999;
   --color-background: #e5e5e5;
 }
 
@@ -63,7 +64,7 @@ table {
 table tbody td,
 table thead td {
   border: none;
-  border-bottom: 1px solid #363636;
+  border-bottom: 1px solid var(--color-border);
 }
 
 table.large thead {
