@@ -2,8 +2,8 @@ import drive from "drive-db";
 
 export default async (req, res) => {
   // TODO: Before mergin
-  // Migrate data to production spreadsheet,
-  // Swap back from staging spreadsheet
+  //  - Migrate data to production spreadsheet,
+  //  - Swap back from staging spreadsheet
   // const db = await drive("1W7cOTU2nUfT-3N88Aa09ZtZYv_KhtYkbCtpdm_9FeT4");
   const db = await drive("1Yq9XC-c_tuTiB4MrKtw1p6HRAr9MTDYa9iXybaytk1U");
   let sanitizeResult = db.filter(
