@@ -24,7 +24,7 @@ body {
 }
 
 .container {
-  width: 95vw;
+  width: calc(100% - 4rem);
   margin: 3rem auto;
   position: relative;
 }
@@ -223,6 +223,10 @@ a.link:after {
 
   .dn {
     display: none;
+  }
+
+  .container {
+    width: calc(100% - 2rem);  
   }
 
   .tileArtist {
