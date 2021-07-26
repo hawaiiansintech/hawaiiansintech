@@ -263,13 +263,15 @@ function Content({ technologists, handleOpenFilter, className, onClick }) {
 
         .thtitle-eyebrow,
         .thtitle-headline {
+          display: inline-block;
+          font-size: 1.6rem;
           font-weight: 400;
           margin: 0;
           line-height: 1.5;
         }
 
         .thtitle-eyebrow {
-          font-size: 1.4rem;
+          margin-right: 0.33rem;
         }
 
         .thtitle-headline {
