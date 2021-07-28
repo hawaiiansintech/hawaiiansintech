@@ -215,13 +215,12 @@ function Content({ technologists, handleOpenFilter, className, onClick }) {
                   <td><a href={d.link} target="_blank">{d.name}</a></td>
                   <td className="thsize-aux dn">
                     <a href={d.link} target="_blank">
-                      <h4 className="thtitle-eyebrow">{d.location},</h4>
-                      <h3 className="thtitle-headline">{d.region}</h3>
+                      <h3 className="thtitle">{d.location}, {d.region}</h3>
                     </a>
                   </td>
                   <td className="thsize-aux">
                     <a href={d.link} target="_blank">
-                      <h3 className="thtitle-headline">{d.role}</h3>
+                      <h3 className="thtitle">{d.role}</h3>
                     </a>
                   </td>
                   <td className="thsize-link"><a href={d.link} target="_blank">→</a></td>
@@ -261,21 +260,12 @@ function Content({ technologists, handleOpenFilter, className, onClick }) {
           text-align: right;
         }
 
-        .thtitle-eyebrow,
-        .thtitle-headline {
+        .thtitle {
           display: inline-block;
           font-size: 1.6rem;
           font-weight: 400;
           margin: 0;
           line-height: 1.5;
-        }
-
-        .thtitle-eyebrow {
-          margin-right: 0.33rem;
-        }
-
-        .thtitle-headline {
-          font-size: 1.6rem;
         }
 
         tbody a {
