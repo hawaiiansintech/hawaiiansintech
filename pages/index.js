@@ -21,11 +21,11 @@ export async function getStaticProps() {
     return { label: technologist.role, active: false, category: "role" };
   });
 
-  let locations = technologists.map((technologist) => {
-    return { label: technologist.location, active: false, category: "location" };
+  let regions = technologists.map((technologist) => {
+    return { label: technologist.region, active: false, category: "region" };
   });
 
-  let filters = roles.concat(locations);
+  let filters = roles.concat(regions);
 
   return {
     props: {
@@ -80,8 +80,8 @@ export default function Home({ technologists, filters }) {
     let filterExpert = filterList
       .filter((f) => f.category == "role")
       .map((d) => d.label);
-    let filterLocation = filterList
-      .filter((f) => f.category == "location")
+    let filterRegion = filterList
+      .filter((f) => f.category == "region")
       .map((d) => d.label);
 
     // Find active
@@ -92,8 +92,8 @@ export default function Home({ technologists, filters }) {
     // If none in that category check all
     if (filterExpert.filter((f) => activeFilters.includes(f)).length <= 0)
       activeFilters = activeFilters.concat(filterExpert);
-    if (filterLocation.filter((f) => activeFilters.includes(f)).length <= 0)
-      activeFilters = activeFilters.concat(filterLocation);
+    if (filterRegion.filter((f) => activeFilters.includes(f)).length <= 0)
+      activeFilters = activeFilters.concat(filterRegion);
 
     // Filter render list
     if (activeFilters.length > 0)
@@ -101,7 +101,7 @@ export default function Home({ technologists, filters }) {
         technologists.filter(
           (d) =>
             activeFilters.includes(d.role) &&
-            activeFilters.includes(d.location)
+            activeFilters.includes(d.region)
         )
       );
     else clearFilter();
@@ -185,7 +185,7 @@ function Content({ technologists, handleOpenFilter, className, onClick }) {
               <td
                 className="thsize-aux dn filterTable"
                 onClick={(e) => {
-                  handleOpenFilter("location");
+                  handleOpenFilter("region");
 
                   e.preventDefault();
                 }}
@@ -210,8 +210,16 @@ function Content({ technologists, handleOpenFilter, className, onClick }) {
               {technologists.map((d, i) => (
                 <tr key={`${d.name}-${i}`}>
                   <td><a href={d.link} target="_blank">{d.name}</a></td>
-                  <td className="thsize-aux dn"><a href={d.link} target="_blank">{d.location}</a></td>
-                  <td className="thsize-aux"><a href={d.link} target="_blank">{d.role}</a></td>
+                  <td className="thsize-aux dn">
+                    <a href={d.link} target="_blank">
+                      <h3 className="thtitle">{d.location}, {d.region}</h3>
+                    </a>
+                  </td>
+                  <td className="thsize-aux">
+                    <a href={d.link} target="_blank">
+                      <h3 className="thtitle">{d.role}</h3>
+                    </a>
+                  </td>
                   <td className="thsize-link"><a href={d.link} target="_blank">→</a></td>
                 </tr>
               ))}
@@ -228,12 +236,20 @@ function Content({ technologists, handleOpenFilter, className, onClick }) {
           cursor: pointer;
         }
 
+        .filterTable:hover {
+          color: var(--color-link);
+        }
+
         thead {
           height: 2.2rem;
         }
 
+        td {
+          padding-right: 1rem;
+        }
+
         .thsize-aux {
-          width: 20%;
+          width: 25%;
         }
 
         .thsize-link {
@@ -241,10 +257,12 @@ function Content({ technologists, handleOpenFilter, className, onClick }) {
           text-align: right;
         }
 
-        @media (max-width: 480px) {
-          .thsize-aux {
-            width: 30%;
-          }
+        .thtitle {
+          display: inline-block;
+          font-size: 1.6rem;
+          font-weight: 400;
+          margin: 0;
+          line-height: 1.5;
         }
 
         tbody a {
