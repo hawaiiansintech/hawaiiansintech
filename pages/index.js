@@ -9,13 +9,10 @@ import FilterSVG from "../components/Icons/FilterSVG.js";
 import HitLogo from "../components/HitLogo.js";
 
 export async function getStaticProps() {
-  // TODO: Before mergin
-  //  - Swap back since api mattered
   const origin =
     process.env.NODE_ENV !== "production"
       ? "http://localhost:3000"
-      // : "https://hawaiiansintech.org";
-      : "https://hawaiiansintech-hdzo8cwrs-hawaiians.vercel.app";
+      : "https://hawaiiansintech.org";
 
   const res = await fetch(`${origin}/api/technologists`);
   const technologists = await res.json();
