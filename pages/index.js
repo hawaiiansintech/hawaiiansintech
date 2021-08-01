@@ -1,12 +1,18 @@
 import Head from "next/head";
+import dynamic from "next/dynamic";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Nav from "../components/Nav.js";
 import Filter from "../components/Filter.js";
+// import FilterMap from "../components/FilterMap.js";
 import Title from "../components/Title.js";
 import MetaTags from "../components/Metatags.js";
 import FilterSVG from "../components/Icons/FilterSVG.js";
 import HitLogo from "../components/HitLogo.js";
+
+const FilterMapNoSSR = dynamic(() => import("../components/FilterMap.js"), {
+  ssr: false
+});
 
 export async function getStaticProps() {
   const origin =
@@ -33,13 +39,14 @@ export async function getStaticProps() {
 
   return {
     props: {
+      regionGeos,
       technologists,
       filters,
     },
   };
 }
 
-export default function Home({ technologists, filters }) {
+export default function Home({ regionGeos, technologists, filters }) {
   const [isReady, setIsReady] = useState(false);
   const [technologistsList, setTechnologistsList] = useState(null);
   const [filterIsOpen, setFilterIsOpen] = useState(false);
@@ -71,7 +78,7 @@ export default function Home({ technologists, filters }) {
 
     setFilterList(newFilter);
     setTechnologistsList(
-      shuffle(technologists).sort((a, b) => a.featured - b.featured)
+      shuffle(technologists).sort((a, b) => a.order - b.order)
     );
   };
 
@@ -134,14 +141,25 @@ export default function Home({ technologists, filters }) {
       ) : null}
 
       <AnimatePresence>
-        {filterIsOpen ? (
-          <Filter
-            items={filterList.filter((f) => f.category == filterCategory)}
-            handleFilterClick={handleFilterClick}
-            handleCloseFilter={handleCloseFilter}
-            categoryName={filterCategory}
-          />
-        ) : null}
+        {filterIsOpen && (
+          filterCategory === "role" && (
+            <Filter
+              items={filterList.filter((f) => f.category == filterCategory)}
+              handleFilterClick={handleFilterClick}
+              handleCloseFilter={handleCloseFilter}
+              categoryName={filterCategory}
+            />
+          ) ||
+          filterCategory === "region" && (
+            <FilterMapNoSSR
+              regionGeos={regionGeos}
+              items={filterList.filter((f) => f.category == filterCategory)}
+              handleFilterClick={handleFilterClick}
+              handleCloseFilter={handleCloseFilter}
+              categoryName={filterCategory}
+            />
+          )
+        )}
       </AnimatePresence>
 
       <style global jsx>{`
