@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
-import ReactMapGL from "react-map-gl";
+import { useEffect, useRef, useState } from "react";
+import mapboxgl from "mapbox-gl";
 import CheckSVG from "./Icons/CheckSVG.js";
 import CloseSVG from "./Icons/CloseSVG.js";
 
@@ -21,14 +21,12 @@ export default function FilterMap({
   handleFilterClick,
   handleCloseFilter,
 }) {
-
-  const [viewport, setViewport] = useState({
-    width: "100%",
-    height: 400,
-    latitude: 37.7577,
-    longitude: -122.4376,
-    zoom: 2
-  });
+  const mapContainer = useRef(null);
+  const map = useRef(null);
+  const [lng, setLng] = useState(-122.4376);
+  const [lat, setLat] = useState(37.7577);
+  const [zoom, setZoom] = useState(2);
+  mapboxgl.accessToken = "pk.eyJ1IjoiaGF3YWlpYW5zIiwiYSI6ImNrcnN4bHkxajExNnoydmxlczJkN3BiNW4ifQ.JxRuoffbMrDecqFpI7cJ4A"
 
   let countItems = {};
   items.forEach(item => {
@@ -36,6 +34,16 @@ export default function FilterMap({
   })
 
   console.log(regionGeos);
+
+  useEffect(() => {
+    if (map.current) return;
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: "mapbox://styles/hawaiians/ckrsy6wga3med17mxekp9kan6",
+      center: [lng, lat],
+      zoom: zoom
+    });
+  });
 
   return (
     <motion.div
@@ -62,12 +70,7 @@ export default function FilterMap({
         >
           <CloseSVG />
         </a>
-        <ReactMapGL
-          {...viewport}
-          onViewportChange={nextViewport => setViewport(nextViewport)}
-          mapStyle="mapbox://styles/hawaiians/ckrsy6wga3med17mxekp9kan6"
-          mapboxApiAccessToken={`pk.eyJ1IjoiaGF3YWlpYW5zIiwiYSI6ImNrcnN4bHkxajExNnoydmxlczJkN3BiNW4ifQ.JxRuoffbMrDecqFpI7cJ4A`}
-        />
+        <div ref={mapContainer} className="map-container" />
         <div className="map-sidebar__body">
           <h3>
             FILTER MAP
@@ -108,7 +111,10 @@ export default function FilterMap({
           width: 100%;
           padding: 2.5rem;
         }
-
+        .map-container {
+          height: 320px;
+          width: 100%;
+        }
         .close {
           display: block;
           width: 1.5rem;
