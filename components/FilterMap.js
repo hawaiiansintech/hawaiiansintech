@@ -163,6 +163,10 @@ export default function FilterMap({
           width: 100%;
         }
         .close {
+          position: absolute;
+          z-index: 20;
+          top: 2.5rem;
+          left: 2.5rem;
           display: block;
           width: 1.5rem;
           height: 1.5rem;
