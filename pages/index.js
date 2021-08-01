@@ -14,8 +14,12 @@ export async function getStaticProps() {
       ? "http://localhost:3000"
       : "https://hawaiiansintech.org";
 
-  const res = await fetch(`${origin}/api/technologists`);
-  const technologists = await res.json();
+  const fetchTechnologists = await fetch(`${origin}/api/technologists`);
+  const technologists = await fetchTechnologists.json();
+
+  const fetchRegionGeos = await fetch(`${origin}/api/region-geos`);
+  const regionGeos = await fetchRegionGeos.json();
+
 
   let roles = technologists.map((technologist) => {
     return { label: technologist.role, active: false, category: "role" };
