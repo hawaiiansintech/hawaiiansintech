@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
+import * as turf from "@turf/turf";
 import CheckSVG from "./Icons/CheckSVG.js";
 import CloseSVG from "./Icons/CloseSVG.js";
 
@@ -21,11 +22,12 @@ export default function FilterMap({
   handleFilterClick,
   handleCloseFilter,
 }) {
+  const HAWAII_COORDS = ["-157.298", "21.103"];
   const mapContainer = useRef(null);
   const map = useRef(null);
-  const [lng, setLng] = useState(-122.4376);
-  const [lat, setLat] = useState(37.7577);
-  const [zoom, setZoom] = useState(2);
+  const [lng, setLng] = useState(`${parseFloat(HAWAII_COORDS[0]) + 35}`);
+  const [lat, setLat] = useState(`${parseFloat(HAWAII_COORDS[1]) + 15}`);
+  const [zoom, setZoom] = useState(1.85);
   mapboxgl.accessToken = "pk.eyJ1IjoiaGF3YWlpYW5zIiwiYSI6ImNrcnN4bHkxajExNnoydmxlczJkN3BiNW4ifQ.JxRuoffbMrDecqFpI7cJ4A"
 
   let countItems = {};
@@ -33,15 +35,60 @@ export default function FilterMap({
     countItems[item.label] = countItems[item.label] + 1 || 1
   })
 
-  console.log(regionGeos);
 
   useEffect(() => {
     if (map.current) return;
+
+    function getGreatArcFc() {
+      var data = [];
+      regionGeos.forEach(regionGeo => {
+        const start = turf.point([regionGeo.long, regionGeo.lat]);
+        const end = turf.point(HAWAII_COORDS);
+        data.push(turf.greatCircle(start, end));
+      })
+      return turf.featureCollection(data);
+    }
+
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/hawaiians/ckrsy6wga3med17mxekp9kan6",
       center: [lng, lat],
       zoom: zoom
+    });
+
+    map.current.on("load", () => {
+      regionGeos.forEach(regionGeo => {
+        var el = document.createElement("div");
+        el.className = "mapbox__marker";
+        const marker = new mapboxgl.Marker(el)
+          .setLngLat([regionGeo.long, regionGeo.lat])
+          .addTo(map.current);
+      })
+      map.current.addSource("route", {
+        "type": "geojson",
+        lineMetrics: true,
+        "data": getGreatArcFc()
+      });
+      map.current.addLayer({
+        "id": "route",
+        "source": "route",
+        "type": "line",
+        "paint": {
+          "line-width": 2,
+          "line-color": "#cc6c13",
+          "line-gradient": [
+            "interpolate",
+            ["linear"],
+            ["line-progress"],
+            0, "rgba(204, 108, 19, 0.25)",
+            0.1, "rgba(204, 108, 19, 0.5)",
+            1, "rgba(204, 108, 19, 1)"
+          ]
+        },
+        layout: {
+          "line-cap": "round",
+        }
+      });
     });
   });
 

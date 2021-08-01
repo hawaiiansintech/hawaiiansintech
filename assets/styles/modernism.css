@@ -209,6 +209,14 @@ a.link:after {
   pointer-events: none;
 }
 
+.mapbox__marker {
+  background-color: var(--color-brand);
+  border-radius: 50%;
+  width: 4px;
+  height: 4px;
+  cursor: pointer;
+}
+
 /* Responsive
  ----------------------------- */
 @media (max-width: 480px) {
