@@ -210,11 +210,25 @@ a.link:after {
 }
 
 .mapbox__marker {
+  position: relative;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  background: none;
+}
+.mapbox__marker:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); 
   background-color: var(--color-brand);
   border-radius: 50%;
   width: 4px;
   height: 4px;
-  cursor: pointer;
 }
 
 /* Responsive

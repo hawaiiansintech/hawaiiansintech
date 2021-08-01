@@ -17,7 +17,6 @@ const sidebarAnimation = {
 };
 
 export default function FilterMap({
-  regionGeos,
   items,
   handleFilterClick,
   handleCloseFilter,
@@ -39,16 +38,6 @@ export default function FilterMap({
   useEffect(() => {
     if (map.current) return;
 
-    function getGreatArcFc() {
-      var data = [];
-      regionGeos.forEach(regionGeo => {
-        const start = turf.point([regionGeo.long, regionGeo.lat]);
-        const end = turf.point(HAWAII_COORDS);
-        data.push(turf.greatCircle(start, end));
-      })
-      return turf.featureCollection(data);
-    }
-
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/hawaiians/ckrsy6wga3med17mxekp9kan6",
@@ -57,17 +46,25 @@ export default function FilterMap({
     });
 
     map.current.on("load", () => {
-      regionGeos.forEach(regionGeo => {
-        var el = document.createElement("div");
+      items.forEach(item => {
+        var el = document.createElement("button");
         el.className = "mapbox__marker";
         const marker = new mapboxgl.Marker(el)
-          .setLngLat([regionGeo.long, regionGeo.lat])
+          .setLngLat([item.coords.long, item.coords.lat])
           .addTo(map.current);
       })
       map.current.addSource("route", {
         "type": "geojson",
         lineMetrics: true,
-        "data": getGreatArcFc()
+        "data": (() => {
+          var data = [];
+          items.forEach(item => {
+            const start = turf.point([item.coords.long, item.coords.lat]);
+            const end = turf.point(HAWAII_COORDS);
+            data.push(turf.greatCircle(start, end));
+          })
+          return turf.featureCollection(data);
+        })()
       });
       map.current.addLayer({
         "id": "route",
@@ -80,8 +77,8 @@ export default function FilterMap({
             "interpolate",
             ["linear"],
             ["line-progress"],
-            0, "rgba(204, 108, 19, 0.25)",
-            0.1, "rgba(204, 108, 19, 0.5)",
+            0, "rgba(204, 108, 19, 0)",
+            0.2, "rgba(204, 108, 19, 0.5)",
             1, "rgba(204, 108, 19, 1)"
           ]
         },
@@ -104,7 +101,7 @@ export default function FilterMap({
         right: 0,
         height: "100%",
         width: "100%",
-        maxWidth: "720px",
+        maxWidth: "640px",
         overflowY: "scroll",
       }}
     >

@@ -26,27 +26,33 @@ export async function getStaticProps() {
   const fetchRegionGeos = await fetch(`${origin}/api/region-geos`);
   const regionGeos = await fetchRegionGeos.json();
 
-
   let roles = technologists.map((technologist) => {
     return { label: technologist.role, active: false, category: "role" };
   });
 
   let regions = technologists.map((technologist) => {
-    return { label: technologist.region, active: false, category: "region" };
+    return {
+      label: technologist.region,
+      active: false,
+      category: "region",
+      coords: {
+        lat: regionGeos.filter(geo => geo.name === technologist.region)[0].lat,
+        long: regionGeos.filter(geo => geo.name === technologist.region)[0].long,
+      }
+    };
   });
 
   let filters = roles.concat(regions);
 
   return {
     props: {
-      regionGeos,
       technologists,
       filters,
     },
   };
 }
 
-export default function Home({ regionGeos, technologists, filters }) {
+export default function Home({ technologists, filters }) {
   const [isReady, setIsReady] = useState(false);
   const [technologistsList, setTechnologistsList] = useState(null);
   const [filterIsOpen, setFilterIsOpen] = useState(false);
@@ -152,7 +158,6 @@ export default function Home({ regionGeos, technologists, filters }) {
           ) ||
           filterCategory === "region" && (
             <FilterMapNoSSR
-              regionGeos={regionGeos}
               items={filterList.filter((f) => f.category == filterCategory)}
               handleFilterClick={handleFilterClick}
               handleCloseFilter={handleCloseFilter}
