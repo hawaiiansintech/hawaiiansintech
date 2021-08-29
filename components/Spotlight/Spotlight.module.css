@@ -1,0 +1,11 @@
+.MainSpotlight{
+    margin-top: 100px;
+    height: 500px;
+    width: 90%;
+    border-style: dotted;
+    position: fixed;
+}
+
+.Header{
+    margin-left: 2%;
+}
