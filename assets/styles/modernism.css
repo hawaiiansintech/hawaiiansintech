@@ -252,3 +252,9 @@ a.link:after {
     font-size: 18px;
   }
 }
+
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
