@@ -142,6 +142,7 @@ export async function getStaticProps() {
       technologists,
       filters,
     },
+    revalidate: 60
   };
 }
 
