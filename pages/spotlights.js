@@ -3,6 +3,7 @@ import Link from "next/link";
 import MetaTags from "../components/Metatags.js";
 import HitLogo from "../components/HitLogo.js";
 import MainSpotlight from "../components/Spotlight/MainSpotlight.js"
+import SpotlightPreview from "../components/Spotlight/SpotlightPreview"
 import React from "react"; 
 
 
@@ -21,7 +22,7 @@ export default function Home() {
 
         <HitLogo />
         <MainSpotlight />
-
+        <SpotlightPreview />
       </div>
   );
 }

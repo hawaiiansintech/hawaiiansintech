@@ -4,7 +4,7 @@ import styles from "./Spotlight.module.css"
 class MainSpotlight extends React.Component{
     render(){
         return (
-            <div style={{height: "3000px"}}>
+            <div className={styles.MainSpotlightWrapper}>
                 <div className={styles.MainSpotlight}>
                     <div className={styles.MainCard}>
                         <p className={styles.Header}>Member Spotlight</p>
