@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@turf/turf": "^6.5.0",
+    "airtable": "^0.11.1",
     "babel-plugin-inline-react-svg": "^1.1.1",
     "drive-db": "^6.0.0",
     "framer-motion": "^1.11.1",

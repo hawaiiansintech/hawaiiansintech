@@ -2,6 +2,7 @@ import Head from "next/head";
 import dynamic from "next/dynamic";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { fetchTechnologists } from "../lib/api";
 import Nav from "../components/Nav.js";
 import Filter from "../components/Filter.js";
 // import FilterMap from "../components/FilterMap.js";
@@ -9,48 +10,6 @@ import Title from "../components/Title.js";
 import MetaTags from "../components/Metatags.js";
 import FilterSVG from "../components/Icons/FilterSVG.js";
 import HitLogo from "../components/HitLogo.js";
-
-const FilterMapNoSSR = dynamic(() => import("../components/FilterMap.js"), {
-  ssr: false
-});
-
-export async function getStaticProps() {
-  const origin =
-    process.env.NODE_ENV !== "production"
-      ? "http://localhost:3000"
-      : "https://hawaiiansintech.org";
-
-  const fetchTechnologists = await fetch(`${origin}/api/technologists`);
-  const technologists = await fetchTechnologists.json();
-
-  const fetchRegionGeos = await fetch(`${origin}/api/region-geos`);
-  const regionGeos = await fetchRegionGeos.json();
-
-  let roles = technologists.map((technologist) => {
-    return { label: technologist.role, active: false, category: "role" };
-  });
-
-  let regions = technologists.map((technologist) => {
-    return {
-      label: technologist.region,
-      active: false,
-      category: "region",
-      coords: {
-        lat: regionGeos.filter(geo => geo.name === technologist.region)[0].lat,
-        long: regionGeos.filter(geo => geo.name === technologist.region)[0].long,
-      }
-    };
-  });
-
-  let filters = roles.concat(regions);
-
-  return {
-    props: {
-      technologists,
-      filters,
-    },
-  };
-}
 
 export default function Home({ technologists, filters }) {
   const [isReady, setIsReady] = useState(false);
@@ -176,6 +135,29 @@ export default function Home({ technologists, filters }) {
     </div>
   );
 }
+
+export async function getStaticProps() {
+  const technologists = (await fetchTechnologists()) ?? [];
+
+  let roles = technologists?.map((technologist) => {
+    return { label: technologist.role, active: false, category: "role" };
+  });
+
+  let regions = technologists?.map((technologist) => {
+    return { label: technologist.region, active: false, category: "region" };
+  });
+
+  let filters = roles.concat(regions);
+
+  return {
+    props: {
+      technologists,
+      filters,
+    },
+    revalidate: 60
+  };
+}
+
 
 function Content({ technologists, handleOpenFilter, className, onClick }) {
   const tableHeaderRef = useRef();
@@ -311,6 +293,7 @@ function Content({ technologists, handleOpenFilter, className, onClick }) {
 }
 
 function shuffle(array) {
+  if (array === undefined) return [];
   var m = array.length,
     temp,
     i;
