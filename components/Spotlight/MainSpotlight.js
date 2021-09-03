@@ -7,14 +7,14 @@ class MainSpotlight extends React.Component{
             <div className={styles.MainSpotlightWrapper}>
                 <div className={styles.MainSpotlight}>
                     <div className={styles.MainCard}>
-                        <p className={styles.Header}>Member Spotlight</p>
+                        <p style={{marginTop: "-20px", fontSize: "2.2em"}}>Member Spotlight</p>
                         <div className={styles.Border}></div>
-                        <img className={styles.MainPic} src={"/images/DavidKalakaua.jpg"}></img>
+                        <img className={styles.MainImage} src={"/images/DavidKalakaua.jpg"}></img>
                     </div>
                     <div className={styles.MainDescription}>
                         <h2>David Kalākaua</h2>
-                        <h3 style={{marginTop: "-17px"}}>Published August 29th, 2021</h3>
-                        <p className={styles.MainDescriptionText} style={{scrollbarColor: "red"}}>
+                        <h3 style={{marginTop: "-17px"}}>August 29, 2021</h3>
+                        <p className={styles.MainDescriptionText}>
                             Kalākaua (David Laʻamea Kamananakapu Mahinulani Naloiaehuokalani Lumialani Kalākaua;[2] 
                             November 16, 1836 – January 20, 1891), sometimes called The Merrie Monarch, was the last king 
                             and penultimate monarch of the Kingdom of Hawaiʻi, reigning from February 12, 1874, until 

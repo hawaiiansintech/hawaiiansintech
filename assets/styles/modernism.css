@@ -1,6 +1,7 @@
 :root {
   --color-brand: #cc6c13;
   --color-link: var(--color-brand);
+  --color-link-background: #cc6c1320;
   --color-text: #353535;
   --color-border: #999;
   --color-background: #e5e5e5;
@@ -81,7 +82,7 @@ table tbody tr {
 }
 
 table tbody tr:hover {
-  /* background: #111111; */
+  background-color: var(--color-link-background);
   color: var(--color-link);
 }
 

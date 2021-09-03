@@ -1,8 +1,8 @@
 .MainSpotlightWrapper{
-    height: 650px
-
+    height: 650px;
+    /* border-style: dotted;
+    border-color: red; */
 }
-
 
 .MainSpotlight{
     margin-top: 100px;
@@ -13,9 +13,6 @@
     justify-content: space-between;
     padding-bottom: 600px;
     max-height: 500px;
-
-    /* border-style: dotted;
-    border-color: purple; */
 }
 
 .Border{
@@ -33,10 +30,6 @@
     min-width: 300px;
     width: 50%;
     position: relative;
-    
-
-    /* border-style: dotted;
-    border-color: blue; */
 }
 
 .MainDescription{
@@ -44,9 +37,6 @@
     min-width: 300px;
     width: 50%;
     text-align: right;
-
-    /* border-style: dotted;
-    border-color: red; */
 
 }
 
@@ -66,7 +56,7 @@
     font-size: 2.3em;
 }
 
-.MainPic{
+.MainImage{
     display: block;
     max-height: 500px;
     max-width: 300px;
@@ -75,6 +65,41 @@
     margin-bottom: 40px;
 }
 
+.PreviewImage{
+    /* display: block; */
+    max-height: 250px;
+    max-width: 300px;
+    margin-left: 20px;
+}
+
+.PreviewDescription{
+    max-width: 90%;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    /* border-style: dotted;
+    border-color: red; */
+}
+
+.PreviewName{
+    margin-top: 0px;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.PreviewDate{
+    margin-top: -20px;
+    font-size: .8em;
+    font-weight: bold;
+}
+
+.PreviewDescriptionText{
+    max-height: 150px;
+    max-width: 100%;
+    font-size: .8em;
+    overflow: hidden;
+}
 
 @media screen and (max-width: 685px) {
     .MainCard {
@@ -92,5 +117,36 @@
         height: 15px;
         width: 60%;
         border-bottom: 3px solid #cc6c13;
+    }
+    .MainSpotlightWrapper{
+        height: 1080px
+    }
+    .PreviewImage{
+        /* display: block; */
+        max-height: 170px;
+        max-width: 100px;
+    }
+    
+    .PreviewDescription{
+        max-width: 80%;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        /* border-style: dotted;
+        border-color: red; */
+    }
+
+    .PreviewDescriptionText{
+        max-height: 200px;
+        max-width: 100%;
+        font-size: .67em;
+        overflow: hidden;
+    }
+
+    .PreviewName{
+        font-size: .75em;
+    }
+    
+    .PreviewDate{
+        font-size: .75em;
     }
   }
