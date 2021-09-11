@@ -2,8 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import MetaTags from "../components/Metatags.js";
 import HitLogo from "../components/HitLogo.js";
-import MainSpotlight from "../components/Spotlight/MainSpotlight.js"
-import SpotlightPreview from "../components/Spotlight/SpotlightPreview"
+import Spotlight from "../components/Spotlight/Spotlight.js"
 import React from "react"; 
 
 
@@ -20,9 +19,8 @@ export default function Home() {
           <a className="auxNav arrowback">←</a>
         </Link>
 
-        <HitLogo />
-        <MainSpotlight />
-        <SpotlightPreview />
+        <HitLogo/>
+        <Spotlight/>
       </div>
   );
 }
