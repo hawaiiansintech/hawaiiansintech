@@ -1,35 +1,28 @@
 .MainSpotlightWrapper{
-    height: 650px;
-    /* border-style: dotted;
-    border-color: red; */
+    height: auto;
+    width: 100%;
 }
 
 .MainSpotlight{
     margin-top: 100px;
     margin-right: 10px;
-    position: absolute;
+    position: relative;
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
-    padding-bottom: 600px;
     max-height: 500px;
-}
-
-.Border{
-    content: "";
-    /* position: absolute;
-    right: 0;
-    top: 25%;
-    height: 250px;
-    width: 50%;
-    border-right: 5px solid ; */
+    width: 100%;
 }
 
 .MainCard{
     max-height: inherit;
-    min-width: 300px;
     width: 50%;
     position: relative;
+}
+
+.MainCardTitle{
+    margin-top: -10px;
+    font-size: 2.2em;
 }
 
 .MainDescription{
@@ -37,7 +30,6 @@
     min-width: 300px;
     width: 50%;
     text-align: right;
-
 }
 
 .MainDescriptionText{
@@ -58,15 +50,14 @@
 
 .MainImage{
     display: block;
-    max-height: 500px;
-    max-width: 300px;
+    max-height: 400px;
+    max-width: 90%; 
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 40px;
 }
 
 .PreviewImage{
-    /* display: block; */
     max-height: 250px;
     max-width: 300px;
     margin-left: 20px;
@@ -78,8 +69,6 @@
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 10px;
-    /* border-style: dotted;
-    border-color: red; */
 }
 
 .PreviewName{
@@ -101,13 +90,33 @@
     overflow: hidden;
 }
 
+.PreviewRow{
+    max-height: 300px;
+}
+
 @media screen and (max-width: 685px) {
+    .MainSpotlightWrapper{
+        height: auto;
+        margin-bottom: 20px;
+    }
+    .MainSpotlight{
+        margin-top: 50px;
+        display: inline-block;
+    }
     .MainCard {
         width: 100%;
     }
     .MainDescription{
+        max-height: 350px;
         margin-top: 30px;
         width: 100%;
+    }
+
+    .MainDescriptionText{
+        max-height: inherit;
+    }
+    .MainImage{
+        padding-bottom: 30px;
     }
     .Border{
         content: "";
@@ -118,11 +127,7 @@
         width: 60%;
         border-bottom: 3px solid #cc6c13;
     }
-    .MainSpotlightWrapper{
-        height: 1080px
-    }
     .PreviewImage{
-        /* display: block; */
         max-height: 170px;
         max-width: 100px;
     }
@@ -131,8 +136,6 @@
         max-width: 80%;
         margin-top: 10px;
         margin-bottom: 10px;
-        /* border-style: dotted;
-        border-color: red; */
     }
 
     .PreviewDescriptionText{

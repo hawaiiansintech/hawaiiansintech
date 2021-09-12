@@ -12,7 +12,7 @@ class SpotlightPreview extends React.Component{
                     {Object.keys(this.props.members).map(key => 
                         <tr onClick={() => this.props.selectMember(this.props.members[key])}>
                             <td><img className={styles.PreviewImage} src={this.props.members[key].image}></img></td>
-                            <td style={{maxHeight: "300px"}}>
+                            <td className={styles.PreviewRow}>
                                 <div className={styles.PreviewDescription}>
                                     <p className={styles.PreviewName}>{this.props.members[key].name}</p>
                                     <p className={styles.PreviewDate}>{this.props.members[key].date}</p>

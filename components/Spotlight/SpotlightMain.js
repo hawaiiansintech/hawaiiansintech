@@ -8,7 +8,7 @@ class SpotlightMain extends React.Component{
             <div className={styles.MainSpotlightWrapper}>
                 <div className={styles.MainSpotlight}>
                     <div className={styles.MainCard}>
-                        <p style={{marginTop: "-20px", fontSize: "2.2em"}}>Member Spotlight</p>
+                        <p className={styles.MainCardTitle}>Member Spotlight</p>
                         <div className={styles.Border}></div>
                         <img className={styles.MainImage} src={image}></img>
                     </div>

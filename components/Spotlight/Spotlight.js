@@ -10,6 +10,7 @@ class Spotlight extends React.Component{
     };
     selectMember = member => {
         this.setState({mainMember: member});
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
     render(){
         return (
