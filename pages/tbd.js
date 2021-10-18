@@ -2,8 +2,10 @@ import Head from "next/head";
 import Link from "next/link";
 import MetaTags from "../components/Metatags.js";
 import Header from "../components/Header.js";
+import Button from "../components/Button.js";
+import RadioBox from "../components/form/RadioBox.js";
 
-export default function Tbd({ technologists }) {
+export default function Tbd() {
   return (
     <div className="container">
       <Head>
@@ -24,6 +26,26 @@ export default function Tbd({ technologists }) {
           &amp; work or research in the <strong>technology sector</strong>.
         </h3>
       </Header>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "2rem",
+        }}
+      >
+        <div style={{ marginRight: "1rem" }}>
+          <RadioBox
+            defaultChecked
+            label="Adding myself to the list"
+            seriesOf="add-or-nominate"
+          />
+        </div>
+        <RadioBox label="Nominating someone else" seriesOf="add-or-nominate" />
+      </div>
+
+      <div style={{ marginTop: "2rem" }}>
+        <Button>Continue</Button>
+      </div>
 
       <style global jsx>{`
         .container {
