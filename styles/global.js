@@ -2,11 +2,25 @@ import css from "styled-jsx/css";
 
 export default css.global`
   :root {
-    --color-brand: #cc6c13;
+    --color-brand: #fc7442;
+    --color-brand-alpha: #fc7442;
+    --color-brand-tone: #ec4427;
     --color-link: var(--color-brand);
     --color-text: #353535;
     --color-border: #999;
     --color-background: #e5e5e5;
+
+    --color-background-button: linear-gradient(
+      to top right,
+      var(--color-brand),
+      var(--color-brand-tone)
+    );
+    --color-background-button-hover: var(--color-brand-tone);
+    --color-background-button-pressed: var(--color-brand);
+    --color-background-button-outline: rgba(252, 116, 66, 0.75);
+    --color-background-button-disabled: #dddddd;
+    --color-text-button: #fff;
+    --color-text-button-disabled: #5c5a5e;
   }
 
   html {
