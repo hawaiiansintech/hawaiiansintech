@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "format": "prettier --write 'projectA/*.js' 'projectB/*.js'"
   },
   "dependencies": {
     "airtable": "^0.11.1",
@@ -15,6 +16,7 @@
     "js-yaml": "^3.13.1",
     "next": "^11.0.1",
     "next-absolute-url": "^1.2.2",
+    "prettier": "^2.4.1",
     "react": "16.14",
     "react-dom": "16.13.1"
   }
