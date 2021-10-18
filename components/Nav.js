@@ -14,6 +14,12 @@ export default function Nav(props) {
         </Link>
       </li>
 
+      <li>
+        <Link href="/tbd">
+          <a>(tbd)</a>
+        </Link>
+      </li>
+
       <style jsx>{`
         ul {
           padding: 0;
