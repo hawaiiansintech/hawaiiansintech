@@ -15,7 +15,7 @@ export default function Nav(props) {
       </li>
 
       <li>
-        <Link href="/tbd">
+        <Link href="/join">
           <a>(tbd)</a>
         </Link>
       </li>

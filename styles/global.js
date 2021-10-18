@@ -5,9 +5,10 @@ export default css.global`
     --color-brand: #fc7442;
     --color-brand-alpha: #fc7442;
     --color-brand-tone: #ec4427;
+    --color-brand-faded: #cf8870;
     --color-link: var(--color-brand);
     --color-text: #353535;
-    --color-border: #999;
+    --color-border: #dacbc8;
     --color-background: #e5e5e5;
 
     --color-background-button: linear-gradient(

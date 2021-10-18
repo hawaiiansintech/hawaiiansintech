@@ -1,11 +1,11 @@
 import Head from "next/head";
 import Link from "next/link";
-import MetaTags from "../components/Metatags.js";
-import Header from "../components/Header.js";
-import Button from "../components/Button.js";
-import RadioBox from "../components/form/RadioBox.js";
+import MetaTags from "../../components/Metatags.js";
+import Header from "../../components/Header.js";
+import Button from "../../components/Button.js";
+import RadioBox from "../../components/form/RadioBox.js";
 
-export default function Tbd() {
+export default function Join() {
   return (
     <div className="container">
       <Head>
@@ -33,18 +33,23 @@ export default function Tbd() {
           marginTop: "2rem",
         }}
       >
-        <div style={{ marginRight: "1rem" }}>
+        <div style={{ marginRight: "1rem", maxWidth: "20rem" }}>
           <RadioBox
             defaultChecked
             label="Adding myself to the list"
             seriesOf="add-or-nominate"
           />
         </div>
-        <RadioBox label="Nominating someone else" seriesOf="add-or-nominate" />
+        <div style={{ maxWidth: "20rem" }}>
+          <RadioBox
+            label="Nominating someone else"
+            seriesOf="add-or-nominate"
+          />
+        </div>
       </div>
 
       <div style={{ marginTop: "2rem" }}>
-        <Button>Continue</Button>
+        <Button linkTo="/join/step-02">Continue</Button>
       </div>
 
       <style global jsx>{`
