@@ -18,10 +18,10 @@ export default css.global`
     );
     --color-background-button-hover: var(--color-brand-tone);
     --color-background-button-pressed: var(--color-brand);
-    --color-background-button-outline: rgba(252, 116, 66, 0.75);
     --color-background-button-disabled: #dddddd;
     --color-text-button: #fff;
     --color-text-button-disabled: #5c5a5e;
+    --box-shadow-outline-button: rgba(252, 116, 66, 0.5) 0px 0px 1rem;
   }
 
   html {
@@ -272,3 +272,18 @@ export default css.global`
     }
   }
 `;
+
+export const cssHelperButtonReset = `
+  display: block;
+  border: none;
+  margin: 0 auto;
+  overflow: visible;
+  outline: none;
+  font: inherit;
+  cursor: pointer;
+  background: transparent;
+  line-height: normal;
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+  -webkit-appearance: none;
+  text-align: center;`;

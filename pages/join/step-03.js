@@ -6,25 +6,28 @@ import Button from "../../components/Button.js";
 import Input from "../../components/form/Input.js";
 import RadioBox from "../../components/form/RadioBox.js";
 import Disclaimer from "../../components/form/Disclaimer.js";
-import { fetchTechnologists } from "../../lib/api";
+import { fetchRoles } from "../../lib/api";
+import { useState } from "react";
+import ButtonBox from "../../components/form/ButtonBox.js";
+import { cssHelperButtonReset } from "../../styles/global.js";
 
 export async function getStaticProps() {
-  const technologists = (await fetchTechnologists()) ?? [];
-
-  let roles = technologists
-    ?.map((technologist) => {
-      return technologist.role;
-    })
-    .reduce((acc, e) => acc.set(e, (acc.get(e) || 0) + 1), new Map());
+  let roles = (await fetchRoles()) ?? [];
+  roles = roles.sort((a, b) => {
+    return b.count - a.count;
+  });
   return {
     props: {
-      ...roles.entries(),
+      roles,
     },
     revalidate: 60,
   };
 }
 
 export default function JoinStep3({ roles }) {
+  const [countShown, setCountShown] = useState(9);
+  const [showExpand, setShowExpand] = useState(true);
+
   return (
     <div className="container">
       <Head>
@@ -64,21 +67,41 @@ export default function JoinStep3({ roles }) {
           margin: "0 auto",
         }}
       >
-        <RadioBox
-          label="Software Engineer"
-          seriesOf="professional-focus"
-          small
-          horizontal
-          border
-        />
-        <RadioBox
-          label="Go-To-Market / Partnerships / Strategy"
-          seriesOf="professional-focus"
-          small
-          horizontal
-          border
-        />
+        {roles.slice(0, countShown).map((role, i) => {
+          return (
+            <RadioBox
+              label={role.name}
+              seriesOf="professional-focus"
+              small
+              horizontal
+              border
+              key={`role-${i}`}
+            />
+          );
+        })}
+        {showExpand || (
+          <ButtonBox
+            label="None of these fit; suggest another"
+            seriesOf="professional-focus"
+            small
+            horizontal
+            border
+          />
+        )}
       </div>
+      {showExpand && (
+        <div style={{ marginTop: "2rem" }}>
+          <button
+            className="more-link"
+            onClick={() => {
+              setCountShown(roles.length);
+              setShowExpand(false);
+            }}
+          >
+            More Options
+          </button>
+        </div>
+      )}
 
       <div style={{ marginTop: "2rem" }}>
         <Button>Submit</Button>
@@ -94,6 +117,15 @@ export default function JoinStep3({ roles }) {
       <style global jsx>{`
         .container {
           padding-top: 6rem;
+        }
+        .more-link {
+          ${cssHelperButtonReset}
+          background: transparent;
+          color: var(--color-brand);
+          font-weight: 500;
+        }
+        .more-link:hover {
+          color: var(--color-brand-tone);
         }
       `}</style>
     </div>

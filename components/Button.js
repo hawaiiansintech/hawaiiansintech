@@ -1,22 +1,25 @@
 import Link from "next/link";
+import { cssHelperButtonReset } from "../styles/global.js";
 
-export default function Button({ children, disabled, linkTo }) {
+export default function Button({
+  children,
+  disabled,
+  linkTo,
+  small,
+  textOnly,
+  onClick,
+}) {
   let button = <>{children}</>;
+
+  const background =
+    (disabled && "var(--color-background-button-disabled)") ||
+    (textOnly && "transparent") ||
+    "var(--color-background-button)";
+
   let buttonStyles = (
     <style jsx>{`
       .button {
-        display: block;
-        border: none;
-        margin: 0 auto;
-        overflow: visible;
-        outline: none;
-        font: inherit;
-        line-height: normal;
-        -webkit-font-smoothing: inherit;
-        -moz-osx-font-smoothing: inherit;
-        -webkit-appearance: none;
-        text-align: center;
-
+        ${cssHelperButtonReset}
         padding: 1.2rem;
         width: 100%;
         max-width: 24rem;
@@ -36,9 +39,7 @@ export default function Button({ children, disabled, linkTo }) {
           : "var(--color-background-button-pressed)"};
       }
       .button:focus {
-        box-shadow: ${disabled
-          ? "none"
-          : "var(--color-background-button-outline) 0px 0px 1rem"};
+        box-shadow: ${disabled ? "none" : "var(--box-shadow-outline-button)"};
       }
       .button:focus:not(:focus-visible) {
         outline: none;
@@ -59,7 +60,7 @@ export default function Button({ children, disabled, linkTo }) {
     );
   } else {
     button = (
-      <button className="button">
+      <button className="button" onClick={onClick}>
         {button}
         {buttonStyles}
       </button>

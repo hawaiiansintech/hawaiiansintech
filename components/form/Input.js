@@ -4,7 +4,7 @@ export default function Input({ placeholder, labelTranslation, label }) {
   const labelKebab = toKebab(label);
   return (
     <div className="input">
-      <label for={labelKebab}>
+      <label htmlFor={labelKebab}>
         <h3>{label}</h3>
         <h4>{labelTranslation}</h4>
       </label>
@@ -40,6 +40,7 @@ export default function Input({ placeholder, labelTranslation, label }) {
         }
         input:focus {
           border: 0.2rem solid var(--color-brand);
+          box-shadow: var(--box-shadow-outline-button);
         }
         input::placeholder {
           color: var(--color-placeholder);

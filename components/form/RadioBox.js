@@ -20,7 +20,7 @@ export default function RadioBox({
         name={seriesOf}
         defaultChecked={defaultChecked}
       />
-      <label for={labelKebab}>
+      <label htmlFor={labelKebab}>
         <h3>{label}</h3>
         <p>{description}</p>
       </label>
@@ -62,7 +62,7 @@ export default function RadioBox({
             ${border ? "var(--color-border)" : "transparent"};
           border-radius: 1rem;
           text-align: ${horizontal ? "left" : "center"};
-          transition: border 150ms ease-out;
+          transition: all 150ms ease-out;
         }
         input + label:before {
           content: "";
@@ -95,10 +95,19 @@ export default function RadioBox({
           border-radius: 100%;
           transition: opacity 150ms ease-out;
         }
+
+        input:focus + label {
+          box-shadow: var(--box-shadow-outline-button);
+        }
+
+        input:hover + label {
+          color: var(--color-brand);
+        }
         input:not(:checked) + label:after {
           opacity: 0;
         }
         input:checked + label {
+          color: var(--color-text);
           border-color: var(--color-brand);
         }
         input:not(:checked) + label:focus,
