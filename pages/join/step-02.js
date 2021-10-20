@@ -28,20 +28,26 @@ export default function JoinStep2() {
           maxWidth: "42rem",
         }}
       >
-        <Input
-          label="What’s your name?"
-          labelTranslation="ʻO wai kou inoa?"
-          placeholder="Full name"
-        />
-        <Input
-          label="Where you stay now days?"
-          labelTranslation="Ma hea ʻoe?"
-          placeholder="City, State"
-        />
-        <Input
-          label="What’s your email?"
-          labelTranslation="He aha kou wahi leka uila?"
-        />
+        <div style={{ marginBottom: "2rem" }}>
+          <Input
+            label="What’s your name?"
+            labelTranslation="ʻO wai kou inoa?"
+            placeholder="Full name"
+          />
+        </div>
+        <div style={{ marginBottom: "2rem" }}>
+          <Input
+            label="Where you stay now days?"
+            labelTranslation="Ma hea ʻoe?"
+            placeholder="City, State"
+          />
+        </div>
+        <div style={{ marginBottom: "2rem" }}>
+          <Input
+            label="What’s your email?"
+            labelTranslation="He aha kou wahi leka uila?"
+          />
+        </div>
         <Input
           label="What’s your LinkedIn / professional website?"
           labelTranslation="He aha kou wahi uila ’oihana?"

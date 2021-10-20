@@ -11,6 +11,9 @@ export default css.global`
     --color-border: #dacbc8;
     --color-background: #e5e5e5;
 
+    --color-background-balloon: #ffffff;
+    --color-background-balloon-alt: #eee;
+    --color-background-balloon-selected: #eee;
     --color-background-button: linear-gradient(
       to top right,
       var(--color-brand),

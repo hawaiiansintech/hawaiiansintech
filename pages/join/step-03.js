@@ -1,13 +1,13 @@
 import Head from "next/head";
 import Link from "next/link";
+import { useState } from "react";
 import MetaTags from "../../components/Metatags.js";
 import Header from "../../components/Header.js";
 import Button from "../../components/Button.js";
-import Input from "../../components/form/Input.js";
 import RadioBox from "../../components/form/RadioBox.js";
 import Disclaimer from "../../components/form/Disclaimer.js";
+import SearchBar from "../../components/form/SearchBar.js";
 import { fetchRoles } from "../../lib/api";
-import { useState } from "react";
 import ButtonBox from "../../components/form/ButtonBox.js";
 import { cssHelperButtonReset } from "../../styles/global.js";
 
@@ -43,17 +43,14 @@ export default function JoinStep3({ roles }) {
       <Header>
         <h2>Us techie Hawaiians stay talented.</h2>
       </Header>
+
       <div
         style={{
           margin: "2rem auto 0",
           maxWidth: "42rem",
         }}
       >
-        <Input
-          label="What’s your professional focus?"
-          labelTranslation="He aha kou ʻoihana?"
-          placeholder="Search"
-        />
+        <SearchBar dictionary={roles} />
       </div>
 
       <div
@@ -64,7 +61,7 @@ export default function JoinStep3({ roles }) {
           columnGap: "0.5rem",
           rowGap: "0.5rem",
           maxWidth: "42rem",
-          margin: "0 auto",
+          margin: "2rem auto 0",
         }}
       >
         {roles.slice(0, countShown).map((role, i) => {

@@ -1,14 +1,31 @@
 import { toKebab } from "../../helpers.js";
 
-export default function Input({ placeholder, labelTranslation, label }) {
+export default function Input({
+  label,
+  labelTranslation,
+  onBlur,
+  onChange,
+  onFocus,
+  placeholder,
+  tabIndex,
+}) {
   const labelKebab = toKebab(label);
   return (
     <div className="input">
       <label htmlFor={labelKebab}>
-        <h3>{label}</h3>
-        <h4>{labelTranslation}</h4>
+        {label && <h3>{label}</h3>}
+        {labelTranslation && <h4>{labelTranslation}</h4>}
       </label>
-      <input id={labelKebab} placeholder={placeholder} type="text" />
+
+      <input
+        id={labelKebab}
+        placeholder={placeholder}
+        type="text"
+        tabIndex={tabIndex}
+        onBlur={onBlur}
+        onChange={onChange}
+        onFocus={onFocus}
+      />
 
       <style jsx>{`
         input {
@@ -30,11 +47,11 @@ export default function Input({ placeholder, labelTranslation, label }) {
           font-style: italic;
         }
         input {
-          margin: 1rem 0 2rem;
+          margin: 1rem 0 0;
           width: 100%;
           padding: 0.75rem 0.75rem;
           font-size: 1.6rem;
-          border-radius: 0.5rem;
+          border-radius: var(--border-radius-small);
           border: 0.2rem solid var(--color-border);
           background: transparent;
         }
