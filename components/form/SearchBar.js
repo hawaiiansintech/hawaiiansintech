@@ -5,17 +5,17 @@ import { cssHelperButtonReset } from "../../styles/global.js";
 
 const INPUT_TAB_INDEX = 3;
 
-export default function SearchBar({ dictionary }) {
+export default function SearchBar({ dictionary, onSelect }) {
   const [searchResults, setSearchResults] = useState([]);
   const [hideResults, setHideResults] = useState(true);
-  const [selected, setSelected] = useState(0);
+  const [focused, setFocused] = useState(0);
 
   const onSearchChange = (e) => {
     let results = FuzzySort.go(e.target.value, dictionary, { key: "name" });
     results = results.filter((result) => result.score > -200).slice(0, 4);
     setSearchResults(results);
     setHideResults(false);
-    setSelected(0);
+    setFocused(0);
   };
 
   const handleKeyDown = (e) => {
@@ -23,12 +23,12 @@ export default function SearchBar({ dictionary }) {
       upKey = e.keyCode === 38,
       enterKey = e.keyCode === 13;
 
-    if (upKey && selected > 0) {
+    if (upKey && focused > 0) {
       e.preventDefault();
-      setSelected(selected - 1);
-    } else if (downKey && selected < searchResults.length - 1) {
+      setFocused(focused - 1);
+    } else if (downKey && focused < searchResults.length - 1) {
       e.preventDefault();
-      setSelected(selected + 1);
+      setFocused(focused + 1);
     }
   };
 
@@ -60,12 +60,12 @@ export default function SearchBar({ dictionary }) {
                 <SearchBarResult
                   data={result}
                   onFocus={() => {
-                    setSelected(i);
+                    setFocused(i);
                   }}
                   onMouseOver={() => {
-                    setSelected(i);
+                    setFocused(i);
                   }}
-                  selected={i === selected}
+                  focused={i === focused}
                   tabIndex={tabIndex}
                   key={`result-${i}`}
                 >
@@ -101,7 +101,7 @@ function SearchBarResult({
   data,
   onFocus,
   onMouseOver,
-  selected,
+  focused,
   tabIndex,
 }) {
   let chars;
@@ -126,18 +126,18 @@ function SearchBarResult({
         button {
           --color-background-dropdown: #ffffff;
           --color-background-dropdown-alt: #eee;
-          --color-background-dropdown-selected: #ffd6c7;
+          --color-background-dropdown-focused: #ffd6c7;
           ${cssHelperButtonReset}
           padding: 0.5rem 0.75rem;
           border-radius: var(--border-radius-x-small);
           width: 100%;
           text-align: left;
-          background: ${selected
-            ? "var(--color-background-dropdown-selected)"
+          background: ${focused
+            ? "var(--color-background-dropdown-focused)"
             : "initial"};
         }
         button:focus {
-          background: var(--color-background-dropdown-selected);
+          background: var(--color-background-dropdown-focused);
         }
         h3 {
           font-size: 1.6rem;
