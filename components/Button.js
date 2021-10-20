@@ -26,7 +26,7 @@ export default function Button({
         color: ${disabled
           ? "var(--color-text-button-disabled)"
           : "var(--color-text-button)"};
-        border-radius: 1rem;
+        border-radius: var(--border-radius-medium);
         font-size: 1rem;
         background: ${disabled
           ? "var(--color-background-button-disabled)"

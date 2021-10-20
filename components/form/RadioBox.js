@@ -60,7 +60,7 @@ export default function RadioBox({
             : "calc(var(--radio-padding) + var(--radio-padding) / 2 + var(--radio-size)) var(--radio-padding) var(--radio-padding)"};
           border: 0.25rem solid
             ${border ? "var(--color-border)" : "transparent"};
-          border-radius: 1rem;
+          border-radius: var(--border-radius-medium);
           text-align: ${horizontal ? "left" : "center"};
           transition: all 150ms ease-out;
         }

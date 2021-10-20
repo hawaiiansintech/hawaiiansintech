@@ -29,10 +29,9 @@ export default function ButtonBox({
           font-size: ${small ? "1rem" : "1.8rem"};
           font-weight: 600;
           line-height: 120%;
-          cursor: pointer;
           margin: 0;
           height: ${horizontal && "100%"};
-          border-radius: 1rem;
+          border-radius: var(--border-radius-medium);
           text-align: center;
           padding: var(--button-box-padding);
           transition: color 150ms ease-out;

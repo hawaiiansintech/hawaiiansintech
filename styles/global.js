@@ -22,6 +22,11 @@ export default css.global`
     --color-text-button: #fff;
     --color-text-button-disabled: #5c5a5e;
     --box-shadow-outline-button: rgba(252, 116, 66, 0.5) 0px 0px 1rem;
+
+    --border-radius-x-small: 0.25rem;
+    --border-radius-small: 0.5rem;
+    --border-radius-medium: 1rem;
+    --border-radius-large: 1.5rem;
   }
 
   html {
