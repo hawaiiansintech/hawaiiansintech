@@ -52,7 +52,7 @@ export default function Button({
   if (linkTo) {
     button = (
       <Link href={linkTo} className="button">
-        <a className="button">
+        <a className="button" onClick={onClick}>
           {button}
           {buttonStyles}
         </a>

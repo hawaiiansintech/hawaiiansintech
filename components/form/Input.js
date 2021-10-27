@@ -1,6 +1,7 @@
 import { toKebab } from "../../helpers.js";
 
 export default function Input({
+  defaultValue,
   label,
   labelTranslation,
   onBlur,
@@ -18,6 +19,7 @@ export default function Input({
       </label>
 
       <input
+        defaultValue={defaultValue}
         id={labelKebab}
         placeholder={placeholder}
         type="text"

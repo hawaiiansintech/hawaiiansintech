@@ -1,5 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
+import { useState } from "react";
+import { useSessionStorage } from "../../helpers.js";
 import MetaTags from "../../components/Metatags.js";
 import Header from "../../components/Header.js";
 import Button from "../../components/Button.js";
@@ -7,6 +9,15 @@ import Input from "../../components/form/Input.js";
 import Disclaimer from "../../components/form/Disclaimer.js";
 
 export default function JoinStep2() {
+  const [name, setName] = useState("");
+  const [location, setLocation] = useState("");
+  const [email, setEmail] = useState("");
+  const [website, setWebsite] = useState("");
+  const [nameStored, setNameStored] = useSessionStorage("name", "");
+  const [locationStored, setLocationStored] = useSessionStorage("location", "");
+  const [emailStored, setEmailStored] = useSessionStorage("email", "");
+  const [websiteStored, setWebsiteStored] = useSessionStorage("website", "");
+
   return (
     <div className="container">
       <Head>
@@ -30,32 +41,58 @@ export default function JoinStep2() {
       >
         <div style={{ marginBottom: "2rem" }}>
           <Input
+            defaultValue={nameStored}
             label="What’s your name?"
             labelTranslation="ʻO wai kou inoa?"
             placeholder="Full name"
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
           />
         </div>
         <div style={{ marginBottom: "2rem" }}>
           <Input
+            defaultValue={locationStored}
             label="Where you stay now days?"
             labelTranslation="Ma hea ʻoe?"
             placeholder="City, State"
+            onChange={(e) => {
+              setLocation(e.target.value);
+            }}
           />
         </div>
         <div style={{ marginBottom: "2rem" }}>
           <Input
+            defaultValue={emailStored}
             label="What’s your email?"
             labelTranslation="He aha kou wahi leka uila?"
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
           />
         </div>
         <Input
+          defaultValue={websiteStored}
           label="What’s your LinkedIn / professional website?"
           labelTranslation="He aha kou wahi uila ’oihana?"
+          onChange={(e) => {
+            setWebsite(e.target.value);
+          }}
         />
       </div>
 
       <div style={{ marginTop: "2rem" }}>
-        <Button linkTo="/join/step-03">Continue</Button>
+        <Button
+          onClick={() => {
+            setNameStored(name);
+            setLocationStored(location);
+            setEmailStored(email);
+            setWebsiteStored(website);
+          }}
+          linkTo="/join/step-03"
+        >
+          Continue
+        </Button>
       </div>
 
       <div style={{ marginTop: "2rem" }}>
