@@ -4,6 +4,7 @@ export default function Input({
   defaultValue,
   label,
   labelTranslation,
+  name,
   onBlur,
   onChange,
   onFocus,
@@ -22,6 +23,7 @@ export default function Input({
         defaultValue={defaultValue}
         id={labelKebab}
         placeholder={placeholder}
+        name={name}
         type="text"
         tabIndex={tabIndex}
         onBlur={onBlur}

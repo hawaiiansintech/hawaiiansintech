@@ -18,6 +18,13 @@ export default function JoinStep2() {
   const [emailStored, setEmailStored] = useSessionStorage("email", "");
   const [websiteStored, setWebsiteStored] = useSessionStorage("website", "");
 
+  const handleSubmit = () => {
+    setNameStored(name);
+    setLocationStored(location);
+    setEmailStored(email);
+    setWebsiteStored(website);
+  };
+
   return (
     <div className="container">
       <Head>
@@ -41,6 +48,7 @@ export default function JoinStep2() {
       >
         <div style={{ marginBottom: "2rem" }}>
           <Input
+            name="name"
             defaultValue={nameStored}
             label="What’s your name?"
             labelTranslation="ʻO wai kou inoa?"
@@ -52,6 +60,7 @@ export default function JoinStep2() {
         </div>
         <div style={{ marginBottom: "2rem" }}>
           <Input
+            name="location"
             defaultValue={locationStored}
             label="Where you stay now days?"
             labelTranslation="Ma hea ʻoe?"
@@ -63,6 +72,7 @@ export default function JoinStep2() {
         </div>
         <div style={{ marginBottom: "2rem" }}>
           <Input
+            name="email"
             defaultValue={emailStored}
             label="What’s your email?"
             labelTranslation="He aha kou wahi leka uila?"
@@ -72,6 +82,7 @@ export default function JoinStep2() {
           />
         </div>
         <Input
+          name="website"
           defaultValue={websiteStored}
           label="What’s your LinkedIn / professional website?"
           labelTranslation="He aha kou wahi uila ’oihana?"
@@ -82,17 +93,7 @@ export default function JoinStep2() {
       </div>
 
       <div style={{ marginTop: "2rem" }}>
-        <Button
-          onClick={() => {
-            setNameStored(name);
-            setLocationStored(location);
-            setEmailStored(email);
-            setWebsiteStored(website);
-          }}
-          linkTo="/join/step-03"
-        >
-          Continue
-        </Button>
+        <Button onClick={handleSubmit}>Continue</Button>
       </div>
 
       <div style={{ marginTop: "2rem" }}>
