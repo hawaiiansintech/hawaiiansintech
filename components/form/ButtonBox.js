@@ -5,10 +5,9 @@ export default function ButtonBox({
   border,
   defaultChecked,
   description,
-  horizontal,
   label,
+  onClick,
   seriesOf,
-  small,
   fullHeight,
 }) {
   const labelKebab = toKebab(label);
@@ -17,23 +16,24 @@ export default function ButtonBox({
       id={labelKebab}
       value={labelKebab}
       className="button-box"
+      onClick={onClick}
       style={{ height: fullHeight && "100%" }}
     >
       {label}
       <style jsx>{`
         .button-box {
-          --button-box-padding: ${small ? "1rem" : "2rem"};
           ${cssHelperButtonReset}
           position: relative;
-          background: var(--color-border);
-          font-size: ${small ? "1rem" : "1.8rem"};
+          background: ${border || "var(--color-border)"};
+          ${border && "border: 0.25rem solid var(--color-border);"}
+          font-size: 1rem;
           font-weight: 600;
           line-height: 120%;
           margin: 0;
-          height: ${horizontal && "100%"};
+          height: 100%;
           border-radius: var(--border-radius-medium);
           text-align: center;
-          padding: var(--button-box-padding);
+          padding: 1rem;
           transition: color 150ms ease-out;
         }
         .button-box:hover {

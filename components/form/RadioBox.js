@@ -6,6 +6,7 @@ export default function RadioBox({
   description,
   horizontal,
   label,
+  onChange,
   seriesOf,
   small,
   fullHeight,
@@ -18,6 +19,7 @@ export default function RadioBox({
         value={labelKebab}
         type="radio"
         name={seriesOf}
+        onChange={onChange}
         defaultChecked={defaultChecked}
       />
       <label htmlFor={labelKebab}>
