@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
@@ -25,6 +26,8 @@ export async function getStaticProps() {
 }
 
 export default function JoinStep3({ roles }) {
+  const router = useRouter();
+  const { name, location, email, website } = router.query;
   const [countShown, setCountShown] = useState(9);
   const [showExpand, setShowExpand] = useState(true);
 
@@ -35,15 +38,13 @@ export default function JoinStep3({ roles }) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-
       <Link href="/" shallow={true}>
         <a className="auxNav arrowback">←</a>
       </Link>
-
       <Header>
         <h2>Us techie Hawaiians stay talented.</h2>
       </Header>
-
+      {name} {location} {email} {website}
       <div
         style={{
           margin: "2rem auto 0",
@@ -52,7 +53,6 @@ export default function JoinStep3({ roles }) {
       >
         <SearchBar dictionary={roles} />
       </div>
-
       <div
         style={{
           display: "grid",
@@ -99,18 +99,15 @@ export default function JoinStep3({ roles }) {
           </button>
         </div>
       )}
-
       <div style={{ marginTop: "2rem" }}>
         <Button>Submit</Button>
       </div>
-
       <div style={{ marginTop: "2rem" }}>
         <Disclaimer>
           Sharing your professional focus will help the community understand the
           breadth of kanaka expertise in technology.
         </Disclaimer>
       </div>
-
       <style global jsx>{`
         .container {
           padding-top: 6rem;

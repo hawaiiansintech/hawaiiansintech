@@ -12,6 +12,7 @@
     "airtable": "^0.11.1",
     "babel-plugin-inline-react-svg": "^1.1.1",
     "drive-db": "^6.0.0",
+    "formik": "^2.2.9",
     "framer-motion": "^1.11.1",
     "fuzzysort": "^1.1.4",
     "js-yaml": "^3.13.1",
@@ -19,6 +20,7 @@
     "next-absolute-url": "^1.2.2",
     "prettier": "^2.4.1",
     "react": "16.14",
-    "react-dom": "16.13.1"
+    "react-dom": "16.13.1",
+    "yup": "^0.32.11"
   }
 }

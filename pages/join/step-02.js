@@ -1,6 +1,9 @@
+import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
+import { useFormik, withFormik } from "formik";
+import * as Yup from "yup";
 import { useSessionStorage } from "../../helpers.js";
 import MetaTags from "../../components/Metatags.js";
 import Header from "../../components/Header.js";
@@ -8,23 +11,7 @@ import Button from "../../components/Button.js";
 import Input from "../../components/form/Input.js";
 import Disclaimer from "../../components/form/Disclaimer.js";
 
-export default function JoinStep2() {
-  const [name, setName] = useState("");
-  const [location, setLocation] = useState("");
-  const [email, setEmail] = useState("");
-  const [website, setWebsite] = useState("");
-  const [nameStored, setNameStored] = useSessionStorage("name", "");
-  const [locationStored, setLocationStored] = useSessionStorage("location", "");
-  const [emailStored, setEmailStored] = useSessionStorage("email", "");
-  const [websiteStored, setWebsiteStored] = useSessionStorage("website", "");
-
-  const handleSubmit = () => {
-    setNameStored(name);
-    setLocationStored(location);
-    setEmailStored(email);
-    setWebsiteStored(website);
-  };
-
+export default function JoinStep2(props) {
   return (
     <div className="container">
       <Head>
@@ -46,54 +33,7 @@ export default function JoinStep2() {
           maxWidth: "42rem",
         }}
       >
-        <div style={{ marginBottom: "2rem" }}>
-          <Input
-            name="name"
-            defaultValue={nameStored}
-            label="What’s your name?"
-            labelTranslation="ʻO wai kou inoa?"
-            placeholder="Full name"
-            onChange={(e) => {
-              setName(e.target.value);
-            }}
-          />
-        </div>
-        <div style={{ marginBottom: "2rem" }}>
-          <Input
-            name="location"
-            defaultValue={locationStored}
-            label="Where you stay now days?"
-            labelTranslation="Ma hea ʻoe?"
-            placeholder="City, State"
-            onChange={(e) => {
-              setLocation(e.target.value);
-            }}
-          />
-        </div>
-        <div style={{ marginBottom: "2rem" }}>
-          <Input
-            name="email"
-            defaultValue={emailStored}
-            label="What’s your email?"
-            labelTranslation="He aha kou wahi leka uila?"
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-          />
-        </div>
-        <Input
-          name="website"
-          defaultValue={websiteStored}
-          label="What’s your LinkedIn / professional website?"
-          labelTranslation="He aha kou wahi uila ’oihana?"
-          onChange={(e) => {
-            setWebsite(e.target.value);
-          }}
-        />
-      </div>
-
-      <div style={{ marginTop: "2rem" }}>
-        <Button onClick={handleSubmit}>Continue</Button>
+        <FormikForm />
       </div>
 
       <div style={{ marginTop: "2rem" }}>
@@ -112,3 +52,107 @@ export default function JoinStep2() {
     </div>
   );
 }
+
+const Form = (props) => {
+  const { values, touched, errors, handleChange, handleBlur, handleSubmit } =
+    props;
+  const router = useRouter();
+
+  const onSubmit = () => {
+    handleSubmit();
+    router.push({
+      pathname: "step-03",
+      query: {
+        name: values.name,
+        location: values.location,
+        email: values.email,
+        website: values.website,
+      },
+    });
+  };
+
+  return (
+    <>
+      <div style={{ marginBottom: "2rem" }}>
+        <Input
+          name="name"
+          label="What’s your name?"
+          labelTranslation="ʻO wai kou inoa?"
+          placeholder="Full name"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          error={touched.name && errors.name}
+        />
+      </div>
+      <div style={{ marginBottom: "2rem" }}>
+        <Input
+          name="location"
+          label="Where you stay now days?"
+          labelTranslation="Ma hea ʻoe?"
+          placeholder="City, State"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          error={touched.location && errors.location}
+        />
+      </div>
+      <div style={{ marginBottom: "2rem" }}>
+        <Input
+          name="email"
+          label="What’s your email?"
+          labelTranslation="He aha kou wahi leka uila?"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          error={touched.email && errors.email}
+        />
+      </div>
+      <Input
+        name="website"
+        label="What’s your LinkedIn / professional website?"
+        labelTranslation="He aha kou wahi uila ’oihana?"
+        onBlur={handleBlur}
+        onChange={handleChange}
+        error={touched.website && errors.website}
+      />
+
+      <div style={{ marginTop: "2rem" }}>
+        <Button
+          type="button"
+          onClick={onSubmit}
+          disabled={
+            !touched.name ||
+            errors.name ||
+            !touched.location ||
+            errors.location ||
+            !touched.email ||
+            errors.email ||
+            !touched.website ||
+            errors.website
+          }
+        >
+          Continue
+        </Button>
+      </div>
+    </>
+  );
+};
+
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required(
+    "We need to know what to call you. Name is required."
+  ),
+  location: Yup.string().required("A location, imprecise or not, is required."),
+  email: Yup.string()
+    .email("That email doesn't look right. Please try again.")
+    .required("It's important that we can reach you. Email is required."),
+  website: Yup.string()
+    .url(
+      "That URL looks funny. Please try again, including the https:// and everything."
+    )
+    .required("A link goes a long way. A website is required."),
+});
+
+const FormikForm = withFormik({
+  mapPropsToValues: () => ({ name: "", location: "", email: "", website: "" }),
+  validationSchema: validationSchema,
+  displayName: "FormikForm",
+})(Form);

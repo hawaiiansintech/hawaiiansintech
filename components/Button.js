@@ -1,14 +1,8 @@
 import Link from "next/link";
 import { cssHelperButtonReset } from "../styles/global.js";
 
-export default function Button({
-  children,
-  disabled,
-  linkTo,
-  small,
-  textOnly,
-  onClick,
-}) {
+export default function Button(props) {
+  const { children, disabled, linkTo, small, textOnly, onClick, type } = props;
   let button = <>{children}</>;
 
   const background =
@@ -60,7 +54,7 @@ export default function Button({
     );
   } else {
     button = (
-      <button className="button" onClick={onClick}>
+      <button type={type} className="button" onClick={onClick}>
         {button}
         {buttonStyles}
       </button>

@@ -10,6 +10,7 @@ export default css.global`
     --color-text: #353535;
     --color-border: #dacbc8;
     --color-background: #e5e5e5;
+    --color-error: #fe0000;
 
     --color-background-balloon: #ffffff;
     --color-background-balloon-alt: #eee;
