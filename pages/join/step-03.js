@@ -9,7 +9,7 @@ import Button from "../../components/Button.js";
 import RadioBox from "../../components/form/RadioBox.js";
 import Disclaimer from "../../components/form/Disclaimer.js";
 import SearchBar from "../../components/form/SearchBar.js";
-import { fetchRoles } from "../../lib/api";
+import { createMember, fetchRoles } from "../../lib/api";
 import ButtonBox from "../../components/form/ButtonBox.js";
 import { cssHelperButtonReset } from "../../styles/global.js";
 
@@ -40,6 +40,9 @@ export default function JoinStep3({ rolesData }) {
   };
   const handleUpdate = (roles) => {
     console.log(roles);
+  };
+  const submitForm = ({ name, location, website, email, role }) => {
+    createMember({ name, location, website, email, role });
   };
 
   return (
@@ -120,7 +123,19 @@ export default function JoinStep3({ rolesData }) {
         </>
       )}
       <div style={{ marginTop: "2rem" }}>
-        <Button>Submit</Button>
+        <Button
+          onClick={() => {
+            submitForm({
+              name: name,
+              location: location,
+              email: email,
+              website: website,
+              role: roleSelected,
+            });
+          }}
+        >
+          Submit
+        </Button>
       </div>
       <div style={{ marginTop: "2rem" }}>
         <Disclaimer>
