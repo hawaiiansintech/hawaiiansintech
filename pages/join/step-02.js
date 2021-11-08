@@ -136,7 +136,7 @@ const Form = (props) => {
   );
 };
 
-const validationSchema = Yup.object().shape({
+export const validationSchema = Yup.object().shape({
   name: Yup.string().required(
     "We need to know what to call you. Name is required."
   ),
@@ -145,8 +145,9 @@ const validationSchema = Yup.object().shape({
     .email("That email doesn't look right. Please try again.")
     .required("It's important that we can reach you. Email is required."),
   website: Yup.string()
-    .url(
-      "That URL looks funny. Please try again, including the https:// and everything."
+    .matches(
+      /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+      "That URL looks funny. Please try again."
     )
     .required("A link goes a long way. A website is required."),
 });
