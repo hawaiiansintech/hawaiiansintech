@@ -4,7 +4,7 @@ export default function Header({ children }) {
       {children}
       <style global jsx>{`
         .header {
-          max-width: 46rem;
+          max-width: 42rem;
           margin: 0 auto;
           text-align: center;
         }
@@ -20,6 +20,12 @@ export default function Header({ children }) {
           font-size: 1.4rem;
           font-weight: 400;
           line-height: 150%;
+        }
+        p {
+          font-size: 1.2rem;
+          font-weight: 400;
+          line-height: 150%;
+          text-align: left;
         }
       `}</style>
     </div>

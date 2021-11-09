@@ -25,7 +25,16 @@ export default function JoinStep2(props) {
       </Link>
 
       <Header>
-        <h2>K, real quick...</h2>
+        <h2>Welcome to our little hui.</h2>
+        <p>
+          Our directory features kanaka from all over -- both geographically and
+          across the tech industry. Create your profile by telling us a little
+          bit about yourself.
+        </p>
+        <p>
+          This information will appear in your listing in our directory of
+          kanaka in tech.
+        </p>
       </Header>
       <div
         style={{

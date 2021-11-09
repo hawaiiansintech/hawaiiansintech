@@ -1,4 +1,5 @@
 import { toKebab } from "../../helpers.js";
+import Label from "./Label.js";
 
 export default function Input(props) {
   const {
@@ -17,11 +18,9 @@ export default function Input(props) {
   const labelKebab = toKebab(label);
   return (
     <div className="input">
-      <label htmlFor={labelKebab}>
-        {label && <h3>{label}</h3>}
-        {labelTranslation && <h4>{labelTranslation}</h4>}
-      </label>
-
+      {label && labelTranslation && (
+        <Label label={label} labelTranslation={labelTranslation} />
+      )}
       <input
         defaultValue={defaultValue}
         id={labelKebab}
@@ -38,21 +37,6 @@ export default function Input(props) {
       <style jsx>{`
         input {
           --color-placeholder: #b7b7b7;
-        }
-        h3,
-        h4 {
-          margin: 0;
-          line-height: 120%;
-        }
-        h3 {
-          font-size: 1.6rem;
-          font-weight: 600;
-        }
-        h4 {
-          font-size: 0.8rem;
-          font-weight: 400;
-          color: var(--color-brand-faded);
-          font-style: italic;
         }
         input {
           margin: 1rem 0 0;

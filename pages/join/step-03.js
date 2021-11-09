@@ -9,40 +9,55 @@ import Button from "../../components/Button.js";
 import RadioBox from "../../components/form/RadioBox.js";
 import Disclaimer from "../../components/form/Disclaimer.js";
 import SearchBar from "../../components/form/SearchBar.js";
-import { createMember, fetchRoles } from "../../lib/api";
+import { createMember, fetchRoles, fetchFocuses } from "../../lib/api";
 import ButtonBox from "../../components/form/ButtonBox.js";
 import { cssHelperButtonReset } from "../../styles/global.js";
+import ErrorMessage from "../../components/form/ErrorMessage.js";
+import Label from "../../components/form/Label.js";
 
 export async function getStaticProps() {
-  let roles = (await fetchRoles()) ?? [];
-  roles = roles.sort((a, b) => {
+  let focuses = (await fetchFocuses()) ?? [];
+  focuses = focuses.sort((a, b) => {
     return b.count - a.count;
   });
   return {
     props: {
-      rolesData: roles,
+      focusesData: focuses,
     },
     revalidate: 60,
   };
 }
 
-export default function JoinStep3({ rolesData }) {
+export default function JoinStep3({ focusesData }) {
   const router = useRouter();
   const { name, location, email, website } = router.query;
-  const [countShown, setCountShown] = useState(9);
-  const [showExpand, setShowExpand] = useState(true);
-  const [roles, setRoles] = useState(rolesData);
-  const [roleSelected, selectRole] = useState();
-  const [hasSearchResults, setHasSearchResults] = useState(false);
+  const [focuses, setFocuses] = useState(focusesData);
+  const [focusSelected, setFocusSelected] = useState();
+  const [disableSubmit, setDisableSubmit] = useState(true);
+  const [showError, setShowError] = useState(false);
 
-  const handleSelect = (role) => {
-    selectRole(role);
+  const handleSelect = (focus) => {
+    setDisableSubmit(false);
+    setFocusSelected(focus);
   };
-  const handleUpdate = (roles) => {
-    console.log(roles);
-  };
-  const submitForm = ({ name, location, website, email, role }) => {
-    createMember({ name, location, website, email, role });
+  const submitForm = ({ name, location, website, email, focus }) => {
+    fetch("/api/create-member", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, location, website, email, focus }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          setDisableSubmit(true);
+        } else {
+          throw new Error({ status: res.status, statusText: res.statusText });
+        }
+      })
+      .catch((err) => {
+        setShowError(true);
+      });
   };
 
   return (
@@ -56,72 +71,54 @@ export default function JoinStep3({ rolesData }) {
         <a className="auxNav arrowback">←</a>
       </Link>
       <Header>
-        <h2>Us techie Hawaiians stay talented.</h2>
+        <h2>Welcome to our little hui.</h2>
+        <p>
+          <strong>Pick what you consider the focus of your work.</strong> Our
+          goal is to help foster belonging among professional sub-communities
+          within our hui, as well as inspire young, aspiring kanaka about the
+          different directions to go.
+        </p>
       </Header>
-      {name} {location} {email} {website}
-      {roleSelected ? (
-        <>{roleSelected.name}</>
-      ) : (
-        <>
-          <div
-            style={{
-              margin: "2rem auto 0",
-              maxWidth: "42rem",
-            }}
-          >
-            <SearchBar
-              dictionary={roles}
-              handleUpdate={(results) => {
-                setHasSearchResults(results.length > 0);
-              }}
-              handleSelect={(role) => {
-                selectRole(role);
-              }}
-            />
-          </div>
-          {hasSearchResults || (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr 1fr",
-                gridAutoRows: "1fr",
-                columnGap: "0.5rem",
-                rowGap: "0.5rem",
-                maxWidth: "42rem",
-                margin: "1rem auto 0",
-              }}
-            >
-              {roles.slice(0, countShown).map((role, i) => {
-                return (
-                  <ButtonBox
-                    label={role.name}
-                    onClick={() => {
-                      handleSelect(role);
-                    }}
-                    key={`ButtonBox-${i}-`}
-                  />
-                );
-              })}
-            </div>
-          )}
-          {showExpand || (
-            <ButtonBox label="None of these fit; suggest another" border />
-          )}
-          {showExpand && !hasSearchResults && (
-            <div style={{ marginTop: "2rem" }}>
-              <button
-                className="more-link"
-                onClick={() => {
-                  setCountShown(roles.length);
-                  setShowExpand(false);
-                }}
-              >
-                More Options
-              </button>
-            </div>
-          )}
-        </>
+      {showError && (
+        <div style={{ marginBottom: "1rem" }}>
+          <ErrorMessage
+            headline={"Gonfunnit, looks like something went wrong."}
+            body={"Please try again later."}
+          />
+        </div>
       )}
+      {/* {name} {location} {email} {website}{" "}
+      {focusSelected ? focusSelected.name : ""} */}
+      {/* <div style={{ maxWidth: "42rem", margin: "0 auto" }}>
+        <Label
+          label={"Pick what you consider your focus in the industry."}
+          // labelTranslation={"labelTranslation"}
+        />
+      </div> */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          gridAutoRows: "1fr",
+          columnGap: "0.5rem",
+          rowGap: "0.5rem",
+          maxWidth: "42rem",
+          margin: "1rem auto 0",
+        }}
+      >
+        {focuses.map((focus, i) => {
+          return (
+            <ButtonBox
+              label={focus.name}
+              onClick={() => {
+                handleSelect(focus);
+              }}
+              key={`ButtonBox-${i}-`}
+            />
+          );
+        })}
+        <ButtonBox label="None of these fit; suggest another" border />
+      </div>
       <div style={{ marginTop: "2rem" }}>
         <Button
           onClick={() => {
@@ -130,9 +127,10 @@ export default function JoinStep3({ rolesData }) {
               location: location,
               email: email,
               website: website,
-              role: roleSelected,
+              focus: focusSelected,
             });
           }}
+          disabled={disableSubmit}
         >
           Submit
         </Button>

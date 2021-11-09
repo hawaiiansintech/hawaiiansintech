@@ -43,10 +43,19 @@ export default function Button(props) {
       }
     `}</style>
   );
+
+  const handleOnClick = (e) => {
+    if (disabled) {
+      e.preventDefault();
+      return;
+    }
+    onClick();
+  };
+
   if (linkTo) {
     button = (
       <Link href={linkTo} className="button">
-        <a className="button" onClick={onClick}>
+        <a className="button" onClick={handleOnClick}>
           {button}
           {buttonStyles}
         </a>
@@ -54,7 +63,7 @@ export default function Button(props) {
     );
   } else {
     button = (
-      <button type={type} className="button" onClick={onClick}>
+      <button type={type} className="button" onClick={handleOnClick}>
         {button}
         {buttonStyles}
       </button>
