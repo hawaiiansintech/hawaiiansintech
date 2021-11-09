@@ -88,7 +88,7 @@ const Form = (props) => {
         <Input
           name="location"
           label="Where you stay now days?"
-          labelTranslation="Ma hea ʻoe?"
+          labelTranslation="Ma hea ʻoe e noho ʻana?"
           placeholder="City, State"
           onBlur={handleBlur}
           onChange={handleChange}
