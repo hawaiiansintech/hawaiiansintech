@@ -1,15 +1,12 @@
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
-import { useState } from "react";
-import { useFormik, withFormik } from "formik";
+import { withFormik } from "formik";
 import * as Yup from "yup";
-import { useSessionStorage } from "../../helpers.js";
 import MetaTags from "../../components/Metatags.js";
 import Header from "../../components/Header.js";
 import Button from "../../components/Button.js";
 import Input from "../../components/form/Input.js";
-import Disclaimer from "../../components/form/Disclaimer.js";
 import ProgressBar from "../../components/form/ProgressBar.js";
 
 export default function JoinStep2(props) {
@@ -26,15 +23,16 @@ export default function JoinStep2(props) {
       </Link>
       <Header>
         <h2>Welcome to our little hui.</h2>
-        <ProgressBar label="Profile" currentCount={1} totalCount={3} />
+        <ProgressBar
+          headline="Public"
+          label="Profile"
+          currentCount={1}
+          totalCount={3}
+        />
         <p>
           Our directory features kanaka from all over -- both geographically and
           across the tech industry. Create your profile by telling us a little
           bit about yourself.
-        </p>
-        <p>
-          This information will appear in your listing in our directory of
-          kanaka in tech.
         </p>
       </Header>
       <div
@@ -44,14 +42,6 @@ export default function JoinStep2(props) {
         }}
       >
         <FormikForm />
-      </div>
-
-      <div style={{ marginTop: "2rem" }}>
-        <Disclaimer>
-          We may reach out to connect and talk story. Please feel welcome to do
-          the same. We won’t share your contact information without your
-          permission.
-        </Disclaimer>
       </div>
 
       <style global jsx>{`
@@ -75,7 +65,6 @@ const Form = (props) => {
       query: {
         name: values.name,
         location: values.location,
-        email: values.email,
         website: values.website,
       },
     });
@@ -105,16 +94,6 @@ const Form = (props) => {
           error={touched.location && errors.location}
         />
       </div>
-      <div style={{ marginBottom: "2rem" }}>
-        <Input
-          name="email"
-          label="What’s your email?"
-          labelTranslation="He aha kou wahi leka uila?"
-          onBlur={handleBlur}
-          onChange={handleChange}
-          error={touched.email && errors.email}
-        />
-      </div>
       <Input
         name="website"
         label="What’s your LinkedIn / professional website?"
@@ -133,8 +112,6 @@ const Form = (props) => {
             errors.name ||
             !touched.location ||
             errors.location ||
-            !touched.email ||
-            errors.email ||
             !touched.website ||
             errors.website
           }
@@ -151,9 +128,6 @@ export const validationSchema = Yup.object().shape({
     "We need to know what to call you. Name is required."
   ),
   location: Yup.string().required("A location, imprecise or not, is required."),
-  email: Yup.string()
-    .email("That email doesn't look right. Please try again.")
-    .required("It's important that we can reach you. Email is required."),
   website: Yup.string()
     .matches(
       /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
@@ -163,7 +137,7 @@ export const validationSchema = Yup.object().shape({
 });
 
 const FormikForm = withFormik({
-  mapPropsToValues: () => ({ name: "", location: "", email: "", website: "" }),
+  mapPropsToValues: () => ({ name: "", location: "", website: "" }),
   validationSchema: validationSchema,
   displayName: "FormikForm",
 })(Form);

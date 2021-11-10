@@ -2,18 +2,14 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
-import { toKebab } from "../../helpers.js";
 import MetaTags from "../../components/Metatags.js";
 import Header from "../../components/Header.js";
 import Button from "../../components/Button.js";
-import RadioBox from "../../components/form/RadioBox.js";
 import Disclaimer from "../../components/form/Disclaimer.js";
-import SearchBar from "../../components/form/SearchBar.js";
-import { createMember, fetchRoles, fetchFocuses } from "../../lib/api";
+import { fetchFocuses } from "../../lib/api";
 import ButtonBox from "../../components/form/ButtonBox.js";
 import { cssHelperButtonReset } from "../../styles/global.js";
 import ErrorMessage from "../../components/form/ErrorMessage.js";
-import Label from "../../components/form/Label.js";
 import ProgressBar from "../../components/form/ProgressBar.js";
 
 export async function getStaticProps() {
@@ -44,23 +40,16 @@ export default function JoinStep3({ focusesData }) {
   };
 
   const submitForm = ({ name, location, website, email, focus }) => {
-    fetch("/api/create-member", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    router.push({
+      pathname: "step-04",
+      query: {
+        name: name,
+        location: location,
+        email: email,
+        website: website,
+        focus: focus.id,
       },
-      body: JSON.stringify({ name, location, website, email, focus }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          setDisableSubmit(true);
-        } else {
-          throw new Error({ status: res.status, statusText: res.statusText });
-        }
-      })
-      .catch((err) => {
-        setShowError(true);
-      });
+    });
   };
 
   return (
@@ -76,6 +65,7 @@ export default function JoinStep3({ focusesData }) {
       <Header>
         <h2>Welcome to our little hui.</h2>
         <ProgressBar
+          headline="Public"
           label="Professional focus"
           currentCount={2}
           totalCount={3}
@@ -95,14 +85,6 @@ export default function JoinStep3({ focusesData }) {
           />
         </div>
       )}
-      {/* {name} {location} {email} {website}{" "}
-      {focusSelected ? focusSelected.name : ""} */}
-      {/* <div style={{ maxWidth: "42rem", margin: "0 auto" }}>
-        <Label
-          label={"Pick what you consider your focus in the industry."}
-          // labelTranslation={"labelTranslation"}
-        />
-      </div> */}
       <div
         style={{
           display: "grid",
@@ -141,7 +123,7 @@ export default function JoinStep3({ focusesData }) {
           }}
           disabled={disableSubmit}
         >
-          Submit
+          Continue
         </Button>
       </div>
       <div style={{ marginTop: "2rem" }}>

@@ -10,7 +10,6 @@ export default async function createMember(req, res) {
     endpointUrl: "https://api.airtable.com",
     apiKey: process.env.AIRTABLE_KEY,
   });
-  console.log(req.body);
   await airtable
     .base(process.env.AIRTABLE_BASE)("Members")
     .create(
@@ -18,7 +17,7 @@ export default async function createMember(req, res) {
         Name: req.body.name,
         Email: req.body.email,
         Location_Manual: req.body.location,
-        Focus: [req.body.focus.id],
+        Focus: [req.body.focus],
         // todo: overridden role field
         // Role_Manual: req.body.role.name,
         Link: req.body.website,
@@ -27,11 +26,11 @@ export default async function createMember(req, res) {
       },
       function (err, record) {
         if (err) {
-          console.log(err);
           res.status(err.statusCode).end();
           return;
         }
-        res.status(200).end();
+        console.log(record);
+        res.status(200).send(record);
       }
     );
 }

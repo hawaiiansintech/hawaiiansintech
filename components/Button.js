@@ -22,6 +22,7 @@ export default function Button(props) {
           : "var(--color-text-button)"};
         border-radius: var(--border-radius-medium);
         font-size: 1rem;
+        font-weight: 600;
         background: ${disabled
           ? "var(--color-background-button-disabled)"
           : "var(--color-background-button)"};

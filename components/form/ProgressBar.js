@@ -1,6 +1,12 @@
-export default function ProgressBar({ label, currentCount, totalCount }) {
+export default function ProgressBar({
+  headline,
+  label,
+  currentCount,
+  totalCount,
+}) {
   return (
     <div className="progress-bar">
+      {headline && <h6>{headline}</h6>}
       {label && <h3>{label}</h3>}
       <div className="progress-bar__figures">
         {[...Array(totalCount)].map((value, index) => {
@@ -42,6 +48,13 @@ export default function ProgressBar({ label, currentCount, totalCount }) {
           font-weight: 600;
           margin: 0 0 0.5rem;
           color: var(--color-brand);
+        }
+        h6 {
+          font-size: 0.6rem;
+          letter-spacing: 0.05rem;
+          font-weight: 600;
+          margin: 0 0 0.25rem;
+          text-transform: uppercase;
         }
       `}</style>
     </div>
