@@ -7,8 +7,8 @@ export default function ButtonBox({
   description,
   label,
   onClick,
-  seriesOf,
   fullHeight,
+  selected,
 }) {
   const labelKebab = toKebab(label);
   return (
@@ -24,8 +24,12 @@ export default function ButtonBox({
         .button-box {
           ${cssHelperButtonReset}
           position: relative;
-          background: ${border || "var(--color-border)"};
-          ${border && "border: 0.25rem solid var(--color-border);"}
+          border: 0.25rem solid transparent;
+          ${border || "background: var(--color-border);"};
+          ${border && "border-color: var(--color-border);"}
+          ${selected && "border-color: #bada55;"}
+          ${selected && "background: var(--color-brand);"}
+          ${selected && "color: #fff;"}
           font-size: 1rem;
           font-weight: 600;
           line-height: 120%;
@@ -34,15 +38,16 @@ export default function ButtonBox({
           border-radius: var(--border-radius-medium);
           text-align: center;
           padding: 1rem;
-          transition: color 150ms ease-out;
+          transition: all 150ms ease-out;
         }
         .button-box:hover {
-          color: var(--color-brand);
+          border-color: var(--color-brand);
         }
         .button-box:active {
           color: var(--color-brand-tone);
         }
         .button-box:focus {
+          border-color: var(--color-brand);
           box-shadow: var(--box-shadow-outline-button);
         }
       `}</style>

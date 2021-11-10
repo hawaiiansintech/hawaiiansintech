@@ -38,9 +38,11 @@ export default function JoinStep3({ focusesData }) {
   const [showError, setShowError] = useState(false);
 
   const handleSelect = (focus) => {
-    setDisableSubmit(false);
-    setFocusSelected(focus);
+    const isPreviousSelection = focus === focusSelected;
+    setDisableSubmit(isPreviousSelection);
+    setFocusSelected(isPreviousSelection ? undefined : focus);
   };
+
   const submitForm = ({ name, location, website, email, focus }) => {
     fetch("/api/create-member", {
       method: "POST",
@@ -116,7 +118,8 @@ export default function JoinStep3({ focusesData }) {
           return (
             <ButtonBox
               label={focus.name}
-              onClick={() => {
+              selected={focus === focusSelected}
+              onClick={(e) => {
                 handleSelect(focus);
               }}
               key={`ButtonBox-${i}-`}
