@@ -10,6 +10,7 @@ import Header from "../../components/Header.js";
 import Button from "../../components/Button.js";
 import Input from "../../components/form/Input.js";
 import Disclaimer from "../../components/form/Disclaimer.js";
+import ProgressBar from "../../components/form/ProgressBar.js";
 
 export default function JoinStep2(props) {
   return (
@@ -23,9 +24,9 @@ export default function JoinStep2(props) {
       <Link href="/" shallow={true}>
         <a className="auxNav arrowback">←</a>
       </Link>
-
       <Header>
         <h2>Welcome to our little hui.</h2>
+        <ProgressBar label="Profile" currentCount={1} totalCount={3} />
         <p>
           Our directory features kanaka from all over -- both geographically and
           across the tech industry. Create your profile by telling us a little

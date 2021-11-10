@@ -14,6 +14,7 @@ import ButtonBox from "../../components/form/ButtonBox.js";
 import { cssHelperButtonReset } from "../../styles/global.js";
 import ErrorMessage from "../../components/form/ErrorMessage.js";
 import Label from "../../components/form/Label.js";
+import ProgressBar from "../../components/form/ProgressBar.js";
 
 export async function getStaticProps() {
   let focuses = (await fetchFocuses()) ?? [];
@@ -72,6 +73,11 @@ export default function JoinStep3({ focusesData }) {
       </Link>
       <Header>
         <h2>Welcome to our little hui.</h2>
+        <ProgressBar
+          label="Professional focus"
+          currentCount={2}
+          totalCount={3}
+        />
         <p>
           <strong>Pick what you consider the focus of your work.</strong> Our
           goal is to help foster belonging among professional sub-communities

@@ -14,7 +14,7 @@ export default function Header({ children }) {
         }
         h2 {
           font-size: 2.4rem;
-          margin-bottom: 2rem;
+          margin-bottom: 1rem;
         }
         h3 {
           font-size: 1.4rem;
