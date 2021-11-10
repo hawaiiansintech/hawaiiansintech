@@ -7,14 +7,11 @@ import * as Yup from "yup";
 import MetaTags from "../../components/Metatags.js";
 import Header from "../../components/Header.js";
 import Button from "../../components/Button.js";
-import Disclaimer from "../../components/form/Disclaimer.js";
 import { fetchFocuses } from "../../lib/api";
 import { cssHelperButtonReset } from "../../styles/global.js";
 import Input from "../../components/form/Input.js";
 import ErrorMessage from "../../components/form/ErrorMessage.js";
 import ProgressBar from "../../components/form/ProgressBar.js";
-import Label from "../../components/form/Label.js";
-import ButtonBox from "../../components/form/ButtonBox.js";
 
 export async function getStaticProps() {
   let focuses = (await fetchFocuses()) ?? [];
@@ -53,7 +50,33 @@ export default function JoinStep4({ focusesData }) {
           totalCount={3}
         />
         <div style={{ margin: "2rem auto 0", maxWidth: "42rem" }}>
-          {name} {location} {website} {matchedFocus}
+          <div
+            style={{
+              display: "inline-flex",
+              borderRadius: "1rem",
+              flexDirection: "column",
+              alignItems: "start",
+              fontSize: "1.2rem",
+            }}
+          >
+            <h3 style={{ fontSize: "1em", margin: 0, fontWeight: 600 }}>
+              {name}
+            </h3>
+            <h4 style={{ fontSize: "0.6em", margin: 0, fontWeight: 400 }}>
+              {location} · {matchedFocus}
+            </h4>
+            <span
+              style={{
+                fontSize: "0.5em",
+                margin: "0.25rem 0 0",
+                padding: "0.25rem 0.5rem",
+                background: "var(--color-border)",
+                borderRadius: "1rem",
+              }}
+            >
+              {website}
+            </span>
+          </div>
         </div>
       </Header>
       <div style={{ margin: "2rem auto 0", maxWidth: "42rem" }}>
