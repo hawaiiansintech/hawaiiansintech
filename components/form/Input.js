@@ -11,19 +11,25 @@ export default function Input(props) {
     onBlur,
     onChange,
     onFocus,
+    optional,
     placeholder,
     tabIndex,
   } = props;
 
-  const labelKebab = toKebab(label);
+  const nameKebab = toKebab(name);
   return (
     <div className="input">
       {label && labelTranslation && (
-        <Label label={label} labelTranslation={labelTranslation} />
+        <Label
+          htmlFor={nameKebab}
+          label={label}
+          labelTranslation={labelTranslation}
+          optional={optional}
+        />
       )}
       <input
         defaultValue={defaultValue}
-        id={labelKebab}
+        id={nameKebab}
         placeholder={placeholder}
         name={name}
         type="text"
@@ -47,7 +53,7 @@ export default function Input(props) {
           border-radius: var(--border-radius-small);
           border: 0.2rem solid var(--color-border);
           ${error && "border-color: red;"};
-          background: transparent;
+          background: white;
         }
         input:focus {
           border: 0.2rem solid var(--color-brand);

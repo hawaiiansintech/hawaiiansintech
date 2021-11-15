@@ -41,12 +41,6 @@ export default function JoinStep2(props) {
       >
         <FormikForm />
       </div>
-
-      <style global jsx>{`
-        .container {
-          padding-top: 6rem;
-        }
-      `}</style>
     </div>
   );
 }

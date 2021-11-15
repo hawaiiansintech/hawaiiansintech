@@ -7,7 +7,9 @@ export default css.global`
     --color-brand-tone: #ec4427;
     --color-brand-faded: #cf8870;
     --color-link: var(--color-brand);
+    --color-link-alt: var(--color-brand-tone);
     --color-text: #353535;
+    --color-text--alt: #777;
     --color-border: #dacbc8;
     --color-background: #e5e5e5;
     --color-error: #e3523a;
@@ -61,6 +63,11 @@ export default css.global`
 
   a {
     text-decoration: none;
+    color: var(--color-link);
+  }
+
+  a:hover {
+    color: var(--color-link-alt);
   }
 
   /* Type 

@@ -29,8 +29,6 @@ export async function getStaticProps() {
 export default function JoinStep4({ focusesData }) {
   const router = useRouter();
   const { name, location, website, focus } = router.query;
-  let matchedFocus = focusesData.find((f) => f.id === focus)?.name;
-
   return (
     <div className="container">
       <Head>
@@ -38,12 +36,12 @@ export default function JoinStep4({ focusesData }) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <Link href="/" shallow={true}>
+      <Link href="/join" shallow={true}>
         <a className="auxNav arrowback">←</a>
       </Link>
       <ProgressBar
         headline="Private"
-        label="Personal bits"
+        label="Personal mea"
         currentCount={3}
         totalCount={3}
       />
@@ -55,20 +53,6 @@ export default function JoinStep4({ focusesData }) {
       <div style={{ margin: "2rem auto 0", maxWidth: "42rem" }}>
         <FormikForm />
       </div>
-      <style global jsx>{`
-        .container {
-          padding-top: 6rem;
-        }
-        .more-link {
-          ${cssHelperButtonReset}
-          background: transparent;
-          color: var(--color-brand);
-          font-weight: 500;
-        }
-        .more-link:hover {
-          color: var(--color-brand-tone);
-        }
-      `}</style>
     </div>
   );
 }

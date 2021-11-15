@@ -16,6 +16,7 @@ export default function ProgressBar({
               className={`progress-bar__figure${
                 isActive ? " progress-bar__figure--active" : ""
               }`}
+              key={`pbf-${index}`}
             />
           );
         })}

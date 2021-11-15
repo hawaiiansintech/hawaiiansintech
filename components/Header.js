@@ -26,7 +26,7 @@ export function HeaderDescription({ centered, children }) {
       <style jsx>{`
         .header-description {
           max-width: 42rem;
-          margin: 0 auto 2rem;
+          margin: 0 auto;
           text-align: center;
           font-size: 1.4rem;
           font-weight: 400;

@@ -5,9 +5,11 @@ export default function ButtonBox({
   border,
   defaultChecked,
   description,
+  disabled,
   label,
   onClick,
   fullHeight,
+  fullWidth,
   selected,
 }) {
   const labelKebab = toKebab(label);
@@ -17,7 +19,7 @@ export default function ButtonBox({
       value={labelKebab}
       className="button-box"
       onClick={onClick}
-      style={{ height: fullHeight && "100%" }}
+      tabIndex={disabled && "-1"}
     >
       {label}
       <style jsx>{`
@@ -26,10 +28,11 @@ export default function ButtonBox({
           position: relative;
           border: 0.25rem solid transparent;
           ${border || "background: var(--color-border);"};
-          ${border && "border-color: var(--color-border);"}
-          ${selected && "border-color: #bada55;"}
-          ${selected && "background: var(--color-brand);"}
-          ${selected && "color: #fff;"}
+          ${border ? "border-color: var(--color-border);" : ""}
+          ${selected ? "background: var(--color-brand);" : ""}
+          ${selected ? "color: #fff;" : ""}
+          ${fullWidth ? "width: 100%;" : ""}
+          ${fullHeight ? "height: 100%;" : ""}
           font-size: 1rem;
           font-weight: 600;
           line-height: 120%;
@@ -39,6 +42,7 @@ export default function ButtonBox({
           text-align: center;
           padding: 1rem;
           transition: all 150ms ease-out;
+          ${disabled && "opacity: 0.5; pointer-events: none;"}
         }
         .button-box:hover {
           border-color: var(--color-brand);

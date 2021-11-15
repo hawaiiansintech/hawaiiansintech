@@ -2,15 +2,16 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
+import { motion } from "framer-motion";
 import MetaTags from "../../components/Metatags.js";
 import { HeaderHeading, HeaderDescription } from "../../components/Header.js";
+import Input from "../../components/form/Input.js";
 import Button from "../../components/Button.js";
 import Disclaimer from "../../components/form/Disclaimer.js";
 import { fetchFocuses } from "../../lib/api";
 import ButtonBox from "../../components/form/ButtonBox.js";
-import { cssHelperButtonReset } from "../../styles/global.js";
-import ErrorMessage from "../../components/form/ErrorMessage.js";
 import ProgressBar from "../../components/form/ProgressBar.js";
+import Label from "../../components/form/Label.js";
 
 export async function getStaticProps() {
   let focuses = (await fetchFocuses()) ?? [];
@@ -25,21 +26,52 @@ export async function getStaticProps() {
   };
 }
 
+const errorMotionProps = {
+  hidden: { color: "var(--color-text--alt)" },
+  show: {
+    color: "var(--color-brand)",
+  },
+  transition: {
+    easing: "easeInOut",
+  },
+};
+
 export default function JoinStep3({ focusesData }) {
   const router = useRouter();
   const { name, location, email, website } = router.query;
   const [focuses, setFocuses] = useState(focusesData);
-  const [focusSelected, setFocusSelected] = useState();
+  const [title, setTitle] = useState("");
+  const [focusesSelected, setFocusesSelected] = useState([]);
   const [disableSubmit, setDisableSubmit] = useState(true);
-  const [showError, setShowError] = useState(false);
 
   const handleSelect = (focus) => {
-    const isPreviousSelection = focus === focusSelected;
-    setDisableSubmit(isPreviousSelection);
-    setFocusSelected(isPreviousSelection ? undefined : focus);
+    const index = focusesSelected.indexOf(focus);
+    let newFocusesSelected = [...focusesSelected];
+    if (index > -1) {
+      newFocusesSelected.splice(index, 1);
+    } else if (focusesSelected.length <= 2) {
+      newFocusesSelected.push(focus);
+    }
+    setFocusesSelected(newFocusesSelected);
+    setDisableSubmit(newFocusesSelected.length < 1);
   };
 
-  const submitForm = ({ name, location, website, email, focus }) => {
+  const handleChangeTitle = (e) => {
+    setTitle(e.target.value);
+  };
+
+  const handleDeselectLast = () => {
+    let newFocusesSelected = [...focusesSelected].filter(
+      (f, i) => i !== focusesSelected.length - 1
+    );
+    setFocusesSelected(newFocusesSelected);
+  };
+
+  const submitForm = () => {
+    let focus = focusesSelected.map((fs) => {
+      return fs.id;
+    });
+
     router.push({
       pathname: "step-04",
       query: {
@@ -47,10 +79,12 @@ export default function JoinStep3({ focusesData }) {
         location: location,
         email: email,
         website: website,
-        focus: focus.id,
+        focus: focus,
       },
     });
   };
+
+  console.log(focuses);
 
   return (
     <div className="container">
@@ -64,25 +98,24 @@ export default function JoinStep3({ focusesData }) {
       </Link>
       <ProgressBar
         headline="Public"
-        label="Professional focus"
+        label="Professional mea"
         currentCount={2}
         totalCount={3}
       />
       <HeaderHeading>Welcome to our little hui.</HeaderHeading>
-      <HeaderDescription>
-        <strong>Pick what you consider the focus of your work.</strong> Our goal
-        is to help foster belonging among professional sub-communities within
-        our hui, as well as inspire young, aspiring kanaka about the different
-        directions to go.
-      </HeaderDescription>
-      {showError && (
-        <div style={{ marginBottom: "1rem" }}>
-          <ErrorMessage
-            headline={"Gonfunnit, looks like something went wrong."}
-            body={"Please try again later."}
-          />
-        </div>
-      )}
+      <div style={{ marginBottom: "2rem" }}>
+        <HeaderDescription>
+          Our goal is to foster relationships and belonging among these
+          professional sub-communities within our technical hui; to illustrate
+          the different directions to aspiring kanaka.
+        </HeaderDescription>
+      </div>
+      <div style={{ margin: "0 auto 1rem", maxWidth: "42rem" }}>
+        <Label
+          label="What’s your focus of work?"
+          labelTranslation="He aha kou (mau) hana ʻoi a pau?"
+        />
+      </div>
       <div
         style={{
           display: "grid",
@@ -91,14 +124,18 @@ export default function JoinStep3({ focusesData }) {
           columnGap: "0.5rem",
           rowGap: "0.5rem",
           maxWidth: "42rem",
-          margin: "1rem auto 0",
+          margin: "0 auto 2rem",
         }}
       >
         {focuses.map((focus, i) => {
           return (
             <ButtonBox
               label={focus.name}
-              selected={focus === focusSelected}
+              disabled={
+                focusesSelected.length === 3 &&
+                focusesSelected.indexOf(focus) < 0
+              }
+              selected={focusesSelected.indexOf(focus) > -1}
               onClick={(e) => {
                 handleSelect(focus);
               }}
@@ -106,21 +143,49 @@ export default function JoinStep3({ focusesData }) {
             />
           );
         })}
-        <ButtonBox label="None of these fit; suggest another" border />
+        <div
+          style={{
+            gridColumn: "span 3",
+          }}
+        >
+          <ButtonBox
+            fullWidth
+            label="Suggest another for yourself"
+            border
+            disabled={focusesSelected.length === 3}
+          />
+        </div>
+      </div>
+      {focusesSelected.length >= 3 && (
+        <p
+          style={{
+            margin: "0 auto 2rem",
+            maxWidth: "42rem",
+            textAlign: "center",
+            color: "var(--color-text--alt)",
+          }}
+        >
+          Maximum of 3 reached. Please{" "}
+          <a href="#" onClick={handleDeselectLast}>
+            deselect one
+          </a>{" "}
+          to pick another.
+        </p>
+      )}
+      <div style={{ margin: "0 auto", maxWidth: "42rem" }}>
+        <div style={{ marginBottom: "2rem" }}>
+          <Input
+            name="title"
+            label="What’s your current title?"
+            labelTranslation="ʻO wai kou kūlana i hana?"
+            placeholder="e.g. Software Engineer"
+            optional
+            onChange={handleChangeTitle}
+          />
+        </div>
       </div>
       <div style={{ marginTop: "2rem" }}>
-        <Button
-          onClick={() => {
-            submitForm({
-              name: name,
-              location: location,
-              email: email,
-              website: website,
-              focus: focusSelected,
-            });
-          }}
-          disabled={disableSubmit}
-        >
+        <Button onClick={submitForm} disabled={disableSubmit}>
           Continue
         </Button>
       </div>
@@ -130,20 +195,6 @@ export default function JoinStep3({ focusesData }) {
           breadth of kanaka expertise in technology.
         </Disclaimer>
       </div>
-      <style global jsx>{`
-        .container {
-          padding-top: 6rem;
-        }
-        .more-link {
-          ${cssHelperButtonReset}
-          background: transparent;
-          color: var(--color-brand);
-          font-weight: 500;
-        }
-        .more-link:hover {
-          color: var(--color-brand-tone);
-        }
-      `}</style>
     </div>
   );
 }
