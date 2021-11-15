@@ -42,6 +42,7 @@ export default function RadioBox({
           line-height: 120%;
           margin: 0;
         }
+
         p {
           margin: 0.5rem 0 0;
           line-height: 150%;

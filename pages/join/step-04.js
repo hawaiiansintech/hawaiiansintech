@@ -5,7 +5,7 @@ import { useState } from "react";
 import { withFormik } from "formik";
 import * as Yup from "yup";
 import MetaTags from "../../components/Metatags.js";
-import Header from "../../components/Header.js";
+import { HeaderHeading, HeaderDescription } from "../../components/Header.js";
 import Button from "../../components/Button.js";
 import { fetchFocuses } from "../../lib/api";
 import { cssHelperButtonReset } from "../../styles/global.js";
@@ -41,44 +41,17 @@ export default function JoinStep4({ focusesData }) {
       <Link href="/" shallow={true}>
         <a className="auxNav arrowback">←</a>
       </Link>
-      <Header>
-        <h2>Welcome to our little hui.</h2>
-        <ProgressBar
-          headline="Private"
-          label="Personal bits"
-          currentCount={3}
-          totalCount={3}
-        />
-        <div style={{ margin: "2rem auto 0", maxWidth: "42rem" }}>
-          <div
-            style={{
-              display: "inline-flex",
-              borderRadius: "1rem",
-              flexDirection: "column",
-              alignItems: "start",
-              fontSize: "1.2rem",
-            }}
-          >
-            <h3 style={{ fontSize: "1em", margin: 0, fontWeight: 600 }}>
-              {name}
-            </h3>
-            <h4 style={{ fontSize: "0.6em", margin: 0, fontWeight: 400 }}>
-              {location} · {matchedFocus}
-            </h4>
-            <span
-              style={{
-                fontSize: "0.5em",
-                margin: "0.25rem 0 0",
-                padding: "0.25rem 0.5rem",
-                background: "var(--color-border)",
-                borderRadius: "1rem",
-              }}
-            >
-              {website}
-            </span>
-          </div>
-        </div>
-      </Header>
+      <ProgressBar
+        headline="Private"
+        label="Personal bits"
+        currentCount={3}
+        totalCount={3}
+      />
+      <HeaderHeading>Welcome to our little hui.</HeaderHeading>
+      <HeaderDescription>
+        We <strong>will not</strong> share your contact information without your
+        permission.
+      </HeaderDescription>
       <div style={{ margin: "2rem auto 0", maxWidth: "42rem" }}>
         <FormikForm />
       </div>
@@ -149,12 +122,6 @@ const Form = (props) => {
           />
         </div>
       )}
-      <div style={{ marginBottom: "2rem" }}>
-        <p>
-          We <strong>will not</strong> share your contact information without
-          your permission.
-        </p>
-      </div>
       <div style={{ marginBottom: "2rem" }}>
         <Input
           name="email"

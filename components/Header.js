@@ -1,33 +1,43 @@
-export default function Header({ children }) {
+export function HeaderHeading({ children }) {
   return (
-    <div className="header">
+    <h1 className="header-heading">
       {children}
-      <style global jsx>{`
-        .header {
+      <style jsx>{`
+        .header-heading {
           max-width: 42rem;
-          margin: 0 auto;
+          margin: 0 auto 2rem;
+          font-size: 2.4rem;
+          font-weight: 600;
           text-align: center;
         }
-        h2,
-        h3 {
-          margin: 0;
-        }
-        h2 {
-          font-size: 2.4rem;
-          margin-bottom: 1rem;
-        }
-        h3 {
+      `}</style>
+    </h1>
+  );
+}
+
+export function HeaderDescription({ centered, children }) {
+  return (
+    <p
+      className={`header-description ${
+        centered && "header-description--centered"
+      }`}
+    >
+      {children}
+      <style jsx>{`
+        .header-description {
+          max-width: 42rem;
+          margin: 0 auto 2rem;
+          text-align: center;
           font-size: 1.4rem;
-          font-weight: 400;
-          line-height: 150%;
-        }
-        p {
-          font-size: 1.2rem;
           font-weight: 400;
           line-height: 150%;
           text-align: left;
         }
+
+        .header-description--centered {
+          text-align: center;
+        }
       `}</style>
-    </div>
+    </p>
   );
 }

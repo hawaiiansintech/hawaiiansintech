@@ -3,7 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
 import MetaTags from "../../components/Metatags.js";
-import Header from "../../components/Header.js";
+import { HeaderHeading, HeaderDescription } from "../../components/Header.js";
 import Button from "../../components/Button.js";
 import Disclaimer from "../../components/form/Disclaimer.js";
 import { fetchFocuses } from "../../lib/api";
@@ -62,21 +62,19 @@ export default function JoinStep3({ focusesData }) {
       <Link href="/" shallow={true}>
         <a className="auxNav arrowback">←</a>
       </Link>
-      <Header>
-        <h2>Welcome to our little hui.</h2>
-        <ProgressBar
-          headline="Public"
-          label="Professional focus"
-          currentCount={2}
-          totalCount={3}
-        />
-        <p>
-          <strong>Pick what you consider the focus of your work.</strong> Our
-          goal is to help foster belonging among professional sub-communities
-          within our hui, as well as inspire young, aspiring kanaka about the
-          different directions to go.
-        </p>
-      </Header>
+      <ProgressBar
+        headline="Public"
+        label="Professional focus"
+        currentCount={2}
+        totalCount={3}
+      />
+      <HeaderHeading>Welcome to our little hui.</HeaderHeading>
+      <HeaderDescription>
+        <strong>Pick what you consider the focus of your work.</strong> Our goal
+        is to help foster belonging among professional sub-communities within
+        our hui, as well as inspire young, aspiring kanaka about the different
+        directions to go.
+      </HeaderDescription>
       {showError && (
         <div style={{ marginBottom: "1rem" }}>
           <ErrorMessage

@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import MetaTags from "../../components/Metatags.js";
-import Header from "../../components/Header.js";
+import { HeaderHeading, HeaderDescription } from "../../components/Header.js";
 import Button from "../../components/Button.js";
 import RadioBox from "../../components/form/RadioBox.js";
 
@@ -18,14 +18,13 @@ export default function Join() {
         <a className="auxNav arrowback">←</a>
       </Link>
 
-      <Header>
-        <h2>Huuuui, Aloha e.</h2>
-        <h3>
-          Drop your in the hat to be added to the list. Or nominate someone
-          else. We just ask that you / they are <strong>Native Hawaiian</strong>{" "}
-          &amp; work or research in the <strong>technology sector</strong>.
-        </h3>
-      </Header>
+      <HeaderHeading>Huuuui, Aloha e.</HeaderHeading>
+      <HeaderDescription centered>
+        Drop your in the hat to be added to the list. We just ask that you /
+        they are <strong>Native Hawaiian</strong> &amp; work or research in the{" "}
+        <strong>technology sector</strong>. Or if you’re not yet working in the
+        space, and curious to get started, let us know who you are.
+      </HeaderDescription>
       <div
         style={{
           display: "flex",
@@ -36,13 +35,15 @@ export default function Join() {
         <div style={{ marginRight: "1rem", maxWidth: "20rem" }}>
           <RadioBox
             defaultChecked
-            label="Adding myself to the list"
+            label="I’m currently a Hawaiian in Tech"
+            description="Current professional or researcher in the technology sector"
             seriesOf="add-or-nominate"
           />
         </div>
         <div style={{ maxWidth: "20rem" }}>
           <RadioBox
-            label="Nominating someone else"
+            label="I’m an aspiring Hawaiian in Tech"
+            description="Student or someone transitioning careers"
             seriesOf="add-or-nominate"
           />
         </div>
