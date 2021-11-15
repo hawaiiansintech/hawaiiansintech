@@ -12,6 +12,7 @@ import { fetchFocuses } from "../../lib/api";
 import ButtonBox from "../../components/form/ButtonBox.js";
 import ProgressBar from "../../components/form/ProgressBar.js";
 import Label from "../../components/form/Label.js";
+import InputBox from "../../components/form/InputBox.js";
 
 export async function getStaticProps() {
   let focuses = (await fetchFocuses()) ?? [];
@@ -41,8 +42,13 @@ export default function JoinStep3({ focusesData }) {
   const { name, location, email, website } = router.query;
   const [focuses, setFocuses] = useState(focusesData);
   const [title, setTitle] = useState("");
+  const [suggestedFocus, setSuggestedFocus] = useState();
   const [focusesSelected, setFocusesSelected] = useState([]);
   const [disableSubmit, setDisableSubmit] = useState(true);
+  const [showSuggestButton, setShowSuggestButton] = useState(true);
+
+  const totalFocusesSelected =
+    focusesSelected.length + (suggestedFocus ? 1 : 0);
 
   const handleSelect = (focus) => {
     const index = focusesSelected.indexOf(focus);
@@ -53,11 +59,17 @@ export default function JoinStep3({ focusesData }) {
       newFocusesSelected.push(focus);
     }
     setFocusesSelected(newFocusesSelected);
-    setDisableSubmit(newFocusesSelected.length < 1);
+    setDisableSubmit(newFocusesSelected.length + (suggestedFocus ? 1 : 0) < 1);
   };
 
   const handleChangeTitle = (e) => {
     setTitle(e.target.value);
+  };
+
+  const handleBlursuggestedFocus = (e) => {
+    setShowSuggestButton(true);
+    setSuggestedFocus(e.target.value ? e.target.value : undefined);
+    setDisableSubmit(e.target.value.length < 1);
   };
 
   const handleDeselectLast = () => {
@@ -72,19 +84,24 @@ export default function JoinStep3({ focusesData }) {
       return fs.id;
     });
 
+    let queryParams = {
+      name: name,
+      location: location,
+      email: email,
+      website: website,
+      focus: focus,
+    };
+    if (title) {
+      queryParams["title"] = title;
+    }
+    if (suggestedFocus) {
+      queryParams["suggestedFocus"] = suggestedFocus;
+    }
     router.push({
       pathname: "step-04",
-      query: {
-        name: name,
-        location: location,
-        email: email,
-        website: website,
-        focus: focus,
-      },
+      query: queryParams,
     });
   };
-
-  console.log(focuses);
 
   return (
     <div className="container">
@@ -132,8 +149,7 @@ export default function JoinStep3({ focusesData }) {
             <ButtonBox
               label={focus.name}
               disabled={
-                focusesSelected.length === 3 &&
-                focusesSelected.indexOf(focus) < 0
+                totalFocusesSelected >= 3 && focusesSelected.indexOf(focus) < 0
               }
               selected={focusesSelected.indexOf(focus) > -1}
               onClick={(e) => {
@@ -148,21 +164,40 @@ export default function JoinStep3({ focusesData }) {
             gridColumn: "span 3",
           }}
         >
-          <ButtonBox
-            fullWidth
-            label="Suggest another for yourself"
-            border
-            disabled={focusesSelected.length === 3}
-          />
+          {showSuggestButton ? (
+            <ButtonBox
+              fullWidth
+              label={
+                suggestedFocus
+                  ? `For consideration: ${suggestedFocus}`
+                  : "Suggest another for yourself"
+              }
+              onClick={() => {
+                setShowSuggestButton(!showSuggestButton);
+              }}
+              border={!!!suggestedFocus}
+              selected={!!suggestedFocus}
+              disabled={totalFocusesSelected >= 3 && !!!suggestedFocus}
+            />
+          ) : (
+            <InputBox
+              onBlur={handleBlursuggestedFocus}
+              fullHeight
+              fullWidth
+              border
+              focusedOnInit
+              defaultValue={suggestedFocus}
+              disabled={totalFocusesSelected >= 3 && !!!suggestedFocus}
+            />
+          )}
         </div>
       </div>
-      {focusesSelected.length >= 3 && (
+      {totalFocusesSelected >= 3 && (
         <p
           style={{
             margin: "0 auto 2rem",
             maxWidth: "42rem",
             textAlign: "center",
-            color: "var(--color-text--alt)",
           }}
         >
           Maximum of 3 reached. Please{" "}
