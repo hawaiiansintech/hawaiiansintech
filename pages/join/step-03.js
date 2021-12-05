@@ -120,13 +120,13 @@ export default function JoinStep3({ focusesData }) {
         totalCount={3}
       />
       <HeaderHeading>Welcome to our little hui.</HeaderHeading>
-      <div style={{ marginBottom: "2rem" }}>
+      {/* <div style={{ marginBottom: "2rem" }}>
         <HeaderDescription>
           Our goal is to foster relationships and belonging among these
           professional sub-communities within our technical hui; to illustrate
           the different directions to aspiring kanaka.
         </HeaderDescription>
-      </div>
+      </div> */}
       <div style={{ margin: "0 auto 1rem", maxWidth: "42rem" }}>
         <Label
           label="What’s your focus of work?"
@@ -145,13 +145,15 @@ export default function JoinStep3({ focusesData }) {
         }}
       >
         {focuses.map((focus, i) => {
+          const isDisabled =
+            totalFocusesSelected >= 3 && focusesSelected.indexOf(focus) < 0;
+          const isSelected = focusesSelected.indexOf(focus) > -1;
+
           return (
             <ButtonBox
               label={focus.name}
-              disabled={
-                totalFocusesSelected >= 3 && focusesSelected.indexOf(focus) < 0
-              }
-              selected={focusesSelected.indexOf(focus) > -1}
+              disabled={isDisabled}
+              selected={isSelected}
               onClick={(e) => {
                 handleSelect(focus);
               }}
@@ -212,10 +214,8 @@ export default function JoinStep3({ focusesData }) {
           }}
         >
           Maximum of 3 reached. Please{" "}
-          <a href="#" onClick={handleDeselectLast}>
-            deselect one
-          </a>{" "}
-          to pick another.
+          <button onClick={handleDeselectLast}>deselect one</button> to pick
+          another.
         </p>
       )}
       <div style={{ margin: "2rem auto 0", maxWidth: "42rem" }}>

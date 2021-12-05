@@ -10,6 +10,7 @@ export default css.global`
     --color-link-alt: var(--color-brand-tone);
     --color-text: #353535;
     --color-text--alt: #777;
+    --color-text--overlay: #fff;
     --color-border: #dacbc8;
     --color-background: #e5e5e5;
     --color-error: #e3523a;

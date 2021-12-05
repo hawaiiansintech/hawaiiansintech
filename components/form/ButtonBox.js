@@ -3,12 +3,9 @@ import { cssHelperButtonReset } from "../../styles/global.js";
 
 export default function ButtonBox({
   border,
-  defaultChecked,
-  description,
   disabled,
   label,
   onClick,
-  fullHeight,
   fullWidth,
   selected,
 }) {
@@ -27,11 +24,16 @@ export default function ButtonBox({
           ${cssHelperButtonReset}
           position: relative;
           border: 0.25rem solid transparent;
-          ${border || "background: var(--color-border);"};
-          ${border ? "border-color: var(--color-border);" : ""}
-          ${selected ? "background: var(--color-brand);" : ""}
-          ${selected ? "color: #fff;" : ""}
-          ${fullWidth ? "width: 100%;" : ""}
+          background: ${selected
+            ? "var(--color-brand)"
+            : border
+            ? "initial"
+            : "var(--color-border)"};
+          border-color: ${border ? "var(--color-border)" : "transparent"};
+          color: ${selected ? "var(--color-text--overlay)" : "initial"};
+          width: ${fullWidth ? "100%" : "initial"};
+          opacity: ${disabled ? "0.5" : "initial"};
+          pointer-events: ${disabled ? "none" : "initial"};
           font-size: 1rem;
           font-weight: 600;
           line-height: 120%;
@@ -41,17 +43,20 @@ export default function ButtonBox({
           text-align: center;
           padding: 1rem;
           transition: all 150ms ease-out;
-          ${disabled && "opacity: 0.5; pointer-events: none;"}
         }
         .button-box:hover {
-          border-color: var(--color-brand);
-        }
-        .button-box:active {
-          color: var(--color-brand-tone);
+          border-color: ${selected
+            ? "var(--color-brand-tone)"
+            : "var(--color-brand)"};
         }
         .button-box:focus {
           border-color: var(--color-brand);
           box-shadow: var(--box-shadow-outline-button);
+        }
+        .button-box:focus:hover {
+          border-color: ${selected
+            ? "var(--color-brand-tone)"
+            : "var(--color-brand-tone)"};
         }
       `}</style>
     </button>
