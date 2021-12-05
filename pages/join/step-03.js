@@ -159,43 +159,54 @@ export default function JoinStep3({ focusesData }) {
             />
           );
         })}
-        <div
-          style={{
-            gridColumn: "span 3",
-          }}
-        >
-          {showSuggestButton ? (
-            <ButtonBox
-              fullWidth
-              label={
-                suggestedFocus
-                  ? `For consideration: ${suggestedFocus}`
-                  : "Suggest another for yourself"
-              }
-              onClick={() => {
-                setShowSuggestButton(!showSuggestButton);
-              }}
-              border={!!!suggestedFocus}
-              selected={!!suggestedFocus}
-              disabled={totalFocusesSelected >= 3 && !!!suggestedFocus}
-            />
-          ) : (
-            <InputBox
-              onBlur={handleBlursuggestedFocus}
-              fullHeight
-              fullWidth
-              border
-              focusedOnInit
-              defaultValue={suggestedFocus}
-              disabled={totalFocusesSelected >= 3 && !!!suggestedFocus}
-            />
-          )}
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          margin: "0 auto",
+          maxWidth: "42rem",
+          textAlign: "center",
+          alignItems: "center",
+        }}
+      >
+        <div>
+          <h4 style={{ margin: "0 0 0.25rem" }}>Anything missing?</h4>
+          <h4 style={{ fontWeight: "400", margin: "0 0 1rem" }}>
+            Suggest an area of focus that you expect to be here.
+          </h4>
         </div>
+        {showSuggestButton ? (
+          <ButtonBox
+            label={
+              suggestedFocus
+                ? `For consideration: ${suggestedFocus}`
+                : "Suggest new"
+            }
+            onClick={() => {
+              setShowSuggestButton(!showSuggestButton);
+            }}
+            border={!!!suggestedFocus}
+            selected={!!suggestedFocus}
+            disabled={totalFocusesSelected >= 3 && !!!suggestedFocus}
+          />
+        ) : (
+          <InputBox
+            onBlur={handleBlursuggestedFocus}
+            fullHeight
+            fullWidth
+            border
+            focusedOnInit
+            defaultValue={suggestedFocus}
+            disabled={totalFocusesSelected >= 3 && !!!suggestedFocus}
+          />
+        )}
       </div>
       {totalFocusesSelected >= 3 && (
         <p
           style={{
-            margin: "0 auto 2rem",
+            margin: "1rem auto 2rem",
             maxWidth: "42rem",
             textAlign: "center",
           }}
@@ -207,7 +218,7 @@ export default function JoinStep3({ focusesData }) {
           to pick another.
         </p>
       )}
-      <div style={{ margin: "0 auto", maxWidth: "42rem" }}>
+      <div style={{ margin: "2rem auto 0", maxWidth: "42rem" }}>
         <div style={{ marginBottom: "2rem" }}>
           <Input
             name="title"
