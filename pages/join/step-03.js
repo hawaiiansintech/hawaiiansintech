@@ -78,6 +78,14 @@ export default function JoinStep3({ focuses }) {
     setFocusesSelected(nextFocusesSelected);
   };
 
+  const handleClearSuggested = () => {
+    if (
+      window.confirm("Are you sure you want to clear this suggestion field?")
+    ) {
+      setSuggestedFocus(undefined);
+    }
+  };
+
   const submitForm = () => {
     if (totalFocusesSelected < 1) {
       setIsErrored(true);
@@ -199,20 +207,27 @@ export default function JoinStep3({ focuses }) {
             Suggest an area of focus that you expect to be here.
           </h4>
         </div>
+
         {showSuggestButton ? (
-          <ButtonBox
-            label={
-              suggestedFocus
-                ? `For consideration: ${suggestedFocus}`
-                : "Suggest new"
-            }
-            onClick={() => {
-              setShowSuggestButton(!showSuggestButton);
-            }}
-            border={!!!suggestedFocus}
-            selected={!!suggestedFocus}
-            disabled={isMaxSelected && !!!suggestedFocus}
-          />
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <ButtonBox
+              label={suggestedFocus ? `${suggestedFocus}` : "Suggest new"}
+              onClick={() => {
+                setShowSuggestButton(!showSuggestButton);
+              }}
+              border={!!!suggestedFocus}
+              selected={!!suggestedFocus}
+              disabled={isMaxSelected && !!!suggestedFocus}
+            />
+            {suggestedFocus !== undefined && (
+              <button
+                onClick={handleClearSuggested}
+                style={{ marginLeft: "0.5rem" }}
+              >
+                Clear
+              </button>
+            )}
+          </div>
         ) : (
           <InputBox
             onBlur={handleBlurSuggested}

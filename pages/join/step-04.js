@@ -67,7 +67,8 @@ const Form = (props) => {
     isValid,
   } = props;
   const router = useRouter();
-  const { name, location, website, focus } = router.query;
+  const { name, location, website, focus, suggestedFocus, title } =
+    router.query;
   const { email } = values;
   const [error, setError] = useState(undefined);
   const errorPlaceholderRef = useRef();
@@ -75,14 +76,21 @@ const Form = (props) => {
   const onSubmit = (e) => {
     handleSubmit();
     e.preventDefault();
-    console.log({ name, location, website, email, focus });
     if (isValid) {
       fetch("/api/create-member", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, location, website, email, focus }),
+        body: JSON.stringify({
+          name,
+          location,
+          website,
+          email,
+          focus,
+          suggestedFocus,
+          title,
+        }),
       })
         .then((res) => {
           if (res.ok) {

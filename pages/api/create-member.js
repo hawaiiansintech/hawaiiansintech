@@ -16,10 +16,18 @@ export default async function createMember(req, res) {
       {
         Name: req.body.name,
         Email: req.body.email,
-        Location_Manual: req.body.location,
-        Focus: req.body.focus.length > 1 ? req.body.focus : [req.body.focus],
-        // todo: overridden role field
-        // Role_Manual: req.body.role.name,
+        Focus: () => {
+          if (!req.body.focus) return undefined;
+
+          if (req.body.focus.length > 1) {
+            return req.body.focus;
+          } else {
+            return [req.body.focus];
+          }
+        },
+        "Job Title (User)": req.body.title,
+        "Location (User)": req.body.location,
+        "Focus (User)": req.body.suggestedFocus,
         Link: req.body.website,
         Exclude: true,
         Order: 1,

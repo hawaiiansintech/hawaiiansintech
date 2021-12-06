@@ -31,7 +31,7 @@ export default function JoinStep2(props) {
       />
       <HeaderHeading>Welcome to our little hui.</HeaderHeading>
       <HeaderDescription>
-        Our directory features kanaka from all over -- both geographically and
+        Our directory features kanaka from all over—both geographically and
         across the tech industry. Create your profile by telling us a little bit
         about yourself.
       </HeaderDescription>
