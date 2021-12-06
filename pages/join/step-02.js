@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
@@ -8,6 +9,7 @@ import { HeaderHeading, HeaderDescription } from "../../components/Header.js";
 import Button from "../../components/Button.js";
 import Input from "../../components/form/Input.js";
 import ProgressBar from "../../components/form/ProgressBar.js";
+import ErrorMessage from "../../components/form/ErrorMessage.js";
 
 export default function JoinStep2(props) {
   return (
@@ -46,24 +48,59 @@ export default function JoinStep2(props) {
 }
 
 const Form = (props) => {
-  const { values, touched, errors, handleChange, handleBlur, handleSubmit } =
-    props;
+  const {
+    values,
+    touched,
+    errors,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    isValid,
+  } = props;
   const router = useRouter();
+  const errorPlaceholderRef = useRef();
+  const [error, setError] = useState(undefined);
 
-  const onSubmit = () => {
+  const onChange = (e) => {
+    handleChange(e);
+    if (isValid) {
+      setError(undefined);
+    }
+  };
+
+  const onSubmit = (e) => {
     handleSubmit();
-    router.push({
-      pathname: "step-03",
-      query: {
-        name: values.name,
-        location: values.location,
-        website: values.website,
-      },
-    });
+    e.preventDefault();
+
+    if (isValid) {
+      router.push({
+        pathname: "step-03",
+        query: {
+          name: values.name,
+          location: values.location,
+          website: values.website,
+        },
+      });
+    } else if (errorPlaceholderRef.current) {
+      setError({
+        headline: "Something went wrong.",
+        body: "Please check the fields below and try again.",
+      });
+      window.scrollTo({
+        top: errorPlaceholderRef.current.offsetTop,
+        behavior: "smooth",
+      });
+    }
   };
 
   return (
-    <>
+    <form onSubmit={onSubmit}>
+      <div ref={errorPlaceholderRef} />
+      {error && (
+        <div style={{ marginBottom: "1rem" }}>
+          <ErrorMessage headline={error.headline} body={error.body} />
+        </div>
+      )}
       <div style={{ marginBottom: "2rem" }}>
         <Input
           name="name"
@@ -71,7 +108,7 @@ const Form = (props) => {
           labelTranslation="ʻO wai kou inoa?"
           placeholder="Full name"
           onBlur={handleBlur}
-          onChange={handleChange}
+          onChange={onChange}
           error={touched.name && errors.name}
         />
       </div>
@@ -82,7 +119,7 @@ const Form = (props) => {
           labelTranslation="Ma hea ʻoe e noho ʻana?"
           placeholder="City, State"
           onBlur={handleBlur}
-          onChange={handleChange}
+          onChange={onChange}
           error={touched.location && errors.location}
         />
       </div>
@@ -91,45 +128,35 @@ const Form = (props) => {
         label="What’s your LinkedIn / professional website?"
         labelTranslation="He aha kou wahi uila ’oihana?"
         onBlur={handleBlur}
-        onChange={handleChange}
+        onChange={onChange}
         error={touched.website && errors.website}
       />
 
       <div style={{ marginTop: "2rem" }}>
-        <Button
-          type="button"
-          onClick={onSubmit}
-          disabled={
-            !touched.name ||
-            errors.name ||
-            !touched.location ||
-            errors.location ||
-            !touched.website ||
-            errors.website
-          }
-        >
-          Continue
-        </Button>
+        <Button type="submit">Continue</Button>
       </div>
-    </>
+    </form>
   );
 };
 
-export const validationSchema = Yup.object().shape({
-  name: Yup.string().required(
-    "We need to know what to call you. Name is required."
-  ),
-  location: Yup.string().required("A location, imprecise or not, is required."),
-  website: Yup.string()
-    .matches(
-      /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-      "That URL looks funny. Please try again."
-    )
-    .required("A link goes a long way. A website is required."),
-});
-
 const FormikForm = withFormik({
+  displayName: "profile-form",
+  validateOnMount: true,
   mapPropsToValues: () => ({ name: "", location: "", website: "" }),
-  validationSchema: validationSchema,
-  displayName: "FormikForm",
+  validationSchema: Yup.object().shape({
+    name: Yup.string().required(
+      "We need to know what to call you. Name is required."
+    ),
+    location: Yup.string().required(
+      "A location, imprecise or not, is required."
+    ),
+    website: Yup.string()
+      .matches(
+        /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+        "That URL looks funny. Please try again."
+      )
+      .required(
+        "A website is required; think about a place where people can learn more about you."
+      ),
+  }),
 })(Form);

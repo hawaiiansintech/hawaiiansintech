@@ -50,13 +50,13 @@ export default function ButtonBox({
             : "var(--color-brand)"};
         }
         .button-box:focus {
-          border-color: var(--color-brand);
+          border-color: ${selected
+            ? "var(--color-brand-tone)"
+            : "var(--color-brand)"};
           box-shadow: var(--box-shadow-outline-button);
         }
         .button-box:focus:hover {
-          border-color: ${selected
-            ? "var(--color-brand-tone)"
-            : "var(--color-brand-tone)"};
+          border-color: var(--color-brand-tone);
         }
       `}</style>
     </button>

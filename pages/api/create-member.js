@@ -17,7 +17,7 @@ export default async function createMember(req, res) {
         Name: req.body.name,
         Email: req.body.email,
         Location_Manual: req.body.location,
-        Focus: [req.body.focus],
+        Focus: req.body.focus.length > 1 ? req.body.focus : [req.body.focus],
         // todo: overridden role field
         // Role_Manual: req.body.role.name,
         Link: req.body.website,

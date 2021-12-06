@@ -24,8 +24,6 @@ export default css.global`
       var(--color-brand),
       var(--color-brand-tone)
     );
-    --color-background-button-hover: var(--color-brand-tone);
-    --color-background-button-pressed: var(--color-brand);
     --color-background-button-disabled: #dddddd;
     --color-text-button: #fff;
     --color-text-button-disabled: #5c5a5e;

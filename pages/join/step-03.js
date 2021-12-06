@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import MetaTags from "../../components/Metatags.js";
 import { HeaderHeading, HeaderDescription } from "../../components/Header.js";
@@ -13,6 +13,7 @@ import ButtonBox from "../../components/form/ButtonBox.js";
 import ProgressBar from "../../components/form/ProgressBar.js";
 import Label from "../../components/form/Label.js";
 import InputBox from "../../components/form/InputBox.js";
+import ErrorMessage from "../../components/form/ErrorMessage.js";
 
 export async function getStaticProps() {
   let focuses = (await fetchFocuses()) ?? [];
@@ -21,7 +22,7 @@ export async function getStaticProps() {
   });
   return {
     props: {
-      focusesData: focuses,
+      focuses: focuses,
     },
     revalidate: 60,
   };
@@ -37,49 +38,58 @@ const errorMotionProps = {
   },
 };
 
-export default function JoinStep3({ focusesData }) {
+const MAX_COUNT = 3;
+
+export default function JoinStep3({ focuses }) {
   const router = useRouter();
   const { name, location, email, website } = router.query;
-  const [focuses, setFocuses] = useState(focusesData);
   const [title, setTitle] = useState("");
+  const [isErrored, setIsErrored] = useState(false);
   const [suggestedFocus, setSuggestedFocus] = useState();
   const [focusesSelected, setFocusesSelected] = useState([]);
-  const [disableSubmit, setDisableSubmit] = useState(true);
   const [showSuggestButton, setShowSuggestButton] = useState(true);
+  const errorPlaceholderRef = useRef();
 
   const totalFocusesSelected =
     focusesSelected.length + (suggestedFocus ? 1 : 0);
 
   const handleSelect = (focus) => {
+    let nextFocusesSelected = [...focusesSelected];
     const index = focusesSelected.indexOf(focus);
-    let newFocusesSelected = [...focusesSelected];
-    if (index > -1) {
-      newFocusesSelected.splice(index, 1);
-    } else if (focusesSelected.length <= 2) {
-      newFocusesSelected.push(focus);
+    const isSelected = index > -1;
+    setIsErrored(false);
+
+    if (isSelected) {
+      nextFocusesSelected.splice(index, 1);
+    } else if (focusesSelected.length < MAX_COUNT) {
+      nextFocusesSelected.push(focus);
     }
-    setFocusesSelected(newFocusesSelected);
-    setDisableSubmit(newFocusesSelected.length + (suggestedFocus ? 1 : 0) < 1);
+    setFocusesSelected(nextFocusesSelected);
   };
 
-  const handleChangeTitle = (e) => {
-    setTitle(e.target.value);
-  };
-
-  const handleBlursuggestedFocus = (e) => {
+  const handleBlurSuggested = (e) => {
     setShowSuggestButton(true);
     setSuggestedFocus(e.target.value ? e.target.value : undefined);
-    setDisableSubmit(e.target.value.length < 1);
   };
 
   const handleDeselectLast = () => {
-    let newFocusesSelected = [...focusesSelected].filter(
-      (f, i) => i !== focusesSelected.length - 1
-    );
-    setFocusesSelected(newFocusesSelected);
+    let nextFocusesSelected = [...focusesSelected];
+    nextFocusesSelected.pop();
+    setFocusesSelected(nextFocusesSelected);
   };
 
   const submitForm = () => {
+    if (totalFocusesSelected < 1) {
+      setIsErrored(true);
+      if (errorPlaceholderRef.current) {
+        window.scrollTo({
+          top: errorPlaceholderRef.current.offsetTop,
+          behavior: "smooth",
+        });
+      }
+      return;
+    }
+
     let focus = focusesSelected.map((fs) => {
       return fs.id;
     });
@@ -102,6 +112,7 @@ export default function JoinStep3({ focusesData }) {
       query: queryParams,
     });
   };
+  const isMaxSelected = totalFocusesSelected >= MAX_COUNT;
 
   return (
     <div className="container">
@@ -127,6 +138,15 @@ export default function JoinStep3({ focusesData }) {
           the different directions to aspiring kanaka.
         </HeaderDescription>
       </div> */}
+      <div ref={errorPlaceholderRef} />
+      {isErrored && (
+        <div style={{ margin: "0 auto 1rem", maxWidth: "42rem" }}>
+          <ErrorMessage
+            headline="A professional focus is required."
+            body="Please pick at least one below."
+          />
+        </div>
+      )}
       <div style={{ margin: "0 auto 1rem", maxWidth: "42rem" }}>
         <Label
           label="What’s your focus of work?"
@@ -146,7 +166,7 @@ export default function JoinStep3({ focusesData }) {
       >
         {focuses.map((focus, i) => {
           const isDisabled =
-            totalFocusesSelected >= 3 && focusesSelected.indexOf(focus) < 0;
+            isMaxSelected && focusesSelected.indexOf(focus) < 0;
           const isSelected = focusesSelected.indexOf(focus) > -1;
 
           return (
@@ -191,21 +211,21 @@ export default function JoinStep3({ focusesData }) {
             }}
             border={!!!suggestedFocus}
             selected={!!suggestedFocus}
-            disabled={totalFocusesSelected >= 3 && !!!suggestedFocus}
+            disabled={isMaxSelected && !!!suggestedFocus}
           />
         ) : (
           <InputBox
-            onBlur={handleBlursuggestedFocus}
+            onBlur={handleBlurSuggested}
             fullHeight
             fullWidth
             border
             focusedOnInit
             defaultValue={suggestedFocus}
-            disabled={totalFocusesSelected >= 3 && !!!suggestedFocus}
+            disabled={isMaxSelected && !!!suggestedFocus}
           />
         )}
       </div>
-      {totalFocusesSelected >= 3 && (
+      {isMaxSelected && (
         <p
           style={{
             margin: "1rem auto 2rem",
@@ -213,7 +233,7 @@ export default function JoinStep3({ focusesData }) {
             textAlign: "center",
           }}
         >
-          Maximum of 3 reached. Please{" "}
+          Maximum of {`${MAX_COUNT}`} reached. Please{" "}
           <button onClick={handleDeselectLast}>deselect one</button> to pick
           another.
         </p>
@@ -226,14 +246,14 @@ export default function JoinStep3({ focusesData }) {
             labelTranslation="ʻO wai kou kūlana i hana?"
             placeholder="e.g. Software Engineer"
             optional
-            onChange={handleChangeTitle}
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
           />
         </div>
       </div>
       <div style={{ marginTop: "2rem" }}>
-        <Button onClick={submitForm} disabled={disableSubmit}>
-          Continue
-        </Button>
+        <Button onClick={submitForm}>Continue</Button>
       </div>
       <div style={{ marginTop: "2rem" }}>
         <Disclaimer>

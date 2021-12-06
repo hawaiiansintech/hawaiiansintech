@@ -20,20 +20,20 @@ export default function Button(props) {
         color: ${disabled
           ? "var(--color-text-button-disabled)"
           : "var(--color-text-button)"};
+        border: 0.25rem solid transparent;
         border-radius: var(--border-radius-medium);
         font-size: 1rem;
         font-weight: 600;
         background: ${disabled
           ? "var(--color-background-button-disabled)"
-          : "var(--color-background-button)"};
+          : "var(--color-brand)"};
         cursor: ${disabled ? "not-allowed" : "pointer"};
       }
-      .button:active {
-        background: ${disabled
-          ? "var(--color-background-button-disabled)"
-          : "var(--color-background-button-pressed)"};
+      .button:hover {
+        border-color: var(--color-brand-tone);
       }
       .button:focus {
+        border-color: var(--color-brand-tone);
         box-shadow: ${disabled ? "none" : "var(--box-shadow-outline-button)"};
       }
       .button:focus:not(:focus-visible) {
@@ -50,7 +50,7 @@ export default function Button(props) {
       e.preventDefault();
       return;
     }
-    onClick();
+    if (onClick) onClick();
   };
 
   if (linkTo) {

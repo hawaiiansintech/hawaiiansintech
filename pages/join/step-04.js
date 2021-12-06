@@ -1,14 +1,13 @@
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { withFormik } from "formik";
 import * as Yup from "yup";
 import MetaTags from "../../components/Metatags.js";
 import { HeaderHeading, HeaderDescription } from "../../components/Header.js";
 import Button from "../../components/Button.js";
 import { fetchFocuses } from "../../lib/api";
-import { cssHelperButtonReset } from "../../styles/global.js";
 import Input from "../../components/form/Input.js";
 import ErrorMessage from "../../components/form/ErrorMessage.js";
 import ProgressBar from "../../components/form/ProgressBar.js";
@@ -58,52 +57,76 @@ export default function JoinStep4({ focusesData }) {
 }
 
 const Form = (props) => {
-  const { values, touched, errors, handleChange, handleBlur, handleSubmit } =
-    props;
+  const {
+    values,
+    touched,
+    errors,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    isValid,
+  } = props;
   const router = useRouter();
   const { name, location, website, focus } = router.query;
   const { email } = values;
-  const [showError, setShowError] = useState(false);
+  const [error, setError] = useState(undefined);
+  const errorPlaceholderRef = useRef();
 
-  const submitForm = () => {
+  const onSubmit = (e) => {
     handleSubmit();
-    fetch("/api/create-member", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name, location, website, email, focus }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          throw new Error({ status: res.status, statusText: res.statusText });
-        }
+    e.preventDefault();
+    console.log({ name, location, website, email, focus });
+    if (isValid) {
+      fetch("/api/create-member", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, location, website, email, focus }),
       })
-      .then((res) => {
-        router.push({
-          pathname: "thank-you",
-          query: {
-            id: res.id,
-            name: name,
-            email: email,
-          },
-        });
-      })
-      .catch((err) => {
-        setShowError(true);
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          } else {
+            throw new Error({ status: res.status, statusText: res.statusText });
+          }
+        })
+        .then((res) => {
+          router.push({
+            pathname: "thank-you",
+            query: {
+              id: res.id,
+              name: name,
+              email: email,
+            },
+          });
+        })
+        .catch(() =>
+          setError({
+            headline: "Gonfunnit, looks like something went wrong.",
+            body: "Please try again later.",
+          })
+        );
+    } else {
+      setError({
+        headline: "An email address is required.",
+        body: "Please try again below.",
       });
+      if (errorPlaceholderRef) {
+        window.scrollTo({
+          top: errorPlaceholderRef.current.offsetTop,
+          behavior: "smooth",
+        });
+      }
+    }
   };
 
   return (
-    <>
-      {showError && (
+    <form onSubmit={onSubmit}>
+      <div ref={errorPlaceholderRef} />
+      {error && (
         <div style={{ marginBottom: "1rem" }}>
-          <ErrorMessage
-            headline={"Gonfunnit, looks like something went wrong."}
-            body={"Please try again later."}
-          />
+          <ErrorMessage headline={error.headline} body={error.body} />
         </div>
       )}
       <div style={{ marginBottom: "2rem" }}>
@@ -116,25 +139,18 @@ const Form = (props) => {
           error={touched.email && errors.email}
         />
       </div>
-      <Button
-        type="button"
-        onClick={submitForm}
-        disabled={!touched.email || errors.email}
-      >
-        Submit
-      </Button>
-    </>
+      <Button type="submit">Submit</Button>
+    </form>
   );
 };
 
-const validationSchema = Yup.object().shape({
-  email: Yup.string()
-    .email("That email doesn't look right. Please try again.")
-    .required("It's important that we can reach you. Email is required."),
-});
-
 const FormikForm = withFormik({
+  displayName: "email-form",
+  validateOnMount: true,
   mapPropsToValues: () => ({ email: "" }),
-  validationSchema: validationSchema,
-  displayName: "FormikForm",
+  validationSchema: Yup.object().shape({
+    email: Yup.string()
+      .email("That email doesn't look right. Please try again.")
+      .required("It's important that we can reach you. Email is required."),
+  }),
 })(Form);
