@@ -32,21 +32,21 @@ export default function Join() {
           marginTop: "2rem",
         }}
       >
-        <div style={{ marginRight: "1rem", maxWidth: "20rem" }}>
+        <div style={{ maxWidth: "20rem" }}>
           <RadioBox
             defaultChecked
-            label="I’m currently a Hawaiian in Tech"
+            label="Join the list on the homepage"
             description="Current professional or researcher in the technology sector"
             seriesOf="add-or-nominate"
           />
         </div>
-        <div style={{ maxWidth: "20rem" }}>
+        {/* <div style={{ maxWidth: "20rem" }}>
           <RadioBox
-            label="I’m an aspiring Hawaiian in Tech"
+            label="Students of all ages"
             description="Student or someone transitioning careers"
             seriesOf="add-or-nominate"
           />
-        </div>
+        </div> */}
       </div>
 
       <div style={{ marginTop: "2rem" }}>

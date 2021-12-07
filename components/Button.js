@@ -31,6 +31,7 @@ export default function Button(props) {
       }
       .button:hover {
         border-color: var(--color-brand-tone);
+        color: var(--color-text-button);
       }
       .button:focus {
         border-color: var(--color-brand-tone);
@@ -55,7 +56,7 @@ export default function Button(props) {
 
   if (linkTo) {
     button = (
-      <Link href={linkTo} className="button">
+      <Link href={linkTo}>
         <a className="button" onClick={handleOnClick}>
           {button}
           {buttonStyles}

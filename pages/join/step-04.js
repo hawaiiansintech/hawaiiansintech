@@ -104,8 +104,6 @@ const Form = (props) => {
             pathname: "thank-you",
             query: {
               id: res.id,
-              name: name,
-              email: email,
             },
           });
         })
