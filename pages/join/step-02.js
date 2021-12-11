@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/router";
+import urlRegex from "url-regex";
 import Head from "next/head";
 import Link from "next/link";
 import { withFormik } from "formik";
@@ -152,7 +153,7 @@ const FormikForm = withFormik({
     ),
     website: Yup.string()
       .matches(
-        /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+        urlRegex({ strict: false }),
         "That URL looks funny. Please try again."
       )
       .required(
