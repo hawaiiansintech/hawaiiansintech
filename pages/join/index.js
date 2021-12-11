@@ -1,11 +1,15 @@
 import Head from "next/head";
 import Link from "next/link";
+import { useState } from "react";
 import MetaTags from "../../components/Metatags.js";
 import { HeaderHeading, HeaderDescription } from "../../components/Header.js";
 import Button from "../../components/Button.js";
+import Pill from "../../components/Pill.js";
 import RadioBox from "../../components/form/RadioBox.js";
 
 export default function Join() {
+  const [urlOnSubmit, setUrlOnSubmit] = useState("/join/step-02");
+
   return (
     <div className="container">
       <Head>
@@ -32,25 +36,38 @@ export default function Join() {
           marginTop: "2rem",
         }}
       >
-        <div style={{ maxWidth: "20rem" }}>
+        <div style={{ maxWidth: "20rem", marginRight: "1rem" }}>
           <RadioBox
             defaultChecked
             label="Join the list on the homepage"
+            onChange={() => {
+              setUrlOnSubmit("/join/step-02");
+            }}
             description="Current professional or researcher in the technology sector"
             seriesOf="add-or-nominate"
           />
         </div>
-        {/* <div style={{ maxWidth: "20rem" }}>
+        <div style={{ maxWidth: "20rem" }}>
           <RadioBox
-            label="Students of all ages"
-            description="Student or someone transitioning careers"
+            label="Join  apprentice program"
+            onChange={() => {
+              setUrlOnSubmit("/join/apprentice");
+            }}
+            description={
+              <>
+                <div style={{ margin: "0.5rem 0 0.25rem" }}>
+                  <Pill>COMING SOON</Pill>
+                </div>
+                Student or someone transitioning careers
+              </>
+            }
             seriesOf="add-or-nominate"
           />
-        </div> */}
+        </div>
       </div>
 
       <div style={{ marginTop: "2rem" }}>
-        <Button linkTo="/join/step-02">Continue</Button>
+        <Button linkTo={urlOnSubmit}>Continue</Button>
       </div>
 
       <style global jsx>{`

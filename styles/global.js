@@ -3,7 +3,7 @@ import css from "styled-jsx/css";
 export default css.global`
   :root {
     --color-brand: #fc7442;
-    --color-brand-alpha: #fc7442;
+    --color-brand-alpha: #fc744233;
     --color-brand-tone: #ec4427;
     --color-brand-faded: #cf8870;
     --color-link: var(--color-brand);

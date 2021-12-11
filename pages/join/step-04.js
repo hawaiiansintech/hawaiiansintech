@@ -46,8 +46,9 @@ export default function JoinStep4({ focusesData }) {
       />
       <HeaderHeading>Welcome to our little hui.</HeaderHeading>
       <HeaderDescription>
-        We <strong>will not</strong> share your contact information without your
-        permission.
+        By giving us your email, you agree to sign up for our newsletter. You
+        can unsubscribe at any time. We <strong>will not</strong> share your
+        contact information without your permission.
       </HeaderDescription>
       <div style={{ margin: "2rem auto 0", maxWidth: "42rem" }}>
         <FormikForm />
