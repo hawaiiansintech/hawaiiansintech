@@ -50,7 +50,7 @@ export default function InputBox({
           border-color: var(--color-brand);
         }
         .input-box:active {
-          color: var(--color-brand-tone);
+          color: var(--color-brand-alt);
         }
         .input-box:focus {
           border-color: var(--color-brand);

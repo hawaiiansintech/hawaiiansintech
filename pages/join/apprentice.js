@@ -17,6 +17,12 @@ export default function Apprentice() {
           Let us know you're interested by clicking below.
         </HeaderDescription>
       </div>
+
+      <style jsx>{`
+        .container {
+          padding-top: 6rem;
+        }
+      `}</style>
     </>
   );
 }

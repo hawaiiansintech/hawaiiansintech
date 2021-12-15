@@ -46,17 +46,19 @@ export default function ButtonBox({
         }
         .button-box:hover {
           border-color: ${selected
-            ? "var(--color-brand-tone)"
-            : "var(--color-brand)"};
+            ? "var(--color-brand-alt)"
+            : "var(--color-border-alt)"};
         }
         .button-box:focus {
           border-color: ${selected
-            ? "var(--color-brand-tone)"
-            : "var(--color-brand)"};
+            ? "var(--color-brand-alt)"
+            : "var(--color-border-alt)"};
           box-shadow: var(--box-shadow-outline-button);
         }
         .button-box:focus:hover {
-          border-color: var(--color-brand-tone);
+          border-color: ${selected
+            ? "var(--color-brand-alt)"
+            : "var(--color-border-alt)"};
         }
       `}</style>
     </button>

@@ -7,6 +7,7 @@ import MetaTags from "../../components/Metatags.js";
 import { HeaderHeading, HeaderDescription } from "../../components/Header.js";
 import Input from "../../components/form/Input.js";
 import Button from "../../components/Button.js";
+import UndoButton from "../../components/UndoButton.js";
 import Disclaimer from "../../components/form/Disclaimer.js";
 import { fetchFocuses } from "../../lib/api";
 import ButtonBox from "../../components/form/ButtonBox.js";
@@ -220,12 +221,9 @@ export default function JoinStep3({ focuses }) {
               disabled={isMaxSelected && !!!suggestedFocus}
             />
             {suggestedFocus !== undefined && (
-              <button
-                onClick={handleClearSuggested}
-                style={{ marginLeft: "0.5rem" }}
-              >
-                Clear
-              </button>
+              <div style={{ marginLeft: "0.5rem" }}>
+                <UndoButton onClick={handleClearSuggested}>Clear</UndoButton>
+              </div>
             )}
           </div>
         ) : (
@@ -249,8 +247,8 @@ export default function JoinStep3({ focuses }) {
           }}
         >
           Maximum of {`${MAX_COUNT}`} reached. Please{" "}
-          <button onClick={handleDeselectLast}>deselect one</button> to pick
-          another.
+          <UndoButton onClick={handleDeselectLast}>deselect one</UndoButton> to
+          pick another.
         </p>
       )}
       <div style={{ margin: "2rem auto 0", maxWidth: "42rem" }}>

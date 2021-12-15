@@ -30,11 +30,11 @@ export default function Button(props) {
         cursor: ${disabled ? "not-allowed" : "pointer"};
       }
       .button:hover {
-        border-color: var(--color-brand-tone);
+        border-color: var(--color-brand-alt);
         color: var(--color-text-button);
       }
       .button:focus {
-        border-color: var(--color-brand-tone);
+        border-color: var(--color-brand-alt);
         box-shadow: ${disabled ? "none" : "var(--box-shadow-outline-button)"};
       }
       .button:focus:not(:focus-visible) {

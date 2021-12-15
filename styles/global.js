@@ -4,14 +4,15 @@ export default css.global`
   :root {
     --color-brand: #fc7442;
     --color-brand-alpha: #fc744233;
-    --color-brand-tone: #ec4427;
+    --color-brand-alt: #ec4427;
     --color-brand-faded: #cf8870;
     --color-link: var(--color-brand);
-    --color-link-alt: var(--color-brand-tone);
+    --color-link-alt: var(--color-brand-alt);
     --color-text: #353535;
     --color-text--alt: #777;
     --color-text--overlay: #fff;
     --color-border: #dacbc8;
+    --color-border-alt: #c9b5b1;
     --color-background: #e5e5e5;
     --color-error: #e3523a;
     --color-error-alpha: rgba(227, 82, 58, 0.0625);
@@ -22,12 +23,13 @@ export default css.global`
     --color-background-button: linear-gradient(
       to top right,
       var(--color-brand),
-      var(--color-brand-tone)
+      var(--color-brand-alt)
     );
     --color-background-button-disabled: #dddddd;
     --color-text-button: #fff;
     --color-text-button-disabled: #5c5a5e;
     --box-shadow-outline-button: rgba(252, 116, 66, 0.5) 0px 0px 1rem;
+    --box-shadow-outline-undo-button: rgba(56, 56, 56, 0.25) 0px 0px 0.5rem;
 
     --border-radius-x-small: 0.25rem;
     --border-radius-small: 0.5rem;
