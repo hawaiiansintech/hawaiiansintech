@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import { withFormik } from "formik";
 import * as Yup from "yup";
 import MetaTags from "../../components/Metatags.js";
-import { HeaderHeading, HeaderDescription } from "../../components/Header.js";
+import { Heading, Subheading } from "../../components/Heading.tsx";
 import Button from "../../components/Button.js";
 import { fetchFocuses } from "../../lib/api";
 import Input from "../../components/form/Input.js";
@@ -44,13 +44,13 @@ export default function JoinStep4({ focusesData }) {
         currentCount={3}
         totalCount={3}
       />
-      <HeaderHeading>Welcome to our little hui.</HeaderHeading>
-      <HeaderDescription>
+      <Heading>Welcome to our little hui.</Heading>
+      <Subheading>
         By giving us your email, you agree to sign up for our newsletter. You
         can unsubscribe at any time. This email will be used to confirm any
         changes to your profile going forward. We <strong>will not</strong>{" "}
         share your contact information without your permission.
-      </HeaderDescription>
+      </Subheading>
       <div style={{ margin: "2rem auto 0", maxWidth: "42rem" }}>
         <FormikForm />
       </div>

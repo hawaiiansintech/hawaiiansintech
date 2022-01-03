@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
 import MetaTags from "../../components/Metatags.js";
-import { HeaderHeading, HeaderDescription } from "../../components/Header.js";
+import { Heading, Subheading } from "../../components/Heading.tsx";
 import Button from "../../components/Button.js";
 import Pill from "../../components/Pill.js";
 import RadioBox from "../../components/form/RadioBox.js";
@@ -22,13 +22,13 @@ export default function Join() {
         <a className="auxNav arrowback">←</a>
       </Link>
 
-      <HeaderHeading>Huuuui, Aloha e.</HeaderHeading>
-      <HeaderDescription centered>
+      <Heading>Huuuui, Aloha e.</Heading>
+      <Subheading centered>
         Drop your in the hat to be added to the list. We just ask that you /
         they are <strong>Native Hawaiian</strong> &amp; work or research in the{" "}
         <strong>technology sector</strong>. Or if you’re not yet working in the
         space, and curious to get started, let us know who you are.
-      </HeaderDescription>
+      </Subheading>
       <div
         style={{
           display: "flex",

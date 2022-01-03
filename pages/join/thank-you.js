@@ -1,6 +1,6 @@
 import Head from "next/head";
 import MetaTags from "../../components/Metatags.js";
-import { HeaderHeading, HeaderDescription } from "../../components/Header.js";
+import { Heading, Subheading } from "../../components/Heading.tsx";
 
 export default function ThankYou() {
   return (
@@ -12,11 +12,11 @@ export default function ThankYou() {
           <MetaTags />
         </Head>
 
-        <HeaderHeading>Successful submission.</HeaderHeading>
-        <HeaderDescription centered>
+        <Heading>Successful submission.</Heading>
+        <Subheading centered>
           We'll be in touch once your profile is live. Please be patient as we
           review all entries manually.
-        </HeaderDescription>
+        </Subheading>
       </div>
     </>
   );

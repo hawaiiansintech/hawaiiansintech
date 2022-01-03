@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import MetaTags from "../../components/Metatags.js";
-import { HeaderHeading, HeaderDescription } from "../../components/Header.js";
+import { Heading } from "../../components/Heading.tsx";
 import Input from "../../components/form/Input.js";
 import Button from "../../components/Button.js";
 import UndoButton from "../../components/UndoButton.js";
@@ -139,14 +139,9 @@ export default function JoinStep3({ focuses }) {
         currentCount={2}
         totalCount={3}
       />
-      <HeaderHeading>Welcome to our little hui.</HeaderHeading>
-      {/* <div style={{ marginBottom: "2rem" }}>
-        <HeaderDescription>
-          Our goal is to foster relationships and belonging among these
-          professional sub-communities within our technical hui; to illustrate
-          the different directions to aspiring kanaka.
-        </HeaderDescription>
-      </div> */}
+      <div style={{ marginTop: "4rem" }}>
+        <Heading>Welcome to our little hui.</Heading>
+      </div>
       <div ref={errorPlaceholderRef} />
       {isErrored && (
         <div style={{ margin: "0 auto 1rem", maxWidth: "42rem" }}>

@@ -1,6 +1,6 @@
 import Head from "next/head";
 import MetaTags from "../../components/Metatags.js";
-import { HeaderHeading, HeaderDescription } from "../../components/Header.js";
+import { Heading, Subheading } from "../../components/Heading.tsx";
 
 export default function Apprentice() {
   return (
@@ -12,10 +12,10 @@ export default function Apprentice() {
           <MetaTags />
         </Head>
 
-        <HeaderHeading>We are working on this program.</HeaderHeading>
-        <HeaderDescription centered>
+        <Heading>We are working on this program.</Heading>
+        <Subheading centered>
           Let us know you're interested by clicking below.
-        </HeaderDescription>
+        </Subheading>
       </div>
 
       <style jsx>{`

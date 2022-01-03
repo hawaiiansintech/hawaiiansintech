@@ -6,7 +6,7 @@ import Link from "next/link";
 import { withFormik } from "formik";
 import * as Yup from "yup";
 import MetaTags from "../../components/Metatags.js";
-import { HeaderHeading, HeaderDescription } from "../../components/Header.js";
+import { Heading, Subheading } from "../../components/Heading.tsx";
 import Button from "../../components/Button.js";
 import Input from "../../components/form/Input.js";
 import ProgressBar from "../../components/form/ProgressBar.js";
@@ -30,12 +30,13 @@ export default function JoinStep2(props) {
         currentCount={1}
         totalCount={3}
       />
-      <HeaderHeading>Welcome to our little hui.</HeaderHeading>
-      <HeaderDescription>
-        Our directory features kanaka from all over—both geographically and
-        across the tech industry. Create your profile by telling us a little bit
-        about yourself.
-      </HeaderDescription>
+      <div style={{ marginTop: "4rem" }}>
+        <Heading>Welcome to our little hui.</Heading>
+      </div>
+      <Subheading centered>
+        Join our directory featuring talented kanaka working across the tech
+        industry.
+      </Subheading>
       <div
         style={{
           margin: "2rem auto 0",
