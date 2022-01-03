@@ -43,7 +43,7 @@ const MAX_COUNT = 3;
 
 export default function JoinStep3({ focuses }) {
   const router = useRouter();
-  const { name, location, email, website } = router.query;
+  const { name, location, website } = router.query;
   const [title, setTitle] = useState("");
   const [isErrored, setIsErrored] = useState(false);
   const [suggestedFocus, setSuggestedFocus] = useState();
@@ -106,7 +106,6 @@ export default function JoinStep3({ focuses }) {
     let queryParams = {
       name: name,
       location: location,
-      email: email,
       website: website,
       focus: focus,
     };
