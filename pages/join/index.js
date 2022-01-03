@@ -22,6 +22,7 @@ export default function Join() {
         <a className="auxNav arrowback">←</a>
       </Link>
 
+      <img src="/images/shaka.gif" className="shaka" />
       <Heading>Huuuui, Aloha e.</Heading>
       <Subheading centered>
         Drop your in the hat to be added to the list. We just ask that you /
@@ -70,9 +71,12 @@ export default function Join() {
         <Button linkTo={urlOnSubmit}>Continue</Button>
       </div>
 
-      <style global jsx>{`
-        .container {
-          padding-top: 6rem;
+      <style jsx>{`
+        .shaka {
+          display: block;
+          height: 5.2rem;
+          width: auto;
+          margin: 0 auto 2rem;
         }
       `}</style>
     </div>
