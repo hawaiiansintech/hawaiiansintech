@@ -26,7 +26,7 @@ export default function JoinStep2(props) {
       </Link>
       <ProgressBar
         headline="Public"
-        label="Profile"
+        label="Who You Are"
         currentCount={1}
         totalCount={3}
       />
@@ -40,7 +40,7 @@ export default function JoinStep2(props) {
       <div
         style={{
           margin: "2rem auto 0",
-          maxWidth: "42rem",
+          maxWidth: "var(--page-interior-width)",
         }}
       >
         <FormikForm />
@@ -85,8 +85,8 @@ const Form = (props) => {
       });
     } else if (errorPlaceholderRef.current) {
       setError({
-        headline: "Something went wrong.",
-        body: "Please check the fields below and try again.",
+        headline: "Fields missing below.",
+        body: "Please fill in the fields below.",
       });
       window.scrollTo({
         top: errorPlaceholderRef.current.offsetTop,

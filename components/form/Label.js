@@ -19,7 +19,7 @@ export default function Label({ htmlFor, label, labelTranslation, optional }) {
           display: inline-block;
         }
         h3 {
-          font-size: 1.6rem;
+          font-size: 1.4rem;
           font-weight: 600;
         }
         span {

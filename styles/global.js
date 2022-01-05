@@ -14,27 +14,31 @@ export default css.global`
     --color-border: #dacbc8;
     --color-border-alt: #c9b5b1;
     --color-background: #e5e5e5;
+    --color-background-alt: #dacbc8;
+    --color-background-alt-2: #fff;
     --color-error: #e3523a;
     --color-error-alpha: rgba(227, 82, 58, 0.0625);
 
-    --color-background-balloon: #ffffff;
-    --color-background-balloon-alt: #eee;
-    --color-background-balloon-selected: #eee;
     --color-background-button: linear-gradient(
       to top right,
       var(--color-brand),
       var(--color-brand-alt)
     );
     --color-background-button-disabled: #dddddd;
+
     --color-text-button: #fff;
     --color-text-button-disabled: #5c5a5e;
+
     --box-shadow-outline-button: rgba(252, 116, 66, 0.5) 0px 0px 1rem;
+    --box-shadow-outline-button-small: rgba(252, 116, 66, 0.5) 0px 0px 0.5rem;
     --box-shadow-outline-undo-button: rgba(56, 56, 56, 0.25) 0px 0px 0.5rem;
 
     --border-radius-x-small: 0.25rem;
     --border-radius-small: 0.5rem;
     --border-radius-medium: 1rem;
     --border-radius-large: 1.5rem;
+
+    --page-interior-width: 42rem;
   }
 
   html {

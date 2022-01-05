@@ -1,10 +1,8 @@
 import { toKebab } from "../../helpers.js";
 
 export default function RadioBox({
-  border,
   defaultChecked,
   description,
-  horizontal,
   label,
   onChange,
   seriesOf,
@@ -30,7 +28,8 @@ export default function RadioBox({
         .radio-box {
           --color-radio-base: var(--color-border);
           --color-radio-base-border: var(--color-border-alt);
-          --color-radio-fill: var(--color-brand);
+          --color-radio-active: var(--color-brand);
+          --color-radio-active-alt: var(--color-brand-alt);
           --radio-size: ${small ? "1.4rem" : "2rem"};
           --radio-stroke: 0.3rem;
           --radio-padding: ${small ? "1rem" : "2rem"};
@@ -56,19 +55,18 @@ export default function RadioBox({
 
         input + label {
           display: block;
-          align-items: ${horizontal && "center"};
           cursor: pointer;
           padding: calc(
               var(--radio-padding) + var(--radio-padding) / 2 +
                 var(--radio-size)
             )
             var(--radio-padding) var(--radio-padding);
-          border: 0.25rem solid
-            ${border ? "var(--color-border)" : "transparent"};
           border-radius: var(--border-radius-medium);
-          text-align: ${horizontal ? "left" : "center"};
+          text-align: center;
+          border: var(--radio-stroke) solid var(--color-radio-active);
           transition: all 150ms ease-out;
         }
+
         input + label:before {
           content: "";
           display: block;
@@ -79,35 +77,17 @@ export default function RadioBox({
           left: 50%;
           transform: translateX(-50%);
           border-radius: 100%;
-          background: transparent;
-          border: var(--radio-stroke) var(--color-radio-base) solid;
-        }
-        input + label:after {
-          content: "";
-          display: block;
-          position: absolute;
-          height: calc(var(--radio-size) - var(--radio-stroke) * 2);
-          width: calc(var(--radio-size) - var(--radio-stroke) * 2);
-          top: calc(var(--radio-padding) + var(--radio-stroke));
-          left: 50%;
-          transform: translateX(-50%);
-          z-index: 100;
-          background: var(--color-radio-fill);
-          border-radius: 100%;
-          transition: opacity 150ms ease-out;
+          background: var(--color-radio-active);
+          border: var(--radio-stroke) var(--color-radio-active-alt) solid;
         }
 
         input:focus + label {
           box-shadow: var(--box-shadow-outline-button);
         }
+
         input:not(:checked) + label {
           background: var(--color-radio-base);
-        }
-        input:not(:checked) + label:after {
-          opacity: 0;
-        }
-        input:checked + label {
-          border-color: var(--color-brand);
+          border-color: var(--color-radio-base-border);
         }
         input:not(:checked) + label:focus,
         input:not(:checked) + label:hover {
@@ -116,13 +96,7 @@ export default function RadioBox({
         }
         input:not(:checked) + label:before {
           border-color: var(--color-radio-base-border);
-        }
-        input:checked + label:before {
-          background: var(--color-radio-base);
-          border-color: transparent;
-        }
-        input:checked + label:after {
-          opacity: 1;
+          background: var(--color-background);
         }
       `}</style>
     </div>

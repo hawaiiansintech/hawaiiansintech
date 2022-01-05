@@ -2,19 +2,18 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { motion } from "framer-motion";
 import MetaTags from "../../components/Metatags.js";
 import { Heading } from "../../components/Heading.tsx";
 import Input from "../../components/form/Input.js";
 import Button from "../../components/Button.js";
 import UndoButton from "../../components/UndoButton.js";
-import Disclaimer from "../../components/form/Disclaimer.js";
 import { fetchFocuses } from "../../lib/api";
-import ButtonBox from "../../components/form/ButtonBox.js";
+import ButtonBox from "../../components/form/ButtonBox.tsx";
 import ProgressBar from "../../components/form/ProgressBar.js";
 import Label from "../../components/form/Label.js";
 import InputBox from "../../components/form/InputBox.js";
 import ErrorMessage from "../../components/form/ErrorMessage.js";
+import RadioBox from "../../components/form/RadioBox.tsx";
 
 export async function getStaticProps() {
   let focuses = (await fetchFocuses()) ?? [];
@@ -45,6 +44,8 @@ export default function JoinStep3({ focuses }) {
   const router = useRouter();
   const { name, location, website } = router.query;
   const [title, setTitle] = useState("");
+  const [yearsExperience, setYearsExperience] = useState();
+  const [companySize, setCompanySize] = useState();
   const [isErrored, setIsErrored] = useState(false);
   const [suggestedFocus, setSuggestedFocus] = useState();
   const [focusesSelected, setFocusesSelected] = useState([]);
@@ -58,7 +59,6 @@ export default function JoinStep3({ focuses }) {
     let nextFocusesSelected = [...focusesSelected];
     const index = focusesSelected.indexOf(focus);
     const isSelected = index > -1;
-    setIsErrored(false);
 
     if (isSelected) {
       nextFocusesSelected.splice(index, 1);
@@ -80,15 +80,13 @@ export default function JoinStep3({ focuses }) {
   };
 
   const handleClearSuggested = () => {
-    if (
-      window.confirm("Are you sure you want to clear this suggestion field?")
-    ) {
+    if (window.confirm("Are you sure you want to clear this field?")) {
       setSuggestedFocus(undefined);
     }
   };
 
   const submitForm = () => {
-    if (totalFocusesSelected < 1) {
+    if (totalFocusesSelected < 1 || !!!yearsExperience || !!!companySize) {
       setIsErrored(true);
       if (errorPlaceholderRef.current) {
         window.scrollTo({
@@ -108,6 +106,8 @@ export default function JoinStep3({ focuses }) {
       location: location,
       website: website,
       focus: focus,
+      yearsExperience: yearsExperience,
+      companySize: companySize,
     };
     if (title) {
       queryParams["title"] = title;
@@ -120,6 +120,7 @@ export default function JoinStep3({ focuses }) {
       query: queryParams,
     });
   };
+
   const isMaxSelected = totalFocusesSelected >= MAX_COUNT;
 
   return (
@@ -134,7 +135,7 @@ export default function JoinStep3({ focuses }) {
       </Link>
       <ProgressBar
         headline="Public"
-        label="Professional mea"
+        label="What You Do"
         currentCount={2}
         totalCount={3}
       />
@@ -143,16 +144,27 @@ export default function JoinStep3({ focuses }) {
       </div>
       <div ref={errorPlaceholderRef} />
       {isErrored && (
-        <div style={{ margin: "0 auto 1rem", maxWidth: "42rem" }}>
+        <div
+          style={{
+            margin: "0 auto 1rem",
+            maxWidth: "var(--page-interior-width)",
+          }}
+        >
           <ErrorMessage
-            headline="A professional focus is required."
-            body="Please pick at least one below."
+            headline="Fields missing below."
+            body="Please fill all required fields below."
           />
         </div>
       )}
-      <div style={{ margin: "0 auto 1rem", maxWidth: "42rem" }}>
+
+      <div
+        style={{
+          margin: "0 auto 1rem",
+          maxWidth: "var(--page-interior-width)",
+        }}
+      >
         <Label
-          label="What’s your focus of work?"
+          label="Which of the following best describe what you do?"
           labelTranslation="He aha kou (mau) hana ʻoi a pau?"
         />
       </div>
@@ -163,7 +175,7 @@ export default function JoinStep3({ focuses }) {
           gridAutoRows: "1fr",
           columnGap: "0.5rem",
           rowGap: "0.5rem",
-          maxWidth: "42rem",
+          maxWidth: "var(--page-interior-width)",
           margin: "0 auto 2rem",
         }}
       >
@@ -175,6 +187,11 @@ export default function JoinStep3({ focuses }) {
           return (
             <ButtonBox
               label={focus.name}
+              badgeNumber={
+                focusesSelected.length > 1 && isSelected
+                  ? focusesSelected.indexOf(focus) + 1
+                  : undefined
+              }
               disabled={isDisabled}
               selected={isSelected}
               onClick={(e) => {
@@ -191,7 +208,7 @@ export default function JoinStep3({ focuses }) {
           display: "flex",
           flexDirection: "column",
           margin: "0 auto",
-          maxWidth: "42rem",
+          maxWidth: "var(--page-interior-width)",
           textAlign: "center",
           alignItems: "center",
         }}
@@ -206,7 +223,7 @@ export default function JoinStep3({ focuses }) {
         {showSuggestButton ? (
           <div style={{ display: "flex", alignItems: "center" }}>
             <ButtonBox
-              label={suggestedFocus ? `${suggestedFocus}` : "Suggest new"}
+              label={suggestedFocus ? `${suggestedFocus}` : "Suggest another"}
               onClick={() => {
                 setShowSuggestButton(!showSuggestButton);
               }}
@@ -236,7 +253,7 @@ export default function JoinStep3({ focuses }) {
         <p
           style={{
             margin: "1rem auto 2rem",
-            maxWidth: "42rem",
+            maxWidth: "var(--page-interior-width)",
             textAlign: "center",
           }}
         >
@@ -245,28 +262,97 @@ export default function JoinStep3({ focuses }) {
           pick another.
         </p>
       )}
-      <div style={{ margin: "2rem auto 0", maxWidth: "42rem" }}>
-        <div style={{ marginBottom: "2rem" }}>
-          <Input
-            name="title"
-            label="What’s your current title?"
-            labelTranslation="ʻO wai kou kūlana i hana?"
-            placeholder="e.g. Software Engineer"
-            optional
-            onChange={(e) => {
-              setTitle(e.target.value);
-            }}
+
+      <div
+        style={{
+          maxWidth: "var(--page-interior-width)",
+          margin: "0 auto 2rem",
+        }}
+      >
+        <div
+          style={{
+            margin: "2rem auto 0",
+          }}
+        >
+          <Label
+            label="How many years of experience do you have in your field?"
+            labelTranslation="Ehia ka makahiki o kou hana ʻana ma kou ʻoi hana?"
           />
         </div>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            margin: "0.5rem auto 2rem",
+          }}
+        >
+          {[
+            "Up to a year",
+            "1 – 4 years",
+            "5 – 9 years",
+            "10 – 14 years",
+            "15+ years",
+          ].map((dur) => (
+            <div style={{ margin: "0 0.5rem 0.5rem 0" }}>
+              <RadioBox
+                seriesOf="years-experience"
+                label={dur}
+                onChange={() => {
+                  setYearsExperience(dur);
+                }}
+              />
+            </div>
+          ))}
+        </div>
+
+        <Label
+          label="How big is the company you work for?"
+          labelTranslation="--?"
+        />
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            margin: "0.5rem auto 2rem",
+          }}
+        >
+          {[
+            "1",
+            "2 – 10",
+            "11 – 50",
+            "51 – 200",
+            "201 – 500",
+            "501 – 1000",
+            "1001 – 5000",
+            "5000 – 10000",
+            "10000+",
+            "Not Currently Working",
+          ].map((size) => (
+            <div style={{ margin: "0 0.5rem 0.5rem 0", marginRight: "0.5rem" }}>
+              <RadioBox
+                seriesOf="company-size"
+                label={size}
+                onChange={() => {
+                  setCompanySize(size);
+                }}
+              />
+            </div>
+          ))}
+        </div>
+
+        <Input
+          name="title"
+          label="What’s your current title?"
+          labelTranslation="ʻO wai kou kūlana i hana?"
+          placeholder="e.g. Software Engineer"
+          optional
+          onChange={(e) => {
+            setTitle(e.target.value);
+          }}
+        />
       </div>
       <div style={{ marginTop: "2rem" }}>
         <Button onClick={submitForm}>Continue</Button>
-      </div>
-      <div style={{ marginTop: "2rem" }}>
-        <Disclaimer>
-          Sharing your professional focus will help the community understand the
-          breadth of kanaka expertise in technology.
-        </Disclaimer>
       </div>
     </div>
   );

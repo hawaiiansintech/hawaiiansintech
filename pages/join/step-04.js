@@ -40,18 +40,24 @@ export default function JoinStep4({ focusesData }) {
       </Link>
       <ProgressBar
         headline="Private"
-        label="Personal mea"
+        label="How to Reach You"
         currentCount={3}
         totalCount={3}
       />
-      <Heading>Welcome to our little hui.</Heading>
-      <Subheading>
-        By giving us your email, you agree to sign up for our newsletter. You
-        can unsubscribe at any time. This email will be used to confirm any
-        changes to your profile going forward. We <strong>will not</strong>{" "}
-        share your contact information without your permission.
-      </Subheading>
-      <div style={{ margin: "2rem auto 0", maxWidth: "42rem" }}>
+      <div style={{ marginTop: "4rem" }}>
+        <Heading>Welcome to our little hui.</Heading>
+        <Subheading>
+          This email will be used to confirm any changes to your profile going
+          forward. We <strong>will not</strong> share your contact information
+          without your permission.
+        </Subheading>
+      </div>
+      <div
+        style={{
+          margin: "2rem auto 0",
+          maxWidth: "var(--page-interior-width)",
+        }}
+      >
         <FormikForm />
       </div>
     </div>

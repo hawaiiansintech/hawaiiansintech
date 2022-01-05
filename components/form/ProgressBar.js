@@ -23,8 +23,8 @@ export default function ProgressBar({
       </div>
       <style jsx>{`
         .progress-bar {
-          margin: 0 auto 4rem;
-          max-width: 42rem;
+          margin: 0 auto 2rem;
+          max-width: var(--page-interior-width);
           text-align: center;
         }
         .progress-bar__figures {

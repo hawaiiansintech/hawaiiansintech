@@ -30,7 +30,7 @@ export default function SearchBar({ dictionary, handleSelect, handleUpdate }) {
             gridAutoRows: "1fr",
             columnGap: "0.5rem",
             rowGap: "0.5rem",
-            maxWidth: "42rem",
+            maxWidth: "var(--page-interior-width)",
             margin: "1rem auto 0",
           }}
         >
