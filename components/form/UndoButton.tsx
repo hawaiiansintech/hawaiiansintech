@@ -1,8 +1,18 @@
 import Link from "next/link";
-import { cssHelperButtonReset } from "../styles/global.js";
 
-export default function UndoButton(props) {
-  const { children, linkTo, onClick, type } = props;
+interface UndoButtonProps {
+  children: React.ReactNode;
+  linkTo?: string;
+  onClick?: (e: React.MouseEvent) => any;
+  type?: "button" | "submit" | "reset";
+}
+
+export default function UndoButton({
+  children,
+  linkTo,
+  onClick,
+  type,
+}: UndoButtonProps) {
   let button = <>{children}</>;
 
   let buttonStyles = (

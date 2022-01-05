@@ -1,5 +1,5 @@
 interface HeadingProps {
-  children: string | JSX.Element;
+  children: React.ReactNode;
   small?: boolean;
 }
 
@@ -21,7 +21,7 @@ export function Heading(props: HeadingProps) {
 }
 
 interface SubheadingProps {
-  children: string | JSX.Element;
+  children: React.ReactNode;
   centered?: boolean;
 }
 

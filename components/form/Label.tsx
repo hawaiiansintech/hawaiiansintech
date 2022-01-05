@@ -1,6 +1,18 @@
 import { toKebab } from "../../helpers.js";
 
-export default function Label({ htmlFor, label, labelTranslation, optional }) {
+interface LabelProps {
+  htmlFor?: string;
+  label: string;
+  labelTranslation?: string;
+  optional?: boolean;
+}
+
+export default function Label({
+  htmlFor,
+  label,
+  labelTranslation,
+  optional,
+}: LabelProps) {
   return (
     <label htmlFor={htmlFor}>
       <div>

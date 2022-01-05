@@ -1,9 +1,16 @@
+interface ProgressBarProps {
+  headline?: string;
+  label?: string;
+  currentCount: number;
+  totalCount: number;
+}
+
 export default function ProgressBar({
   headline,
   label,
   currentCount,
   totalCount,
-}) {
+}: ProgressBarProps) {
   return (
     <div className="progress-bar">
       {headline && <h6>{headline}</h6>}

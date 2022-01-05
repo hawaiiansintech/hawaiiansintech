@@ -1,21 +1,33 @@
 import { toKebab } from "../../helpers.js";
-import Label from "./Label.js";
+import Label from "./Label";
 
-export default function Input(props) {
-  const {
-    defaultValue,
-    error,
-    label,
-    labelTranslation,
-    name,
-    onBlur,
-    onChange,
-    onFocus,
-    optional,
-    placeholder,
-    tabIndex,
-  } = props;
+interface InputProps {
+  defaultValue?: string;
+  error?: boolean;
+  label?: string;
+  labelTranslation?: string;
+  name: string;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => any;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => any;
+  onFocus?: (e: React.FocusEvent<HTMLInputElement>) => any;
+  optional?: boolean;
+  placeholder?: string;
+  tabIndex?: number;
+}
 
+export default function Input({
+  defaultValue,
+  error,
+  label,
+  labelTranslation,
+  name,
+  onBlur,
+  onChange,
+  onFocus,
+  optional,
+  placeholder,
+  tabIndex,
+}: InputProps) {
   const nameKebab = toKebab(name);
   return (
     <div className="input">

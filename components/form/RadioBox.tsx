@@ -2,9 +2,9 @@ import { toKebab } from "../../helpers.js";
 
 interface RadioBoxProps {
   defaultChecked?: boolean;
-  description?: string;
+  description?: React.ReactNode;
   label?: string;
-  onChange?: () => any;
+  onChange?: () => void;
   seriesOf?: string;
   small?: string;
   fullHeight?: string;

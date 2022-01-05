@@ -1,14 +1,22 @@
 import Link from "next/link";
 import { cssHelperButtonReset } from "../styles/global.js";
 
-export default function Button(props) {
-  const { children, disabled, linkTo, small, textOnly, onClick, type } = props;
-  let button = <>{children}</>;
+interface ButtonProps {
+  children?: React.ReactNode;
+  disabled?: boolean;
+  linkTo?: string;
+  onClick?: (e: React.MouseEvent) => any;
+  type?: "button" | "submit" | "reset";
+}
 
-  const background =
-    (disabled && "var(--color-background-button-disabled)") ||
-    (textOnly && "transparent") ||
-    "var(--color-background-button)";
+export default function Button({
+  children,
+  disabled,
+  linkTo,
+  onClick,
+  type,
+}: ButtonProps) {
+  let button = <>{children}</>;
 
   let buttonStyles = (
     <style jsx>{`
@@ -51,7 +59,7 @@ export default function Button(props) {
       e.preventDefault();
       return;
     }
-    if (onClick) onClick();
+    if (onClick) onClick(e);
   };
 
   if (linkTo) {

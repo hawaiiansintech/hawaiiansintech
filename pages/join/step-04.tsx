@@ -1,16 +1,16 @@
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { withFormik } from "formik";
 import * as Yup from "yup";
 import MetaTags from "../../components/Metatags.js";
-import { Heading, Subheading } from "../../components/Heading.tsx";
-import Button from "../../components/Button.js";
+import { Heading, Subheading } from "../../components/Heading";
+import Button from "../../components/Button";
 import { fetchFocuses } from "../../lib/api";
-import Input from "../../components/form/Input.js";
-import ErrorMessage from "../../components/form/ErrorMessage.js";
-import ProgressBar from "../../components/form/ProgressBar.js";
+import Input from "../../components/form/Input";
+import ErrorMessage from "../../components/form/ErrorMessage";
+import ProgressBar from "../../components/form/ProgressBar";
 
 export async function getStaticProps() {
   let focuses = (await fetchFocuses()) ?? [];
@@ -79,7 +79,6 @@ const Form = (props) => {
     router.query;
   const { email } = values;
   const [error, setError] = useState(undefined);
-  const errorPlaceholderRef = useRef();
 
   const onSubmit = (e) => {
     handleSubmit();
@@ -104,7 +103,7 @@ const Form = (props) => {
           if (res.ok) {
             return res.json();
           } else {
-            throw new Error({ status: res.status, statusText: res.statusText });
+            throw new Error(res.statusText);
           }
         })
         .then((res) => {
@@ -126,18 +125,15 @@ const Form = (props) => {
         headline: "An email address is required.",
         body: "Please try again below.",
       });
-      if (errorPlaceholderRef) {
-        window.scrollTo({
-          top: errorPlaceholderRef.current.offsetTop,
-          behavior: "smooth",
-        });
-      }
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
     }
   };
 
   return (
     <form onSubmit={onSubmit}>
-      <div ref={errorPlaceholderRef} />
       {error && (
         <div style={{ marginBottom: "1rem" }}>
           <ErrorMessage headline={error.headline} body={error.body} />
@@ -161,6 +157,9 @@ const Form = (props) => {
 const FormikForm = withFormik({
   displayName: "email-form",
   validateOnMount: true,
+  handleSubmit: (values) => {
+    console.log(values);
+  },
   mapPropsToValues: () => ({ email: "" }),
   validationSchema: Yup.object().shape({
     email: Yup.string()

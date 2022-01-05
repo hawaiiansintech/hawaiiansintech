@@ -1,19 +1,19 @@
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import MetaTags from "../../components/Metatags.js";
-import { Heading } from "../../components/Heading.tsx";
-import Input from "../../components/form/Input.js";
-import Button from "../../components/Button.js";
-import UndoButton from "../../components/UndoButton.js";
+import { Heading } from "../../components/Heading";
+import Input from "../../components/form/Input";
+import Button from "../../components/Button";
+import UndoButton from "../../components/form/UndoButton";
 import { fetchFocuses } from "../../lib/api";
-import ButtonBox from "../../components/form/ButtonBox.tsx";
-import ProgressBar from "../../components/form/ProgressBar.js";
-import Label from "../../components/form/Label.js";
-import InputBox from "../../components/form/InputBox.js";
-import ErrorMessage from "../../components/form/ErrorMessage.js";
-import RadioBox from "../../components/form/RadioBox.tsx";
+import ButtonBox from "../../components/form/ButtonBox";
+import ProgressBar from "../../components/form/ProgressBar";
+import Label from "../../components/form/Label";
+import InputBox from "../../components/form/InputBox";
+import ErrorMessage from "../../components/form/ErrorMessage";
+import RadioBox from "../../components/form/RadioBox";
 
 export async function getStaticProps() {
   let focuses = (await fetchFocuses()) ?? [];
@@ -43,14 +43,13 @@ const MAX_COUNT = 3;
 export default function JoinStep3({ focuses }) {
   const router = useRouter();
   const { name, location, website } = router.query;
-  const [title, setTitle] = useState("");
-  const [yearsExperience, setYearsExperience] = useState();
-  const [companySize, setCompanySize] = useState();
-  const [isErrored, setIsErrored] = useState(false);
+  const [title, setTitle] = useState<string>();
+  const [companySize, setCompanySize] = useState<string>();
+  const [yearsExperience, setYearsExperience] = useState<string>();
+  const [isErrored, setIsErrored] = useState<boolean>(false);
   const [suggestedFocus, setSuggestedFocus] = useState();
   const [focusesSelected, setFocusesSelected] = useState([]);
   const [showSuggestButton, setShowSuggestButton] = useState(true);
-  const errorPlaceholderRef = useRef();
 
   const totalFocusesSelected =
     focusesSelected.length + (suggestedFocus ? 1 : 0);
@@ -88,12 +87,10 @@ export default function JoinStep3({ focuses }) {
   const submitForm = () => {
     if (totalFocusesSelected < 1 || !!!yearsExperience || !!!companySize) {
       setIsErrored(true);
-      if (errorPlaceholderRef.current) {
-        window.scrollTo({
-          top: errorPlaceholderRef.current.offsetTop,
-          behavior: "smooth",
-        });
-      }
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
       return;
     }
 
@@ -142,7 +139,6 @@ export default function JoinStep3({ focuses }) {
       <div style={{ marginTop: "4rem" }}>
         <Heading>Welcome to our little hui.</Heading>
       </div>
-      <div ref={errorPlaceholderRef} />
       {isErrored && (
         <div
           style={{
@@ -240,7 +236,6 @@ export default function JoinStep3({ focuses }) {
         ) : (
           <InputBox
             onBlur={handleBlurSuggested}
-            fullHeight
             fullWidth
             border
             focusedOnInit
@@ -300,6 +295,7 @@ export default function JoinStep3({ focuses }) {
                 onChange={() => {
                   setYearsExperience(dur);
                 }}
+                key={`dur-${dur}`}
               />
             </div>
           ))}
@@ -335,6 +331,7 @@ export default function JoinStep3({ focuses }) {
                 onChange={() => {
                   setCompanySize(size);
                 }}
+                key={`size-${size}`}
               />
             </div>
           ))}

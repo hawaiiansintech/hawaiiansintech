@@ -2,10 +2,10 @@ import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
 import MetaTags from "../../components/Metatags.js";
-import { Heading, Subheading } from "../../components/Heading.tsx";
-import Button from "../../components/Button.js";
+import { Heading, Subheading } from "../../components/Heading";
+import Button from "../../components/Button";
 import Pill from "../../components/Pill.js";
-import RadioBox from "../../components/form/RadioBox.js";
+import RadioBox from "../../components/form/RadioBox";
 
 export default function Join() {
   const [urlOnSubmit, setUrlOnSubmit] = useState("/join/step-02");

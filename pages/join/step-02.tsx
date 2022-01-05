@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import urlRegex from "url-regex";
 import Head from "next/head";
@@ -6,11 +6,11 @@ import Link from "next/link";
 import { withFormik } from "formik";
 import * as Yup from "yup";
 import MetaTags from "../../components/Metatags.js";
-import { Heading, Subheading } from "../../components/Heading.tsx";
-import Button from "../../components/Button.js";
-import Input from "../../components/form/Input.js";
-import ProgressBar from "../../components/form/ProgressBar.js";
-import ErrorMessage from "../../components/form/ErrorMessage.js";
+import { Heading, Subheading } from "../../components/Heading";
+import Button from "../../components/Button";
+import Input from "../../components/form/Input";
+import ProgressBar from "../../components/form/ProgressBar";
+import ErrorMessage from "../../components/form/ErrorMessage";
 
 export default function JoinStep2(props) {
   return (
@@ -60,7 +60,6 @@ const Form = (props) => {
     isValid,
   } = props;
   const router = useRouter();
-  const errorPlaceholderRef = useRef();
   const [error, setError] = useState(undefined);
 
   const onChange = (e) => {
@@ -83,13 +82,13 @@ const Form = (props) => {
           website: values.website,
         },
       });
-    } else if (errorPlaceholderRef.current) {
+    } else {
       setError({
         headline: "Fields missing below.",
         body: "Please fill in the fields below.",
       });
       window.scrollTo({
-        top: errorPlaceholderRef.current.offsetTop,
+        top: 0,
         behavior: "smooth",
       });
     }
@@ -97,7 +96,6 @@ const Form = (props) => {
 
   return (
     <form onSubmit={onSubmit}>
-      <div ref={errorPlaceholderRef} />
       {error && (
         <div style={{ marginBottom: "1rem" }}>
           <ErrorMessage headline={error.headline} body={error.body} />
@@ -143,6 +141,9 @@ const Form = (props) => {
 
 const FormikForm = withFormik({
   displayName: "profile-form",
+  handleSubmit: (values) => {
+    console.log(values);
+  },
   validateOnMount: true,
   mapPropsToValues: () => ({ name: "", location: "", website: "" }),
   validationSchema: Yup.object().shape({

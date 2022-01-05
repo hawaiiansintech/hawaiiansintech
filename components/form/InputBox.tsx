@@ -1,19 +1,26 @@
-import { toKebab } from "../../helpers.js";
-import { cssHelperButtonReset } from "../../styles/global.js";
+interface InputBoxProps {
+  border?: boolean;
+  disabled?: boolean;
+  focusedOnInit?: boolean;
+  defaultValue?: string;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => any;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => any;
+  fullWidth?: boolean;
+  selected?: string;
+  value?: string;
+}
 
 export default function InputBox({
   border,
   disabled,
   focusedOnInit,
   defaultValue,
-  label,
   onBlur,
   onChange,
   fullWidth,
   selected,
   value,
-}) {
-  const labelKebab = label ? toKebab(label) : "";
+}: InputBoxProps) {
   return (
     <div className="input-box">
       <input

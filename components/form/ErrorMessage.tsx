@@ -1,6 +1,11 @@
-import ErrorNotifSVG from "../../components/Icons/ErrorNotifSVG.js";
+import ErrorNotifSVG from "../Icons/ErrorNotifSVG.js";
 
-export default function ErrorMessage({ headline, body }) {
+interface ErrorMessageProps {
+  headline: string;
+  body: string;
+}
+
+export default function ErrorMessage({ headline, body }: ErrorMessageProps) {
   return (
     <div className="error-message">
       <aside>

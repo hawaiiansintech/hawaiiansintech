@@ -3,17 +3,17 @@ import { cssHelperButtonReset } from "../../styles/global.js";
 
 interface ButtonBoxProps {
   border?: boolean;
-  badgeNumber?: boolean;
+  badgeNumber?: string | number;
   disabled?: boolean;
-  label?: string;
-  onClick?: () => any;
+  label: string;
+  onClick?: (e: React.MouseEvent) => any;
   fullWidth?: boolean;
   selected?: boolean;
   small?: boolean;
 }
 
 export default function ButtonBox(props: ButtonBoxProps) {
-  const labelKebab = props.label ? toKebab(props.label) : "";
+  const labelKebab = toKebab(props.label);
   return (
     <button
       id={labelKebab}
