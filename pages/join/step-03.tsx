@@ -8,7 +8,7 @@ import Input from "../../components/form/Input";
 import Button from "../../components/Button";
 import UndoButton from "../../components/form/UndoButton";
 import { fetchFocuses } from "../../lib/api";
-import ButtonBox from "../../components/form/ButtonBox";
+import Selectable from "../../components/form/Selectable";
 import ProgressBar from "../../components/form/ProgressBar";
 import Label from "../../components/form/Label";
 import InputBox from "../../components/form/InputBox";
@@ -27,16 +27,6 @@ export async function getStaticProps() {
     revalidate: 60,
   };
 }
-
-const errorMotionProps = {
-  hidden: { color: "var(--color-text--alt)" },
-  show: {
-    color: "var(--color-brand)",
-  },
-  transition: {
-    easing: "easeInOut",
-  },
-};
 
 const MAX_COUNT = 3;
 
@@ -181,7 +171,7 @@ export default function JoinStep3({ focuses }) {
           const isSelected = focusesSelected.indexOf(focus) > -1;
 
           return (
-            <ButtonBox
+            <Selectable
               label={focus.name}
               badgeNumber={
                 focusesSelected.length > 1 && isSelected
@@ -193,7 +183,7 @@ export default function JoinStep3({ focuses }) {
               onClick={(e) => {
                 handleSelect(focus);
               }}
-              key={`ButtonBox-${i}-`}
+              key={`Selectable-${i}-`}
             />
           );
         })}
@@ -218,7 +208,7 @@ export default function JoinStep3({ focuses }) {
 
         {showSuggestButton ? (
           <div style={{ display: "flex", alignItems: "center" }}>
-            <ButtonBox
+            <Selectable
               label={suggestedFocus ? `${suggestedFocus}` : "Suggest another"}
               onClick={() => {
                 setShowSuggestButton(!showSuggestButton);

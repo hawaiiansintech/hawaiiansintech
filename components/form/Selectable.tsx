@@ -1,7 +1,7 @@
 import { toKebab } from "../../helpers.js";
 import { cssHelperButtonReset } from "../../styles/global.js";
 
-interface ButtonBoxProps {
+interface SelectableProps {
   border?: boolean;
   badgeNumber?: string | number;
   disabled?: boolean;
@@ -12,7 +12,7 @@ interface ButtonBoxProps {
   small?: boolean;
 }
 
-export default function ButtonBox(props: ButtonBoxProps) {
+export default function Selectable(props: SelectableProps) {
   const labelKebab = toKebab(props.label);
   return (
     <button
@@ -34,7 +34,11 @@ export default function ButtonBox(props: ButtonBoxProps) {
             : props.border
             ? "initial"
             : "var(--color-border)"};
-          border-color: ${props.border ? "var(--color-border)" : "transparent"};
+          border-color: ${props.border
+            ? "var(--color-border)"
+            : props.selected
+            ? "var(--color-brand-alt)"
+            : "transparent"};
           color: ${props.selected ? "var(--color-text--overlay)" : "initial"};
           width: ${props.fullWidth ? "100%" : "initial"};
           opacity: ${props.disabled ? "0.5" : "initial"};
