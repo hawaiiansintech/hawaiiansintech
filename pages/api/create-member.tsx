@@ -1,5 +1,6 @@
 import airtable from "airtable";
 import SendGrid from "@sendgrid/mail";
+import Client from "@sendgrid/client";
 
 airtable.configure({
   endpointUrl: "https://api.airtable.com",
@@ -7,78 +8,91 @@ airtable.configure({
 });
 
 SendGrid.setApiKey(process.env.SENDGRID_API_KEY);
+Client.setApiKey(process.env.SENDGRID_API_KEY);
 
-interface RequestBodyAirtable {
+interface Fields {
   name: string;
   email: string;
   location: string;
   website: string;
   focus?: string | string[];
-  suggestedFocus: string;
-  title: string;
+  suggestedFocus?: string;
+  title?: string;
+  recordID?: string;
 }
 
-const addToAirtable = async (req: { body: RequestBodyAirtable }, res) => {
+const addToAirtable = async (fields: Fields) => {
   let member = {
-    Name: req.body.name,
-    Email: req.body.email,
-    "Location (User)": req.body.location,
-    Link: req.body.website,
+    Name: fields.name,
+    Email: fields.email,
+    "Location (User)": fields.location,
+    Link: fields.website,
     Exclude: true,
     Order: 1,
   };
-  if (req.body.focus) {
+  if (fields.focus) {
     member["Focus"] = () => {
-      if (req.body.focus.length > 1) {
-        return req.body.focus;
+      if (fields.focus.length > 1) {
+        return fields.focus;
       } else {
-        return [req.body.focus];
+        return [fields.focus];
       }
     };
   }
-  if (req.body.title) {
-    member["Job Title (User)"] = req.body.title;
+  if (fields.title) {
+    member["Job Title (User)"] = fields.title;
   }
-  if (req.body.suggestedFocus) {
-    member["Focus (User)"] = req.body.suggestedFocus;
+  if (fields.suggestedFocus) {
+    member["Focus (User)"] = fields.suggestedFocus;
   }
 
-  airtable
-    .base(process.env.AIRTABLE_BASE)("Members")
-    .create(member, (err) => {
-      if (err) {
-        return res.status(err.statusCode).end();
-      }
-    });
+  return new Promise((resolve, reject) => {
+    airtable
+      .base(process.env.AIRTABLE_BASE)("Members")
+      .create(member, (err, record) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(record.getId());
+      });
+  });
 };
 
-interface RequestBodyConfEmail {
-  name: string;
-  email: string;
-}
+const addEmailToList = async (fields: Fields) => {
+  /*
+    SendGrid's Marketing API is broken and requires custom field *IDs*
+    more here: https://github.com/sendgrid/sendgrid-nodejs/issues/953#issuecomment-511227621
+  */
+  const fullName = "e1_T";
+  const airtableID = "w2_T";
 
-const sendConfirmationEmail = async (req: { body: RequestBodyConfEmail }) => {
-  await SendGrid.send({
-    to: req.body.email,
-    from: {
-      name: "Hawaiians In Tech",
-      email: "aloha@hawaiiansintech.org",
-    },
-    templateId: process.env.SENDGRID_TEMPLATE,
-    dynamicTemplateData: {
-      fullName: req.body.name,
+  await Client.request({
+    method: "PUT",
+    url: "/v3/marketing/contacts",
+    body: {
+      list_ids: [process.env.SENDGRID_LIST_MEMBERS],
+      contacts: [
+        {
+          email: fields.email,
+          custom_fields: {
+            [fullName]: fields.name,
+            [airtableID]: fields.recordID,
+          },
+        },
+      ],
     },
   });
 };
 
 export default async function createMember(req, res) {
   if (req.method !== "POST") {
-    res.status(405).send({ message: "Only POST requests allowed" });
-    return;
+    return res.status(405).send({ message: "Only POST requests allowed" });
   }
+
   try {
-    addToAirtable(req, res);
-    sendConfirmationEmail(req);
+    // TODO: check if email exists
+    const recordID = await addToAirtable({ ...req.body });
+    addEmailToList({ ...req.body, recordID: recordID });
   } catch (error) {
     return res.status(error.statusCode || 500).json({ error: error.message });
   }
