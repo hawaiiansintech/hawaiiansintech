@@ -1,7 +1,5 @@
 import SendGrid from "@sendgrid/mail";
 
-const SENDGRID_TEMPLATE = `d-ea5f534a9ed44d07a354c614e8d7f6b4`;
-
 interface MailBody {
   email: string;
   name: string;
@@ -22,7 +20,7 @@ export default async function sendConfirmation(req: MailRequest, res) {
         name: "Hawaiians In Tech",
         email: "aloha@hawaiiansintech.org",
       },
-      templateId: SENDGRID_TEMPLATE,
+      templateId: process.env.SENDGRID_TEMPLATE,
       dynamicTemplateData: {
         fullName: req.body.name,
       },
