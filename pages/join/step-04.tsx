@@ -97,31 +97,11 @@ const Form = (props) => {
       }),
     });
 
-  const sendConfirmationEmail = async () => {
-    const res = await fetch("/api/send-confirmation", {
-      body: JSON.stringify({
-        name,
-        email,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-    });
-
-    const { error } = await res.json();
-    if (error) {
-      console.log(error);
-      return;
-    }
-  };
-
   const onSubmit = (e) => {
     handleSubmit();
     e.preventDefault();
     if (isValid) {
       createMember()
-        .then(sendConfirmationEmail)
         .then(() => {
           router.push({ pathname: "thank-you" });
         })
@@ -169,7 +149,7 @@ const FormikForm = withFormik({
   displayName: "email-form",
   validateOnMount: true,
   handleSubmit: (values) => {
-    console.log(values);
+    console.log(`withFormik:`, values);
   },
   mapPropsToValues: () => ({ email: "" }),
   validationSchema: Yup.object().shape({
