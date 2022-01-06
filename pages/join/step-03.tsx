@@ -292,8 +292,8 @@ export default function JoinStep3({ focuses }) {
         </div>
 
         <Label
-          label="How big is the company you work for?"
-          labelTranslation="--?"
+          label="How many employees work at your company?"
+          labelTranslation="Ehia ka poʻe e hana ma kou wahi hana?"
         />
         <div
           style={{
@@ -312,7 +312,7 @@ export default function JoinStep3({ focuses }) {
             "1001 – 5000",
             "5000 – 10000",
             "10000+",
-            "Not Currently Working",
+            "Not Currently at a Company",
           ].map((size) => (
             <div style={{ margin: "0 0.5rem 0.5rem 0", marginRight: "0.5rem" }}>
               <RadioBox

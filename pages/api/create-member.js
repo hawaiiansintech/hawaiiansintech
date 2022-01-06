@@ -37,7 +37,6 @@ export default async function createMember(req, res) {
           res.status(err.statusCode).end();
           return;
         }
-        console.log(record);
         res.status(200).send(record);
       }
     );

@@ -80,39 +80,50 @@ const Form = (props) => {
   const { email } = values;
   const [error, setError] = useState(undefined);
 
+  const createMember = () =>
+    fetch("/api/create-member", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        location,
+        website,
+        email,
+        focus,
+        suggestedFocus,
+        title,
+      }),
+    });
+
+  const sendConfirmationEmail = async () => {
+    const res = await fetch("/api/send-confirmation", {
+      body: JSON.stringify({
+        name,
+        email,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+    });
+
+    const { error } = await res.json();
+    if (error) {
+      console.log(error);
+      return;
+    }
+  };
+
   const onSubmit = (e) => {
     handleSubmit();
     e.preventDefault();
     if (isValid) {
-      fetch("/api/create-member", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          location,
-          website,
-          email,
-          focus,
-          suggestedFocus,
-          title,
-        }),
-      })
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          } else {
-            throw new Error(res.statusText);
-          }
-        })
-        .then((res) => {
-          router.push({
-            pathname: "thank-you",
-            query: {
-              id: res.id,
-            },
-          });
+      createMember()
+        .then(sendConfirmationEmail)
+        .then(() => {
+          router.push({ pathname: "thank-you" });
         })
         .catch(() =>
           setError({
