@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { withFormik } from "formik";
 import * as Yup from "yup";
 import MetaTags from "../../components/Metatags.js";
@@ -9,8 +9,11 @@ import { Heading, Subheading } from "../../components/Heading";
 import Button from "../../components/Button";
 import { fetchFocuses } from "../../lib/api";
 import Input from "../../components/form/Input";
-import ErrorMessage from "../../components/form/ErrorMessage";
+import ErrorMessage, {
+  ErrorMessageProps,
+} from "../../components/form/ErrorMessage";
 import ProgressBar from "../../components/form/ProgressBar";
+import { scrollToTop } from "../../helpers.js";
 
 export async function getStaticProps() {
   let focuses = (await fetchFocuses()) ?? [];
@@ -78,7 +81,7 @@ const Form = (props) => {
   const { name, location, website, focus, suggestedFocus, title } =
     router.query;
   const { email } = values;
-  const [error, setError] = useState(undefined);
+  const [error, setError] = useState<ErrorMessageProps>(undefined);
 
   const createMember = () =>
     fetch("/api/create-member", {
@@ -100,25 +103,13 @@ const Form = (props) => {
   const onSubmit = (e) => {
     handleSubmit();
     e.preventDefault();
-    if (isValid) {
-      createMember()
-        .then(() => {
-          router.push({ pathname: "thank-you" });
-        })
-        .catch(() =>
-          setError({
-            headline: "Gonfunnit, looks like something went wrong.",
-            body: "Please try again later.",
-          })
-        );
-    } else {
+    if (!isValid) {
       setError({
         headline: "An email address is required.",
         body: "Please try again below.",
       });
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
+      return;
+    }
       });
     }
   };

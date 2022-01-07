@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MetaTags from "../../components/Metatags.js";
 import { Heading } from "../../components/Heading";
 import Input from "../../components/form/Input";
@@ -12,8 +12,11 @@ import Selectable from "../../components/form/Selectable";
 import ProgressBar from "../../components/form/ProgressBar";
 import Label from "../../components/form/Label";
 import InputBox from "../../components/form/InputBox";
-import ErrorMessage from "../../components/form/ErrorMessage";
+import ErrorMessage, {
+  ErrorMessageProps,
+} from "../../components/form/ErrorMessage";
 import RadioBox from "../../components/form/RadioBox";
+import { scrollToTop } from "../../helpers.js";
 
 export async function getStaticProps() {
   let focuses = (await fetchFocuses()) ?? [];
@@ -36,13 +39,28 @@ export default function JoinStep3({ focuses }) {
   const [title, setTitle] = useState<string>();
   const [companySize, setCompanySize] = useState<string>();
   const [yearsExperience, setYearsExperience] = useState<string>();
-  const [isErrored, setIsErrored] = useState<boolean>(false);
   const [suggestedFocus, setSuggestedFocus] = useState();
   const [focusesSelected, setFocusesSelected] = useState([]);
   const [showSuggestButton, setShowSuggestButton] = useState(true);
+  const [error, setError] = useState<ErrorMessageProps>(undefined);
+  const [isValid, setIsValid] = useState(null);
+
+  useEffect(() => {
+    if (error) scrollToTop();
+  }, [error]);
 
   const totalFocusesSelected =
     focusesSelected.length + (suggestedFocus ? 1 : 0);
+
+  useEffect(() => {
+    const checkIfValid =
+      totalFocusesSelected >= 1 && !!yearsExperience && !!companySize;
+    console.log(`🍒 checkIfValid: ${checkIfValid}`);
+    if (checkIfValid) {
+      setIsValid(checkIfValid);
+      setError(undefined);
+    }
+  }, [companySize, yearsExperience, suggestedFocus, focusesSelected]);
 
   const handleSelect = (focus) => {
     let nextFocusesSelected = [...focusesSelected];
@@ -75,11 +93,10 @@ export default function JoinStep3({ focuses }) {
   };
 
   const submitForm = () => {
-    if (totalFocusesSelected < 1 || !!!yearsExperience || !!!companySize) {
-      setIsErrored(true);
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
+    if (!isValid) {
+      setError({
+        headline: "Fields missing below.",
+        body: "Please fill all required fields below.",
       });
       return;
     }
@@ -129,17 +146,14 @@ export default function JoinStep3({ focuses }) {
       <div style={{ marginTop: "4rem" }}>
         <Heading>Welcome to our little hui.</Heading>
       </div>
-      {isErrored && (
+      {error && (
         <div
           style={{
             margin: "0 auto 1rem",
             maxWidth: "var(--page-interior-width)",
           }}
         >
-          <ErrorMessage
-            headline="Fields missing below."
-            body="Please fill all required fields below."
-          />
+          <ErrorMessage headline={error.headline} body={error.body} />
         </div>
       )}
 

@@ -1,6 +1,6 @@
 import ErrorNotifSVG from "../Icons/ErrorNotifSVG.js";
 
-interface ErrorMessageProps {
+export interface ErrorMessageProps {
   headline: string;
   body: string;
 }

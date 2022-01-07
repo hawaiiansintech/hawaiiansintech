@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import urlRegex from "url-regex";
 import Head from "next/head";
@@ -10,7 +10,10 @@ import { Heading, Subheading } from "../../components/Heading";
 import Button from "../../components/Button";
 import Input from "../../components/form/Input";
 import ProgressBar from "../../components/form/ProgressBar";
-import ErrorMessage from "../../components/form/ErrorMessage";
+import ErrorMessage, {
+  ErrorMessageProps,
+} from "../../components/form/ErrorMessage";
+import { scrollToTop } from "../../helpers.js";
 
 export default function JoinStep2(props) {
   return (
@@ -60,7 +63,11 @@ const Form = (props) => {
     isValid,
   } = props;
   const router = useRouter();
-  const [error, setError] = useState(undefined);
+  const [error, setError] = useState<ErrorMessageProps>(undefined);
+
+  useEffect(() => {
+    if (error) scrollToTop();
+  }, [error]);
 
   const onChange = (e) => {
     handleChange(e);
@@ -86,10 +93,6 @@ const Form = (props) => {
       setError({
         headline: "Fields missing below.",
         body: "Please fill in the fields below.",
-      });
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
       });
     }
   };

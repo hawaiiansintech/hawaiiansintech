@@ -1,5 +1,12 @@
 import { useState } from "react";
 
+export function scrollToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+}
+
 export function toKebab(string) {
   return string
     .split("")
