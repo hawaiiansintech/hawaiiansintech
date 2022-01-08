@@ -1,9 +1,20 @@
+import { motion } from "framer-motion";
+
 interface ProgressBarProps {
   headline?: string;
   label?: string;
   currentCount: number;
   totalCount: number;
 }
+
+const bar = {
+  hidden: { opacity: 0, transform: "scaleX(0)" },
+  show: {
+    opacity: 1,
+    transform: "scaleX(1)",
+    transition: { duration: 1, ease: "easeOut" },
+  },
+};
 
 export default function ProgressBar({
   headline,
@@ -15,16 +26,32 @@ export default function ProgressBar({
     <div className="progress-bar">
       {headline && <h6>{headline}</h6>}
       {label && <h3>{label}</h3>}
-      <div className="progress-bar__figures">
-        {[...Array(totalCount)].map((value, index) => {
+      <div className="progress-bar__segments">
+        {[...Array(totalCount)].map((val, index) => {
           const isActive = index < currentCount;
+          const isLastActive = index + 1 === currentCount;
           return (
-            <figure
-              className={`progress-bar__figure${
-                isActive ? " progress-bar__figure--active" : ""
+            <div
+              className={`progress-bar-segment ${
+                isActive && !isLastActive && "progress-bar-segment--filled"
               }`}
-              key={`pbf-${index}`}
-            />
+              key={`progress-bar-segment-${index}`}
+            >
+              {isLastActive && (
+                <motion.figure
+                  variants={bar}
+                  initial="hidden"
+                  animate="show"
+                  style={{
+                    margin: "0",
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "var(--color-brand)",
+                    transformOrigin: "0 0",
+                  }}
+                />
+              )}
+            </div>
           );
         })}
       </div>
@@ -34,7 +61,7 @@ export default function ProgressBar({
           max-width: var(--page-interior-width);
           text-align: center;
         }
-        .progress-bar__figures {
+        .progress-bar__segments {
           display: grid;
           width: 100%;
           grid-auto-flow: column;
@@ -45,12 +72,11 @@ export default function ProgressBar({
           max-width: 24rem;
           margin: 0 auto;
         }
-        .progress-bar__figure {
-          margin: 0;
+        .progress-bar-segment {
           height: 0.5rem;
           background-color: var(--color-border);
         }
-        .progress-bar__figure--active {
+        .progress-bar-segment--filled {
           background-color: var(--color-brand);
         }
         h3 {
