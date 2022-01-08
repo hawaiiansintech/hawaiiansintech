@@ -39,7 +39,7 @@ export default function Selectable(props: SelectableProps) {
             : props.selected
             ? "var(--color-brand-alt)"
             : "transparent"};
-          color: ${props.selected ? "var(--color-text--overlay)" : "initial"};
+          color: ${props.selected ? "var(--color-text-overlay)" : "initial"};
           width: ${props.fullWidth ? "100%" : "initial"};
           opacity: ${props.disabled ? "0.5" : "initial"};
           pointer-events: ${props.disabled ? "none" : "initial"};
@@ -87,7 +87,7 @@ export default function Selectable(props: SelectableProps) {
           line-height: 1;
           font-size: 0.8em;
           background: var(--color-brand-alt);
-          color: var(--color-text--overlay);
+          color: var(--color-text-overlay);
         }
       `}</style>
     </button>

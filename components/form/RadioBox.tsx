@@ -37,7 +37,7 @@ export default function RadioBox(props: RadioBoxProps) {
           display: block;
           border: 0.25rem solid var(--color-brand-alt);
           background: var(--color-brand);
-          color: var(--color-text--overlay);
+          color: var(--color-text-overlay);
           margin: 0;
           border-radius: var(--border-radius-small);
           text-align: center;

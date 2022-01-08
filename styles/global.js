@@ -8,9 +8,11 @@ export default css.global`
     --color-brand-faded: #cf8870;
     --color-link: var(--color-brand);
     --color-link-alt: var(--color-brand-alt);
-    --color-text: #353535;
-    --color-text--alt: #777;
-    --color-text--overlay: #fff;
+    --color-text: #373332;
+    --color-text-alt: #585150;
+    --color-text-alt-2: #847876;
+    --color-text-alt-3: #9f8986;
+    --color-text-overlay: #fff;
     --color-border: #dacbc8;
     --color-border-alt: #c9b5b1;
     --color-background: #e5e5e5;

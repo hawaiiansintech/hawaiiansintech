@@ -54,9 +54,6 @@ export default function Input({
 
       <style jsx>{`
         input {
-          --color-placeholder: #b7b7b7;
-        }
-        input {
           margin: 1rem 0 ${error ? "0.25rem" : "0"};
           width: 100%;
           padding: 0.5rem 0.75rem;
@@ -67,15 +64,15 @@ export default function Input({
           background: var(--color-border);
         }
         input::placeholder {
-          color: var(--color-text);
+          color: var(--color-text-alt-2);
         }
         input:focus {
           border: 0.2rem solid var(--color-brand);
           box-shadow: var(--box-shadow-outline-button);
           background: white;
         }
-        input::placeholder {
-          color: var(--color-text);
+        input:focus::placeholder {
+          color: var(--color-text-alt-3);
         }
         span {
           font-size: 0.9rem;

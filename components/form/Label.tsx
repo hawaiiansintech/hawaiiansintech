@@ -36,7 +36,7 @@ export default function Label({
         }
         span {
           margin-left: 0.25rem;
-          color: var(--color-text--alt);
+          color: var(--color-text-alt);
           font-weight: 600;
         }
         h4 {
