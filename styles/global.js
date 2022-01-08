@@ -24,6 +24,7 @@ export default css.global`
       var(--color-brand),
       var(--color-brand-alt)
     );
+    --color-background-button-loading: var(--color-brand-faded);
     --color-background-button-disabled: #dddddd;
 
     --color-text-button: #fff;
@@ -73,6 +74,15 @@ export default css.global`
 
   a:hover {
     color: var(--color-link-alt);
+  }
+
+  /* Animations
+  ----------------------------- */
+
+  @keyframes spin {
+    to {
+      -webkit-transform: rotate(360deg);
+    }
   }
 
   /* Type 

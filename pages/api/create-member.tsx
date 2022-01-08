@@ -84,15 +84,34 @@ const addEmailToList = async (fields: Fields) => {
   });
 };
 
+export const validateEmail = async (email: string) => {
+  return new Promise((resolve, reject) => {
+    airtable
+      .base(process.env.AIRTABLE_BASE)("Members")
+      .select({
+        view: "Grid view",
+        filterByFormula: `{Email} = "${email}"`,
+      })
+      .firstPage((error, records) => {
+        if (error) reject(error);
+        resolve(records?.length >= 1);
+      });
+  });
+};
+
 export default async function createMember(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).send({ message: "Only POST requests allowed" });
+    return res.status(405).json({ message: "Only POST requests allowed" });
   }
 
   try {
-    // TODO: check if email exists
-    const recordID = await addToAirtable({ ...req.body });
-    addEmailToList({ ...req.body, recordID: recordID });
+    const isEmailUsed = await validateEmail(req.body.email);
+    if (!isEmailUsed) {
+      const recordID = await addToAirtable({ ...req.body });
+      addEmailToList({ ...req.body, recordID: recordID });
+    } else {
+      return res.status(422).json({ error: "This email is in use." });
+    }
   } catch (error) {
     return res.status(error.statusCode || 500).json({ error: error.message });
   }

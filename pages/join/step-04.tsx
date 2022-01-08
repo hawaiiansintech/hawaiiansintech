@@ -7,7 +7,6 @@ import * as Yup from "yup";
 import MetaTags from "../../components/Metatags.js";
 import { Heading, Subheading } from "../../components/Heading";
 import Button from "../../components/Button";
-import { fetchFocuses } from "../../lib/api";
 import Input from "../../components/form/Input";
 import ErrorMessage, {
   ErrorMessageProps,
@@ -15,20 +14,7 @@ import ErrorMessage, {
 import ProgressBar from "../../components/form/ProgressBar";
 import { scrollToTop } from "../../helpers.js";
 
-export async function getStaticProps() {
-  let focuses = (await fetchFocuses()) ?? [];
-  focuses = focuses.sort((a, b) => {
-    return b.count - a.count;
-  });
-  return {
-    props: {
-      focusesData: focuses,
-    },
-    revalidate: 60,
-  };
-}
-
-export default function JoinStep4({ focusesData }) {
+export default function JoinStep4() {
   const router = useRouter();
   const { name, location, website, focus } = router.query;
   return (
@@ -82,36 +68,72 @@ const Form = (props) => {
     router.query;
   const { email } = values;
   const [error, setError] = useState<ErrorMessageProps>(undefined);
+  const [isLoading, setIsLoading] = useState<boolean>(undefined);
 
-  const createMember = () =>
-    fetch("/api/create-member", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name,
-        location,
-        website,
-        email,
-        focus,
-        suggestedFocus,
-        title,
-      }),
+  useEffect(() => {
+    if (error) {
+      scrollToTop();
+    }
+  }, [error]);
+
+  const createMember = async () => {
+    return new Promise((resolve, reject) => {
+      fetch("/api/create-member", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          location,
+          website,
+          email,
+          focus,
+          suggestedFocus,
+          title,
+        }),
+      }).then(
+        (response: Response) => {
+          resolve(response);
+        },
+        (error: Response) => {
+          reject(error);
+        }
+      );
     });
+  };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     handleSubmit();
     e.preventDefault();
+    setError(undefined);
+    setIsLoading(true);
+
     if (!isValid) {
+      setIsLoading(false);
       setError({
         headline: "An email address is required.",
         body: "Please try again below.",
       });
       return;
     }
+
+    const res: Response | any = await createMember();
+    if (res.ok) {
+      router.push({ pathname: "thank-you" });
+      return;
+    } else if (res.status === 422) {
+      setError({
+        headline: "This email is already in use.",
+        body: "Only one member can be associated per email address.",
+      });
+    } else {
+      setError({
+        headline: "Gonfunnit, looks like something went wrong!",
+        body: "Please try again later.",
       });
     }
+    setIsLoading(false);
   };
 
   return (
@@ -131,7 +153,9 @@ const Form = (props) => {
           error={touched.email && errors.email}
         />
       </div>
-      <Button type="submit">Submit</Button>
+      <Button type="submit" loading={isLoading}>
+        Submit
+      </Button>
     </form>
   );
 };

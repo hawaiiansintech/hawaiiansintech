@@ -179,7 +179,7 @@ export default function JoinStep3({ focuses }) {
           margin: "0 auto 2rem",
         }}
       >
-        {focuses.map((focus, i) => {
+        {focuses.map((focus, i: number) => {
           const isDisabled =
             isMaxSelected && focusesSelected.indexOf(focus) < 0;
           const isSelected = focusesSelected.indexOf(focus) > -1;
