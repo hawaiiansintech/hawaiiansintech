@@ -8,6 +8,7 @@ export enum IconColor {
 export enum IconAsset {
   Cap = "cap",
   Network = "network",
+  ArrowRight = "arrow-right",
 }
 
 interface IconProps {
@@ -52,6 +53,15 @@ export function Icon({ alpha, asset, color = IconColor.Black }: IconProps) {
               clip-rule="evenodd"
               d="M20 26a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0 2a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM35 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm0 2a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM31 32a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm0 2a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM9 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm0 2a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM34 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 2a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM6 36a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 2a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
             />
+          </>
+        );
+      case IconAsset.ArrowRight:
+        return (
+          <>
+            <g className={getAccentClassNames()}>
+              <path d="m29 20.143-1.414 1.414L17.15 11.122a1 1 0 1 1 1.414-1.414L29 20.143Z" />
+              <path d="M29 20.143 18.565 30.578a1 1 0 1 1-1.414-1.414l10.435-10.436L29 20.143Z" />
+            </g>
           </>
         );
     }

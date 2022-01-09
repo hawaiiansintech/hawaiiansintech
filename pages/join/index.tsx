@@ -6,10 +6,10 @@ import { Heading, Subheading } from "../../components/Heading";
 import Button from "../../components/Button";
 import Pill from "../../components/Pill.js";
 import RadioBox from "../../components/form/RadioBox";
+import { Icon, IconAsset, IconColor } from "../../components/icons/icon";
+import StartOption from "../../components/StartOption";
 
 export default function Join() {
-  const [urlOnSubmit, setUrlOnSubmit] = useState("/join/step-02");
-
   return (
     <div className="container">
       <Head>
@@ -32,43 +32,22 @@ export default function Join() {
       </Subheading>
       <div
         style={{
-          display: "flex",
-          justifyContent: "center",
-          marginTop: "2rem",
+          margin: "2rem auto 0",
+          maxWidth: "var(--page-interior-width)",
         }}
       >
-        <div style={{ maxWidth: "20rem", marginRight: "1rem" }}>
-          <RadioBox
-            defaultChecked
-            label="Join the list on the homepage"
-            onChange={() => {
-              setUrlOnSubmit("/join/step-02");
-            }}
-            description="Current professional or researcher in the technology sector"
-            seriesOf="add-or-nominate"
-          />
-        </div>
-        <div style={{ maxWidth: "20rem" }}>
-          <RadioBox
-            label="Join  apprentice program"
-            onChange={() => {
-              setUrlOnSubmit("/join/apprentice");
-            }}
-            description={
-              <>
-                <div style={{ margin: "0.5rem 0 0.25rem" }}>
-                  <Pill>COMING SOON</Pill>
-                </div>
-                Student or someone transitioning careers
-              </>
-            }
-            seriesOf="add-or-nominate"
-          />
-        </div>
-      </div>
-
-      <div style={{ marginTop: "2rem" }}>
-        <Button linkTo={urlOnSubmit}>Continue</Button>
+        <StartOption
+          icon={IconAsset.Network}
+          headline="I currently work in tech"
+          description="I want to join the network of kanaka “techies” and contribute my expertise to the hui"
+          href="join/step-02"
+        />
+        <StartOption
+          icon={IconAsset.Cap}
+          headline="I’m just getting started"
+          description="I want to learn about how to get involved and explore the possibilities of a career as an ʻōiwi in tech"
+          href="join/apprentice"
+        />
       </div>
 
       <style jsx>{`
