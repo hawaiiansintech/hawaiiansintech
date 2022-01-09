@@ -124,8 +124,8 @@ const Form = (props) => {
       return;
     } else if (res.status === 422) {
       setError({
-        headline: "This email is already in use.",
-        body: "Only one member can be associated per email address.",
+        headline: "This email is associated with another member.",
+        body: "We only allow one member per email address.",
       });
     } else {
       setError({
