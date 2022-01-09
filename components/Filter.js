@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import CheckSVG from "../components/Icons/CheckSVG.js";
-import CloseSVG from "../components/Icons/CloseSVG.js";
+import CheckSVG from "./icons/CheckSVG.js";
+import CloseSVG from "./icons/CloseSVG.js";
 
 const sidebarAnimation = {
   hidden: { x: "120%" },
@@ -19,11 +19,10 @@ export default function Filter({
   handleCloseFilter,
   categoryName,
 }) {
-
   let countItems = {};
-  items.forEach(item => {
-    countItems[item.label] = countItems[item.label] + 1 || 1
-  })
+  items.forEach((item) => {
+    countItems[item.label] = countItems[item.label] + 1 || 1;
+  });
 
   return (
     <motion.div
@@ -50,19 +49,18 @@ export default function Filter({
         >
           <CloseSVG />
         </a>
-        <h3>
-          FILTER
-        </h3>
+        <h3>FILTER</h3>
 
-        {items.sort((a, b) => {
-          if (a.label > b.label) return 1;
-          if (a.label < b.label) return -1;
-          return 0;
-        }).filter((curr, index, self) => (
-          index === self.findIndex((t) => (
-            t.label === curr.label
-          ))
-        ))
+        {items
+          .sort((a, b) => {
+            if (a.label > b.label) return 1;
+            if (a.label < b.label) return -1;
+            return 0;
+          })
+          .filter(
+            (curr, index, self) =>
+              index === self.findIndex((t) => t.label === curr.label)
+          )
           .map((item, i) => {
             return (
               <FilterItem
@@ -74,7 +72,7 @@ export default function Filter({
                   handleFilterClick(item);
                 }}
               />
-            )
+            );
           })}
       </div>
       <style jsx>{`
@@ -111,9 +109,7 @@ function FilterItem({ label, active, onClick, count }) {
     <div className="filterItem" onClick={onClick}>
       <div>
         {label}
-        <span className="filterItem__count">
-          ({count})
-        </span>
+        <span className="filterItem__count">({count})</span>
       </div>
       <div className={`check ${active ? "active" : ""}`}>
         <CheckSVG />

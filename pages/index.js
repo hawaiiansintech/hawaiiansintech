@@ -6,7 +6,7 @@ import Nav from "../components/Nav.js";
 import Filter from "../components/Filter.js";
 import Title from "../components/Title.js";
 import MetaTags from "../components/Metatags.js";
-import FilterSVG from "../components/Icons/FilterSVG.js";
+import FilterSVG from "../components/icons/FilterSVG.js";
 import HitLogo from "../components/HitLogo.js";
 
 export default function Home({ technologists, filters }) {
@@ -17,7 +17,9 @@ export default function Home({ technologists, filters }) {
   const [filterCategory, setFilterCategory] = useState(null);
 
   useEffect(() => {
-    setTechnologistsList(shuffle(technologists).sort((a, b) => a.order - b.order));
+    setTechnologistsList(
+      shuffle(technologists).sort((a, b) => a.order - b.order)
+    );
   }, []);
 
   // Filter
@@ -74,8 +76,7 @@ export default function Home({ technologists, filters }) {
       setTechnologistsList(
         technologists.filter(
           (d) =>
-            activeFilters.includes(d.role) &&
-            activeFilters.includes(d.region)
+            activeFilters.includes(d.role) && activeFilters.includes(d.region)
         )
       );
     else clearFilter();
@@ -142,10 +143,9 @@ export async function getStaticProps() {
       technologists,
       filters,
     },
-    revalidate: 60
+    revalidate: 60,
   };
 }
-
 
 function Content({ technologists, handleOpenFilter, className, onClick }) {
   const tableHeaderRef = useRef();
@@ -206,10 +206,16 @@ function Content({ technologists, handleOpenFilter, className, onClick }) {
             <tbody>
               {technologists.map((d, i) => (
                 <tr key={`${d.name}-${i}`}>
-                  <td><a href={d.link} target="_blank">{d.name}</a></td>
+                  <td>
+                    <a href={d.link} target="_blank">
+                      {d.name}
+                    </a>
+                  </td>
                   <td className="thsize-aux dn">
                     <a href={d.link} target="_blank">
-                      <h3 className="thtitle">{d.location}, {d.region}</h3>
+                      <h3 className="thtitle">
+                        {d.location}, {d.region}
+                      </h3>
                     </a>
                   </td>
                   <td className="thsize-aux">
@@ -217,7 +223,11 @@ function Content({ technologists, handleOpenFilter, className, onClick }) {
                       <h3 className="thtitle">{d.role}</h3>
                     </a>
                   </td>
-                  <td className="thsize-link"><a href={d.link} target="_blank">→</a></td>
+                  <td className="thsize-link">
+                    <a href={d.link} target="_blank">
+                      →
+                    </a>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -275,7 +285,6 @@ function Content({ technologists, handleOpenFilter, className, onClick }) {
           padding-bottom: 0;
         }
       `}</style>
-
     </div>
   );
 }
