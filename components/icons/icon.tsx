@@ -29,14 +29,14 @@ export function Icon({ alpha, asset, color = IconColor.Black }: IconProps) {
             </g>
             <path
               className="icon__base"
-              fill-rule="evenodd"
-              clip-rule="evenodd"
+              fillRule="evenodd"
+              clipRule="evenodd"
               d="M10 25.451v-8.75H8v8.818c0 .642.328 1.239.87 1.584a20.732 20.732 0 0 0 22.26 0c.542-.345.87-.942.87-1.584V16.7h-2v8.751a18.733 18.733 0 0 1-20 0Z"
             />
             <path
               className="icon__base"
-              fill-rule="evenodd"
-              clip-rule="evenodd"
+              fillRule="evenodd"
+              clipRule="evenodd"
               d="M33.946 15 20.66 10.35a2 2 0 0 0-1.322 0L6.054 15l13.285 4.65a2 2 0 0 0 1.322 0L33.946 15ZM21.32 8.463a4 4 0 0 0-2.642 0L2.697 14.057c-.893.312-.893 1.575 0 1.887l15.982 5.594a4 4 0 0 0 2.642 0l15.982-5.594c.893-.312.893-1.575 0-1.888L21.321 8.463Z"
             />
           </>
@@ -49,8 +49,8 @@ export function Icon({ alpha, asset, color = IconColor.Black }: IconProps) {
             </g>
             <path
               className="icon__base"
-              fill-rule="evenodd"
-              clip-rule="evenodd"
+              fillRule="evenodd"
+              clipRule="evenodd"
               d="M20 26a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0 2a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM35 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm0 2a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM31 32a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm0 2a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM9 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm0 2a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM34 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 2a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM6 36a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 2a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
             />
           </>
