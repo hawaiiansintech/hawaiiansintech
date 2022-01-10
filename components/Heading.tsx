@@ -12,7 +12,7 @@ export function Heading(props: HeadingProps) {
           max-width: var(--page-interior-width);
           margin: 0 auto 2rem;
           font-size: ${props.small ? "1.2rem" : "2.4rem"};
-          font-weight: 600;
+          font-weight: 500;
           text-align: center;
         }
       `}</style>
