@@ -9,7 +9,7 @@ export function Heading(props: HeadingProps) {
       {props.children}
       <style jsx>{`
         .heading {
-          max-width: var(--page-interior-width);
+          max-width: var(--width-page-interior);
           margin: 0 auto 2rem;
           font-size: ${props.small ? "1.2rem" : "2.4rem"};
           font-weight: 500;
@@ -35,7 +35,7 @@ export function Subheading(props: SubheadingProps) {
       {props.children}
       <style jsx>{`
         .header-description {
-          max-width: var(--page-interior-width);
+          max-width: var(--width-page-interior);
           margin: 0 auto;
           text-align: center;
           font-size: 1.4rem;

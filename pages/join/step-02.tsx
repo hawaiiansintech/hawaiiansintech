@@ -43,7 +43,7 @@ export default function JoinStep2(props) {
       <div
         style={{
           margin: "2rem auto 0",
-          maxWidth: "var(--page-interior-width)",
+          maxWidth: "var(--width-page-interior)",
         }}
       >
         <FormikForm />

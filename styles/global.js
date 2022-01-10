@@ -41,7 +41,8 @@ export default css.global`
     --border-radius-medium: 1rem;
     --border-radius-large: 1.5rem;
 
-    --page-interior-width: 42rem;
+    --width-page-interior: 42rem;
+    --width-floating-balloon: 28rem;
   }
 
   html {

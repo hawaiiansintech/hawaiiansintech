@@ -150,7 +150,7 @@ export default function JoinStep3({ focuses }) {
         <div
           style={{
             margin: "0 auto 1rem",
-            maxWidth: "var(--page-interior-width)",
+            maxWidth: "var(--width-page-interior)",
           }}
         >
           <ErrorMessage headline={error.headline} body={error.body} />
@@ -160,7 +160,7 @@ export default function JoinStep3({ focuses }) {
       <div
         style={{
           margin: "0 auto 1rem",
-          maxWidth: "var(--page-interior-width)",
+          maxWidth: "var(--width-page-interior)",
         }}
       >
         <Label
@@ -175,7 +175,7 @@ export default function JoinStep3({ focuses }) {
           gridAutoRows: "1fr",
           columnGap: "0.5rem",
           rowGap: "0.5rem",
-          maxWidth: "var(--page-interior-width)",
+          maxWidth: "var(--width-page-interior)",
           margin: "0 auto 2rem",
         }}
       >
@@ -208,7 +208,7 @@ export default function JoinStep3({ focuses }) {
           display: "flex",
           flexDirection: "column",
           margin: "0 auto",
-          maxWidth: "var(--page-interior-width)",
+          maxWidth: "var(--width-page-interior)",
           textAlign: "center",
           alignItems: "center",
         }}
@@ -252,7 +252,7 @@ export default function JoinStep3({ focuses }) {
         <p
           style={{
             margin: "1rem auto 2rem",
-            maxWidth: "var(--page-interior-width)",
+            maxWidth: "var(--width-page-interior)",
             textAlign: "center",
           }}
         >
@@ -264,7 +264,7 @@ export default function JoinStep3({ focuses }) {
 
       <div
         style={{
-          maxWidth: "var(--page-interior-width)",
+          maxWidth: "var(--width-page-interior)",
           margin: "0 auto 2rem",
         }}
       >

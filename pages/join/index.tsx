@@ -33,7 +33,7 @@ export default function Join() {
       <div
         style={{
           margin: "2rem auto 0",
-          maxWidth: "var(--page-interior-width)",
+          maxWidth: "var(--width-page-interior)",
         }}
       >
         <StartOption

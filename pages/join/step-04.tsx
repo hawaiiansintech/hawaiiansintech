@@ -44,7 +44,7 @@ export default function JoinStep4() {
       <div
         style={{
           margin: "2rem auto 0",
-          maxWidth: "var(--page-interior-width)",
+          maxWidth: "var(--width-page-interior)",
         }}
       >
         <FormikForm />
