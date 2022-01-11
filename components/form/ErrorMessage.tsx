@@ -1,4 +1,4 @@
-import ErrorNotifSVG from "../icons/ErrorNotifSVG.js";
+import ErrorNotifSVG from "../icon/ErrorNotifSVG.js";
 
 export interface ErrorMessageProps {
   headline: string;

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import { cssHelperButtonReset } from "../styles/global";
-import { Icon, IconAsset } from "./icons/icon";
+import { Icon, IconAsset } from "./icon/icon";
 
 export interface BalloonLinkProps {
   label: string;

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Icon, IconAsset, IconColor } from "./icons/icon";
+import { Icon, IconAsset, IconColor } from "./icon/icon";
 
 interface StartOptionProps {
   icon?: IconAsset;

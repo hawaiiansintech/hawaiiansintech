@@ -1,12 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useState } from "react";
 import MetaTags from "../../components/Metatags.js";
 import { Heading, Subheading } from "../../components/Heading";
-import Button from "../../components/Button";
-import Pill from "../../components/Pill.js";
-import RadioBox from "../../components/form/RadioBox";
-import { Icon, IconAsset, IconColor } from "../../components/icons/icon";
+import { IconAsset } from "../../components/icon/icon";
 import StartOption from "../../components/StartOption";
 
 export default function Join() {
