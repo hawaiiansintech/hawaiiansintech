@@ -55,8 +55,14 @@ export default function Button({
         cursor: ${disabled || loading ? "not-allowed" : "pointer"};
       }
       .button:hover {
-        border-color: ${disabled ? "transparent" : "var(--color-brand-alt)"};
-        color: ${disabled ? "inherit" : "var(--color-text-button)"};
+        border-color: ${disabled || loading
+          ? "transparent"
+          : "var(--color-brand-alt)"};
+        color: ${disabled
+          ? "var(--color-text-button-disabled)"
+          : loading
+          ? "transparent"
+          : "var(--color-text-button)"};
       }
       .button:focus {
         border-color: ${loading || disabled
