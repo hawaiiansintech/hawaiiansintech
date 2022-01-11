@@ -9,6 +9,7 @@ export enum IconAsset {
   Cap = "cap",
   Network = "network",
   ArrowRight = "arrow-right",
+  Close = "close",
 }
 
 interface IconProps {
@@ -63,6 +64,13 @@ export function Icon({ alpha, asset, color = IconColor.Black }: IconProps) {
               <path d="M29 20.143 18.565 30.578a1 1 0 1 1-1.414-1.414l10.435-10.436L29 20.143Z" />
             </g>
           </>
+        );
+      case IconAsset.Close:
+        return (
+          <g className={getAccentClassNames()}>
+            <path d="M12.707 13.707a1 1 0 0 1 1.414-1.414l13.435 13.435a1 1 0 1 1-1.414 1.414L12.707 13.707Z" />
+            <path d="M27.556 13.708a1 1 0 0 0-1.414-1.414L12.707 25.729a1 1 0 0 0 1.414 1.414l13.435-13.435Z" />
+          </g>
         );
     }
   };

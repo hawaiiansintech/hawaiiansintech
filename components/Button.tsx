@@ -55,11 +55,13 @@ export default function Button({
         cursor: ${disabled || loading ? "not-allowed" : "pointer"};
       }
       .button:hover {
-        border-color: var(--color-brand-alt);
-        color: var(--color-text-button);
+        border-color: ${disabled ? "transparent" : "var(--color-brand-alt)"};
+        color: ${disabled ? "inherit" : "var(--color-text-button)"};
       }
       .button:focus {
-        border-color: ${loading ? "transparent" : "var(--color-brand-alt)"};
+        border-color: ${loading || disabled
+          ? "transparent"
+          : "var(--color-brand-alt)"};
         box-shadow: ${disabled || loading
           ? "none"
           : "var(--box-shadow-outline-button)"};

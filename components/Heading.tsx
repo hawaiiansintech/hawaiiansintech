@@ -36,6 +36,7 @@ export function Subheading(props: SubheadingProps) {
       <style jsx>{`
         .header-description {
           max-width: var(--width-page-interior);
+          color: var(--color-text-alt);
           margin: 0 auto;
           text-align: center;
           font-size: 1.4rem;

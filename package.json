@@ -17,6 +17,7 @@
     "framer-motion": "^1.11.1",
     "fuzzysort": "^1.1.4",
     "js-yaml": "^3.13.1",
+    "moment": "^2.29.1",
     "next": "^11.0.1",
     "next-absolute-url": "^1.2.2",
     "prettier": "^2.4.1",

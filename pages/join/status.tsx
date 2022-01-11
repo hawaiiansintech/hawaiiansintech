@@ -1,3 +1,4 @@
+import moment from "moment";
 import Head from "next/head";
 import MetaTags from "../../components/Metatags.js";
 import { Heading, Subheading } from "../../components/Heading";
@@ -11,7 +12,12 @@ import {
   MemberStatusOption,
   MemberStatusProps,
 } from "../api/get-member-status";
-import Link from "next/link";
+import Balloon from "../../components/Balloon";
+import { useRouter } from "next/router";
+import React, { useState } from "react";
+import Input from "../../components/form/Input";
+import Button from "../../components/Button";
+import ErrorMessage from "../../components/form/ErrorMessage";
 
 export const getServerSideProps: GetServerSideProps<MemberStatusProps> = async (
   context
@@ -50,6 +56,7 @@ export const getServerSideProps: GetServerSideProps<MemberStatusProps> = async (
         reasonDeclined: memberRes.reasonDeclined
           ? memberRes.reasonDeclined
           : null,
+        modifiedOn: memberRes.modifiedOn ? memberRes.modifiedOn : null,
       },
     };
   }
@@ -61,32 +68,99 @@ export default function Status({
   error,
   status,
   reasonDeclined,
+  modifiedOn,
 }: MemberStatusProps) {
+  const router = useRouter();
+  const defaultIdFromQuery = router.query.r
+    ? Array.isArray(router.query.r)
+      ? router.query.r[0]
+      : router.query.r
+    : undefined;
+  const [searchField, setSearchField] = useState(defaultIdFromQuery);
   const approved = reviewed && status === MemberStatusOption.Approved;
   const declined = reviewed && status === MemberStatusOption.Declined;
   const hasFeedback = reviewed && status === MemberStatusOption.HasFeedback;
+  const renderError = () => {
+    if (error && defaultIdFromQuery) {
+      return (
+        <ErrorMessage
+          headline={error}
+          body={`${defaultIdFromQuery} does not exist. Please try another.`}
+        />
+      );
+    }
+  };
+  const renderBalloon = (): React.ReactNode => {
+    if (name) {
+      return (
+        <Balloon
+          message={`This message was intended for ${name}.`}
+          link={{ label: "Not you?", href: "/join/status" }}
+        />
+      );
+    }
+  };
+  const renderSearch = (): React.ReactNode | undefined => {
+    if (name && !error) {
+      return <></>;
+    }
+    return (
+      <form style={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ marginBottom: "1rem" }}>
+          <Input
+            name="search-field"
+            placeholder="Enter record ID"
+            onChange={(e) => {
+              setSearchField(e.target.value);
+            }}
+            defaultValue={
+              router.query.r
+                ? Array.isArray(router.query.r)
+                  ? router.query.r[0]
+                  : router.query.r
+                : undefined
+            }
+          />
+        </div>
+        <Button
+          onClick={(e) => {
+            e.preventDefault();
+            if (searchField === router.query.r) return;
+            router.push(`${router.pathname}?r=${searchField}`);
+          }}
+          disabled={searchField === router.query.r}
+          type="submit"
+        >
+          Submit
+        </Button>
+      </form>
+    );
+  };
 
-  const renderHeadline = (): string => {
-    if (error) {
-      return error;
-    } else if (hasFeedback) {
+  const getHeadline = (): string => {
+    if (hasFeedback) {
       return `Your profile has feedback.`;
     } else if (declined) {
       return `Your profile has been declined (perhaps, just this time).`;
     } else if (approved) {
       return `Your profile has been approved and published!`;
+    } else if (name) {
+      return `Your profile is in the queue for review.`;
     }
-    return `Mahalo for your patience, ${name}.`;
+    return `Search for your profile’s status`;
   };
-  const getStatusIndicatorType = (): StatusIndicatorType => {
+
+  const getStatusIndicatorType = (): StatusIndicatorType | null => {
     if (hasFeedback) {
       return StatusIndicatorType.HasFeedback;
-    } else if (declined || error) {
+    } else if (declined) {
       return StatusIndicatorType.Declined;
     } else if (approved) {
       return StatusIndicatorType.Approved;
+    } else if (name) {
+      return StatusIndicatorType.InProgress;
     }
-    return StatusIndicatorType.InProgress;
+    return null;
   };
   const getDescription = (): string => {
     if (hasFeedback) {
@@ -95,59 +169,80 @@ export default function Status({
       return "We've reviewed your entry but, through careful consideration, we found that your profile may not be a fit for our community. Please feel free to reach out and/or try again at a later time!";
     } else if (approved) {
       return "We’ve reviewed your entry and everything checks out! There’s nothing else you need to you. Welcome to our little hui.";
-    } else if (!error) {
-      return "Your profile is in the queue for review. Once everything checks out, we'll let you know that it's been published on the list, or if we have any questions / requested adjustments.";
+    } else if (name) {
+      return "Mahalo for your patience. Once everything checks out, we'll let you know that it's been published on the list, or if we have any questions / requested adjustments.";
     }
+    return null;
   };
   return (
-    <div className="container">
-      <Head>
-        <title>Hawaiians in Technology | Status</title>
-        <link rel="icon" href="/favicon.ico" />
-        <MetaTags />
-      </Head>
-      <div
-        style={{
-          maxWidth: "var(--page-interior-width)",
-          margin: "0 auto 2rem",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        {!error && (
-          <div
-            style={{
-              borderRadius: "var(--border-radius-x-small)",
-              background: "var(--color-background-alt)",
-              padding: "1rem",
-              margin: "0 0 2rem",
-            }}
-          >
-            This message is meant for {name}. <Link href="/">Not you?</Link>
+    <>
+      <div className="container">
+        <Head>
+          <title>Hawaiians in Technology | Status</title>
+          <link rel="icon" href="/favicon.ico" />
+          <MetaTags />
+        </Head>
+        <div
+          style={{
+            maxWidth: "var(--width-page-interior)",
+            margin: "0 auto 2rem",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          {getStatusIndicatorType() ? (
+            <StatusIndicator type={getStatusIndicatorType()} />
+          ) : (
+            <img
+              src={"/images/HitLogoNoBackground.png"}
+              alt="website logo"
+              style={{
+                width: "120px",
+              }}
+            />
+          )}
+          <div style={{ marginTop: "2rem" }}>
+            <Heading>{getHeadline()}</Heading>
           </div>
-        )}
-        <StatusIndicator type={getStatusIndicatorType()} />
-        <div style={{ marginTop: "2rem" }}>
-          <Heading>{renderHeadline()}</Heading>
+          {renderError()}
+          {getDescription() && (
+            <Subheading centered>{getDescription()}</Subheading>
+          )}
+          {renderSearch()}
+          {declined && reasonDeclined && (
+            <div className="status-rule-box">
+              {reasonDeclined.map((reason) => (
+                <p>{reason}</p>
+              ))}
+            </div>
+          )}
         </div>
-        <Subheading centered>{getDescription()}</Subheading>
-        {declined && reasonDeclined && (
-          <div
-            style={{
-              padding: "1rem",
-              background: "var(--color-background-alt-2)",
-              borderRadius: "var(--border-radius-medium)",
-              color: "var(--color-text-alt-2)",
-              marginTop: "2rem",
-            }}
-          >
-            {reasonDeclined.map((reason) => (
-              <p>{reason}</p>
-            ))}
-          </div>
+        {modifiedOn && (
+          <p className="status-last-modified">
+            Last updated {moment(modifiedOn, "YYYYMMDD").fromNow()}
+          </p>
         )}
       </div>
-    </div>
+      {renderBalloon()}
+      <style jsx>{`
+        .container {
+          padding-bottom: 4rem;
+        }
+        .status-rule-box {
+          padding: 1rem;
+          background: var(--color-background-alt);
+          border-radius: var(--border-radius-medium);
+          color: var(--color-text-alt-2);
+          margin-top: 2rem;
+        }
+        .status-last-modified {
+          font-weight: 400;
+          font-style: italic;
+          text-align: center;
+          color: var(--color-text-alt-2);
+        }
+      `}</style>
+    </>
   );
 }
