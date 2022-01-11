@@ -6,7 +6,7 @@ import Nav from "../components/Nav.js";
 import Filter from "../components/Filter.js";
 import Title from "../components/Title.js";
 import MetaTags from "../components/Metatags.js";
-import FilterSVG from "../components/icons/FilterSVG.js";
+import FilterSVG from "../components/icon/FilterSVG.js";
 import HitLogo from "../components/HitLogo.js";
 
 export default function Home({ technologists, filters }) {
