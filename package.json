@@ -10,12 +10,17 @@
   "dependencies": {
     "airtable": "^0.11.1",
     "babel-plugin-inline-react-svg": "^1.1.1",
+    "d3-fetch": "^3.0.1",
+    "d3-scale": "^4.0.2",
     "drive-db": "^6.0.0",
     "framer-motion": "^1.11.1",
     "js-yaml": "^3.13.1",
     "next": "^11.0.1",
     "next-absolute-url": "^1.2.2",
+    "node-fetch": "^3.2.0",
+    "node-fetch-polyfill": "^2.0.6",
     "react": "16.14",
-    "react-dom": "16.13.1"
+    "react-dom": "16.13.1",
+    "react-simple-maps": "^2.3.0"
   }
 }

@@ -13,6 +13,11 @@ export default function Nav(props) {
           <a>Nominate</a>
         </Link>
       </li>
+      <li>
+        <Link href="/map">
+          <a>Map</a>
+        </Link>
+      </li>
 
       <style jsx>{`
         ul {
