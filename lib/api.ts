@@ -19,7 +19,7 @@ const getBase = async ({ name, view }: BaseProps) => {
     .all();
 };
 
-export async function fetchTechnologists() {
+export async function fetchMembers() {
   const technologists = await getBase({ name: "Members" });
   const regions = await getBase({ name: "Regions" });
   const roles = await getBase({ name: "Roles" });
@@ -50,7 +50,6 @@ export async function fetchRoles() {
   return roles
     .filter((role) => role.fields["Members"] && role.fields["Name"])
     .map((role) => {
-      if (role.fields["Members"] === undefined) return;
       return {
         name: role.fields["Name"],
         id: role.fields["ID"],

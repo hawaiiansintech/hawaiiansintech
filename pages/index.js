@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { fetchTechnologists } from "../lib/api";
+import { fetchMembers } from "../lib/api";
 import Nav from "../components/Nav.js";
 import Filter from "../components/Filter.js";
 import Title from "../components/Title.js";
@@ -126,7 +126,7 @@ export default function Home({ technologists, filters }) {
 }
 
 export async function getStaticProps() {
-  const technologists = (await fetchTechnologists()) ?? [];
+  const technologists = (await fetchMembers()) ?? [];
 
   let roles = technologists?.map((technologist) => {
     return { label: technologist.role, active: false, category: "role" };
