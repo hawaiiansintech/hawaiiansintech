@@ -44,6 +44,7 @@ export default function RadioBox(props: RadioBoxProps) {
           padding: 0.25rem 0.5rem;
           cursor: pointer;
           transition: all 150ms ease-out;
+          user-select: none;
         }
         input:not(:checked) + label {
           background: var(--color-border);
