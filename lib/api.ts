@@ -6,7 +6,7 @@ airtable.configure({
 });
 
 interface BaseProps {
-  name: "Members" | "Regions" | "Roles" | "Focuses";
+  name: "Members" | "Regions" | "Roles" | "Focuses" | "Industries";
   view?: string;
 }
 
@@ -65,6 +65,23 @@ export async function fetchFocuses() {
   const focuses = await getBase({ name: "Focuses" });
 
   return focuses
+    .filter((role) => role.fields["Name"])
+    .map((role) => {
+      return {
+        name: role.fields["Name"],
+        id: role.fields["ID"],
+        members: role.fields["Members"] ? role.fields["Members"] : null,
+        count: Array.isArray(role.fields["Members"])
+          ? role.fields["Members"].length
+          : 0,
+      };
+    });
+}
+
+export async function fetchIndustries() {
+  const industries = await getBase({ name: "Industries" });
+
+  return industries
     .filter((role) => role.fields["Name"])
     .map((role) => {
       return {

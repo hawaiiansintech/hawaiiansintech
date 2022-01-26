@@ -7,7 +7,7 @@ import { Heading } from "../../components/Heading";
 import Input from "../../components/form/Input";
 import Button from "../../components/Button";
 import UndoButton from "../../components/form/UndoButton";
-import { fetchFocuses } from "../../lib/api";
+import { fetchFocuses, fetchIndustries } from "../../lib/api";
 import Selectable from "../../components/form/Selectable";
 import ProgressBar from "../../components/form/ProgressBar";
 import Label from "../../components/form/Label";
@@ -20,12 +20,11 @@ import { scrollToTop } from "../../helpers.js";
 
 export async function getStaticProps() {
   let focuses = (await fetchFocuses()) ?? [];
-  focuses = focuses.sort((a, b) => {
-    return b.count - a.count;
-  });
+  let industries = (await fetchIndustries()) ?? [];
   return {
     props: {
-      focuses: focuses,
+      focuses: focuses.sort((a, b) => b.count - a.count),
+      industries: industries,
     },
     revalidate: 60,
   };
@@ -33,7 +32,8 @@ export async function getStaticProps() {
 
 const MAX_COUNT = 3;
 
-export default function JoinStep3({ focuses }) {
+export default function JoinStep3({ focuses, industries }) {
+  console.log(industries);
   const router = useRouter();
   const { name, location, website } = router.query;
   const [title, setTitle] = useState<string>();
@@ -41,6 +41,7 @@ export default function JoinStep3({ focuses }) {
   const [yearsExperience, setYearsExperience] = useState<string>();
   const [suggestedFocus, setSuggestedFocus] = useState();
   const [focusesSelected, setFocusesSelected] = useState([]);
+  const [industriesSelected, setIndustriesSelected] = useState<string[]>([]);
   const [showSuggestButton, setShowSuggestButton] = useState(true);
   const [error, setError] = useState<ErrorMessageProps>(undefined);
   const [isValid, setIsValid] = useState(null);
@@ -101,15 +102,11 @@ export default function JoinStep3({ focuses }) {
       return;
     }
 
-    let focus = focusesSelected.map((fs) => {
-      return fs.id;
-    });
-
     let queryParams = {
       name: name,
       location: location,
       website: website,
-      focus: focus,
+      focus: focusesSelected.map((fs) => fs.id),
       yearsExperience: yearsExperience,
       companySize: companySize,
     };
@@ -146,214 +143,272 @@ export default function JoinStep3({ focuses }) {
       <div style={{ marginTop: "4rem" }}>
         <Heading>Welcome to our little hui.</Heading>
       </div>
-      {error && (
-        <div
-          style={{
-            margin: "0 auto 1rem",
-            maxWidth: "var(--width-page-interior)",
-          }}
-        >
-          <ErrorMessage headline={error.headline} body={error.body} />
-        </div>
-      )}
-
       <div
         style={{
           margin: "0 auto 1rem",
           maxWidth: "var(--width-page-interior)",
         }}
       >
+        {error && <ErrorMessage headline={error.headline} body={error.body} />}
         <Label
-          label="Which of the following best describe what you do?"
+          label="Which of the following best describes your field of work?"
           labelTranslation="He aha kou (mau) hana ʻoi a pau?"
         />
-      </div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          gridAutoRows: "1fr",
-          columnGap: "0.5rem",
-          rowGap: "0.5rem",
-          maxWidth: "var(--width-page-interior)",
-          margin: "0 auto 2rem",
-        }}
-      >
-        {focuses.map((focus, i: number) => {
-          const isDisabled =
-            isMaxSelected && focusesSelected.indexOf(focus) < 0;
-          const isSelected = focusesSelected.indexOf(focus) > -1;
-
-          return (
-            <Selectable
-              label={focus.name}
-              badgeNumber={
-                focusesSelected.length > 1 && isSelected
-                  ? focusesSelected.indexOf(focus) + 1
-                  : undefined
-              }
-              disabled={isDisabled}
-              selected={isSelected}
-              onClick={(e) => {
-                handleSelect(focus);
-              }}
-              key={`Selectable-${i}-`}
-            />
-          );
-        })}
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          margin: "0 auto",
-          maxWidth: "var(--width-page-interior)",
-          textAlign: "center",
-          alignItems: "center",
-        }}
-      >
-        <div>
-          <h4 style={{ margin: "0 0 0.25rem" }}>Anything missing?</h4>
-          <h4 style={{ fontWeight: "400", margin: "0 0 1rem" }}>
-            Suggest an area of focus that you expect to be here.
-          </h4>
-        </div>
-
-        {showSuggestButton ? (
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <Selectable
-              label={suggestedFocus ? `${suggestedFocus}` : "Suggest another"}
-              onClick={() => {
-                setShowSuggestButton(!showSuggestButton);
-              }}
-              border={!!!suggestedFocus}
-              selected={!!suggestedFocus}
-              disabled={isMaxSelected && !!!suggestedFocus}
-            />
-            {suggestedFocus !== undefined && (
-              <div style={{ marginLeft: "0.5rem" }}>
-                <UndoButton onClick={handleClearSuggested}>Clear</UndoButton>
-              </div>
-            )}
-          </div>
-        ) : (
-          <InputBox
-            onBlur={handleBlurSuggested}
-            fullWidth
-            border
-            focusedOnInit
-            defaultValue={suggestedFocus}
-            disabled={isMaxSelected && !!!suggestedFocus}
-          />
-        )}
-      </div>
-      {isMaxSelected && (
-        <p
-          style={{
-            margin: "1rem auto 2rem",
-            maxWidth: "var(--width-page-interior)",
-            textAlign: "center",
-          }}
-        >
-          Maximum of {`${MAX_COUNT}`} reached. Please{" "}
-          <UndoButton onClick={handleDeselectLast}>deselect one</UndoButton> to
-          pick another.
-        </p>
-      )}
-
-      <div
-        style={{
-          maxWidth: "var(--width-page-interior)",
-          margin: "0 auto 2rem",
-        }}
-      >
         <div
           style={{
-            margin: "2rem auto 0",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr 1fr",
+            gridAutoRows: "1fr",
+            columnGap: "0.5rem",
+            rowGap: "0.5rem",
+            margin: "1rem 0 2rem",
+            padding: "0.5rem",
+            background: "var(--color-background-alt-2)",
+            borderRadius: "var(--border-radius-medium)",
           }}
         >
+          {focuses.map((focus, i: number) => {
+            const isDisabled =
+              isMaxSelected && focusesSelected.indexOf(focus) < 0;
+            const isSelected = focusesSelected.indexOf(focus) > -1;
+
+            return (
+              <Selectable
+                label={focus.name}
+                badgeNumber={
+                  focusesSelected.length > 1 && isSelected
+                    ? focusesSelected.indexOf(focus) + 1
+                    : undefined
+                }
+                disabled={isDisabled}
+                selected={isSelected}
+                onClick={(e) => {
+                  handleSelect(focus);
+                }}
+                key={`Selectable-${i}-`}
+              />
+            );
+          })}
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            textAlign: "center",
+            alignItems: "center",
+          }}
+        >
+          <div>
+            <h4 style={{ margin: "0 0 0.25rem" }}>Anything missing?</h4>
+            <h4 style={{ fontWeight: "400", margin: "0 0 1rem" }}>
+              Suggest an area of focus that you expect to be here.
+            </h4>
+          </div>
+
+          {showSuggestButton ? (
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Selectable
+                label={suggestedFocus ? `${suggestedFocus}` : "Suggest another"}
+                onClick={() => {
+                  setShowSuggestButton(!showSuggestButton);
+                }}
+                border={!!!suggestedFocus}
+                selected={!!suggestedFocus}
+                disabled={isMaxSelected && !!!suggestedFocus}
+              />
+              {suggestedFocus !== undefined && (
+                <div style={{ marginLeft: "0.5rem" }}>
+                  <UndoButton onClick={handleClearSuggested}>Clear</UndoButton>
+                </div>
+              )}
+            </div>
+          ) : (
+            <InputBox
+              onBlur={handleBlurSuggested}
+              fullWidth
+              border
+              focusedOnInit
+              defaultValue={suggestedFocus}
+              disabled={isMaxSelected && !!!suggestedFocus}
+            />
+          )}
+        </div>
+        {isMaxSelected && (
+          <p
+            style={{
+              margin: "1rem 0 2rem",
+              textAlign: "center",
+            }}
+          >
+            Maximum of {`${MAX_COUNT}`} reached. Please{" "}
+            <UndoButton onClick={handleDeselectLast}>deselect one</UndoButton>{" "}
+            to pick another.
+          </p>
+        )}
+
+        <div style={{ margin: "2rem 0" }}>
+          <Input
+            name="title"
+            label="What’s your current title?"
+            labelTranslation="ʻO wai kou kūlana i hana?"
+            placeholder="e.g. Software Engineer"
+            optional
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
+          />
+        </div>
+        <div style={{ marginBottom: "2rem" }}>
           <Label
             label="How many years of experience do you have in your field?"
             labelTranslation="Ehia ka makahiki o kou hana ʻana ma kou ʻoi hana?"
           />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            margin: "0.5rem auto 2rem",
-          }}
-        >
-          {[
-            "Up to a year",
-            "1 – 4 years",
-            "5 – 9 years",
-            "10 – 14 years",
-            "15+ years",
-          ].map((dur) => (
-            <div style={{ margin: "0 0.5rem 0.5rem 0" }}>
-              <RadioBox
-                seriesOf="years-experience"
-                label={dur}
-                onChange={() => {
-                  setYearsExperience(dur);
-                }}
-                key={`dur-${dur}`}
-              />
-            </div>
-          ))}
-        </div>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              margin: "1rem auto 2rem",
+            }}
+          >
+            {[
+              "Less than a year",
+              "1 – 2 years",
+              "3 – 4 years",
+              "5 – 9 years",
+              "10 – 19 years",
+              "More than 20 years",
+            ].map((dur) => (
+              <div style={{ margin: "0 0.5rem 0.5rem 0" }}>
+                <RadioBox
+                  seriesOf="years-experience"
+                  label={dur}
+                  onChange={() => {
+                    setYearsExperience(dur);
+                  }}
+                  key={`dur-${dur}`}
+                />
+              </div>
+            ))}
+          </div>
 
-        <Label
-          label="How many employees work at your company?"
-          labelTranslation="Ehia ka poʻe e hana ma kou wahi hana?"
-        />
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            margin: "0.5rem auto 2rem",
-          }}
-        >
-          {[
-            "1",
-            "2 – 10",
-            "11 – 50",
-            "51 – 200",
-            "201 – 500",
-            "501 – 1000",
-            "1001 – 5000",
-            "5000 – 10000",
-            "10000+",
-            "Not Currently at a Company",
-          ].map((size) => (
-            <div style={{ margin: "0 0.5rem 0.5rem 0", marginRight: "0.5rem" }}>
-              <RadioBox
-                seriesOf="company-size"
-                label={size}
-                onChange={() => {
-                  setCompanySize(size);
-                }}
-                key={`size-${size}`}
-              />
+          <Label
+            label="Which of the following best describes the industry that your company operates within?"
+            labelTranslation="Ehia ka poʻe e hana ma kou wahi hana?"
+          />
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr",
+              gridAutoRows: "1fr",
+              columnGap: "0.5rem",
+              rowGap: "0.5rem",
+              margin: "1rem auto 2rem",
+              padding: "0.5rem",
+              background: "var(--color-background-alt-2)",
+              borderRadius: "var(--border-radius-medium)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                gridColumn: "span 3",
+              }}
+            >
+              <Selectable fullWidth label="Technology" />
             </div>
-          ))}
-        </div>
+            <div
+              style={{
+                position: "relative",
+                gridColumn: "span 3",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: 0,
+                  right: 0,
+                  border: "0.0625rem solid var(--color-border-alt)",
+                }}
+              />
+              <span
+                style={{
+                  position: "absolute",
+                  left: "50%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                  background: "var(--color-background-alt-2)",
+                  padding: "0 0.5rem",
+                  color: "var(--color-text-alt-2)",
+                  fontWeight: "400",
+                  fontSize: "0.75rem",
+                  letterSpacing: "0.1rem",
+                }}
+              >
+                AND/OR
+              </span>
+            </div>
+            {industries.map((focus, i: number) => {
+              const isDisabled =
+                isMaxSelected && focusesSelected.indexOf(focus) < 0;
+              const isSelected = focusesSelected.indexOf(focus) > -1;
 
-        <Input
-          name="title"
-          label="What’s your current title?"
-          labelTranslation="ʻO wai kou kūlana i hana?"
-          placeholder="e.g. Software Engineer"
-          optional
-          onChange={(e) => {
-            setTitle(e.target.value);
-          }}
-        />
-      </div>
-      <div style={{ marginTop: "2rem" }}>
-        <Button onClick={submitForm}>Continue</Button>
+              return (
+                <Selectable
+                  label={focus.name}
+                  disabled={isDisabled}
+                  selected={isSelected}
+                  onClick={(e) => {
+                    handleSelect(focus);
+                  }}
+                  key={`ind-${i}`}
+                />
+              );
+            })}
+          </div>
+
+          <Label
+            label="How many employees work at your company?"
+            labelTranslation="Ehia ka poʻe e hana ma kou wahi hana?"
+          />
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              margin: "1rem auto 2rem",
+            }}
+          >
+            {[
+              "1",
+              "2 – 9",
+              "10 – 19",
+              "20 – 49",
+              "50 – 99",
+              "100 – 999",
+              "1000 – 4999",
+              "5000 – 10000",
+              "More than 10000",
+              "N/A",
+            ].map((size) => (
+              <div
+                style={{ margin: "0 0.5rem 0.5rem 0", marginRight: "0.5rem" }}
+              >
+                <RadioBox
+                  seriesOf="company-size"
+                  label={size}
+                  onChange={() => {
+                    setCompanySize(size);
+                  }}
+                  key={`size-${size}`}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div style={{ marginTop: "2rem" }}>
+          <Button onClick={submitForm}>Continue</Button>
+        </div>
       </div>
     </div>
   );

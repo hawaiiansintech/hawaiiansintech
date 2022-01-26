@@ -14,10 +14,11 @@ export default css.global`
     --color-text-alt-3: #9f8986;
     --color-text-overlay: #fff;
     --color-border: #dacbc8;
-    --color-border-alt: #c9b5b1;
+    --color-border-alt: #bda9a5;
     --color-background: #e5e5e5;
     --color-background-alt: #dacbc8;
-    --color-background-alt-2: #fff;
+    --color-background-alt-2: #c9b5b1;
+    --color-background-white: #fff;
     --color-error: #e3523a;
     --color-error-alpha: rgba(227, 82, 58, 0.0625);
 

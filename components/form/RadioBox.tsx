@@ -34,7 +34,9 @@ export default function RadioBox(props: RadioBoxProps) {
           left: -9999px;
         }
         label {
-          display: block;
+          display: flex;
+          align-items: center;
+          position: relative;
           border: 0.25rem solid var(--color-brand-alt);
           background: var(--color-brand);
           color: var(--color-text-overlay);
@@ -46,10 +48,27 @@ export default function RadioBox(props: RadioBoxProps) {
           transition: all 150ms ease-out;
           user-select: none;
         }
+        label:before {
+          content: "";
+          display: inline-block;
+          height: 1rem;
+          width: 1rem;
+          background: #fff;
+          border: 0.35rem solid var(--color-brand-alt);
+          border-radius: 50%;
+          margin-right: 0.5rem;
+        }
         input:not(:checked) + label {
           background: var(--color-border);
           border-color: transparent;
           color: initial;
+        }
+        input:not(:checked) + label:before {
+          background: transparent;
+          border: 0.2rem solid var(--color-border-alt);
+        }
+        input:not(:checked) + label:after {
+          border-color: transparent;
         }
         label:hover {
           border-color: var(--color-brand-alt);
