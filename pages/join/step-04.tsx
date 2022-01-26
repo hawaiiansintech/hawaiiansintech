@@ -163,9 +163,7 @@ const Form = (props) => {
 const FormikForm = withFormik({
   displayName: "email-form",
   validateOnMount: true,
-  handleSubmit: (values) => {
-    console.log(`withFormik:`, values);
-  },
+  handleSubmit: () => {},
   mapPropsToValues: () => ({ email: "" }),
   validationSchema: Yup.object().shape({
     email: Yup.string()

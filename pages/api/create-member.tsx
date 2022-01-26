@@ -1,6 +1,7 @@
 import airtable from "airtable";
 import SendGrid from "@sendgrid/mail";
 import Client from "@sendgrid/client";
+import { sendEmail, SendEmailProps } from "../../lib/confirmation-email";
 
 airtable.configure({
   endpointUrl: "https://api.airtable.com",
@@ -21,7 +22,7 @@ interface Fields {
   recordID?: string;
 }
 
-const addToAirtable = (fields: Fields) => {
+const addToAirtable = async (fields: Fields): Promise<string> => {
   let member = {
     Name: fields.name,
     Email: fields.email,
@@ -58,7 +59,7 @@ const addToAirtable = (fields: Fields) => {
   });
 };
 
-const addToSendgrid = async (fields: Fields) => {
+const addSgContact = async (fields: Fields) => {
   /*
     SendGrid's Marketing API is broken and requires custom field *IDs*
     more here: https://github.com/sendgrid/sendgrid-nodejs/issues/953#issuecomment-511227621
@@ -91,12 +92,24 @@ const addToSendgrid = async (fields: Fields) => {
   });
 };
 
-export const validateEmail = async (email: string) => {
+const sendSgEmail = async ({ email, airtableID, name }: SendEmailProps) => {
+  return new Promise((resolve, reject) => {
+    sendEmail({ email: email, airtableID: airtableID, name: name })
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
+export const validateEmail = async (email: string): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     airtable
       .base(process.env.AIRTABLE_BASE)("Members")
       .select({
-        view: "Grid view",
+        view: "All",
         filterByFormula: `{Email} = "${email}"`,
       })
       .firstPage((error, records) => {
@@ -114,13 +127,30 @@ export default async function createMember(req, res) {
   try {
     const isEmailUsed = await validateEmail(req.body.email);
     if (!isEmailUsed) {
-      const recordID = await addToAirtable({ ...req.body });
-      await addToSendgrid({ ...req.body, recordID: recordID });
+      const recordID: string = await addToAirtable({ ...req.body }).then(
+        (body) => {
+          console.log("✅ added member to airtable");
+          return body;
+        }
+      );
+      await addSgContact({
+        ...req.body,
+        recordID: recordID,
+      }).then(() => {
+        console.log("✅ added member to sendgrid");
+      });
+      await sendSgEmail({
+        email: req.body.email,
+        name: req.body.name,
+        airtableID: recordID,
+      }).then(() => {
+        console.log("✅ sent member email via sendgrid");
+      });
+      return res.status(200).json({ message: "Successfully added member." });
     } else {
       return res.status(422).json({ error: "This email is in use." });
     }
   } catch (error) {
     return res.status(error.statusCode || 500).json({ error: error.message });
   }
-  return res.status(200).json({ error: "" });
 }

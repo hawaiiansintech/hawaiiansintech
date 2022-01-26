@@ -30,7 +30,7 @@ export default async function fetchMemberStatus(req, res) {
       airtable
         .base(process.env.AIRTABLE_BASE)("Members")
         .select({
-          view: "Grid view",
+          view: "All",
           filterByFormula: `{RecordID} = "${recordID}"`,
         })
         .all((error, records) => {
