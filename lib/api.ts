@@ -5,7 +5,12 @@ airtable.configure({
   apiKey: process.env.AIRTABLE_KEY,
 });
 
-const getBase = async ({ name, view }) => {
+interface BaseProps {
+  name: "Members" | "Regions" | "Roles" | "Focuses";
+  view?: string;
+}
+
+const getBase = async ({ name, view }: BaseProps) => {
   return airtable
     .base(process.env.AIRTABLE_BASE)(name)
     .select({
@@ -43,20 +48,22 @@ export async function fetchRoles() {
   const roles = await getBase({ name: "Roles" });
 
   return roles
-    .filter((role) => role.fields["Members"]?.length > 0 && role.fields["Name"])
+    .filter((role) => role.fields["Members"] && role.fields["Name"])
     .map((role) => {
       if (role.fields["Members"] === undefined) return;
       return {
         name: role.fields["Name"],
         id: role.fields["ID"],
         members: role.fields["Members"],
-        count: role.fields["Members"]?.length,
+        count: Array.isArray(role.fields["Members"])
+          ? role.fields["Members"].length
+          : 0,
       };
     });
 }
 
 export async function fetchFocuses() {
-  const focuses = await getBase({ name: "Focus" });
+  const focuses = await getBase({ name: "Focuses" });
 
   return focuses
     .filter((role) => role.fields["Name"])
@@ -65,7 +72,9 @@ export async function fetchFocuses() {
         name: role.fields["Name"],
         id: role.fields["ID"],
         members: role.fields["Members"] ? role.fields["Members"] : null,
-        count: role.fields["Members"] ? role.fields["Members"]?.length : 0,
+        count: Array.isArray(role.fields["Members"])
+          ? role.fields["Members"].length
+          : 0,
       };
     });
 }
