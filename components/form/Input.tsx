@@ -12,6 +12,7 @@ interface InputProps {
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => any;
   optional?: boolean;
   placeholder?: string;
+  value?: string;
   tabIndex?: number;
 }
 
@@ -27,6 +28,7 @@ export default function Input({
   optional,
   placeholder,
   tabIndex,
+  value,
 }: InputProps) {
   const nameKebab = toKebab(name);
   return (
@@ -49,6 +51,7 @@ export default function Input({
         onBlur={onBlur}
         onChange={onChange}
         onFocus={onFocus}
+        value={value}
       />
       {error && <span>{error}</span>}
 

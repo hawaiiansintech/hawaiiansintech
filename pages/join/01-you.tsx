@@ -14,10 +14,39 @@ import ErrorMessage, {
   ErrorMessageProps,
 } from "../../components/form/ErrorMessage";
 import { scrollToTop } from "../../helpers.js";
+import { useLocalStorage } from "../../lib/hooks";
+import UndoButton from "../../components/form/UndoButton";
+import HorizontalRule from "../../components/HorizontalRule";
 
 const NEXT_PAGE = "02-work";
 
 export default function JoinStep2(props) {
+  const [storedName, setStoredName] = useLocalStorage("jfName", "");
+  const [storedLocation, setStoredLocation] = useLocalStorage("jfLocation", "");
+  const [storedWebsite, setStoredWebsite] = useLocalStorage("jfWebsite", "");
+  const clearStorage = () => {
+    setStoredName("");
+    setStoredLocation("");
+    setStoredWebsite("");
+  };
+  const renderButton = () => {
+    if (storedName || storedLocation || storedWebsite)
+      return (
+        <div
+          style={{
+            border: "0.125rem solid var(--color-border)",
+            borderRadius: "var(--border-radius-small)",
+            padding: "1rem",
+            marginBottom: "2rem",
+            display: "flex",
+            justifyContent: "center",
+            color: "var(--color-text-alt-2)",
+          }}
+        >
+          <UndoButton onClick={clearStorage}>Clear form</UndoButton>
+        </div>
+      );
+  };
   return (
     <div className="container">
       <Head>
@@ -48,7 +77,12 @@ export default function JoinStep2(props) {
           maxWidth: "var(--width-page-interior)",
         }}
       >
-        <FormikForm />
+        {renderButton()}
+        <Formik
+          name={storedName}
+          location={storedLocation}
+          website={storedWebsite}
+        />
       </section>
     </div>
   );
@@ -65,6 +99,9 @@ const Form = (props) => {
     isValid,
   } = props;
   const router = useRouter();
+  const [storedName, setStoredName] = useLocalStorage("jfName", "");
+  const [storedLocation, setStoredLocation] = useLocalStorage("jfLocation", "");
+  const [storedWebsite, setStoredWebsite] = useLocalStorage("jfWebsite", "");
   const [error, setError] = useState<ErrorMessageProps>(undefined);
 
   useEffect(() => {
@@ -79,18 +116,14 @@ const Form = (props) => {
   };
 
   const onSubmit = (e) => {
-    handleSubmit();
     e.preventDefault();
+    handleSubmit();
 
     if (isValid) {
-      router.push({
-        pathname: NEXT_PAGE,
-        query: {
-          name: values.name,
-          location: values.location,
-          website: values.website,
-        },
-      });
+      setStoredName(values.name);
+      setStoredLocation(values.location);
+      setStoredWebsite(values.website);
+      router.push({ pathname: NEXT_PAGE });
     } else {
       setError({
         headline: "Fields missing below.",
@@ -110,6 +143,7 @@ const Form = (props) => {
         <Input
           name="name"
           label="What’s your name?"
+          value={values.name}
           labelTranslation="ʻO wai kou inoa?"
           placeholder="Full name"
           onBlur={handleBlur}
@@ -120,6 +154,7 @@ const Form = (props) => {
       <div style={{ marginBottom: "2rem" }}>
         <Input
           name="location"
+          value={values.location}
           label="Where you stay now days?"
           labelTranslation="Ma hea ʻoe e noho ʻana?"
           placeholder="City, State"
@@ -130,6 +165,7 @@ const Form = (props) => {
       </div>
       <Input
         name="website"
+        value={values.website}
         label="What’s your LinkedIn / professional website?"
         labelTranslation="He aha kou wahi uila ’oihana?"
         onBlur={handleBlur}
@@ -144,13 +180,21 @@ const Form = (props) => {
   );
 };
 
-const FormikForm = withFormik({
+const Formik = withFormik({
   displayName: "profile-form",
   handleSubmit: (values) => {
     console.log(values);
   },
-  validateOnMount: true,
-  mapPropsToValues: () => ({ name: "", location: "", website: "" }),
+  enableReinitialize: true,
+  mapPropsToValues: (props: {
+    name: string;
+    location: string;
+    website: string;
+  }) => ({
+    name: props.name || "",
+    location: props.location || "",
+    website: props.website || "",
+  }),
   validationSchema: Yup.object().shape({
     name: Yup.string().required(
       "We need to know what to call you. Name is required."
