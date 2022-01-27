@@ -15,6 +15,8 @@ import ErrorMessage, {
 } from "../../components/form/ErrorMessage";
 import { scrollToTop } from "../../helpers.js";
 
+const NEXT_PAGE = "02-work";
+
 export default function JoinStep2(props) {
   return (
     <div className="container">
@@ -31,7 +33,7 @@ export default function JoinStep2(props) {
         headline="Public"
         label="Who You Are"
         currentCount={1}
-        totalCount={3}
+        totalCount={4}
       />
       <div style={{ marginTop: "4rem" }}>
         <Heading>Welcome to our little hui.</Heading>
@@ -40,14 +42,14 @@ export default function JoinStep2(props) {
         Join our directory featuring talented kanaka working across the tech
         industry.
       </Subheading>
-      <div
+      <section
         style={{
           margin: "2rem auto 0",
           maxWidth: "var(--width-page-interior)",
         }}
       >
         <FormikForm />
-      </div>
+      </section>
     </div>
   );
 }
@@ -82,7 +84,7 @@ const Form = (props) => {
 
     if (isValid) {
       router.push({
-        pathname: "step-03",
+        pathname: NEXT_PAGE,
         query: {
           name: values.name,
           location: values.location,

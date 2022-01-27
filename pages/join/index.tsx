@@ -36,7 +36,7 @@ export default function Join() {
           icon={IconAsset.Network}
           headline="I currently work in tech"
           description="I want to join the network of kanaka “techies” and contribute my expertise to the hui"
-          href="join/step-02"
+          href="join/01-you"
         />
         <StartOption
           icon={IconAsset.Cap}

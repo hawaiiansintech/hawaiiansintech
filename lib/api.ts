@@ -62,7 +62,7 @@ export async function fetchRoles() {
 }
 
 export async function fetchFocuses() {
-  const focuses = await getBase({ name: "Focuses" });
+  const focuses = await getBase({ name: "Focuses", view: "Approved" });
 
   return focuses
     .filter((role) => role.fields["Name"])

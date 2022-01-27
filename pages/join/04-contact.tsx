@@ -30,8 +30,8 @@ export default function JoinStep4() {
       <ProgressBar
         headline="Private"
         label="How to Reach You"
-        currentCount={3}
-        totalCount={3}
+        currentCount={4}
+        totalCount={4}
       />
       <div style={{ marginTop: "4rem" }}>
         <Heading>Welcome to our little hui.</Heading>
@@ -41,14 +41,14 @@ export default function JoinStep4() {
           without your permission.
         </Subheading>
       </div>
-      <div
+      <section
         style={{
           margin: "2rem auto 0",
           maxWidth: "var(--width-page-interior)",
         }}
       >
         <FormikForm />
-      </div>
+      </section>
     </div>
   );
 }

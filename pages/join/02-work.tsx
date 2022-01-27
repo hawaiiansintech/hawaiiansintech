@@ -7,7 +7,7 @@ import { Heading } from "../../components/Heading";
 import Input from "../../components/form/Input";
 import Button from "../../components/Button";
 import UndoButton from "../../components/form/UndoButton";
-import { fetchFocuses, fetchIndustries } from "../../lib/api";
+import { fetchFocuses } from "../../lib/api";
 import Selectable from "../../components/form/Selectable";
 import ProgressBar from "../../components/form/ProgressBar";
 import Label from "../../components/form/Label";
@@ -17,14 +17,15 @@ import ErrorMessage, {
 } from "../../components/form/ErrorMessage";
 import RadioBox from "../../components/form/RadioBox";
 import { scrollToTop } from "../../helpers.js";
+import { FocusFields } from "../api/create-focus.jsx";
+
+const NEXT_PAGE = "03-company";
 
 export async function getStaticProps() {
   let focuses = (await fetchFocuses()) ?? [];
-  let industries = (await fetchIndustries()) ?? [];
   return {
     props: {
       focuses: focuses.sort((a, b) => b.count - a.count),
-      industries: industries,
     },
     revalidate: 60,
   };
@@ -32,16 +33,13 @@ export async function getStaticProps() {
 
 const MAX_COUNT = 3;
 
-export default function JoinStep3({ focuses, industries }) {
-  console.log(industries);
+export default function JoinStep3({ focuses }) {
   const router = useRouter();
   const { name, location, website } = router.query;
   const [title, setTitle] = useState<string>();
-  const [companySize, setCompanySize] = useState<string>();
   const [yearsExperience, setYearsExperience] = useState<string>();
   const [suggestedFocus, setSuggestedFocus] = useState();
   const [focusesSelected, setFocusesSelected] = useState([]);
-  const [industriesSelected, setIndustriesSelected] = useState<string[]>([]);
   const [showSuggestButton, setShowSuggestButton] = useState(true);
   const [error, setError] = useState<ErrorMessageProps>(undefined);
   const [isValid, setIsValid] = useState(null);
@@ -54,14 +52,12 @@ export default function JoinStep3({ focuses, industries }) {
     focusesSelected.length + (suggestedFocus ? 1 : 0);
 
   useEffect(() => {
-    const checkIfValid =
-      totalFocusesSelected >= 1 && !!yearsExperience && !!companySize;
-    console.log(`🍒 checkIfValid: ${checkIfValid}`);
+    const checkIfValid = totalFocusesSelected >= 1 && !!yearsExperience;
     if (checkIfValid) {
       setIsValid(checkIfValid);
       setError(undefined);
     }
-  }, [companySize, yearsExperience, suggestedFocus, focusesSelected]);
+  }, [yearsExperience, suggestedFocus, focusesSelected]);
 
   const handleSelect = (focus) => {
     let nextFocusesSelected = [...focusesSelected];
@@ -93,7 +89,26 @@ export default function JoinStep3({ focuses, industries }) {
     }
   };
 
-  const submitForm = () => {
+  const createFocus = async ({ name }: FocusFields) => {
+    return new Promise((resolve, reject) => {
+      fetch("/api/create-focus", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name }),
+      }).then(
+        (response: Response) => {
+          resolve(response);
+        },
+        (error: Response) => {
+          reject(error);
+        }
+      );
+    });
+  };
+
+  const submitForm = async () => {
     if (!isValid) {
       setError({
         headline: "Fields missing below.",
@@ -101,23 +116,22 @@ export default function JoinStep3({ focuses, industries }) {
       });
       return;
     }
-
+    let res: Response | any;
+    if (suggestedFocus) {
+      res = await createFocus({ name: suggestedFocus });
+    }
     let queryParams = {
       name: name,
       location: location,
       website: website,
-      focus: focusesSelected.map((fs) => fs.id),
+      focus: [...focusesSelected.map((fs) => fs.id), res],
       yearsExperience: yearsExperience,
-      companySize: companySize,
     };
     if (title) {
       queryParams["title"] = title;
     }
-    if (suggestedFocus) {
-      queryParams["suggestedFocus"] = suggestedFocus;
-    }
     router.push({
-      pathname: "step-04",
+      pathname: NEXT_PAGE,
       query: queryParams,
     });
   };
@@ -138,12 +152,12 @@ export default function JoinStep3({ focuses, industries }) {
         headline="Public"
         label="What You Do"
         currentCount={2}
-        totalCount={3}
+        totalCount={4}
       />
       <div style={{ marginTop: "4rem" }}>
         <Heading>Welcome to our little hui.</Heading>
       </div>
-      <div
+      <section
         style={{
           margin: "0 auto 1rem",
           maxWidth: "var(--width-page-interior)",
@@ -291,125 +305,11 @@ export default function JoinStep3({ focuses, industries }) {
               </div>
             ))}
           </div>
-
-          <Label
-            label="Which of the following best describes the industry that your company operates within?"
-            labelTranslation="Ehia ka poʻe e hana ma kou wahi hana?"
-          />
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr",
-              gridAutoRows: "1fr",
-              columnGap: "0.5rem",
-              rowGap: "0.5rem",
-              margin: "1rem auto 2rem",
-              padding: "0.5rem",
-              background: "var(--color-background-alt-2)",
-              borderRadius: "var(--border-radius-medium)",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                gridColumn: "span 3",
-              }}
-            >
-              <Selectable fullWidth label="Technology" />
-            </div>
-            <div
-              style={{
-                position: "relative",
-                gridColumn: "span 3",
-              }}
-            >
-              <div
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: 0,
-                  right: 0,
-                  border: "0.0625rem solid var(--color-border-alt)",
-                }}
-              />
-              <span
-                style={{
-                  position: "absolute",
-                  left: "50%",
-                  top: "50%",
-                  transform: "translate(-50%, -50%)",
-                  background: "var(--color-background-alt-2)",
-                  padding: "0 0.5rem",
-                  color: "var(--color-text-alt-2)",
-                  fontWeight: "400",
-                  fontSize: "0.75rem",
-                  letterSpacing: "0.1rem",
-                }}
-              >
-                AND/OR
-              </span>
-            </div>
-            {industries.map((focus, i: number) => {
-              const isDisabled =
-                isMaxSelected && focusesSelected.indexOf(focus) < 0;
-              const isSelected = focusesSelected.indexOf(focus) > -1;
-
-              return (
-                <Selectable
-                  label={focus.name}
-                  disabled={isDisabled}
-                  selected={isSelected}
-                  onClick={(e) => {
-                    handleSelect(focus);
-                  }}
-                  key={`ind-${i}`}
-                />
-              );
-            })}
-          </div>
-
-          <Label
-            label="How many employees work at your company?"
-            labelTranslation="Ehia ka poʻe e hana ma kou wahi hana?"
-          />
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              margin: "1rem auto 2rem",
-            }}
-          >
-            {[
-              "1",
-              "2 – 9",
-              "10 – 19",
-              "20 – 49",
-              "50 – 99",
-              "100 – 999",
-              "1000 – 4999",
-              "5000 – 10000",
-              "More than 10000",
-              "N/A",
-            ].map((size) => (
-              <div
-                style={{ margin: "0 0.5rem 0.5rem 0", marginRight: "0.5rem" }}
-              >
-                <RadioBox
-                  seriesOf="company-size"
-                  label={size}
-                  onChange={() => {
-                    setCompanySize(size);
-                  }}
-                  key={`size-${size}`}
-                />
-              </div>
-            ))}
-          </div>
         </div>
         <div style={{ marginTop: "2rem" }}>
           <Button onClick={submitForm}>Continue</Button>
         </div>
-      </div>
+      </section>
     </div>
   );
 }
