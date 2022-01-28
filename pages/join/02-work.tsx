@@ -17,8 +17,9 @@ import ErrorMessage, {
 } from "../../components/form/ErrorMessage";
 import RadioBox from "../../components/form/RadioBox";
 import { scrollToTop } from "../../helpers.js";
-import { FocusFields } from "../api/create-focus.jsx";
+import useStorage from "../../lib/hooks";
 
+const PREV_PAGE = "01-you";
 const NEXT_PAGE = "03-company";
 
 export async function getStaticProps() {
@@ -35,21 +36,49 @@ const MAX_COUNT = 3;
 
 export default function JoinStep3({ focuses }) {
   const router = useRouter();
-  const { name, location, website } = router.query;
+  const { getItem, setItem, removeItem } = useStorage();
+
+  const [focusesSelected, setFocusesSelected] = useState<string[]>([]);
+  const [focusSuggested, setFocusSuggested] = useState();
   const [title, setTitle] = useState<string>();
   const [yearsExperience, setYearsExperience] = useState<string>();
-  const [suggestedFocus, setSuggestedFocus] = useState();
-  const [focusesSelected, setFocusesSelected] = useState([]);
   const [showSuggestButton, setShowSuggestButton] = useState(true);
   const [error, setError] = useState<ErrorMessageProps>(undefined);
   const [isValid, setIsValid] = useState(null);
+
+  // check localStorage for focuses
+  useEffect(() => {
+    let storedFocuses = getItem("jfFocuses");
+    if (storedFocuses) {
+      // Convert string "[]" to parsable JSON
+      storedFocuses = JSON.parse(storedFocuses);
+      let match = focuses
+        .filter((foc) => storedFocuses.includes(foc.id))
+        .map((foc) => foc.id);
+      setFocusesSelected(match);
+    }
+  }, [focuses]);
+
+  // check if previous data are missing from storage
+  useEffect(() => {
+    const prevMissing =
+      !getItem("jfName") || !getItem("jfLocation") || !getItem("jfWebsite");
+    if (prevMissing) {
+      // remove any data from this page and start over
+      removeItem("jfFocuses");
+      removeItem("jfFocusSuggested");
+      removeItem("jfTitle");
+      removeItem("jfYearsExperience");
+      router.push({ pathname: PREV_PAGE });
+    }
+  }, []);
 
   useEffect(() => {
     if (error) scrollToTop();
   }, [error]);
 
   const totalFocusesSelected =
-    focusesSelected.length + (suggestedFocus ? 1 : 0);
+    focusesSelected.length + (focusSuggested ? 1 : 0);
 
   useEffect(() => {
     const checkIfValid = totalFocusesSelected >= 1 && !!yearsExperience;
@@ -57,55 +86,23 @@ export default function JoinStep3({ focuses }) {
       setIsValid(checkIfValid);
       setError(undefined);
     }
-  }, [yearsExperience, suggestedFocus, focusesSelected]);
+  }, [yearsExperience, focusSuggested, focusesSelected]);
 
-  const handleSelect = (focus) => {
-    let nextFocusesSelected = [...focusesSelected];
-    const index = focusesSelected.indexOf(focus);
+  const handleSelect = (focusID: string) => {
+    let newFocusesSelected = [...focusesSelected];
+    const index = focusesSelected.indexOf(focusID);
     const isSelected = index > -1;
-
     if (isSelected) {
-      nextFocusesSelected.splice(index, 1);
+      newFocusesSelected.splice(index, 1);
     } else if (focusesSelected.length < MAX_COUNT) {
-      nextFocusesSelected.push(focus);
+      newFocusesSelected.push(focusID);
     }
-    setFocusesSelected(nextFocusesSelected);
+    setFocusesSelected(newFocusesSelected);
   };
 
   const handleBlurSuggested = (e) => {
     setShowSuggestButton(true);
-    setSuggestedFocus(e.target.value ? e.target.value : undefined);
-  };
-
-  const handleDeselectLast = () => {
-    let nextFocusesSelected = [...focusesSelected];
-    nextFocusesSelected.pop();
-    setFocusesSelected(nextFocusesSelected);
-  };
-
-  const handleClearSuggested = () => {
-    if (window.confirm("Are you sure you want to clear this field?")) {
-      setSuggestedFocus(undefined);
-    }
-  };
-
-  const createFocus = async ({ name }: FocusFields) => {
-    return new Promise((resolve, reject) => {
-      fetch("/api/create-focus", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name }),
-      }).then(
-        (response: Response) => {
-          resolve(response);
-        },
-        (error: Response) => {
-          reject(error);
-        }
-      );
-    });
+    setFocusSuggested(e.target.value ? e.target.value : undefined);
   };
 
   const submitForm = async () => {
@@ -116,23 +113,12 @@ export default function JoinStep3({ focuses }) {
       });
       return;
     }
-    let res: Response | any;
-    if (suggestedFocus) {
-      res = await createFocus({ name: suggestedFocus });
-    }
-    let queryParams = {
-      name: name,
-      location: location,
-      website: website,
-      focus: [...focusesSelected.map((fs) => fs.id), res],
-      yearsExperience: yearsExperience,
-    };
-    if (title) {
-      queryParams["title"] = title;
-    }
+    if (focusesSelected) setItem("jfFocuses", JSON.stringify(focusesSelected));
+    if (focusSuggested) setItem("jfFocusSuggested", focusSuggested);
+    if (title) setItem("jfTitle", title);
+    if (yearsExperience) setItem("jfYearsExperience", yearsExperience);
     router.push({
       pathname: NEXT_PAGE,
-      query: queryParams,
     });
   };
 
@@ -183,21 +169,21 @@ export default function JoinStep3({ focuses }) {
         >
           {focuses.map((focus, i: number) => {
             const isDisabled =
-              isMaxSelected && focusesSelected.indexOf(focus) < 0;
-            const isSelected = focusesSelected.indexOf(focus) > -1;
+              isMaxSelected && focusesSelected.indexOf(focus.id) < 0;
+            const isSelected = focusesSelected.indexOf(focus.id) > -1;
 
             return (
               <Selectable
                 label={focus.name}
                 badgeNumber={
                   focusesSelected.length > 1 && isSelected
-                    ? focusesSelected.indexOf(focus) + 1
+                    ? focusesSelected.indexOf(focus.id) + 1
                     : undefined
                 }
                 disabled={isDisabled}
                 selected={isSelected}
                 onClick={(e) => {
-                  handleSelect(focus);
+                  handleSelect(focus.id);
                 }}
                 key={`Selectable-${i}-`}
               />
@@ -223,17 +209,25 @@ export default function JoinStep3({ focuses }) {
           {showSuggestButton ? (
             <div style={{ display: "flex", alignItems: "center" }}>
               <Selectable
-                label={suggestedFocus ? `${suggestedFocus}` : "Suggest another"}
+                label={focusSuggested ? `${focusSuggested}` : "Suggest another"}
                 onClick={() => {
                   setShowSuggestButton(!showSuggestButton);
                 }}
-                border={!!!suggestedFocus}
-                selected={!!suggestedFocus}
-                disabled={isMaxSelected && !!!suggestedFocus}
+                border={!!!focusSuggested}
+                selected={!!focusSuggested}
+                disabled={isMaxSelected && !!!focusSuggested}
               />
-              {suggestedFocus !== undefined && (
+              {focusSuggested !== undefined && (
                 <div style={{ marginLeft: "0.5rem" }}>
-                  <UndoButton onClick={handleClearSuggested}>Clear</UndoButton>
+                  <UndoButton
+                    onClick={() => {
+                      window.confirm(
+                        "Are you sure you want to clear this field?"
+                      ) && setFocusSuggested(undefined);
+                    }}
+                  >
+                    Clear
+                  </UndoButton>
                 </div>
               )}
             </div>
@@ -243,8 +237,8 @@ export default function JoinStep3({ focuses }) {
               fullWidth
               border
               focusedOnInit
-              defaultValue={suggestedFocus}
-              disabled={isMaxSelected && !!!suggestedFocus}
+              defaultValue={focusSuggested}
+              disabled={isMaxSelected && !!!focusSuggested}
             />
           )}
         </div>
@@ -256,7 +250,15 @@ export default function JoinStep3({ focuses }) {
             }}
           >
             Maximum of {`${MAX_COUNT}`} reached. Please{" "}
-            <UndoButton onClick={handleDeselectLast}>deselect one</UndoButton>{" "}
+            <UndoButton
+              onClick={() => {
+                let nextFocusesSelected = [...focusesSelected];
+                nextFocusesSelected.pop();
+                setFocusesSelected(nextFocusesSelected);
+              }}
+            >
+              deselect one
+            </UndoButton>{" "}
             to pick another.
           </p>
         )}
@@ -293,14 +295,13 @@ export default function JoinStep3({ focuses }) {
               "10 – 19 years",
               "More than 20 years",
             ].map((dur) => (
-              <div style={{ margin: "0 0.5rem 0.5rem 0" }}>
+              <div style={{ margin: "0 0.5rem 0.5rem 0" }} key={`dur-${dur}`}>
                 <RadioBox
                   seriesOf="years-experience"
                   label={dur}
                   onChange={() => {
                     setYearsExperience(dur);
                   }}
-                  key={`dur-${dur}`}
                 />
               </div>
             ))}
