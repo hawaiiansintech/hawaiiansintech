@@ -20,7 +20,7 @@ import HorizontalRule from "../../components/HorizontalRule";
 
 const NEXT_PAGE = "02-work";
 
-export default function JoinStep2(props) {
+export default function JoinStep1(props) {
   const [storedName, setStoredName] = useLocalStorage("jfName", "");
   const [storedLocation, setStoredLocation] = useLocalStorage("jfLocation", "");
   const [storedWebsite, setStoredWebsite] = useLocalStorage("jfWebsite", "");

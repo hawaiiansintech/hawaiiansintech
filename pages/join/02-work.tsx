@@ -34,7 +34,7 @@ export async function getStaticProps() {
 
 const MAX_COUNT = 3;
 
-export default function JoinStep3({ focuses }) {
+export default function JoinStep2({ focuses }) {
   const router = useRouter();
   const { getItem, setItem, removeItem } = useStorage();
 
