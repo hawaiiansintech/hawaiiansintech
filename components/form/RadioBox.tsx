@@ -1,9 +1,10 @@
 import { toKebab } from "../../helpers.js";
 
 interface RadioBoxProps {
+  checked?: boolean;
   defaultChecked?: boolean;
   description?: React.ReactNode;
-  label?: string;
+  label: string;
   onChange?: () => void;
   seriesOf?: string;
   small?: string;
@@ -20,6 +21,7 @@ export default function RadioBox(props: RadioBoxProps) {
         type="radio"
         name={props.seriesOf}
         onChange={props.onChange}
+        checked={props.checked}
         defaultChecked={props.defaultChecked}
       />
       <label htmlFor={labelKebab}>

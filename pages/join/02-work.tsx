@@ -40,15 +40,19 @@ export default function JoinStep2({ focuses }) {
 
   const [focusesSelected, setFocusesSelected] = useState<string[]>([]);
   const [focusSuggested, setFocusSuggested] = useState();
-  const [title, setTitle] = useState<string>();
+  const [title, setTitle] = useState<string>("");
   const [yearsExperience, setYearsExperience] = useState<string>();
   const [showSuggestButton, setShowSuggestButton] = useState(true);
+
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<ErrorMessageProps>(undefined);
   const [isValid, setIsValid] = useState(null);
 
-  // check localStorage for focuses
+  // check localStorage and set pre-defined fields
   useEffect(() => {
     let storedFocuses = getItem("jfFocuses");
+    let storedTitle = getItem("jfTitle");
+    let storedYearsExperience = getItem("jfYearsExperience");
     if (storedFocuses) {
       // Convert string "[]" to parsable JSON
       storedFocuses = JSON.parse(storedFocuses);
@@ -57,14 +61,19 @@ export default function JoinStep2({ focuses }) {
         .map((foc) => foc.id);
       setFocusesSelected(match);
     }
-  }, [focuses]);
+    if (storedTitle) {
+      setTitle(storedTitle);
+    }
+    if (storedYearsExperience) {
+      setYearsExperience(storedYearsExperience);
+    }
+  }, []);
 
-  // check if previous data are missing from storage
+  // check invalid situation via previous required entries
   useEffect(() => {
     const prevMissing =
       !getItem("jfName") || !getItem("jfLocation") || !getItem("jfWebsite");
     if (prevMissing) {
-      // remove any data from this page and start over
       removeItem("jfFocuses");
       removeItem("jfFocusSuggested");
       removeItem("jfTitle");
@@ -106,13 +115,16 @@ export default function JoinStep2({ focuses }) {
   };
 
   const submitForm = async () => {
+    setLoading(true);
     if (!isValid) {
+      setLoading(false);
       setError({
         headline: "Fields missing below.",
         body: "Please fill all required fields below.",
       });
       return;
     }
+    // Set as stringified array
     if (focusesSelected) setItem("jfFocuses", JSON.stringify(focusesSelected));
     if (focusSuggested) setItem("jfFocusSuggested", focusSuggested);
     if (title) setItem("jfTitle", title);
@@ -208,7 +220,7 @@ export default function JoinStep2({ focuses }) {
               }}
             >
               Maximum of {`${MAX_COUNT}`} reached
-              {focusSuggested && " (including suggested)"}. Please{" "}
+              {focusSuggested && " (including suggested below)"}. Please{" "}
               <UndoButton
                 onClick={() => {
                   let nextFocusesSelected = [...focusesSelected];
@@ -281,6 +293,7 @@ export default function JoinStep2({ focuses }) {
             label="What’s your current title?"
             labelTranslation="ʻO wai kou kūlana i hana?"
             placeholder="e.g. Software Engineer"
+            value={title}
             optional
             onChange={(e) => {
               setTitle(e.target.value);
@@ -310,6 +323,7 @@ export default function JoinStep2({ focuses }) {
               <div style={{ margin: "0 0.5rem 0.5rem 0" }} key={`dur-${dur}`}>
                 <RadioBox
                   seriesOf="years-experience"
+                  checked={dur === yearsExperience}
                   label={dur}
                   onChange={() => {
                     setYearsExperience(dur);
@@ -320,7 +334,9 @@ export default function JoinStep2({ focuses }) {
           </div>
         </div>
         <div style={{ marginTop: "2rem" }}>
-          <Button onClick={submitForm}>Continue</Button>
+          <Button onClick={submitForm} loading={loading}>
+            Continue
+          </Button>
         </div>
       </section>
     </div>
