@@ -18,10 +18,10 @@ export default function UndoButton({
   let buttonStyles = (
     <style jsx>{`
       .undo-button {
-        padding: 0.125rem 0.25rem;
+        padding: 0.125em 0.25em;
         border: 0.125rem solid transparent;
         border-radius: var(--border-radius-x-small);
-        font-size: 0.8rem;
+        font-size: 0.8em;
         font-weight: 600;
         background: var(--color-border);
         cursor: pointer;

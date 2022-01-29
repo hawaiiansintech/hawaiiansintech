@@ -156,39 +156,71 @@ export default function JoinStep2({ focuses }) {
         />
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            gridAutoRows: "1fr",
-            columnGap: "0.5rem",
-            rowGap: "0.5rem",
-            margin: "1rem 0 2rem",
-            padding: "0.5rem",
+            margin: "0 0 2rem",
             background: "var(--color-background-alt-2)",
             borderRadius: "var(--border-radius-medium)",
+            overflow: "hidden",
+            padding: "0.5rem",
           }}
         >
-          {focuses.map((focus, i: number) => {
-            const isDisabled =
-              isMaxSelected && focusesSelected.indexOf(focus.id) < 0;
-            const isSelected = focusesSelected.indexOf(focus.id) > -1;
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr",
+              gridAutoRows: "1fr",
+              columnGap: "0.5rem",
+              rowGap: "0.5rem",
+            }}
+          >
+            {focuses.map((focus, i: number) => {
+              const isDisabled =
+                isMaxSelected && focusesSelected.indexOf(focus.id) < 0;
+              const isSelected = focusesSelected.indexOf(focus.id) > -1;
 
-            return (
-              <Selectable
-                label={focus.name}
-                badgeNumber={
-                  focusesSelected.length > 1 && isSelected
-                    ? focusesSelected.indexOf(focus.id) + 1
-                    : undefined
-                }
-                disabled={isDisabled}
-                selected={isSelected}
-                onClick={(e) => {
-                  handleSelect(focus.id);
+              return (
+                <Selectable
+                  label={focus.name}
+                  badgeNumber={
+                    focusesSelected.length > 1 && isSelected
+                      ? focusesSelected.indexOf(focus.id) + 1
+                      : undefined
+                  }
+                  disabled={isDisabled}
+                  selected={isSelected}
+                  onClick={(e) => {
+                    handleSelect(focus.id);
+                  }}
+                  key={`Selectable-${i}-`}
+                />
+              );
+            })}
+          </div>
+          {isMaxSelected && (
+            <p
+              style={{
+                margin: "0.5rem 0 0",
+                textAlign: "center",
+                background: "var(--color-brand-faded)",
+                color: "var(--color-text-overlay)",
+                padding: "0.5rem",
+                fontSize: "0.75rem",
+                borderRadius: "var(--border-radius-medium)",
+              }}
+            >
+              Maximum of {`${MAX_COUNT}`} reached
+              {focusSuggested && " (including suggested)"}. Please{" "}
+              <UndoButton
+                onClick={() => {
+                  let nextFocusesSelected = [...focusesSelected];
+                  nextFocusesSelected.pop();
+                  setFocusesSelected(nextFocusesSelected);
                 }}
-                key={`Selectable-${i}-`}
-              />
-            );
-          })}
+              >
+                deselect one
+              </UndoButton>{" "}
+              to pick another.
+            </p>
+          )}
         </div>
 
         <div
@@ -242,26 +274,6 @@ export default function JoinStep2({ focuses }) {
             />
           )}
         </div>
-        {isMaxSelected && (
-          <p
-            style={{
-              margin: "1rem 0 2rem",
-              textAlign: "center",
-            }}
-          >
-            Maximum of {`${MAX_COUNT}`} reached. Please{" "}
-            <UndoButton
-              onClick={() => {
-                let nextFocusesSelected = [...focusesSelected];
-                nextFocusesSelected.pop();
-                setFocusesSelected(nextFocusesSelected);
-              }}
-            >
-              deselect one
-            </UndoButton>{" "}
-            to pick another.
-          </p>
-        )}
 
         <div style={{ margin: "2rem 0" }}>
           <Input
