@@ -37,10 +37,10 @@ const MAX_COUNT = 3;
 
 export default function JoinStep2({ focuses }) {
   const router = useRouter();
-  const { getItem, setItem, removeItem } = useStorage();
+  const { getItem, setItem } = useStorage();
 
   const [focusesSelected, setFocusesSelected] = useState<string[]>([]);
-  const [focusSuggested, setFocusSuggested] = useState();
+  const [focusSuggested, setFocusSuggested] = useState<string>();
   const [title, setTitle] = useState<string>("");
   const [yearsExperience, setYearsExperience] = useState<string>();
   const [showSuggestButton, setShowSuggestButton] = useState(true);
@@ -52,6 +52,7 @@ export default function JoinStep2({ focuses }) {
   // check localStorage and set pre-defined fields
   useEffect(() => {
     let storedFocuses = getItem("jfFocuses");
+    let storedFocusSuggested = getItem("jfFocusSuggested");
     let storedTitle = getItem("jfTitle");
     let storedYearsExperience = getItem("jfYearsExperience");
     if (storedFocuses) {
@@ -62,12 +63,9 @@ export default function JoinStep2({ focuses }) {
         .map((foc) => foc.id);
       setFocusesSelected(match);
     }
-    if (storedTitle) {
-      setTitle(storedTitle);
-    }
-    if (storedYearsExperience) {
-      setYearsExperience(storedYearsExperience);
-    }
+    if (storedFocusSuggested) setFocusSuggested(storedFocusSuggested);
+    if (storedTitle) setTitle(storedTitle);
+    if (storedYearsExperience) setYearsExperience(storedYearsExperience);
   }, []);
 
   // check invalid situation via previous required entries

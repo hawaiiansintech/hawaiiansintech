@@ -19,6 +19,7 @@ const ALL_STORED_FIELDS = [
   "jfLocation",
   "jfWebsite",
   "jfFocuses",
+  "jfFocusSuggested",
   "jfTitle",
   "jfYearsExperience",
 ];
