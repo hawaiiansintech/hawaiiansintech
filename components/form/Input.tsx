@@ -3,7 +3,7 @@ import Label from "./Label";
 
 interface InputProps {
   defaultValue?: string;
-  error?: boolean;
+  error?: string;
   label?: string;
   labelTranslation?: string;
   name: string;
@@ -63,14 +63,14 @@ export default function Input({
           font-size: 1.4rem;
           border-radius: var(--border-radius-small);
           border: 0.2rem solid transparent;
-          border-color: ${error ? "border-color: red" : "var(--color-border)"};
+          border-color: ${error ? "red" : "var(--color-border)"};
           background: var(--color-border);
         }
         input::placeholder {
           color: var(--color-text-alt-2);
         }
         input:focus {
-          border: 0.2rem solid var(--color-brand);
+          border-color: var(--color-brand);
           box-shadow: var(--box-shadow-outline-button);
           background: white;
         }

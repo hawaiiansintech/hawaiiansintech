@@ -17,7 +17,8 @@ import ErrorMessage, {
 } from "../../components/form/ErrorMessage";
 import RadioBox from "../../components/form/RadioBox";
 import { scrollToTop } from "../../helpers.js";
-import useStorage from "../../lib/hooks";
+import { useStorage } from "../../lib/hooks";
+import { clearAllFields } from "./01-you";
 
 const PREV_PAGE = "01-you";
 const NEXT_PAGE = "03-company";
@@ -74,10 +75,7 @@ export default function JoinStep2({ focuses }) {
     const prevMissing =
       !getItem("jfName") || !getItem("jfLocation") || !getItem("jfWebsite");
     if (prevMissing) {
-      removeItem("jfFocuses");
-      removeItem("jfFocusSuggested");
-      removeItem("jfTitle");
-      removeItem("jfYearsExperience");
+      clearAllFields();
       router.push({ pathname: PREV_PAGE });
     }
   }, []);
