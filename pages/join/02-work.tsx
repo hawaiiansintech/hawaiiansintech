@@ -190,9 +190,7 @@ export default function JoinStep2({ focuses }) {
                   label={focus.name}
                   disabled={isDisabled}
                   selected={isSelected}
-                  onClick={(e) => {
-                    handleSelect(focus.id);
-                  }}
+                  onClick={(e) => handleSelect(focus.id)}
                   key={`Selectable-${i}-`}
                 />
               );
@@ -245,9 +243,7 @@ export default function JoinStep2({ focuses }) {
             <div style={{ display: "flex", alignItems: "center" }}>
               <Selectable
                 label={focusSuggested ? `${focusSuggested}` : "Suggest another"}
-                onClick={() => {
-                  setShowSuggestButton(!showSuggestButton);
-                }}
+                onClick={() => setShowSuggestButton(!showSuggestButton)}
                 border={!!!focusSuggested}
                 selected={!!focusSuggested}
                 disabled={isMaxSelected && !!!focusSuggested}
@@ -286,9 +282,7 @@ export default function JoinStep2({ focuses }) {
             placeholder="e.g. Software Engineer"
             value={title}
             optional
-            onChange={(e) => {
-              setTitle(e.target.value);
-            }}
+            onChange={(e) => setTitle(e.target.value)}
           />
         </div>
         <div style={{ marginBottom: "2rem" }}>
@@ -316,9 +310,7 @@ export default function JoinStep2({ focuses }) {
                   seriesOf="years-experience"
                   checked={dur === yearsExperience}
                   label={dur}
-                  onChange={() => {
-                    setYearsExperience(dur);
-                  }}
+                  onChange={() => setYearsExperience(dur)}
                 />
               </div>
             ))}

@@ -253,9 +253,7 @@ export default function JoinStep3({ industries }) {
                   seriesOf="company-size"
                   checked={size === companySize}
                   label={size}
-                  onChange={() => {
-                    setCompanySize(size);
-                  }}
+                  onChange={() => setCompanySize(size)}
                   key={`size-${size}`}
                 />
               </div>

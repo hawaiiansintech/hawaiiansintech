@@ -113,9 +113,7 @@ export default function JoinStep1(props) {
           initialValues={{ name: name, location: location, website: website }}
           validateOnBlur={validateAfterSubmit}
           validateOnChange={validateAfterSubmit}
-          validate={() => {
-            setValidateAfterSubmit(true);
-          }}
+          validate={() => setValidateAfterSubmit(true)}
           onSubmit={(values) => {
             setLoading(true);
             setItem("jfName", values.name);
