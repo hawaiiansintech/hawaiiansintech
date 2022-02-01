@@ -16,6 +16,7 @@ import MetaTags from "../../components/Metatags.js";
 import { scrollToTop } from "../../helpers.js";
 import { fetchIndustries } from "../../lib/api";
 import { useStorage } from "../../lib/hooks";
+import { clearAllStoredFields } from "./01-you";
 
 const NEXT_PAGE = "04-contact";
 
@@ -30,25 +31,40 @@ export async function getStaticProps() {
 }
 
 const MAX_COUNT = 2;
-const TECHNOLOGY_LABEL = "Technology";
+const TECHNOLOGY_LABEL = "Internet / Technology";
 
 export default function JoinStep3({ industries }) {
   const { getItem, setItem } = useStorage();
   const router = useRouter();
   const [companySize, setCompanySize] = useState<string>();
   const [suggestedIndustry, setSuggestedIndustry] = useState();
-  const [industriesSelected, setIndustriesSelected] = useState<string[]>([]);
+  const [industriesSelected, setIndustriesSelected] = useState<string[]>([""]);
   const [showSuggestButton, setShowSuggestButton] = useState(true);
   const [error, setError] = useState<ErrorMessageProps>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
   const [isValid, setIsValid] = useState(null);
 
-  let technologyInd = industries.find((item) => item.name === TECHNOLOGY_LABEL);
+  let technologyInd =
+    industries.find((item) => item.name === TECHNOLOGY_LABEL) || undefined;
   if (technologyInd) {
     industries = [
       ...industries.filter((item) => item.name !== TECHNOLOGY_LABEL),
     ];
   }
+
+  // check invalid situation via previous required entries
+  useEffect(() => {
+    const prevReqFields =
+      !getItem("jfName") ||
+      !getItem("jfLocation") ||
+      !getItem("jfWebsite") ||
+      !getItem("jfFocuses");
+
+    if (prevReqFields) {
+      clearAllStoredFields();
+      router.push({ pathname: "01-you" });
+    }
+  }, []);
 
   // check localStorage and set pre-defined fields
   useEffect(() => {
@@ -57,8 +73,8 @@ export default function JoinStep3({ industries }) {
     if (storedIndustries) {
       // Convert string "[]" to parsable JSON
       storedIndustries = JSON.parse(storedIndustries);
-      let match = [...industries, technologyInd ? technologyInd : undefined]
-        .filter((ind) => storedIndustries.includes(ind.id))
+      let match = [...industries, technologyInd]
+        .filter((ind) => storedIndustries.includes(ind?.id))
         .map((ind) => ind.id);
       setIndustriesSelected(match);
     }
@@ -245,7 +261,7 @@ export default function JoinStep3({ industries }) {
               "5000 – 10000",
               "More than 10000",
               "N/A",
-            ].map((size) => (
+            ].map((size, i) => (
               <div
                 style={{ margin: "0 0.5rem 0.5rem 0", marginRight: "0.5rem" }}
               >
@@ -254,7 +270,7 @@ export default function JoinStep3({ industries }) {
                   checked={size === companySize}
                   label={size}
                   onChange={() => setCompanySize(size)}
-                  key={`size-${size}`}
+                  key={`size-${i}`}
                 />
               </div>
             ))}

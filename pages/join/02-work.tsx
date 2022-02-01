@@ -18,9 +18,8 @@ import MetaTags from "../../components/Metatags.js";
 import { scrollToTop } from "../../helpers.js";
 import { fetchFocuses } from "../../lib/api";
 import { useStorage } from "../../lib/hooks";
-import { clearAllFields } from "./01-you";
+import { clearAllStoredFields } from "./01-you";
 
-const PREV_PAGE = "01-you";
 const NEXT_PAGE = "03-company";
 
 export async function getStaticProps() {
@@ -70,11 +69,11 @@ export default function JoinStep2({ focuses }) {
 
   // check invalid situation via previous required entries
   useEffect(() => {
-    const prevMissing =
+    const prevReqFields =
       !getItem("jfName") || !getItem("jfLocation") || !getItem("jfWebsite");
-    if (prevMissing) {
-      clearAllFields();
-      router.push({ pathname: PREV_PAGE });
+    if (prevReqFields) {
+      clearAllStoredFields();
+      router.push({ pathname: "01-you" });
     }
   }, []);
 
@@ -84,13 +83,12 @@ export default function JoinStep2({ focuses }) {
 
   const totalFocusesSelected =
     focusesSelected.length + (focusSuggested ? 1 : 0);
+  const isMaxSelected = totalFocusesSelected >= MAX_COUNT;
 
   useEffect(() => {
-    const isValid = totalFocusesSelected >= 1 && !!yearsExperience;
-    if (isValid) {
-      setIsValid(isValid);
-      setError(undefined);
-    }
+    const isValid = totalFocusesSelected >= 1 && yearsExperience;
+    setIsValid(isValid);
+    if (isValid) setError(undefined);
   }, [yearsExperience, focusSuggested, focusesSelected]);
 
   const handleSelect = (focusID: string) => {
@@ -129,8 +127,6 @@ export default function JoinStep2({ focuses }) {
       pathname: NEXT_PAGE,
     });
   };
-
-  const isMaxSelected = totalFocusesSelected >= MAX_COUNT;
 
   return (
     <div className="container">

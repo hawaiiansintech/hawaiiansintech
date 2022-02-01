@@ -1,22 +1,40 @@
-import { useRouter } from "next/router";
+import { withFormik } from "formik";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { withFormik } from "formik";
 import * as Yup from "yup";
-import MetaTags from "../../components/Metatags.js";
-import { Heading, Subheading } from "../../components/Heading";
 import Button from "../../components/Button";
-import Input from "../../components/form/Input";
 import ErrorMessage, {
   ErrorMessageProps,
 } from "../../components/form/ErrorMessage";
+import Input from "../../components/form/Input";
 import ProgressBar from "../../components/form/ProgressBar";
+import { Heading, Subheading } from "../../components/Heading";
+import MetaTags from "../../components/Metatags.js";
 import { scrollToTop } from "../../helpers.js";
+import { useStorage } from "../../lib/hooks";
+import { clearAllStoredFields } from "./01-you";
 
 export default function JoinStep4() {
   const router = useRouter();
-  const { name, location, website, focus } = router.query;
+  const { getItem, setItem } = useStorage();
+
+  // check invalid situation via previous required entries
+  useEffect(() => {
+    const prevReqFields =
+      !getItem("jfName") ||
+      !getItem("jfLocation") ||
+      !getItem("jfWebsite") ||
+      !getItem("jfFocuses") ||
+      !getItem("jfYearsExperience");
+
+    if (prevReqFields) {
+      clearAllStoredFields();
+      router.push({ pathname: "01-you" });
+    }
+  }, []);
+
   return (
     <div className="container">
       <Head>

@@ -13,7 +13,6 @@ import { Heading, Subheading } from "../../components/Heading";
 import MetaTags from "../../components/Metatags.js";
 import { useStorage } from "../../lib/hooks";
 
-const NEXT_PAGE = "02-work";
 const ALL_STORED_FIELDS = [
   "jfName",
   "jfLocation",
@@ -25,10 +24,11 @@ const ALL_STORED_FIELDS = [
   "jfIndustries",
   "jfCompanySize",
 ];
-export const clearAllFields = () => {
+export const clearAllStoredFields = () => {
   const { removeItem } = useStorage();
   ALL_STORED_FIELDS.map((item) => removeItem(item));
 };
+const NEXT_PAGE = "02-work";
 
 export default function JoinStep1(props) {
   const router = useRouter();
@@ -67,7 +67,7 @@ export default function JoinStep1(props) {
               setName("");
               setLocation("");
               setWebsite("");
-              clearAllFields();
+              clearAllStoredFields();
             }}
           >
             Clear form
