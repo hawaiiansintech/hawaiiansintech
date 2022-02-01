@@ -15,6 +15,7 @@ export default css.global`
     --color-text-overlay: #fff;
     --color-border: #dacbc8;
     --color-border-alt: #bda9a5;
+    --color-border-alt-2: #ac9a97;
     --color-background: #e5e5e5;
     --color-background-alt: #dacbc8;
     --color-background-alt-2: #c9b5b1;

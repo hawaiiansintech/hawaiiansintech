@@ -11,8 +11,9 @@ import InputBox from "../../components/form/InputBox";
 import Label from "../../components/form/Label";
 import ProgressBar from "../../components/form/ProgressBar";
 import RadioBox from "../../components/form/RadioBox";
-import Selectable from "../../components/form/Selectable";
-import UndoButton from "../../components/form/UndoButton";
+import Selectable, {
+  SelectableVariant,
+} from "../../components/form/Selectable";
 import { Heading } from "../../components/Heading";
 import MetaTags from "../../components/Metatags.js";
 import { scrollToTop } from "../../helpers.js";
@@ -36,17 +37,17 @@ const MAX_COUNT = 3;
 
 export default function JoinStep2({ focuses }) {
   const router = useRouter();
-  const { getItem, setItem } = useStorage();
+  const { getItem, setItem, removeItem } = useStorage();
 
   const [focusesSelected, setFocusesSelected] = useState<string[]>([]);
-  const [focusSuggested, setFocusSuggested] = useState<string>();
+  const [focusSuggested, setFocusSuggested] = useState<string>("");
   const [title, setTitle] = useState<string>("");
   const [yearsExperience, setYearsExperience] = useState<string>();
   const [showSuggestButton, setShowSuggestButton] = useState(true);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<ErrorMessageProps>(undefined);
-  const [isValid, setIsValid] = useState(null);
+  const [isValid, setIsValid] = useState<boolean>(false);
 
   // check localStorage and set pre-defined fields
   useEffect(() => {
@@ -86,7 +87,7 @@ export default function JoinStep2({ focuses }) {
   const isMaxSelected = totalFocusesSelected >= MAX_COUNT;
 
   useEffect(() => {
-    const isValid = totalFocusesSelected >= 1 && yearsExperience;
+    const isValid = totalFocusesSelected >= 1 && !!yearsExperience;
     setIsValid(isValid);
     if (isValid) setError(undefined);
   }, [yearsExperience, focusSuggested, focusesSelected]);
@@ -105,7 +106,6 @@ export default function JoinStep2({ focuses }) {
 
   const handleBlurSuggested = (e) => {
     setShowSuggestButton(true);
-    setFocusSuggested(e.target.value ? e.target.value : undefined);
   };
 
   const submitForm = async () => {
@@ -119,10 +119,22 @@ export default function JoinStep2({ focuses }) {
       return;
     }
     // Set as stringified array
-    if (focusesSelected) setItem("jfFocuses", JSON.stringify(focusesSelected));
-    if (focusSuggested) setItem("jfFocusSuggested", focusSuggested);
-    if (title) setItem("jfTitle", title);
-    if (yearsExperience) setItem("jfYearsExperience", yearsExperience);
+    if (focusesSelected) {
+      setItem("jfFocuses", JSON.stringify(focusesSelected));
+    } else {
+      removeItem("jfFocuses");
+    }
+    if (focusSuggested) {
+      setItem("jfFocusSuggested", focusSuggested);
+    } else {
+      removeItem("jfFocusSuggested");
+    }
+    if (title) {
+      setItem("jfTitle", title);
+    } else {
+      removeItem("jfTitle");
+    }
+    setItem("jfYearsExperience", yearsExperience);
     router.push({
       pathname: NEXT_PAGE,
     });
@@ -191,83 +203,45 @@ export default function JoinStep2({ focuses }) {
                 />
               );
             })}
-          </div>
-          {isMaxSelected && (
-            <p
+            <div
               style={{
-                margin: "0.5rem 0 0",
-                textAlign: "center",
-                background: "var(--color-brand-faded)",
-                color: "var(--color-text-overlay)",
-                padding: "0.5rem",
-                fontSize: "0.75rem",
-                borderRadius: "var(--border-radius-medium)",
+                gridColumn: `span ${
+                  Math.ceil(focuses.length / 3) * 3 - focuses.length || 3
+                }`,
               }}
             >
-              Maximum of {`${MAX_COUNT}`} reached
-              {focusSuggested && " (including suggested below)"}. Please{" "}
-              <UndoButton
-                onClick={() => {
-                  let nextFocusesSelected = [...focusesSelected];
-                  nextFocusesSelected.pop();
-                  setFocusesSelected(nextFocusesSelected);
-                }}
-              >
-                deselect one
-              </UndoButton>{" "}
-              to pick another.
-            </p>
-          )}
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            textAlign: "center",
-            alignItems: "center",
-          }}
-        >
-          <div>
-            <h4 style={{ margin: "0 0 0.25rem" }}>Anything missing?</h4>
-            <h4 style={{ fontWeight: "400", margin: "0 0 1rem" }}>
-              Suggest an area of focus that you expect to be here.
-            </h4>
-          </div>
-
-          {showSuggestButton ? (
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <Selectable
-                label={focusSuggested ? `${focusSuggested}` : "Suggest another"}
-                onClick={() => setShowSuggestButton(!showSuggestButton)}
-                border={!!!focusSuggested}
-                selected={!!focusSuggested}
-                disabled={isMaxSelected && !!!focusSuggested}
-              />
-              {focusSuggested !== undefined && (
-                <div style={{ marginLeft: "0.5rem" }}>
-                  <UndoButton
-                    onClick={() => {
-                      window.confirm(
-                        "Are you sure you want to clear this field?"
-                      ) && setFocusSuggested(undefined);
-                    }}
-                  >
-                    Clear
-                  </UndoButton>
-                </div>
+              {showSuggestButton ? (
+                <Selectable
+                  label={focusSuggested ? `${focusSuggested}` : "+ Add field"}
+                  onClick={() => setShowSuggestButton(false)}
+                  border={focusSuggested ? true : false}
+                  disabled={isMaxSelected && !!!focusSuggested}
+                  fullWidth
+                  variant={SelectableVariant.Alt}
+                  onClear={
+                    focusSuggested
+                      ? () =>
+                          window.confirm(
+                            "Are you sure you want to clear this field?"
+                          ) && setFocusSuggested("")
+                      : undefined
+                  }
+                />
+              ) : (
+                <InputBox
+                  onBlur={handleBlurSuggested}
+                  fullWidth
+                  border
+                  focusedOnInit
+                  onChange={(e) => {
+                    setFocusSuggested(e.target.value);
+                  }}
+                  value={focusSuggested}
+                  disabled={isMaxSelected && !!!focusSuggested}
+                />
               )}
             </div>
-          ) : (
-            <InputBox
-              onBlur={handleBlurSuggested}
-              fullWidth
-              border
-              focusedOnInit
-              defaultValue={focusSuggested}
-              disabled={isMaxSelected && !!!focusSuggested}
-            />
-          )}
+          </div>
         </div>
 
         <div style={{ margin: "2rem 0" }}>
