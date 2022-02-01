@@ -26,7 +26,7 @@ export default function LoadingSpinner({
           display: inline-block;
           width: ${size};
           height: ${size};
-          border: calc(${size} / 4) solid rgba(255, 255, 255, 0.5);
+          border: calc(${size} / 8) solid rgba(255, 255, 255, 0.5);
           border-radius: 50%;
           border-top-color: ${color};
           animation: spin 1s ease-in-out infinite;
