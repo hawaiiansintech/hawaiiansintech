@@ -188,11 +188,6 @@ export default function JoinStep2({ focuses }) {
               return (
                 <Selectable
                   label={focus.name}
-                  badgeNumber={
-                    focusesSelected.length > 1 && isSelected
-                      ? focusesSelected.indexOf(focus.id) + 1
-                      : undefined
-                  }
                   disabled={isDisabled}
                   selected={isSelected}
                   onClick={(e) => {
