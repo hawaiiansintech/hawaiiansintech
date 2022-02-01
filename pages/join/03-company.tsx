@@ -2,10 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Input from "../../components/form/Input";
 import Button from "../../components/Button";
-import UndoButton from "../../components/form/UndoButton";
-import InputBox from "../../components/form/InputBox";
 import ErrorMessage, {
   ErrorMessageProps,
 } from "../../components/form/ErrorMessage";
@@ -18,6 +15,7 @@ import HorizontalRule from "../../components/HorizontalRule";
 import MetaTags from "../../components/Metatags.js";
 import { scrollToTop } from "../../helpers.js";
 import { fetchIndustries } from "../../lib/api";
+import { useStorage } from "../../lib/hooks";
 
 const NEXT_PAGE = "04-contact";
 
@@ -32,95 +30,103 @@ export async function getStaticProps() {
 }
 
 const MAX_COUNT = 2;
+const TECHNOLOGY_LABEL = "Technology";
 
 export default function JoinStep3({ industries }) {
-  let technologyInd = industries.find((item) => item.name === "Technology");
-  if (technologyInd) {
-    industries = [...industries.filter((item) => item.name !== "Technology")];
-  }
-
+  const { getItem, setItem } = useStorage();
   const router = useRouter();
-  const { name, location, website } = router.query;
   const [companySize, setCompanySize] = useState<string>();
-  const [suggestedFocus, setSuggestedFocus] = useState();
-  const [focusesSelected, setFocusesSelected] = useState([]);
+  const [suggestedIndustry, setSuggestedIndustry] = useState();
   const [industriesSelected, setIndustriesSelected] = useState<string[]>([]);
   const [showSuggestButton, setShowSuggestButton] = useState(true);
   const [error, setError] = useState<ErrorMessageProps>(undefined);
+  const [loading, setLoading] = useState<boolean>(false);
   const [isValid, setIsValid] = useState(null);
+
+  let technologyInd = industries.find((item) => item.name === TECHNOLOGY_LABEL);
+  if (technologyInd) {
+    industries = [
+      ...industries.filter((item) => item.name !== TECHNOLOGY_LABEL),
+    ];
+  }
+
+  // check localStorage and set pre-defined fields
+  useEffect(() => {
+    let storedIndustries = getItem("jfIndustries");
+    let storedCompanySize = getItem("jfCompanySize");
+    if (storedIndustries) {
+      // Convert string "[]" to parsable JSON
+      storedIndustries = JSON.parse(storedIndustries);
+      let match = [...industries, technologyInd ? technologyInd : undefined]
+        .filter((ind) => storedIndustries.includes(ind.id))
+        .map((ind) => ind.id);
+      setIndustriesSelected(match);
+    }
+    if (storedCompanySize) setCompanySize(storedCompanySize);
+  }, []);
 
   useEffect(() => {
     if (error) scrollToTop();
   }, [error]);
 
-  const totalFocusesSelected =
-    focusesSelected.length + (suggestedFocus ? 1 : 0);
+  const totalIndustriesSelected =
+    industriesSelected.length + (suggestedIndustry ? 1 : 0);
 
   useEffect(() => {
-    const checkIfValid = totalFocusesSelected >= 1 && !!companySize;
-    console.log(`🍒 checkIfValid: ${checkIfValid}`);
-    if (checkIfValid) {
-      setIsValid(checkIfValid);
+    const isValid = totalIndustriesSelected >= 1 && !!companySize;
+    if (isValid) {
+      setIsValid(isValid);
       setError(undefined);
     }
-  }, [companySize, suggestedFocus, focusesSelected]);
+  }, [companySize, suggestedIndustry, industriesSelected]);
 
-  const handleSelect = (focus) => {
-    let nextFocusesSelected = [...focusesSelected];
-    const index = focusesSelected.indexOf(focus);
+  const handleSelect = (industry) => {
+    let nextIndustriesSelected = [...industriesSelected];
+    const index = industriesSelected.indexOf(industry);
     const isSelected = index > -1;
 
     if (isSelected) {
-      nextFocusesSelected.splice(index, 1);
-    } else if (focusesSelected.length < MAX_COUNT) {
-      nextFocusesSelected.push(focus);
+      nextIndustriesSelected.splice(index, 1);
+    } else if (industriesSelected.length < MAX_COUNT) {
+      nextIndustriesSelected.push(industry);
     }
-    setFocusesSelected(nextFocusesSelected);
+    setIndustriesSelected(nextIndustriesSelected);
   };
 
   const handleBlurSuggested = (e) => {
     setShowSuggestButton(true);
-    setSuggestedFocus(e.target.value ? e.target.value : undefined);
+    setSuggestedIndustry(e.target.value ? e.target.value : undefined);
   };
 
   const handleDeselectLast = () => {
-    let nextFocusesSelected = [...focusesSelected];
+    let nextFocusesSelected = [...industriesSelected];
     nextFocusesSelected.pop();
-    setFocusesSelected(nextFocusesSelected);
+    setIndustriesSelected(nextFocusesSelected);
   };
 
   const handleClearSuggested = () => {
     if (window.confirm("Are you sure you want to clear this field?")) {
-      setSuggestedFocus(undefined);
+      setSuggestedIndustry(undefined);
     }
   };
 
   const submitForm = () => {
+    setLoading(true);
     if (!isValid) {
       setError({
         headline: "Fields missing below.",
         body: "Please fill all required fields below.",
       });
+      setLoading(false);
       return;
     }
-
-    let queryParams = {
-      name: name,
-      location: location,
-      website: website,
-      focus: focusesSelected.map((fs) => fs.id),
-      companySize: companySize,
-    };
-    if (suggestedFocus) {
-      queryParams["suggestedFocus"] = suggestedFocus;
-    }
-    router.push({
-      pathname: NEXT_PAGE,
-      query: queryParams,
-    });
+    if (industriesSelected)
+      setItem("jfIndustries", JSON.stringify(industriesSelected));
+    if (companySize) setItem("jfCompanySize", companySize);
+    router.push({ pathname: NEXT_PAGE });
   };
 
-  const isMaxSelected = totalFocusesSelected >= MAX_COUNT;
+  const isMaxSelected = totalIndustriesSelected >= MAX_COUNT;
 
   return (
     <div className="container">
@@ -175,7 +181,16 @@ export default function JoinStep3({ industries }) {
                     gridColumn: "span 3",
                   }}
                 >
-                  <Selectable fullWidth label={technologyInd.name} />
+                  <Selectable
+                    label={technologyInd.name}
+                    disabled={
+                      isMaxSelected &&
+                      !industriesSelected.includes(technologyInd.id)
+                    }
+                    selected={industriesSelected.includes(technologyInd.id)}
+                    onClick={() => handleSelect(technologyInd.id)}
+                    fullWidth
+                  />
                 </div>
                 <div
                   style={{
@@ -189,18 +204,18 @@ export default function JoinStep3({ industries }) {
                 </div>
               </>
             )}
-            {industries.map((focus, i: number) => {
+            {industries.map((industry, i: number) => {
               const isDisabled =
-                isMaxSelected && focusesSelected.indexOf(focus) < 0;
-              const isSelected = focusesSelected.indexOf(focus) > -1;
+                isMaxSelected && !industriesSelected.includes(industry.id);
+              const isSelected = industriesSelected.includes(industry.id);
 
               return (
                 <Selectable
-                  label={focus.name}
+                  label={industry.name}
                   disabled={isDisabled}
                   selected={isSelected}
                   onClick={(e) => {
-                    handleSelect(focus);
+                    handleSelect(industry.id);
                   }}
                   key={`ind-${i}`}
                 />
@@ -236,6 +251,7 @@ export default function JoinStep3({ industries }) {
               >
                 <RadioBox
                   seriesOf="company-size"
+                  checked={size === companySize}
                   label={size}
                   onChange={() => {
                     setCompanySize(size);
@@ -247,7 +263,9 @@ export default function JoinStep3({ industries }) {
           </div>
         </div>
         <div style={{ marginTop: "2rem" }}>
-          <Button onClick={submitForm}>Continue</Button>
+          <Button onClick={submitForm} loading={loading}>
+            Continue
+          </Button>
         </div>
       </section>
     </div>

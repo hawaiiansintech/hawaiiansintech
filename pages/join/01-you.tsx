@@ -22,6 +22,8 @@ const ALL_STORED_FIELDS = [
   "jfFocusSuggested",
   "jfTitle",
   "jfYearsExperience",
+  "jfIndustries",
+  "jfCompanySize",
 ];
 export const clearAllFields = () => {
   const { removeItem } = useStorage();

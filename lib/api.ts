@@ -79,7 +79,7 @@ export async function fetchFocuses() {
 }
 
 export async function fetchIndustries() {
-  const industries = await getBase({ name: "Industries" });
+  const industries = await getBase({ name: "Industries", view: "Approved" });
 
   return industries
     .filter((role) => role.fields["Name"])

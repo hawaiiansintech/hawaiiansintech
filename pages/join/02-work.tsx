@@ -86,9 +86,9 @@ export default function JoinStep2({ focuses }) {
     focusesSelected.length + (focusSuggested ? 1 : 0);
 
   useEffect(() => {
-    const checkIfValid = totalFocusesSelected >= 1 && !!yearsExperience;
-    if (checkIfValid) {
-      setIsValid(checkIfValid);
+    const isValid = totalFocusesSelected >= 1 && !!yearsExperience;
+    if (isValid) {
+      setIsValid(isValid);
       setError(undefined);
     }
   }, [yearsExperience, focusSuggested, focusesSelected]);
@@ -182,8 +182,8 @@ export default function JoinStep2({ focuses }) {
           >
             {focuses.map((focus, i: number) => {
               const isDisabled =
-                isMaxSelected && focusesSelected.indexOf(focus.id) < 0;
-              const isSelected = focusesSelected.indexOf(focus.id) > -1;
+                isMaxSelected && !focusesSelected.includes(focus.id);
+              const isSelected = focusesSelected.includes(focus.id);
 
               return (
                 <Selectable
