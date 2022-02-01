@@ -16,7 +16,6 @@ import MetaTags from "../../components/Metatags.js";
 import { scrollToTop } from "../../helpers.js";
 import { fetchIndustries } from "../../lib/api";
 import { useStorage } from "../../lib/hooks";
-import { clearAllStoredFields } from "./01-you";
 
 const NEXT_PAGE = "04-contact";
 
@@ -37,8 +36,8 @@ export default function JoinStep3({ industries }) {
   const { getItem, setItem } = useStorage();
   const router = useRouter();
   const [companySize, setCompanySize] = useState<string>();
-  const [suggestedIndustry, setSuggestedIndustry] = useState();
-  const [industriesSelected, setIndustriesSelected] = useState<string[]>([""]);
+  const [industrySuggested, setIndustrySuggested] = useState("");
+  const [industriesSelected, setIndustriesSelected] = useState<string[]>([]);
   const [showSuggestButton, setShowSuggestButton] = useState(true);
   const [error, setError] = useState<ErrorMessageProps>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
@@ -55,14 +54,13 @@ export default function JoinStep3({ industries }) {
   // check invalid situation via previous required entries
   useEffect(() => {
     const prevReqFields =
-      !getItem("jfName") ||
-      !getItem("jfLocation") ||
-      !getItem("jfWebsite") ||
-      !getItem("jfFocuses");
+      !getItem("jfName") || !getItem("jfLocation") || !getItem("jfWebsite");
 
     if (prevReqFields) {
-      clearAllStoredFields();
-      router.push({ pathname: "01-you" });
+      console.log(`prevReqFields: ${prevReqFields}`);
+      console.log("you done got punted");
+      // clearAllStoredFields();
+      // router.push({ pathname: "01-you" });
     }
   }, []);
 
@@ -86,7 +84,8 @@ export default function JoinStep3({ industries }) {
   }, [error]);
 
   const totalIndustriesSelected =
-    industriesSelected.length + (suggestedIndustry ? 1 : 0);
+    industriesSelected.length + (industrySuggested ? 1 : 0);
+  const isMaxSelected = totalIndustriesSelected >= MAX_COUNT;
 
   useEffect(() => {
     const isValid = totalIndustriesSelected >= 1 && !!companySize;
@@ -94,7 +93,7 @@ export default function JoinStep3({ industries }) {
       setIsValid(isValid);
       setError(undefined);
     }
-  }, [companySize, suggestedIndustry, industriesSelected]);
+  }, [companySize, industrySuggested, industriesSelected]);
 
   const handleSelect = (industry) => {
     let nextIndustriesSelected = [...industriesSelected];
@@ -111,7 +110,7 @@ export default function JoinStep3({ industries }) {
 
   const handleBlurSuggested = (e) => {
     setShowSuggestButton(true);
-    setSuggestedIndustry(e.target.value ? e.target.value : undefined);
+    setIndustrySuggested(e.target.value ? e.target.value : undefined);
   };
 
   const handleDeselectLast = () => {
@@ -122,7 +121,7 @@ export default function JoinStep3({ industries }) {
 
   const handleClearSuggested = () => {
     if (window.confirm("Are you sure you want to clear this field?")) {
-      setSuggestedIndustry(undefined);
+      setIndustrySuggested(undefined);
     }
   };
 
@@ -141,8 +140,6 @@ export default function JoinStep3({ industries }) {
     if (companySize) setItem("jfCompanySize", companySize);
     router.push({ pathname: NEXT_PAGE });
   };
-
-  const isMaxSelected = totalIndustriesSelected >= MAX_COUNT;
 
   return (
     <div className="container">
@@ -264,13 +261,13 @@ export default function JoinStep3({ industries }) {
             ].map((size, i) => (
               <div
                 style={{ margin: "0 0.5rem 0.5rem 0", marginRight: "0.5rem" }}
+                key={`size-${i}`}
               >
                 <RadioBox
                   seriesOf="company-size"
                   checked={size === companySize}
                   label={size}
                   onChange={() => setCompanySize(size)}
-                  key={`size-${i}`}
                 />
               </div>
             ))}

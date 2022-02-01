@@ -1,6 +1,6 @@
-import airtable from "airtable";
-import SendGrid from "@sendgrid/mail";
 import Client from "@sendgrid/client";
+import SendGrid from "@sendgrid/mail";
+import airtable from "airtable";
 import { sendEmail, SendEmailProps } from "../../lib/confirmation-email";
 
 airtable.configure({
@@ -11,46 +11,34 @@ airtable.configure({
 SendGrid.setApiKey(process.env.SENDGRID_API_KEY);
 Client.setApiKey(process.env.SENDGRID_API_KEY);
 
-interface Fields {
+export interface FocusFields {
   name: string;
-  email: string;
-  location: string;
-  website: string;
-  focus?: string | string[];
-  suggestedFocus?: string;
-  title?: string;
-  recordID?: string;
 }
 
-const addToAirtable = async (fields: Fields): Promise<string> => {
-  let member = {
-    Name: fields.name,
-    Email: fields.email,
-    "Location (User)": fields.location,
-    Link: fields.website,
-    Exclude: true,
-    Order: 1,
-  };
-  if (fields.focus) {
-    member["Focus"] = () => {
-      if (fields.focus.length > 1) {
-        return fields.focus;
-      } else {
-        return [fields.focus];
-      }
-    };
-  }
-  if (fields.title) {
-    member["Job Title (User)"] = fields.title;
-  }
-  if (fields.suggestedFocus) {
-    member["Focus (User)"] = fields.suggestedFocus;
-  }
-
+const validateFocus = async (name: string): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     airtable
-      .base(process.env.AIRTABLE_BASE)("Members")
-      .create(member, (err, record) => {
+      .base(process.env.AIRTABLE_BASE)("Focuses")
+      .select({
+        view: "All",
+        filterByFormula: `{Name} = "${name}"`,
+      })
+      .firstPage((error, records) => {
+        if (error) reject(error);
+        resolve(records?.length >= 1);
+      });
+  });
+};
+
+const addFocusToAirtable = async ({ name }: FocusFields): Promise<string> => {
+  let focus = {
+    Name: name,
+    Status: "Pending",
+  };
+  return new Promise((resolve, reject) => {
+    airtable
+      .base(process.env.AIRTABLE_BASE)("Focuses")
+      .create(focus, (err, record) => {
         if (err) {
           reject(err);
         }
@@ -59,7 +47,61 @@ const addToAirtable = async (fields: Fields): Promise<string> => {
   });
 };
 
-const addSgContact = async (fields: Fields) => {
+interface MemberFields {
+  name: string;
+  email: string;
+  location: string;
+  website: string;
+  focusesSelected?: string | string[];
+  focusSuggested?: string;
+  companySize?: string;
+  yearsExperience?: string;
+  title?: string;
+  recordID?: string;
+}
+
+const addToAirtable = async (fields: MemberFields): Promise<string> => {
+  let member = {
+    Name: fields.name,
+    Email: fields.email,
+    Location: fields.location,
+    Link: fields.website,
+    "Company Size": fields.companySize,
+    "Years of Experience": fields.yearsExperience,
+    Status: "Pending",
+  };
+
+  let focuses;
+  if (fields.focusesSelected) focuses = fields.focusesSelected;
+  if (fields.focusSuggested) {
+    const focusExists = await validateFocus(fields.focusSuggested);
+    if (!focusExists) {
+      const newFocusID = await addFocusToAirtable({
+        name: fields.focusSuggested,
+      });
+      focuses = [...focuses, newFocusID];
+    }
+  }
+  if (focuses) member["Focus"] = focuses;
+
+  if (fields.title) member["Title"] = fields.title;
+
+  return new Promise((resolve, reject) => {
+    airtable
+      .base(process.env.AIRTABLE_BASE)("Members")
+      .create(member, (err, record) => {
+        if (err) {
+          reject(err);
+        }
+        console.log(`member`);
+        console.log(member);
+        console.log(`record ${record}`);
+        resolve(record.getId());
+      });
+  });
+};
+
+const addSgContact = async (fields: MemberFields) => {
   /*
     SendGrid's Marketing API is broken and requires custom field *IDs*
     more here: https://github.com/sendgrid/sendgrid-nodejs/issues/953#issuecomment-511227621
@@ -109,7 +151,7 @@ export const validateEmail = async (email: string): Promise<boolean> => {
     airtable
       .base(process.env.AIRTABLE_BASE)("Members")
       .select({
-        view: "All",
+        view: "Approved",
         filterByFormula: `{Email} = "${email}"`,
       })
       .firstPage((error, records) => {
@@ -123,6 +165,8 @@ export default async function createMember(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Only POST requests allowed" });
   }
+
+  console.log(req.body);
 
   try {
     const isEmailUsed = await validateEmail(req.body.email);
@@ -148,9 +192,15 @@ export default async function createMember(req, res) {
       });
       return res.status(200).json({ message: "Successfully added member." });
     } else {
-      return res.status(422).json({ error: "This email is in use." });
+      return res.status(422).json({
+        error: "This email is associated with another member.",
+        body: "We only allow one member per email address.",
+      });
     }
   } catch (error) {
-    return res.status(error.statusCode || 500).json({ error: error.message });
+    return res.status(error.statusCode || 500).json({
+      error: "Gonfunnit, looks like something went wrong!",
+      body: "Please try again later.",
+    });
   }
 }

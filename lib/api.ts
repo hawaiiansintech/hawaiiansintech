@@ -25,7 +25,12 @@ export async function fetchMembers() {
   const roles = await getBase({ name: "Roles" });
 
   return technologists
-    .filter((member) => !member.fields["Exclude"] && member.fields["Name"])
+    .filter(
+      (member) =>
+        !member.fields["Exclude"] &&
+        member.fields["Name"] &&
+        member.fields["Status"] === "Approved"
+    )
     .map((member) => {
       const regionLookup = regions.find(
         (region) => region.id === member.fields["Region"][0]
