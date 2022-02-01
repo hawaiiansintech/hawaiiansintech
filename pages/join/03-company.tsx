@@ -1,23 +1,23 @@
-import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import MetaTags from "../../components/Metatags.js";
-import { Heading } from "../../components/Heading";
 import Input from "../../components/form/Input";
 import Button from "../../components/Button";
 import UndoButton from "../../components/form/UndoButton";
-import { fetchIndustries } from "../../lib/api";
-import Selectable from "../../components/form/Selectable";
-import ProgressBar from "../../components/form/ProgressBar";
-import Label from "../../components/form/Label";
 import InputBox from "../../components/form/InputBox";
 import ErrorMessage, {
   ErrorMessageProps,
 } from "../../components/form/ErrorMessage";
+import Label from "../../components/form/Label";
+import ProgressBar from "../../components/form/ProgressBar";
 import RadioBox from "../../components/form/RadioBox";
-import { scrollToTop } from "../../helpers.js";
+import Selectable from "../../components/form/Selectable";
+import { Heading } from "../../components/Heading";
 import HorizontalRule from "../../components/HorizontalRule";
+import MetaTags from "../../components/Metatags.js";
+import { scrollToTop } from "../../helpers.js";
+import { fetchIndustries } from "../../lib/api";
 
 const NEXT_PAGE = "04-contact";
 
