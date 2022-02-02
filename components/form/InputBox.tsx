@@ -5,6 +5,7 @@ interface InputBoxProps {
   defaultValue?: string;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => any;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => any;
+  onEnter?: () => any;
   fullWidth?: boolean;
   selected?: string;
   value?: string;
@@ -17,6 +18,7 @@ export default function InputBox({
   defaultValue,
   onBlur,
   onChange,
+  onEnter,
   fullWidth,
   selected,
   value,
@@ -27,6 +29,9 @@ export default function InputBox({
         autoFocus={focusedOnInit}
         onBlur={onBlur}
         onChange={onChange}
+        onKeyPress={(e) => {
+          if (e.key === "Enter") onEnter();
+        }}
         value={value}
         defaultValue={defaultValue}
       />

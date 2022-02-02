@@ -6,10 +6,13 @@ import Button from "../../components/Button";
 import ErrorMessage, {
   ErrorMessageProps,
 } from "../../components/form/ErrorMessage";
+import InputBox from "../../components/form/InputBox";
 import Label from "../../components/form/Label";
 import ProgressBar from "../../components/form/ProgressBar";
 import RadioBox from "../../components/form/RadioBox";
-import Selectable from "../../components/form/Selectable";
+import Selectable, {
+  SelectableVariant,
+} from "../../components/form/Selectable";
 import { Heading } from "../../components/Heading";
 import HorizontalRule from "../../components/HorizontalRule";
 import MetaTags from "../../components/Metatags.js";
@@ -29,22 +32,28 @@ export async function getStaticProps() {
   };
 }
 
-const MAX_COUNT = 2;
+const MAX_COUNT = 3;
+const SELECTABLE_COLUMN_COUNT = 3;
 const TECHNOLOGY_LABEL = "Internet / Technology";
 
 export default function JoinStep3({ industries }) {
-  const { getItem, setItem } = useStorage();
+  const { getItem, setItem, removeItem } = useStorage();
   const router = useRouter();
   const [companySize, setCompanySize] = useState<string>();
   const [industrySuggested, setIndustrySuggested] = useState("");
   const [industriesSelected, setIndustriesSelected] = useState<string[]>([]);
   const [showSuggestButton, setShowSuggestButton] = useState(true);
-  const [error, setError] = useState<ErrorMessageProps>(undefined);
+  const [error, setError] = useState<ErrorMessageProps>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [isValid, setIsValid] = useState(null);
+
+  const totalIndustriesSelected =
+    industriesSelected.length + (industrySuggested ? 1 : 0);
+  const isMaxSelected = totalIndustriesSelected >= MAX_COUNT;
+
+  const isValid = totalIndustriesSelected >= 1 && !!companySize;
 
   let technologyInd =
-    industries.find((item) => item.name === TECHNOLOGY_LABEL) || undefined;
+    industries.find((item) => item.name === TECHNOLOGY_LABEL) || null;
   if (technologyInd) {
     industries = [
       ...industries.filter((item) => item.name !== TECHNOLOGY_LABEL),
@@ -68,6 +77,7 @@ export default function JoinStep3({ industries }) {
   useEffect(() => {
     let storedIndustries = getItem("jfIndustries");
     let storedCompanySize = getItem("jfCompanySize");
+    let storedIndustrySuggested = getItem("jfIndustrySuggested");
     if (storedIndustries) {
       // Convert string "[]" to parsable JSON
       storedIndustries = JSON.parse(storedIndustries);
@@ -77,22 +87,15 @@ export default function JoinStep3({ industries }) {
       setIndustriesSelected(match);
     }
     if (storedCompanySize) setCompanySize(storedCompanySize);
+    if (storedIndustrySuggested) setIndustrySuggested(storedIndustrySuggested);
   }, []);
 
   useEffect(() => {
     if (error) scrollToTop();
   }, [error]);
 
-  const totalIndustriesSelected =
-    industriesSelected.length + (industrySuggested ? 1 : 0);
-  const isMaxSelected = totalIndustriesSelected >= MAX_COUNT;
-
   useEffect(() => {
-    const isValid = totalIndustriesSelected >= 1 && !!companySize;
-    if (isValid) {
-      setIsValid(isValid);
-      setError(undefined);
-    }
+    if (isValid) setError(undefined);
   }, [companySize, industrySuggested, industriesSelected]);
 
   const handleSelect = (industry) => {
@@ -108,39 +111,31 @@ export default function JoinStep3({ industries }) {
     setIndustriesSelected(nextIndustriesSelected);
   };
 
-  const handleBlurSuggested = (e) => {
+  const handleBlurSuggested = () => {
     setShowSuggestButton(true);
-    setIndustrySuggested(e.target.value ? e.target.value : undefined);
-  };
-
-  const handleDeselectLast = () => {
-    let nextFocusesSelected = [...industriesSelected];
-    nextFocusesSelected.pop();
-    setIndustriesSelected(nextFocusesSelected);
-  };
-
-  const handleClearSuggested = () => {
-    if (window.confirm("Are you sure you want to clear this field?")) {
-      setIndustrySuggested(undefined);
-    }
   };
 
   const submitForm = () => {
     setLoading(true);
-    if (!isValid) {
+    if (isValid) {
+      if (industriesSelected)
+        setItem("jfIndustries", JSON.stringify(industriesSelected));
+      if (companySize) setItem("jfCompanySize", companySize);
+
+      if (industrySuggested) {
+        setItem("jfIndustrySuggested", industrySuggested);
+      } else {
+        removeItem("jfIndustrySuggested");
+      }
+      router.push({ pathname: NEXT_PAGE });
+    } else {
+      setLoading(false);
       setError({
         headline: "Fields missing below.",
         body: "Please fill all required fields below.",
       });
-      setLoading(false);
-      return;
     }
-    if (industriesSelected)
-      setItem("jfIndustries", JSON.stringify(industriesSelected));
-    if (companySize) setItem("jfCompanySize", companySize);
-    router.push({ pathname: NEXT_PAGE });
   };
-
   return (
     <div className="container">
       <Head>
@@ -176,7 +171,7 @@ export default function JoinStep3({ industries }) {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr",
+              gridTemplateColumns: `${"1fr ".repeat(SELECTABLE_COLUMN_COUNT)}`,
               gridAutoRows: "1fr",
               columnGap: "0.5rem",
               rowGap: "0.5rem",
@@ -191,7 +186,7 @@ export default function JoinStep3({ industries }) {
                 <div
                   style={{
                     display: "flex",
-                    gridColumn: "span 3",
+                    gridColumn: `span ${SELECTABLE_COLUMN_COUNT}`,
                   }}
                 >
                   <Selectable
@@ -207,7 +202,7 @@ export default function JoinStep3({ industries }) {
                 </div>
                 <div
                   style={{
-                    gridColumn: "span 3",
+                    gridColumn: `span ${SELECTABLE_COLUMN_COUNT}`,
                     display: "flex",
                     justifyContent: "stretch",
                     alignItems: "center",
@@ -234,6 +229,51 @@ export default function JoinStep3({ industries }) {
                 />
               );
             })}
+            <div
+              style={{
+                gridColumn: `span ${
+                  Math.ceil(industries.length / SELECTABLE_COLUMN_COUNT) *
+                    SELECTABLE_COLUMN_COUNT -
+                    industries.length || SELECTABLE_COLUMN_COUNT
+                }`,
+              }}
+            >
+              {showSuggestButton ? (
+                <Selectable
+                  label={
+                    industrySuggested
+                      ? `${industrySuggested}`
+                      : "+ Add industry"
+                  }
+                  onClick={() => setShowSuggestButton(false)}
+                  border={industrySuggested ? true : false}
+                  disabled={isMaxSelected && !!!industrySuggested}
+                  fullWidth
+                  variant={SelectableVariant.Alt}
+                  onClear={
+                    industrySuggested
+                      ? () =>
+                          window.confirm(
+                            "Are you sure you want to clear this field?"
+                          ) && setIndustrySuggested("")
+                      : undefined
+                  }
+                />
+              ) : (
+                <InputBox
+                  fullWidth
+                  border
+                  focusedOnInit
+                  onChange={(e) => {
+                    setIndustrySuggested(e.target.value);
+                  }}
+                  onBlur={() => setShowSuggestButton(true)}
+                  onEnter={() => setShowSuggestButton(true)}
+                  value={industrySuggested}
+                  disabled={isMaxSelected && !!!industrySuggested}
+                />
+              )}
+            </div>
           </div>
 
           <Label

@@ -22,6 +22,7 @@ import { useStorage } from "../../lib/hooks";
 import { clearAllStoredFields } from "./01-you";
 
 const NEXT_PAGE = "03-company";
+const SELECTABLE_COLUMN_COUNT = 3;
 
 export async function getStaticProps() {
   let focuses = (await fetchFocuses()) ?? [];
@@ -104,10 +105,6 @@ export default function JoinStep2({ focuses }) {
     setFocusesSelected(newFocusesSelected);
   };
 
-  const handleBlurSuggested = (e) => {
-    setShowSuggestButton(true);
-  };
-
   const submitForm = async () => {
     setLoading(true);
     if (!isValid) {
@@ -182,7 +179,7 @@ export default function JoinStep2({ focuses }) {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr",
+              gridTemplateColumns: `${"1fr ".repeat(SELECTABLE_COLUMN_COUNT)}`,
               gridAutoRows: "1fr",
               columnGap: "0.5rem",
               rowGap: "0.5rem",
@@ -206,7 +203,9 @@ export default function JoinStep2({ focuses }) {
             <div
               style={{
                 gridColumn: `span ${
-                  Math.ceil(focuses.length / 3) * 3 - focuses.length || 3
+                  Math.ceil(focuses.length / SELECTABLE_COLUMN_COUNT) *
+                    SELECTABLE_COLUMN_COUNT -
+                    focuses.length || SELECTABLE_COLUMN_COUNT
                 }`,
               }}
             >
@@ -233,13 +232,14 @@ export default function JoinStep2({ focuses }) {
                 />
               ) : (
                 <InputBox
-                  onBlur={handleBlurSuggested}
                   fullWidth
                   border
                   focusedOnInit
                   onChange={(e) => {
                     setFocusSuggested(e.target.value);
                   }}
+                  onBlur={() => setShowSuggestButton(true)}
+                  onEnter={() => setShowSuggestButton(true)}
                   value={focusSuggested}
                   disabled={isMaxSelected && !!!focusSuggested}
                 />

@@ -58,6 +58,7 @@ export default function Selectable({
             : selected
             ? "var(--color-brand-alt)"
             : "transparent"};
+          overflow-wrap: anywhere;
           color: ${selected ? "var(--color-text-overlay)" : "initial"};
           width: ${fullWidth ? "100%" : "initial"};
           opacity: ${disabled ? "0.5" : "initial"};

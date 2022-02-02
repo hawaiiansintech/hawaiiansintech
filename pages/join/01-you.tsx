@@ -22,6 +22,7 @@ const ALL_STORED_FIELDS = [
   "jfTitle",
   "jfYearsExperience",
   "jfIndustries",
+  "jfIndustrySuggested",
   "jfCompanySize",
 ];
 export const clearAllStoredFields = () => {
