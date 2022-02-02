@@ -212,7 +212,11 @@ export default function JoinStep2({ focuses }) {
             >
               {showSuggestButton ? (
                 <Selectable
-                  label={focusSuggested ? `${focusSuggested}` : "+ Add field"}
+                  label={
+                    focusSuggested
+                      ? `${focusSuggested}`
+                      : "+ Add technical / industry field"
+                  }
                   onClick={() => setShowSuggestButton(false)}
                   border={focusSuggested ? true : false}
                   disabled={isMaxSelected && !!!focusSuggested}
