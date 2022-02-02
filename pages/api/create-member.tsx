@@ -11,33 +11,40 @@ airtable.configure({
 SendGrid.setApiKey(process.env.SENDGRID_API_KEY);
 Client.setApiKey(process.env.SENDGRID_API_KEY);
 
-export interface FocusFields {
+export interface RecordFields {
   name: string;
+  table: string;
 }
 
-const validateFocus = async (name: string): Promise<boolean> => {
+const findRecord = async ({
+  name,
+  table,
+}: RecordFields): Promise<string | boolean> => {
   return new Promise((resolve, reject) => {
     airtable
-      .base(process.env.AIRTABLE_BASE)("Focuses")
+      .base(process.env.AIRTABLE_BASE)(table)
       .select({
         view: "All",
         filterByFormula: `{Name} = "${name}"`,
       })
       .firstPage((error, records) => {
         if (error) reject(error);
-        resolve(records?.length >= 1);
+        resolve(records?.length >= 1 ? records[0].getId() : false);
       });
   });
 };
 
-const addFocusToAirtable = async ({ name }: FocusFields): Promise<string> => {
+const addPendingRecord = async ({
+  name,
+  table,
+}: RecordFields): Promise<string> => {
   let focus = {
     Name: name,
     Status: "Pending",
   };
   return new Promise((resolve, reject) => {
     airtable
-      .base(process.env.AIRTABLE_BASE)("Focuses")
+      .base(process.env.AIRTABLE_BASE)(table)
       .create(focus, (err, record) => {
         if (err) {
           reject(err);
@@ -54,9 +61,11 @@ interface MemberFields {
   website: string;
   focusesSelected?: string | string[];
   focusSuggested?: string;
-  companySize?: string;
-  yearsExperience?: string;
   title?: string;
+  yearsExperience?: string;
+  industriesSelected?: string | string[];
+  industrySuggested?: string;
+  companySize?: string;
   recordID?: string;
 }
 
@@ -74,15 +83,38 @@ const addToAirtable = async (fields: MemberFields): Promise<string> => {
   let focuses;
   if (fields.focusesSelected) focuses = fields.focusesSelected;
   if (fields.focusSuggested) {
-    const focusExists = await validateFocus(fields.focusSuggested);
+    const focusExists = await findRecord({
+      name: fields.focusSuggested,
+      table: "Focuses",
+    });
     if (!focusExists) {
-      const newFocusID = await addFocusToAirtable({
+      const newFocusID = await addPendingRecord({
         name: fields.focusSuggested,
+        table: "Focuses",
       });
       focuses = [...focuses, newFocusID];
     }
   }
   if (focuses) member["Focus"] = focuses;
+
+  let industries;
+  if (fields.industriesSelected) industries = fields.industriesSelected;
+  if (fields.industrySuggested) {
+    const industryID = await findRecord({
+      name: fields.industrySuggested,
+      table: "Industries",
+    });
+    if (industryID) {
+      industries = [...industries, industryID];
+    } else {
+      const newIndustryID = await addPendingRecord({
+        name: fields.industrySuggested,
+        table: "Industries",
+      });
+      industries = [...industries, newIndustryID];
+    }
+  }
+  if (industries) member["Industry"] = industries;
 
   if (fields.title) member["Title"] = fields.title;
 
@@ -90,12 +122,7 @@ const addToAirtable = async (fields: MemberFields): Promise<string> => {
     airtable
       .base(process.env.AIRTABLE_BASE)("Members")
       .create(member, (err, record) => {
-        if (err) {
-          reject(err);
-        }
-        console.log(`member`);
-        console.log(member);
-        console.log(`record ${record}`);
+        if (err) reject(err);
         resolve(record.getId());
       });
   });
@@ -146,7 +173,7 @@ const sendSgEmail = async ({ email, airtableID, name }: SendEmailProps) => {
   });
 };
 
-export const validateEmail = async (email: string): Promise<boolean> => {
+export const findEmail = async (email: string): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     airtable
       .base(process.env.AIRTABLE_BASE)("Members")
@@ -166,10 +193,8 @@ export default async function createMember(req, res) {
     return res.status(405).json({ message: "Only POST requests allowed" });
   }
 
-  console.log(req.body);
-
   try {
-    const isEmailUsed = await validateEmail(req.body.email);
+    const isEmailUsed = await findEmail(req.body.email);
     if (!isEmailUsed) {
       const recordID: string = await addToAirtable({ ...req.body }).then(
         (body) => {
