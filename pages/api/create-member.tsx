@@ -83,11 +83,13 @@ const addToAirtable = async (fields: MemberFields): Promise<string> => {
   let focuses;
   if (fields.focusesSelected) focuses = fields.focusesSelected;
   if (fields.focusSuggested) {
-    const focusExists = await findRecord({
+    const focusID = await findRecord({
       name: fields.focusSuggested,
       table: "Focuses",
     });
-    if (!focusExists) {
+    if (focusID) {
+      focuses = [...focuses, focusID];
+    } else {
       const newFocusID = await addPendingRecord({
         name: fields.focusSuggested,
         table: "Focuses",
