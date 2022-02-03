@@ -5,6 +5,7 @@ export default css.global`
     --color-brand: #fc7442;
     --color-brand-alpha: #fc744233;
     --color-brand-alt: #ec4427;
+    --color-brand-alt-2: #db4126;
     --color-brand-faded: #cf8870;
     --color-link: var(--color-brand);
     --color-link-alt: var(--color-brand-alt);
@@ -16,6 +17,7 @@ export default css.global`
     --color-border: #dacbc8;
     --color-border-alt: #bda9a5;
     --color-border-alt-2: #ac9a97;
+    --color-border-alt-3: #978a88;
     --color-background: #e5e5e5;
     --color-background-alt: #dacbc8;
     --color-background-alt-2: #c9b5b1;
@@ -35,6 +37,7 @@ export default css.global`
     --color-text-button-disabled: #5c5a5e;
 
     --box-shadow-outline-button: rgba(252, 116, 66, 0.5) 0px 0px 1rem;
+    --box-shadow-outline-button-alt: rgba(0, 0, 0, 0.05) 0px 0px 1rem;
     --box-shadow-outline-button-small: rgba(252, 116, 66, 0.5) 0px 0px 0.5rem;
     --box-shadow-outline-undo-button: rgba(56, 56, 56, 0.25) 0px 0px 0.5rem;
 

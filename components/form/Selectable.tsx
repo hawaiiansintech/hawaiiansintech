@@ -47,16 +47,16 @@ export default function Selectable({
           position: relative;
           border: 0.25rem solid transparent;
           background: ${selected
-            ? "var(--color-brand)"
+            ? variant === SelectableVariant.Alt
+              ? "var(--color-border-alt-2)"
+              : "var(--color-brand)"
             : variant === SelectableVariant.Alt
             ? "var(--color-border-alt)"
             : "var(--color-border)"};
-          border-color: ${border
+          border-color: ${selected
             ? variant === SelectableVariant.Alt
-              ? "var(--color-border-alt-2)"
-              : "var(--color-border-alt)"
-            : selected
-            ? "var(--color-brand-alt)"
+              ? "var(--color-border-alt-3)"
+              : "var(--color-brand-alt)"
             : "transparent"};
           overflow-wrap: anywhere;
           color: ${selected ? "var(--color-text-overlay)" : "initial"};
@@ -75,21 +75,24 @@ export default function Selectable({
         }
         .button-box:hover {
           border-color: ${selected
-            ? "var(--color-brand-alt)"
-            : border
+            ? variant === SelectableVariant.Alt
+              ? "var(--color-border-alt-3)"
+              : "var(--color-brand-alt)"
+            : variant === SelectableVariant.Alt
             ? "var(--color-border-alt-2)"
             : "var(--color-border-alt)"};
         }
         .button-box:focus {
           border-color: ${selected
-            ? "var(--color-brand-alt)"
+            ? variant === SelectableVariant.Alt
+              ? "var(--color-border-alt-2)"
+              : "var(--color-brand-alt)"
+            : variant === SelectableVariant.Alt
+            ? "var(--color-border-alt-2)"
             : "var(--color-border-alt)"};
-          box-shadow: var(--box-shadow-outline-button);
-        }
-        .button-box:focus:hover {
-          border-color: ${selected
-            ? "var(--color-brand-alt)"
-            : "var(--color-border-alt)"};
+          box-shadow: ${selected
+            ? "var(--box-shadow-outline-button)"
+            : "var(--box-shadow-outline-button-alt)"};
         }
         span {
           position: absolute;
@@ -105,7 +108,9 @@ export default function Selectable({
           line-height: 1;
           font-size: 0.8em;
           background: ${selected
-            ? "var(--color-brand-alt)"
+            ? variant === SelectableVariant.Alt
+              ? "var(--color-border-alt-3)"
+              : "var(--color-brand-alt)"
             : "var(--color-border-alt-2)"};
           color: var(--color-text-overlay);
         }

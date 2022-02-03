@@ -105,7 +105,7 @@ export default function JoinStep2({ focuses }) {
     setFocusesSelected(newFocusesSelected);
   };
 
-  const submitForm = async () => {
+  const handleSubmit = async () => {
     setLoading(true);
     if (!isValid) {
       setLoading(false);
@@ -217,7 +217,7 @@ export default function JoinStep2({ focuses }) {
                       : "+ Add technical / industry field"
                   }
                   onClick={() => setShowSuggestButton(false)}
-                  border={focusSuggested ? true : false}
+                  selected={!!focusSuggested}
                   disabled={isMaxSelected && !!!focusSuggested}
                   fullWidth
                   variant={SelectableVariant.Alt}
@@ -291,7 +291,7 @@ export default function JoinStep2({ focuses }) {
           </div>
         </div>
         <div style={{ marginTop: "2rem" }}>
-          <Button onClick={submitForm} loading={loading}>
+          <Button onClick={handleSubmit} loading={loading}>
             Continue
           </Button>
         </div>
