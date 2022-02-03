@@ -152,7 +152,7 @@ export default function JoinStep4() {
             const res: Response | any = await createMember();
             const resJSON = await res.json();
             if (res.ok) {
-              // clearAllStoredFields();
+              clearAllStoredFields();
               router.push({ pathname: "thank-you" });
             } else if (res.status === 422) {
               setLoading(false);
