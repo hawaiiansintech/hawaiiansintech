@@ -208,7 +208,10 @@ export default function JoinStep3({ industries }) {
                         !industriesSelected.includes(technologyInd.id)) ||
                       deferIndustrySelected
                     }
-                    selected={industriesSelected.includes(technologyInd.id)}
+                    selected={
+                      industriesSelected.includes(technologyInd.id) &&
+                      !deferIndustrySelected
+                    }
                     onClick={() => handleSelect(technologyInd.id)}
                     fullWidth
                   />
