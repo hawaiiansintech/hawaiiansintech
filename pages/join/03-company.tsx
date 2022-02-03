@@ -124,16 +124,17 @@ export default function JoinStep3({ industries }) {
   };
 
   const handleSubmit = () => {
+    const industryDefered = industriesSelected.includes(deferInd.id);
     setLoading(true);
     if (isValid) {
-      if (industriesSelected.includes(deferInd.id)) {
+      if (industryDefered) {
         setItem("jfIndustries", JSON.stringify([deferInd.id]));
       } else {
         setItem("jfIndustries", JSON.stringify(industriesSelected));
       }
       if (companySize) setItem("jfCompanySize", companySize);
 
-      if (industrySuggested) {
+      if (industrySuggested && !industryDefered) {
         setItem("jfIndustrySuggested", industrySuggested);
       } else {
         removeItem("jfIndustrySuggested");
