@@ -118,3 +118,34 @@ export default function Selectable({
     </button>
   );
 }
+
+interface SelectableGridProps {
+  children?: React.ReactNode;
+  columns?: number;
+}
+
+export function SelectableGrid({ children, columns = 3 }: SelectableGridProps) {
+  return (
+    <div
+      style={{
+        margin: "0 0 2rem",
+        background: "var(--color-background-alt-2)",
+        borderRadius: "var(--border-radius-medium)",
+        overflow: "hidden",
+        padding: "0.5rem",
+      }}
+    >
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: `${"1fr ".repeat(columns)}`,
+          gridAutoRows: "1fr",
+          columnGap: "0.5rem",
+          rowGap: "0.5rem",
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}

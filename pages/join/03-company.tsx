@@ -11,6 +11,7 @@ import Label from "../../components/form/Label";
 import ProgressBar from "../../components/form/ProgressBar";
 import RadioBox from "../../components/form/RadioBox";
 import Selectable, {
+  SelectableGrid,
   SelectableVariant,
 } from "../../components/form/Selectable";
 import { Heading } from "../../components/Heading";
@@ -177,136 +178,122 @@ export default function JoinStep3({ industries }) {
             label="Which of the following best describes the industry that your company operates within?"
             labelTranslation="Ehia ka poʻe e hana ma kou wahi hana?"
           />
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: `${"1fr ".repeat(SELECTABLE_COLUMN_COUNT)}`,
-              gridAutoRows: "1fr",
-              columnGap: "0.5rem",
-              rowGap: "0.5rem",
-              margin: "1rem auto 2rem",
-              padding: "0.5rem",
-              background: "var(--color-background-alt-2)",
-              borderRadius: "var(--border-radius-medium)",
-            }}
-          >
-            {technologyInd && (
-              <>
-                <div
-                  style={{
-                    display: "flex",
-                    gridColumn: `span ${SELECTABLE_COLUMN_COUNT}`,
-                  }}
-                >
+          <div style={{ margin: "1rem auto 2rem" }}>
+            <SelectableGrid columns={SELECTABLE_COLUMN_COUNT}>
+              {technologyInd && (
+                <>
+                  <div
+                    style={{
+                      display: "flex",
+                      gridColumn: `span ${SELECTABLE_COLUMN_COUNT}`,
+                    }}
+                  >
+                    <Selectable
+                      label={technologyInd.name}
+                      disabled={
+                        (isMaxSelected &&
+                          !industriesSelected.includes(technologyInd.id)) ||
+                        deferIndustrySelected
+                      }
+                      selected={
+                        industriesSelected.includes(technologyInd.id) &&
+                        !deferIndustrySelected
+                      }
+                      onClick={() => handleSelect(technologyInd.id)}
+                      fullWidth
+                    />
+                  </div>
+                  <div
+                    style={{
+                      gridColumn: `span ${SELECTABLE_COLUMN_COUNT}`,
+                      display: "flex",
+                      justifyContent: "stretch",
+                      alignItems: "center",
+                    }}
+                  >
+                    <HorizontalRule label="AND/OR" />
+                  </div>
+                </>
+              )}
+              {industries.map((industry, i: number) => {
+                const isDisabled =
+                  isMaxSelected && !industriesSelected.includes(industry.id);
+                const isSelected = industriesSelected.includes(industry.id);
+
+                return (
                   <Selectable
-                    label={technologyInd.name}
+                    label={industry.name}
+                    disabled={isDisabled || deferIndustrySelected}
+                    selected={isSelected && !deferIndustrySelected}
+                    onClick={(e) => handleSelect(industry.id)}
+                    key={`ind-${i}`}
+                  />
+                );
+              })}
+              <div
+                style={{
+                  display: "grid",
+
+                  gridTemplateColumns: "1fr 1fr",
+                  gridAutoRows: "1fr",
+                  columnGap: "0.5rem",
+                  rowGap: "0.5rem",
+                  gridColumn: `span ${SELECTABLE_COLUMN_COUNT}`,
+                }}
+              >
+                {showSuggestButton ? (
+                  <Selectable
+                    label={
+                      industrySuggested
+                        ? `${industrySuggested}`
+                        : "+ Add industry"
+                    }
+                    onClick={() => setShowSuggestButton(false)}
+                    selected={!!industrySuggested && !deferIndustrySelected}
                     disabled={
-                      (isMaxSelected &&
-                        !industriesSelected.includes(technologyInd.id)) ||
+                      (isMaxSelected && !!!industrySuggested) ||
                       deferIndustrySelected
                     }
-                    selected={
-                      industriesSelected.includes(technologyInd.id) &&
-                      !deferIndustrySelected
-                    }
-                    onClick={() => handleSelect(technologyInd.id)}
                     fullWidth
+                    variant={SelectableVariant.Alt}
+                    onClear={
+                      industrySuggested && !deferIndustrySelected
+                        ? () =>
+                            window.confirm(
+                              "Are you sure you want to clear this field?"
+                            ) && setIndustrySuggested("")
+                        : undefined
+                    }
                   />
-                </div>
-                <div
-                  style={{
-                    gridColumn: `span ${SELECTABLE_COLUMN_COUNT}`,
-                    display: "flex",
-                    justifyContent: "stretch",
-                    alignItems: "center",
-                  }}
-                >
-                  <HorizontalRule label="AND/OR" />
-                </div>
-              </>
-            )}
-            {industries.map((industry, i: number) => {
-              const isDisabled =
-                isMaxSelected && !industriesSelected.includes(industry.id);
-              const isSelected = industriesSelected.includes(industry.id);
+                ) : (
+                  <InputBox
+                    fullWidth
+                    border
+                    focusedOnInit
+                    onChange={(e) => setIndustrySuggested(e.target.value)}
+                    onBlur={() => setShowSuggestButton(true)}
+                    onEnter={() => setShowSuggestButton(true)}
+                    value={industrySuggested}
+                    disabled={isMaxSelected && !!!industrySuggested}
+                  />
+                )}
 
-              return (
-                <Selectable
-                  label={industry.name}
-                  disabled={isDisabled || deferIndustrySelected}
-                  selected={isSelected && !deferIndustrySelected}
-                  onClick={(e) => handleSelect(industry.id)}
-                  key={`ind-${i}`}
-                />
-              );
-            })}
-            <div
-              style={{
-                display: "grid",
-
-                gridTemplateColumns: "1fr 1fr",
-                gridAutoRows: "1fr",
-                columnGap: "0.5rem",
-                rowGap: "0.5rem",
-                gridColumn: `span ${SELECTABLE_COLUMN_COUNT}`,
-              }}
-            >
-              {showSuggestButton ? (
-                <Selectable
-                  label={
-                    industrySuggested
-                      ? `${industrySuggested}`
-                      : "+ Add industry"
-                  }
-                  onClick={() => setShowSuggestButton(false)}
-                  selected={!!industrySuggested && !deferIndustrySelected}
-                  disabled={
-                    (isMaxSelected && !!!industrySuggested) ||
-                    deferIndustrySelected
-                  }
-                  fullWidth
-                  variant={SelectableVariant.Alt}
-                  onClear={
-                    industrySuggested && !deferIndustrySelected
-                      ? () =>
-                          window.confirm(
-                            "Are you sure you want to clear this field?"
-                          ) && setIndustrySuggested("")
-                      : undefined
-                  }
-                />
-              ) : (
-                <InputBox
-                  fullWidth
-                  border
-                  focusedOnInit
-                  onChange={(e) => {
-                    setIndustrySuggested(e.target.value);
-                  }}
-                  onBlur={() => setShowSuggestButton(true)}
-                  onEnter={() => setShowSuggestButton(true)}
-                  value={industrySuggested}
-                  disabled={isMaxSelected && !!!industrySuggested}
-                />
-              )}
-
-              {deferInd && (
-                <Selectable
-                  label={deferInd.name}
-                  fullWidth
-                  variant={
-                    deferIndustrySelected
-                      ? SelectableVariant.Primary
-                      : SelectableVariant.Alt
-                  }
-                  disabled={isMaxSelected && !deferIndustrySelected}
-                  selected={deferIndustrySelected}
-                  onClick={() => {
-                    handleSelect(deferInd.id);
-                  }}
-                />
-              )}
-            </div>
+                {deferInd && (
+                  <Selectable
+                    label={deferInd.name}
+                    fullWidth
+                    variant={
+                      deferIndustrySelected
+                        ? SelectableVariant.Primary
+                        : SelectableVariant.Alt
+                    }
+                    disabled={isMaxSelected && !deferIndustrySelected}
+                    selected={deferIndustrySelected}
+                    onClick={() => handleSelect(deferInd.id)}
+                  />
+                )}
+              </div>
+            </SelectableGrid>
           </div>
 
           <Label
