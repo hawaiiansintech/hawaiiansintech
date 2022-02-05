@@ -68,15 +68,14 @@ export default function JoinStep3({ industries }) {
 
   // check invalid situation via previous required entries
   useEffect(() => {
-    const prevReqFields =
-      !getItem("jfName") || !getItem("jfLocation") || !getItem("jfWebsite");
-
-    if (prevReqFields) {
-      console.log(`prevReqFields: ${prevReqFields}`);
-      console.log("you done got punted");
-      // clearAllStoredFields();
-      // router.push({ pathname: "01-you" });
-    }
+    const invalid =
+      !getItem("jfName") ||
+      !getItem("jfLocation") ||
+      !getItem("jfWebsite") ||
+      !getItem("jfYearsExperience") ||
+      ([...JSON.parse(getItem("jfFocuses") || "[]")].length < 1 &&
+        !getItem("jfFocusSuggested"));
+    if (invalid) router.push({ pathname: "01-you", query: { r: "03" } });
   }, []);
 
   // check localStorage and set pre-defined fields

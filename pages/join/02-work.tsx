@@ -19,7 +19,6 @@ import MetaTags from "../../components/Metatags.js";
 import { scrollToTop } from "../../helpers.js";
 import { fetchFocuses } from "../../lib/api";
 import { useStorage } from "../../lib/hooks";
-import { clearAllStoredFields } from "./01-you";
 
 const NEXT_PAGE = "03-company";
 const SELECTABLE_COLUMN_COUNT = 3;
@@ -71,12 +70,9 @@ export default function JoinStep2({ focuses }) {
 
   // check invalid situation via previous required entries
   useEffect(() => {
-    const prevReqFields =
+    const invalid =
       !getItem("jfName") || !getItem("jfLocation") || !getItem("jfWebsite");
-    if (prevReqFields) {
-      clearAllStoredFields();
-      router.push({ pathname: "01-you" });
-    }
+    if (invalid) router.push({ pathname: "01-you", query: { r: "02" } });
   }, []);
 
   useEffect(() => {

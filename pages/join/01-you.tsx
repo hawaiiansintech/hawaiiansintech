@@ -25,20 +25,33 @@ const ALL_STORED_FIELDS = [
   "jfIndustrySuggested",
   "jfCompanySize",
 ];
+
+const NEXT_PAGE = "02-work";
+
 export const clearAllStoredFields = () => {
   const { removeItem } = useStorage();
   ALL_STORED_FIELDS.map((item) => removeItem(item));
 };
-const NEXT_PAGE = "02-work";
 
 export default function JoinStep1(props) {
   const router = useRouter();
+  const { r } = router.query;
   const { getItem, setItem } = useStorage();
   const [loading, setLoading] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
   const [location, setLocation] = useState<string>("");
   const [website, setWebsite] = useState<string>("");
   const [validateAfterSubmit, setValidateAfterSubmit] = useState(false);
+
+  // clear fields if param `r` is present
+  useEffect(() => {
+    if (r) {
+      clearAllStoredFields();
+      setName("");
+      setLocation("");
+      setWebsite("");
+    }
+  }, [r]);
 
   useEffect(() => {
     let storedName = getItem("jfName");
