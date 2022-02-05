@@ -175,8 +175,8 @@ export default function JoinStep1(props) {
                 error={props.touched.website && props.errors.website}
               />
 
-              <div style={{ marginTop: "2rem" }}>
-                <Button loading={loading} type="submit">
+              <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
+                <Button fullWidth loading={loading} type="submit">
                   Continue
                 </Button>
               </div>

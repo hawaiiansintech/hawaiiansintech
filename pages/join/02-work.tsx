@@ -290,8 +290,13 @@ export default function JoinStep2({ focuses }) {
             ))}
           </div>
         </div>
-        <div style={{ marginTop: "2rem" }}>
-          <Button onClick={handleSubmit} loading={loading}>
+        <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
+          <Button
+            fullWidth
+            onClick={handleSubmit}
+            loading={loading}
+            type="submit"
+          >
             Continue
           </Button>
         </div>

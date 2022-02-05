@@ -1,7 +1,9 @@
 import Link from "next/link";
+import Button, { ButtonSize } from "./Button";
 import { Icon, IconAsset, IconColor } from "./icon/icon";
 
 interface StartOptionProps {
+  cta?: string;
   icon?: IconAsset;
   headline: string;
   description: string;
@@ -9,10 +11,11 @@ interface StartOptionProps {
 }
 
 export default function StartOption({
+  cta,
   icon,
   headline,
-  href,
   description,
+  href,
 }: StartOptionProps) {
   return (
     <Link href={href}>
@@ -21,6 +24,11 @@ export default function StartOption({
           {icon && <Icon asset={icon} color={IconColor.Brand} />}
           {headline && <h2>{headline}</h2>}
           {description && <h3>{description}</h3>}
+          {cta && (
+            <div className="start-option__cta">
+              <Button size={ButtonSize.Small}>{cta}</Button>
+            </div>
+          )}
         </div>
         <Icon asset={IconAsset.ArrowRight} alpha />
         <style jsx>{`
@@ -36,6 +44,7 @@ export default function StartOption({
           }
           .start-option:hover {
             border-color: var(--color-border-alt);
+            cursor: pointer;
           }
           .start-option:active,
           .start-option:focus {
@@ -43,6 +52,10 @@ export default function StartOption({
           }
           .start-option__body {
             flex-grow: 1;
+          }
+          .start-option__cta {
+            margin-top: 1rem;
+            pointer-events: none;
           }
           h2,
           h3 {
@@ -55,6 +68,7 @@ export default function StartOption({
           h3 {
             font-size: 0.875rem;
             font-weight: 400;
+            color: var(--color-text-alt);
           }
         `}</style>
       </div>

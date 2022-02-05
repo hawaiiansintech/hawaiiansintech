@@ -187,8 +187,8 @@ export default function JoinStep4() {
                 onChange={(e) => setEmail(e.target.value)}
                 error={props.touched.email && props.errors.email}
               />
-              <div style={{ marginTop: "2rem" }}>
-                <Button loading={loading} type="submit">
+              <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
+                <Button fullWidth loading={loading} type="submit">
                   Submit
                 </Button>
               </div>

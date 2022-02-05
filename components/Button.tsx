@@ -2,21 +2,30 @@ import Link from "next/link";
 import { cssHelperButtonReset } from "../styles/global.js";
 import LoadingSpinner from "./LoadingSpinner";
 
+export enum ButtonSize {
+  Small = "small",
+  Default = "default",
+}
+
 interface ButtonProps {
   children?: React.ReactNode;
   disabled?: boolean;
+  fullWidth?: boolean;
   linkTo?: string;
   loading?: boolean;
   onClick?: (e: React.MouseEvent) => any;
+  size?: ButtonSize;
   type?: "button" | "submit" | "reset";
 }
 
 export default function Button({
   children,
   disabled,
+  fullWidth,
   linkTo,
   loading,
   onClick,
+  size = ButtonSize.Default,
   type,
 }: ButtonProps) {
   let button = (
@@ -35,17 +44,18 @@ export default function Button({
       .button {
         ${cssHelperButtonReset}
         position: relative;
-        padding: 1.2rem;
-        width: 100%;
-        max-width: 24rem;
+        padding: ${size === ButtonSize.Default ? "1.2rem" : "0.2rem 0.4rem"};
+        width: ${fullWidth ? "100%" : "initial"};
         color: ${disabled
           ? "var(--color-text-button-disabled)"
           : loading
           ? "transparent"
           : "var(--color-text-button)"};
         border: 0.25rem solid transparent;
-        border-radius: var(--border-radius-medium);
-        font-size: 1rem;
+        border-radius: ${size === ButtonSize.Default
+          ? "var(--border-radius-medium)"
+          : "var(--border-radius-small)"};
+        font-size: ${size === ButtonSize.Default ? "1rem" : "0.875rem"};
         font-weight: 600;
         background: ${disabled
           ? "var(--color-background-button-disabled)"

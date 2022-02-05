@@ -1,23 +1,23 @@
 import moment from "moment";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
-import MetaTags from "../../components/Metatags.js";
+import { useRouter } from "next/router";
+import React, { useState } from "react";
+import Balloon from "../../components/Balloon";
+import Button from "../../components/Button";
+import ErrorMessage from "../../components/form/ErrorMessage";
+import Input from "../../components/form/Input";
 import { Heading, Subheading } from "../../components/Heading";
+import MetaTags from "../../components/Metatags.js";
 import {
   StatusIndicator,
   StatusIndicatorType,
 } from "../../components/StatusIndicator";
-import { GetServerSideProps } from "next";
 import { server } from "../../config";
 import {
   MemberStatusOption,
   MemberStatusProps,
 } from "../api/get-member-status";
-import Balloon from "../../components/Balloon";
-import { useRouter } from "next/router";
-import React, { useState } from "react";
-import Input from "../../components/form/Input";
-import Button from "../../components/Button";
-import ErrorMessage from "../../components/form/ErrorMessage";
 
 export const getServerSideProps: GetServerSideProps<MemberStatusProps> = async (
   context
@@ -122,17 +122,20 @@ export default function Status({
             }
           />
         </div>
-        <Button
-          onClick={(e) => {
-            e.preventDefault();
-            if (searchField === router.query.r) return;
-            router.push(`${router.pathname}?r=${searchField}`);
-          }}
-          disabled={searchField === router.query.r}
-          type="submit"
-        >
-          Submit
-        </Button>
+        <div style={{ margin: "0 auto", maxWidth: "24rem" }}>
+          <Button
+            onClick={(e) => {
+              e.preventDefault();
+              if (searchField === router.query.r) return;
+              router.push(`${router.pathname}?r=${searchField}`);
+            }}
+            fullWidth
+            disabled={searchField === router.query.r}
+            type="submit"
+          >
+            Submit
+          </Button>
+        </div>
       </form>
     );
   };

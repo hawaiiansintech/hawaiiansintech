@@ -1,8 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
-import MetaTags from "../../components/Metatags.js";
 import { Heading, Subheading } from "../../components/Heading";
 import { IconAsset } from "../../components/icon/icon";
+import MetaTags from "../../components/Metatags.js";
 import StartOption from "../../components/StartOption";
 
 export default function Join() {
@@ -37,12 +37,14 @@ export default function Join() {
           headline="I currently work in tech"
           description="I want to join the network of kanaka “techies” and contribute my expertise to the hui"
           href="join/01-you"
+          cta="Join List"
         />
         <StartOption
           icon={IconAsset.Cap}
           headline="I’m just getting started"
           description="I want to learn about how to get involved and explore the possibilities of a career as an ʻōiwi in tech"
           href="join/apprentice"
+          cta="Learn More"
         />
       </div>
 
