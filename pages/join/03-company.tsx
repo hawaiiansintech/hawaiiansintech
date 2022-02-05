@@ -117,8 +117,6 @@ export default function JoinStep3({ industries }) {
     } else if (industriesSelected.length < MAX_COUNT) {
       nextIndustriesSelected.push(industry);
     }
-    console.log("😆 nextIndustriesSelected");
-    console.log(nextIndustriesSelected);
     setIndustriesSelected(nextIndustriesSelected);
   };
 

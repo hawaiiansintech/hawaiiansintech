@@ -112,7 +112,7 @@ export default function JoinStep2({ focuses }) {
       return;
     }
     // Set as stringified array
-    if (focusesSelected) {
+    if (focusesSelected.length) {
       setItem("jfFocuses", JSON.stringify(focusesSelected));
     } else {
       removeItem("jfFocuses");

@@ -316,7 +316,6 @@ export default css.global`
 export const cssHelperButtonReset = `
   display: block;
   border: none;
-  margin: 0 auto;
   overflow: visible;
   outline: none;
   font: inherit;
