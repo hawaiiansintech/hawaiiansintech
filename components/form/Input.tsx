@@ -1,3 +1,4 @@
+import React from "react";
 import { toKebab } from "../../helpers.js";
 import Label from "./Label";
 
@@ -34,12 +35,14 @@ export default function Input({
   return (
     <div className="input">
       {label && labelTranslation && (
-        <Label
-          htmlFor={nameKebab}
-          label={label}
-          labelTranslation={labelTranslation}
-          optional={optional}
-        />
+        <div className="input__label">
+          <Label
+            htmlFor={nameKebab}
+            label={label}
+            labelTranslation={labelTranslation}
+            optional={optional}
+          />
+        </div>
       )}
       <input
         defaultValue={defaultValue}
@@ -53,11 +56,10 @@ export default function Input({
         onFocus={onFocus}
         value={value}
       />
-      {error && <span>{error}</span>}
+      {error && <FieldError>{error}</FieldError>}
 
       <style jsx>{`
         input {
-          margin: 1rem 0 ${error ? "0.25rem" : "0"};
           width: 100%;
           padding: 0.5rem 0.75rem;
           font-size: 1.4rem;
@@ -77,11 +79,26 @@ export default function Input({
         input:focus::placeholder {
           color: var(--color-text-alt-3);
         }
+        .input__label {
+          margin-bottom: 1rem;
+        }
+      `}</style>
+    </div>
+  );
+}
+
+export function FieldError({ children }: { children: React.ReactNode }) {
+  return (
+    <span>
+      {children}
+      <style jsx>{`
         span {
+          display: block;
+          margin-top: 0.25rem;
           font-size: 0.9rem;
           color: var(--color-error);
         }
       `}</style>
-    </div>
+    </span>
   );
 }

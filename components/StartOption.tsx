@@ -20,21 +20,16 @@ export default function StartOption({
   return (
     <Link href={href}>
       <div className="start-option">
-        <div className="start-option__body">
-          {icon && <Icon asset={icon} color={IconColor.Brand} />}
-          {headline && <h2>{headline}</h2>}
-          {description && <h3>{description}</h3>}
-          {cta && (
-            <div className="start-option__cta">
-              <Button size={ButtonSize.Small}>{cta}</Button>
-            </div>
-          )}
-        </div>
-        <Icon asset={IconAsset.ArrowRight} alpha />
+        {icon && <Icon asset={icon} color={IconColor.Brand} />}
+        {headline && <h2>{headline}</h2>}
+        {description && <h3>{description}</h3>}
+        {cta && (
+          <div className="start-option__cta">
+            <Button size={ButtonSize.Small}>{cta}</Button>
+          </div>
+        )}
         <style jsx>{`
           .start-option {
-            display: flex;
-            align-items: center;
             padding: 1rem;
             margin-bottom: 1rem;
             border-radius: var(--border-radius-medium);
@@ -49,9 +44,6 @@ export default function StartOption({
           .start-option:active,
           .start-option:focus {
             background-color: var(--color-border-alt);
-          }
-          .start-option__body {
-            flex-grow: 1;
           }
           .start-option__cta {
             margin-top: 1rem;

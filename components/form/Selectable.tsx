@@ -10,36 +10,50 @@ interface SelectableProps {
   border?: boolean;
   badgeNumber?: string | number;
   disabled?: boolean;
-  label: string;
+  groupedBy?: string;
+  headline: string;
+  byline?: string;
   onClick?: (e: React.MouseEvent) => any;
   onClear?: (e: React.MouseEvent) => any;
   fullWidth?: boolean;
   selected?: boolean;
+  value?: string;
   variant?: SelectableVariant;
 }
 
 export default function Selectable({
-  border,
   badgeNumber,
+  byline,
   disabled,
-  label,
+  groupedBy,
+  headline,
   onClick,
   onClear,
   fullWidth,
   selected,
+  value,
   variant = SelectableVariant.Primary,
 }: SelectableProps) {
-  const labelKebab = toKebab(label);
+  const headlineKebab = value ? toKebab(headline) : undefined;
   return (
     <button
-      id={labelKebab}
-      value={labelKebab}
+      id={value || headlineKebab}
+      value={value || headlineKebab}
       className="button-box"
       onClick={onClick}
       tabIndex={disabled ? -1 : undefined}
+      type="button"
     >
-      {label}
-      {badgeNumber && <span>{badgeNumber}</span>}
+      <input
+        value={value || headlineKebab}
+        type="checkbox"
+        checked={selected}
+        name={groupedBy}
+        readOnly
+      />
+      <h4>{headline}</h4>
+      {byline ? <h6>{byline}</h6> : null}
+      {badgeNumber ? <span>{badgeNumber}</span> : null}
       {onClear ? <span onClick={onClear}>×</span> : null}
       <style jsx>{`
         .button-box {
@@ -59,12 +73,10 @@ export default function Selectable({
               : "var(--color-brand-alt)"
             : "transparent"};
           overflow-wrap: anywhere;
-          color: ${selected ? "var(--color-text-overlay)" : "initial"};
+          min-height: 4rem;
           width: ${fullWidth ? "100%" : "initial"};
           opacity: ${disabled ? "0.5" : "initial"};
           pointer-events: ${disabled ? "none" : "initial"};
-          font-size: 1rem;
-          font-weight: 600;
           line-height: 120%;
           margin: 0;
           height: 100%;
@@ -93,6 +105,24 @@ export default function Selectable({
           box-shadow: ${selected
             ? "var(--box-shadow-outline-button)"
             : "var(--box-shadow-outline-button-alt)"};
+        }
+        input {
+          position: absolute;
+          left: -9999px;
+        }
+        h4 {
+          margin: 0;
+          font-size: 1rem;
+          font-weight: 600;
+          color: ${selected ? "var(--color-text-overlay)" : "initial"};
+        }
+        h6 {
+          margin: 0.125rem 0 0;
+          font-size: 0.75rem;
+          font-weight: 400;
+          color: ${selected
+            ? "var(--color-text-overlay-alt)"
+            : "var(--color-text-alt)"};
         }
         span {
           position: absolute;
@@ -126,26 +156,26 @@ interface SelectableGridProps {
 
 export function SelectableGrid({ children, columns = 3 }: SelectableGridProps) {
   return (
-    <div
-      style={{
-        margin: "0 0 2rem",
-        background: "var(--color-background-alt-2)",
-        borderRadius: "var(--border-radius-medium)",
-        overflow: "hidden",
-        padding: "0.5rem",
-      }}
-    >
+    <div className="selectable-grid">
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: `${"1fr ".repeat(columns)}`,
-          gridAutoRows: "1fr",
-          columnGap: "0.5rem",
-          rowGap: "0.5rem",
-        }}
+        className="selectable-grid__container"
+        style={{ gridTemplateColumns: `${"1fr ".repeat(columns)}` }}
       >
         {children}
       </div>
+      <style jsx>{`
+        .selectable-grid {
+          background: var(--color-background-alt-2);
+          border-radius: var(--border-radius-large);
+          padding: 0.5rem;
+        }
+        .selectable-grid__container {
+          display: grid;
+          grid-auto-rows: 1fr;
+          grid-column-gap: 0.5rem;
+          grid-row-gap: 0.5rem;
+        }
+      `}</style>
     </div>
   );
 }

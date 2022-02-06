@@ -111,8 +111,9 @@ export default function JoinStep1(props) {
         <Heading>Welcome to our little hui.</Heading>
       </div>
       <Subheading centered>
-        Join our directory featuring talented kanaka working across the tech
-        industry.
+        To join the directory, we just ask that you are{" "}
+        <strong>Native Hawaiian</strong> and work in the{" "}
+        <strong>field / industry of technology</strong>.
       </Subheading>
       <section
         style={{

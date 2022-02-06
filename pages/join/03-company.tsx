@@ -189,7 +189,7 @@ export default function JoinStep3({ industries }) {
                     }}
                   >
                     <Selectable
-                      label={technologyInd.name}
+                      headline={technologyInd.name}
                       disabled={
                         (isMaxSelected &&
                           !industriesSelected.includes(technologyInd.id)) ||
@@ -222,7 +222,7 @@ export default function JoinStep3({ industries }) {
 
                 return (
                   <Selectable
-                    label={industry.name}
+                    headline={industry.name}
                     disabled={isDisabled || deferIndustrySelected}
                     selected={isSelected && !deferIndustrySelected}
                     onClick={(e) => handleSelect(industry.id)}
@@ -243,7 +243,7 @@ export default function JoinStep3({ industries }) {
               >
                 {showSuggestButton ? (
                   <Selectable
-                    label={
+                    headline={
                       industrySuggested
                         ? `${industrySuggested}`
                         : "+ Add industry"
@@ -280,7 +280,7 @@ export default function JoinStep3({ industries }) {
 
                 {deferInd && (
                   <Selectable
-                    label={deferInd.name}
+                    headline={deferInd.name}
                     fullWidth
                     variant={
                       deferIndustrySelected

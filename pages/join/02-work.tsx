@@ -164,68 +164,70 @@ export default function JoinStep2({ focuses }) {
           label="Which of the following best describes your field of work?"
           labelTranslation="He aha kou (mau) hana ʻoi a pau?"
         />
-        <SelectableGrid columns={SELECTABLE_COLUMN_COUNT}>
-          {focuses.map((focus, i: number) => {
-            const isDisabled =
-              isMaxSelected && !focusesSelected.includes(focus.id);
-            const isSelected = focusesSelected.includes(focus.id);
+        <div style={{ marginTop: "1rem" }}>
+          <SelectableGrid columns={SELECTABLE_COLUMN_COUNT}>
+            {focuses.map((focus, i: number) => {
+              const isDisabled =
+                isMaxSelected && !focusesSelected.includes(focus.id);
+              const isSelected = focusesSelected.includes(focus.id);
 
-            return (
-              <Selectable
-                label={focus.name}
-                disabled={isDisabled}
-                selected={isSelected}
-                onClick={(e) => handleSelect(focus.id)}
-                key={`Selectable-${i}-`}
-              />
-            );
-          })}
-          <div
-            style={{
-              gridColumn: `span ${
-                Math.ceil(focuses.length / SELECTABLE_COLUMN_COUNT) *
-                  SELECTABLE_COLUMN_COUNT -
-                  focuses.length || SELECTABLE_COLUMN_COUNT
-              }`,
-            }}
-          >
-            {showSuggestButton ? (
-              <Selectable
-                label={
-                  focusSuggested
-                    ? `${focusSuggested}`
-                    : "+ Add technical / industry field"
-                }
-                onClick={() => setShowSuggestButton(false)}
-                selected={!!focusSuggested}
-                disabled={isMaxSelected && !!!focusSuggested}
-                fullWidth
-                variant={SelectableVariant.Alt}
-                onClear={
-                  focusSuggested
-                    ? () =>
-                        window.confirm(
-                          "Are you sure you want to clear this field?"
-                        ) && setFocusSuggested("")
-                    : undefined
-                }
-              />
-            ) : (
-              <InputBox
-                fullWidth
-                border
-                focusedOnInit
-                onChange={(e) => {
-                  setFocusSuggested(e.target.value);
-                }}
-                onBlur={() => setShowSuggestButton(true)}
-                onEnter={() => setShowSuggestButton(true)}
-                value={focusSuggested}
-                disabled={isMaxSelected && !!!focusSuggested}
-              />
-            )}
-          </div>
-        </SelectableGrid>
+              return (
+                <Selectable
+                  headline={focus.name}
+                  disabled={isDisabled}
+                  selected={isSelected}
+                  onClick={(e) => handleSelect(focus.id)}
+                  key={`Selectable-${i}-`}
+                />
+              );
+            })}
+            <div
+              style={{
+                gridColumn: `span ${
+                  Math.ceil(focuses.length / SELECTABLE_COLUMN_COUNT) *
+                    SELECTABLE_COLUMN_COUNT -
+                    focuses.length || SELECTABLE_COLUMN_COUNT
+                }`,
+              }}
+            >
+              {showSuggestButton ? (
+                <Selectable
+                  headline={
+                    focusSuggested
+                      ? `${focusSuggested}`
+                      : "+ Add technical / industry field"
+                  }
+                  onClick={() => setShowSuggestButton(false)}
+                  selected={!!focusSuggested}
+                  disabled={isMaxSelected && !!!focusSuggested}
+                  fullWidth
+                  variant={SelectableVariant.Alt}
+                  onClear={
+                    focusSuggested
+                      ? () =>
+                          window.confirm(
+                            "Are you sure you want to clear this field?"
+                          ) && setFocusSuggested("")
+                      : undefined
+                  }
+                />
+              ) : (
+                <InputBox
+                  fullWidth
+                  border
+                  focusedOnInit
+                  onChange={(e) => {
+                    setFocusSuggested(e.target.value);
+                  }}
+                  onBlur={() => setShowSuggestButton(true)}
+                  onEnter={() => setShowSuggestButton(true)}
+                  value={focusSuggested}
+                  disabled={isMaxSelected && !!!focusSuggested}
+                />
+              )}
+            </div>
+          </SelectableGrid>
+        </div>
 
         <div style={{ margin: "2rem 0" }}>
           <Input
