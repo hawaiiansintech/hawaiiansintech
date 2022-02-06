@@ -50,6 +50,8 @@ export default function JoinStep1(props) {
       setName("");
       setLocation("");
       setWebsite("");
+      if (typeof window !== "undefined")
+        window.history.replaceState(null, "", "/join/01-you");
     }
   }, [r]);
 
