@@ -8,11 +8,6 @@ export default function Nav(props) {
           <a>About</a>
         </Link>
       </li>
-      <li>
-        <Link href="/nominate">
-          <a>Nominate</a>
-        </Link>
-      </li>
 
       <li>
         <Link href="/join">
