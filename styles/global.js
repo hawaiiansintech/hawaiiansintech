@@ -14,6 +14,7 @@ export default css.global`
     --color-text-alt-2: #847876;
     --color-text-alt-3: #9f8986;
     --color-text-overlay: #fff;
+    --color-text-overlay-alt: #ffffffdd;
     --color-border: #dacbc8;
     --color-border-alt: #bda9a5;
     --color-border-alt-2: #ac9a97;
@@ -44,7 +45,7 @@ export default css.global`
     --border-radius-x-small: 0.25rem;
     --border-radius-small: 0.5rem;
     --border-radius-medium: 1rem;
-    --border-radius-large: 1.5rem;
+    --border-radius-large: 1.25rem;
 
     --width-page-interior: 42rem;
     --width-floating-balloon: 28rem;
