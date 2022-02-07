@@ -66,7 +66,7 @@ export async function fetchRoles() {
     });
 }
 
-export async function fetchFocuses() {
+export async function getFocuses() {
   const focuses = await getBase({ name: "Focuses", view: "Approved" });
 
   return focuses
@@ -83,7 +83,7 @@ export async function fetchFocuses() {
     });
 }
 
-export async function fetchIndustries() {
+export async function getIndustries() {
   const industries = await getBase({ name: "Industries", view: "Approved" });
 
   return industries

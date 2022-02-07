@@ -18,13 +18,13 @@ import { Heading } from "../../components/Heading";
 import HorizontalRule from "../../components/HorizontalRule";
 import MetaTags from "../../components/Metatags.js";
 import { scrollToTop } from "../../helpers.js";
-import { fetchIndustries } from "../../lib/api";
+import { getIndustries } from "../../lib/api";
 import { useStorage } from "../../lib/hooks";
 
 const NEXT_PAGE = "04-contact";
 
 export async function getStaticProps() {
-  let industries = (await fetchIndustries()) ?? [];
+  let industries = (await getIndustries()) ?? [];
   return {
     props: {
       industries: industries,

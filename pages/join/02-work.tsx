@@ -18,14 +18,14 @@ import Selectable, {
 import { Heading } from "../../components/Heading";
 import MetaTags from "../../components/Metatags.js";
 import { scrollToTop } from "../../helpers.js";
-import { fetchFocuses } from "../../lib/api";
+import { getFocuses } from "../../lib/api";
 import { useStorage } from "../../lib/hooks";
 
 const NEXT_PAGE = "03-company";
 const SELECTABLE_COLUMN_COUNT = 3;
 
 export async function getStaticProps() {
-  let focuses = (await fetchFocuses()) ?? [];
+  let focuses = (await getFocuses()) ?? [];
   return {
     props: {
       focuses: focuses.sort((a, b) => b.count - a.count),
