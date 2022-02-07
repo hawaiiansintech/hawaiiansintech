@@ -163,6 +163,15 @@ export default function JoinStep2({ focuses }) {
         <Label
           label="Which of the following best describes your field of work?"
           labelTranslation="He aha kou (mau) hana ʻoi a pau?"
+          hint={
+            <>
+              <strong>
+                We'll sort you (and others) by logically-grouped, broad
+                expertises in the directory.
+              </strong>{" "}
+              <em>Select up to 3</em>, if you're a special unicorn!
+            </>
+          }
         />
         <div style={{ marginTop: "1rem" }}>
           <SelectableGrid columns={SELECTABLE_COLUMN_COUNT}>
@@ -236,7 +245,16 @@ export default function JoinStep2({ focuses }) {
             labelTranslation="ʻO wai kou kūlana i hana?"
             placeholder="e.g. Software Engineer"
             value={title}
-            optional
+            labelHint={
+              <>
+                <strong>
+                  Your title will be used as a (non-searchable) vanity label.
+                </strong>{" "}
+                Jobs and titles often come-and-go. We care more about{" "}
+                <em>what you do</em> than what they call you.{" "}
+                <em>This field is optional.</em>
+              </>
+            }
             onChange={(e) => setTitle(e.target.value)}
           />
         </div>
@@ -244,6 +262,16 @@ export default function JoinStep2({ focuses }) {
           <Label
             label="How many years of experience do you have in your field?"
             labelTranslation="Ehia ka makahiki o kou hana ʻana ma kou ʻoi hana?"
+            hint={
+              <>
+                <strong>
+                  We'll use this tenure as a loose proxy to where you're at in
+                  your career.
+                </strong>{" "}
+                It was either this or "
+                <em>Eh, really, how good you stay at this?</em>"
+              </>
+            }
           />
           <div
             style={{

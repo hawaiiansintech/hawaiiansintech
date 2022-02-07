@@ -177,6 +177,15 @@ export default function JoinStep3({ industries }) {
           <Label
             label="Which of the following best describes the industry that your company operates within?"
             labelTranslation="Ehia ka poʻe e hana ma kou wahi hana?"
+            hint={
+              <>
+                <strong>
+                  We understand tech jobs aren't always "in tech".
+                </strong>{" "}
+                If you're in a technical field but within another industry,
+                please feel free to omit the top option.
+              </>
+            }
           />
           <div style={{ margin: "1rem auto 2rem" }}>
             <SelectableGrid columns={SELECTABLE_COLUMN_COUNT}>
@@ -299,6 +308,14 @@ export default function JoinStep3({ industries }) {
           <Label
             label="How many employees work at your company?"
             labelTranslation="Ehia ka poʻe e hana ma kou wahi hana?"
+            hint={
+              <>
+                <strong>
+                  Size isn't everything, but it also <em>isn't</em> nothing.
+                </strong>{" "}
+                This will help us assess the sort of company you work for.
+              </>
+            }
           />
           <div
             style={{
