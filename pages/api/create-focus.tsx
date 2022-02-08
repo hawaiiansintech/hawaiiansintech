@@ -10,7 +10,7 @@ const TABLE = "Focuses";
 const validateFocus = async (name: string): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     airtable
-      .base(process.env.AIRTABLE_BASE)(TABLE)
+      .base(process.env.AIRTABLE_BASE_NEW)(TABLE)
       .select({
         view: "All",
         filterByFormula: `{Name} = "${name}"`,
@@ -33,7 +33,7 @@ const addFocusToAirtable = async ({ name }: FocusFields): Promise<string> => {
   };
   return new Promise((resolve, reject) => {
     airtable
-      .base(process.env.AIRTABLE_BASE)(TABLE)
+      .base(process.env.AIRTABLE_BASE_NEW)(TABLE)
       .create(focus, (err, record) => {
         if (err) {
           reject(err);
@@ -43,7 +43,7 @@ const addFocusToAirtable = async ({ name }: FocusFields): Promise<string> => {
   });
 };
 
-export default async function createFocus(req, res) {
+export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Only POST requests allowed" });
   }

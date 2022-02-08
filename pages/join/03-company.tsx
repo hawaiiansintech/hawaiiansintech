@@ -15,7 +15,6 @@ import Selectable, {
   SelectableVariant,
 } from "../../components/form/Selectable";
 import { Heading } from "../../components/Heading";
-import HorizontalRule from "../../components/HorizontalRule";
 import MetaTags from "../../components/Metatags.js";
 import { scrollToTop } from "../../helpers.js";
 import { getIndustries } from "../../lib/api";
@@ -190,39 +189,27 @@ export default function JoinStep3({ industries }) {
           <div style={{ margin: "1rem auto 2rem" }}>
             <SelectableGrid columns={SELECTABLE_COLUMN_COUNT}>
               {technologyInd && (
-                <>
-                  <div
-                    style={{
-                      display: "flex",
-                      gridColumn: `span ${SELECTABLE_COLUMN_COUNT}`,
-                    }}
-                  >
-                    <Selectable
-                      headline={technologyInd.name}
-                      disabled={
-                        (isMaxSelected &&
-                          !industriesSelected.includes(technologyInd.id)) ||
-                        deferIndustrySelected
-                      }
-                      selected={
-                        industriesSelected.includes(technologyInd.id) &&
-                        !deferIndustrySelected
-                      }
-                      onClick={() => handleSelect(technologyInd.id)}
-                      fullWidth
-                    />
-                  </div>
-                  <div
-                    style={{
-                      gridColumn: `span ${SELECTABLE_COLUMN_COUNT}`,
-                      display: "flex",
-                      justifyContent: "stretch",
-                      alignItems: "center",
-                    }}
-                  >
-                    <HorizontalRule label="AND/OR" />
-                  </div>
-                </>
+                <div
+                  style={{
+                    display: "flex",
+                    gridColumn: `span ${SELECTABLE_COLUMN_COUNT}`,
+                  }}
+                >
+                  <Selectable
+                    headline={technologyInd.name}
+                    disabled={
+                      (isMaxSelected &&
+                        !industriesSelected.includes(technologyInd.id)) ||
+                      deferIndustrySelected
+                    }
+                    selected={
+                      industriesSelected.includes(technologyInd.id) &&
+                      !deferIndustrySelected
+                    }
+                    onClick={() => handleSelect(technologyInd.id)}
+                    fullWidth
+                  />
+                </div>
               )}
               {industries.map((industry, i: number) => {
                 const isDisabled =
@@ -250,6 +237,15 @@ export default function JoinStep3({ industries }) {
                   gridColumn: `span ${SELECTABLE_COLUMN_COUNT}`,
                 }}
               >
+                {deferInd && (
+                  <Selectable
+                    headline={deferInd.name}
+                    fullWidth
+                    disabled={isMaxSelected && !deferIndustrySelected}
+                    selected={deferIndustrySelected}
+                    onClick={() => handleSelect(deferInd.id)}
+                  />
+                )}
                 {showSuggestButton ? (
                   <Selectable
                     headline={
@@ -264,6 +260,7 @@ export default function JoinStep3({ industries }) {
                       deferIndustrySelected
                     }
                     fullWidth
+                    centered
                     variant={SelectableVariant.Alt}
                     onClear={
                       industrySuggested && !deferIndustrySelected
@@ -284,21 +281,6 @@ export default function JoinStep3({ industries }) {
                     onEnter={() => setShowSuggestButton(true)}
                     value={industrySuggested}
                     disabled={isMaxSelected && !!!industrySuggested}
-                  />
-                )}
-
-                {deferInd && (
-                  <Selectable
-                    headline={deferInd.name}
-                    fullWidth
-                    variant={
-                      deferIndustrySelected
-                        ? SelectableVariant.Primary
-                        : SelectableVariant.Alt
-                    }
-                    disabled={isMaxSelected && !deferIndustrySelected}
-                    selected={deferIndustrySelected}
-                    onClick={() => handleSelect(deferInd.id)}
                   />
                 )}
               </div>

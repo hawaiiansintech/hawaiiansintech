@@ -12,58 +12,57 @@ interface BaseProps {
 
 const getBase = async ({ name, view }: BaseProps) => {
   return airtable
-    .base(process.env.AIRTABLE_BASE)(name)
+    .base(process.env.AIRTABLE_BASE_NEW)(name)
     .select({
       view: view || "All",
     })
     .all();
 };
 
-export async function fetchMembers() {
-  const technologists = await getBase({ name: "Members" });
-  const regions = await getBase({ name: "Regions" });
-  const roles = await getBase({ name: "Roles" });
+export async function getMembers() {
+  return Promise.all([
+    getBase({ name: "Members", view: "Approved" }),
+    getBase({ name: "Focuses", view: "Approved" }),
+    getBase({ name: "Regions" }),
+  ]).then((values) => {
+    const [members, focuses, regions] = values;
+    return members.map((member) => {
+      const regionLookup =
+        regions.find((region) => {
+          const memberRegion = member.fields["Region"];
+          if (memberRegion && Array.isArray(memberRegion)) {
+            return region.id === member.fields["Region"][0];
+          }
+        })?.fields["Name"] || null;
 
-  return technologists
-    .filter(
-      (member) =>
-        !member.fields["Exclude"] &&
-        member.fields["Name"] &&
-        member.fields["Status"] === "Approved"
-    )
-    .map((member) => {
-      const regionLookup = regions.find(
-        (region) => region.id === member.fields["Region"][0]
-      ).fields["Name"];
-      const roleLookup = roles.find(
-        (role) => role.id === member.fields["Role"][0]
-      ).fields["Name"];
+      const focusLookup = () => {
+        const memberFocus = member.fields["Focus"];
+        if (memberFocus && Array.isArray(memberFocus)) {
+          return memberFocus.map((foc) => {
+            return (
+              focuses
+                .filter((thisFoc) => foc === thisFoc.id)
+                .map((foc) => {
+                  return {
+                    name: foc.fields["Name"],
+                    id: foc.fields["ID"],
+                  };
+                })[0] || null
+            );
+          });
+        }
+      };
 
       return {
-        name: member.fields["Name"],
-        location: member.fields["Location"],
+        name: member.fields["Name"] || null,
+        location: member.fields["Location"] || null,
+        link: member.fields["Link"] || null,
+        title: member.fields["Title"] || null,
         region: regionLookup,
-        role: roleLookup,
-        link: member.fields["Link"],
+        focus: focusLookup(),
       };
     });
-}
-
-export async function fetchRoles() {
-  const roles = await getBase({ name: "Roles" });
-
-  return roles
-    .filter((role) => role.fields["Members"] && role.fields["Name"])
-    .map((role) => {
-      return {
-        name: role.fields["Name"],
-        id: role.fields["ID"],
-        members: role.fields["Members"],
-        count: Array.isArray(role.fields["Members"])
-          ? role.fields["Members"].length
-          : 0,
-      };
-    });
+  });
 }
 
 export async function getFocuses() {

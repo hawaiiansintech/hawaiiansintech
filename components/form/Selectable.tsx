@@ -9,6 +9,7 @@ export enum SelectableVariant {
 interface SelectableProps {
   border?: boolean;
   badgeNumber?: string | number;
+  centered?: boolean;
   disabled?: boolean;
   groupedBy?: string;
   headline: string;
@@ -24,6 +25,7 @@ interface SelectableProps {
 export default function Selectable({
   badgeNumber,
   byline,
+  centered,
   disabled,
   groupedBy,
   headline,
@@ -58,8 +60,19 @@ export default function Selectable({
       <style jsx>{`
         .button-box {
           ${cssHelperButtonReset}
+          display: flex;
+          align-items: ${centered ? "center" : "flex-end"};
           position: relative;
           border: 0.25rem solid transparent;
+          overflow-wrap: anywhere;
+          min-height: 4rem;
+          line-height: 120%;
+          margin: 0;
+          height: 100%;
+          border-radius: var(--border-radius-medium);
+          text-align: ${centered ? "center" : "left"};
+          padding: 0.5rem 0.75rem;
+          transition: all 150ms ease-out;
           background: ${selected
             ? variant === SelectableVariant.Alt
               ? "var(--color-border-alt-2)"
@@ -72,18 +85,27 @@ export default function Selectable({
               ? "var(--color-border-alt-3)"
               : "var(--color-brand-alt)"
             : "transparent"};
-          overflow-wrap: anywhere;
-          min-height: 4rem;
           width: ${fullWidth ? "100%" : "initial"};
           opacity: ${disabled ? "0.5" : "initial"};
           pointer-events: ${disabled ? "none" : "initial"};
-          line-height: 120%;
-          margin: 0;
-          height: 100%;
-          border-radius: var(--border-radius-medium);
-          text-align: center;
-          padding: 0.5rem 0.75rem;
-          transition: all 150ms ease-out;
+        }
+        .button-box:after {
+          content: "";
+          display: block;
+          align-self: flex-end;
+          width: 1rem;
+          height: 1rem;
+          margin-left: 0.5rem;
+          border-radius: var(--border-radius-x-small);
+          flex-shrink: 0;
+          border-style: ${variant === SelectableVariant.Alt ? "none" : "solid"};
+          border-width: ${selected ? "0.35rem" : "0.2rem"};
+          border-color: ${selected
+            ? "var(--color-brand-alt)"
+            : "var(--color-border-alt)"};
+          background: ${selected && variant !== SelectableVariant.Alt
+            ? "#fff"
+            : "transparent"};
         }
         .button-box:hover {
           border-color: ${selected
@@ -111,6 +133,7 @@ export default function Selectable({
           left: -9999px;
         }
         h4 {
+          flex-grow: 1;
           margin: 0;
           font-size: 1rem;
           font-weight: 600;

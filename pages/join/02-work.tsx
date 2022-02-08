@@ -201,6 +201,7 @@ export default function JoinStep2({ focuses }) {
             >
               {showSuggestButton ? (
                 <Selectable
+                  centered
                   headline={
                     focusSuggested
                       ? `${focusSuggested}`

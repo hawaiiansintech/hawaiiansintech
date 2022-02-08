@@ -22,7 +22,7 @@ const findRecord = async ({
 }: RecordFields): Promise<string | boolean> => {
   return new Promise((resolve, reject) => {
     airtable
-      .base(process.env.AIRTABLE_BASE)(table)
+      .base(process.env.AIRTABLE_BASE_NEW)(table)
       .select({
         view: "All",
         filterByFormula: `{Name} = "${name}"`,
@@ -44,7 +44,7 @@ const addPendingRecord = async ({
   };
   return new Promise((resolve, reject) => {
     airtable
-      .base(process.env.AIRTABLE_BASE)(table)
+      .base(process.env.AIRTABLE_BASE_NEW)(table)
       .create(focus, (err, record) => {
         if (err) {
           reject(err);
@@ -122,7 +122,7 @@ const addToAirtable = async (fields: MemberFields): Promise<string> => {
 
   return new Promise((resolve, reject) => {
     airtable
-      .base(process.env.AIRTABLE_BASE)("Members")
+      .base(process.env.AIRTABLE_BASE_NEW)("Members")
       .create(member, (err, record) => {
         if (err) reject(err);
         resolve(record.getId());
@@ -178,7 +178,7 @@ const sendSgEmail = async ({ email, airtableID, name }: SendEmailProps) => {
 export const findEmail = async (email: string): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     airtable
-      .base(process.env.AIRTABLE_BASE)("Members")
+      .base(process.env.AIRTABLE_BASE_NEW)("Members")
       .select({
         view: "Approved",
         filterByFormula: `{Email} = "${email}"`,
@@ -190,7 +190,7 @@ export const findEmail = async (email: string): Promise<boolean> => {
   });
 };
 
-export default async function createMember(req, res) {
+export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Only POST requests allowed" });
   }

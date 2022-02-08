@@ -20,7 +20,7 @@ export interface MemberStatusProps {
   modifiedOn?: string;
 }
 
-export default async function fetchMemberStatus(req, res) {
+export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Only POST requests allowed" });
   }
@@ -28,7 +28,7 @@ export default async function fetchMemberStatus(req, res) {
   let getMemberStatus = (recordID: string) => {
     return new Promise((resolve, reject) => {
       airtable
-        .base(process.env.AIRTABLE_BASE)("Members")
+        .base(process.env.AIRTABLE_BASE_NEW)("Members")
         .select({
           view: "All",
           filterByFormula: `{RecordID} = "${recordID}"`,
