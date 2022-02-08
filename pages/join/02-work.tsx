@@ -248,12 +248,9 @@ export default function JoinStep2({ focuses }) {
             value={title}
             labelHint={
               <>
-                <strong>
-                  Your title will be used as a (non-searchable) vanity label.
-                </strong>{" "}
-                Jobs and titles often come-and-go. We care more about{" "}
-                <em>what you do</em> than what they call you.{" "}
-                <em>This field is optional.</em>
+                <strong>Titles are optional.</strong> Jobs and titles often
+                come-and-go. We care more about <em>what you do</em> than what
+                they call you.
               </>
             }
             onChange={(e) => setTitle(e.target.value)}
@@ -266,8 +263,7 @@ export default function JoinStep2({ focuses }) {
             hint={
               <>
                 <strong>
-                  We'll use this tenure as a loose proxy to where you're at in
-                  your career.
+                  This is a loose proxy to where you're at in your career.
                 </strong>{" "}
                 It was either this or "
                 <em>Eh, really, how good you stay at this?</em>"
