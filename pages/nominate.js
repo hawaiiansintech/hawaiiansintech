@@ -1,6 +1,6 @@
+import MetaTags from "@/components/Metatags.js";
 import Head from "next/head";
 import Link from "next/link";
-import MetaTags from "../components/Metatags.js";
 
 export default function Nominate({ technologists }) {
   return (

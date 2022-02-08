@@ -1,10 +1,10 @@
+import HitLogo from "@/components/HitLogo.js";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import MetaTags from "@/components/Metatags.js";
+import Nav from "@/components/Nav.js";
+import Title from "@/components/Title.js";
+import { getMembers } from "@/lib/api";
 import Head from "next/head";
-import HitLogo from "../components/HitLogo.js";
-import LoadingSpinner from "../components/LoadingSpinner";
-import MetaTags from "../components/Metatags.js";
-import Nav from "../components/Nav.js";
-import Title from "../components/Title.js";
-import { getMembers } from "../lib/api";
 
 export async function getStaticProps() {
   const members = await getMembers();

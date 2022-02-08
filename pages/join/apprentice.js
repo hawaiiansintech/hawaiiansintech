@@ -1,6 +1,6 @@
+import { Heading, Subheading } from "@/components/Heading.tsx";
+import MetaTags from "@/components/Metatags.js";
 import Head from "next/head";
-import MetaTags from "../../components/Metatags.js";
-import { Heading, Subheading } from "../../components/Heading.tsx";
 
 export default function Apprentice() {
   return (

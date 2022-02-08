@@ -1,7 +1,7 @@
+import { sendEmail, SendEmailProps } from "@/lib/confirmation-email";
 import Client from "@sendgrid/client";
 import SendGrid from "@sendgrid/mail";
 import airtable from "airtable";
-import { sendEmail, SendEmailProps } from "../../lib/confirmation-email";
 
 airtable.configure({
   endpointUrl: "https://api.airtable.com",

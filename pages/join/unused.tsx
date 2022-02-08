@@ -1,9 +1,9 @@
+import { Heading, Subheading } from "@/components/Heading";
+import { IconAsset } from "@/components/icon/icon";
+import MetaTags from "@/components/Metatags.js";
+import StartOption from "@/components/StartOption";
 import Head from "next/head";
 import Link from "next/link";
-import { Heading, Subheading } from "../../components/Heading";
-import { IconAsset } from "../../components/icon/icon";
-import MetaTags from "../../components/Metatags.js";
-import StartOption from "../../components/StartOption";
 
 export default function Join() {
   return (

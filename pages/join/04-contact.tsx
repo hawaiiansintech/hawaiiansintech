@@ -1,18 +1,18 @@
+import Button from "@/components/Button";
+import ErrorMessage, {
+  ErrorMessageProps,
+} from "@/components/form/ErrorMessage";
+import Input from "@/components/form/Input";
+import ProgressBar from "@/components/form/ProgressBar";
+import { Heading, Subheading } from "@/components/Heading";
+import MetaTags from "@/components/Metatags.js";
+import { useStorage } from "@/lib/hooks";
 import { Formik } from "formik";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import * as Yup from "yup";
-import Button from "../../components/Button";
-import ErrorMessage, {
-  ErrorMessageProps,
-} from "../../components/form/ErrorMessage";
-import Input from "../../components/form/Input";
-import ProgressBar from "../../components/form/ProgressBar";
-import { Heading, Subheading } from "../../components/Heading";
-import MetaTags from "../../components/Metatags.js";
-import { useStorage } from "../../lib/hooks";
 import { clearAllStoredFields } from "./01-you";
 
 export default function JoinStep4() {

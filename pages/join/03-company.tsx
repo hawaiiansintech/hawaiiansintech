@@ -1,24 +1,24 @@
+import Button from "@/components/Button";
+import ErrorMessage, {
+  ErrorMessageProps,
+} from "@/components/form/ErrorMessage";
+import InputBox from "@/components/form/InputBox";
+import Label from "@/components/form/Label";
+import ProgressBar from "@/components/form/ProgressBar";
+import RadioBox from "@/components/form/RadioBox";
+import Selectable, {
+  SelectableGrid,
+  SelectableVariant,
+} from "@/components/form/Selectable";
+import { Heading } from "@/components/Heading";
+import MetaTags from "@/components/Metatags.js";
+import { getIndustries } from "@/lib/api";
+import { useStorage } from "@/lib/hooks";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Button from "../../components/Button";
-import ErrorMessage, {
-  ErrorMessageProps,
-} from "../../components/form/ErrorMessage";
-import InputBox from "../../components/form/InputBox";
-import Label from "../../components/form/Label";
-import ProgressBar from "../../components/form/ProgressBar";
-import RadioBox from "../../components/form/RadioBox";
-import Selectable, {
-  SelectableGrid,
-  SelectableVariant,
-} from "../../components/form/Selectable";
-import { Heading } from "../../components/Heading";
-import MetaTags from "../../components/Metatags.js";
 import { scrollToTop } from "../../helpers.js";
-import { getIndustries } from "../../lib/api";
-import { useStorage } from "../../lib/hooks";
 
 const NEXT_PAGE = "04-contact";
 
