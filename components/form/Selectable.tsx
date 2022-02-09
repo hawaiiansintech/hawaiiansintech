@@ -11,7 +11,6 @@ interface SelectableProps {
   badgeNumber?: string | number;
   centered?: boolean;
   disabled?: boolean;
-  groupedBy?: string;
   headline: string;
   byline?: string;
   onClick?: (e: React.MouseEvent) => any;
@@ -27,7 +26,6 @@ export default function Selectable({
   byline,
   centered,
   disabled,
-  groupedBy,
   headline,
   onClick,
   onClear,
@@ -46,13 +44,6 @@ export default function Selectable({
       tabIndex={disabled ? -1 : undefined}
       type="button"
     >
-      <input
-        value={value || headlineKebab}
-        type="checkbox"
-        checked={selected}
-        name={groupedBy}
-        readOnly
-      />
       <h4>{headline}</h4>
       {byline ? <h6>{byline}</h6> : null}
       {badgeNumber ? <span>{badgeNumber}</span> : null}
@@ -87,7 +78,7 @@ export default function Selectable({
             : "transparent"};
           width: ${fullWidth ? "100%" : "initial"};
           opacity: ${disabled ? "0.5" : "initial"};
-          pointer-events: ${disabled ? "none" : "initial"};
+          pointer-events: ${disabled ? "none" : "inherit"};
         }
         .button-box:after {
           content: "";
@@ -127,10 +118,6 @@ export default function Selectable({
           box-shadow: ${selected
             ? "var(--box-shadow-outline-button)"
             : "var(--box-shadow-outline-button-alt)"};
-        }
-        input {
-          position: absolute;
-          left: -9999px;
         }
         h4 {
           flex-grow: 1;
