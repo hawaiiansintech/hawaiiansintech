@@ -4,16 +4,17 @@ import MetaTags from "@/components/Metatags.js";
 import Nav from "@/components/Nav.js";
 import Pill from "@/components/Pill";
 import Title from "@/components/Title.js";
-import { getFocuses, getMembers } from "@/lib/api";
+import { Focus, getFocuses, getMembers, Member } from "@/lib/api";
 import Head from "next/head";
+import { useState } from "react";
 
 export async function getStaticProps() {
   const members = await getMembers();
   const focuses = await getFocuses();
   return {
     props: {
-      members,
-      focuses: focuses.filter((focus) => {
+      allMembers: members,
+      allFocuses: focuses.filter((focus) => {
         return focus;
         return focus.count > 0;
       }),
@@ -22,7 +23,10 @@ export async function getStaticProps() {
   };
 }
 
-export default function Home({ members, focuses }) {
+export default function Home({ allMembers, allFocuses }) {
+  const [members, setMembers] = useState<Member[]>(allMembers);
+  const [focuses, setFocuses] = useState<Focus[]>(allFocuses);
+
   return (
     <div className="container">
       <Head>
@@ -48,7 +52,7 @@ export default function Home({ members, focuses }) {
 }
 
 interface MemberListProps {
-  members?: any[];
+  members?: Member[];
 }
 
 function MemberList({ members }: MemberListProps) {
@@ -80,7 +84,7 @@ function MemberList({ members }: MemberListProps) {
       <style jsx>{`
         ul.member-list {
           list-style: none;
-          margin: 0;
+          margin: 2rem 0 0;
           padding: 0;
         }
         li.member {
@@ -126,14 +130,15 @@ function MemberList({ members }: MemberListProps) {
 }
 
 interface FocusPickerProps {
-  focuses: any;
+  focuses: Focus[];
 }
+
 function FocusPicker({ focuses }: FocusPickerProps) {
   const activeCount = 6;
   return (
     <ul>
       {focuses.map((focus, i) => {
-        const disabled = i >= activeCount;
+        const disabled = i >= activeCount || focus.count === 0;
         return (
           <li
             className={`${disabled ? "disabled" : ""}`}

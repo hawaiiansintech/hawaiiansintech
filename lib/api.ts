@@ -19,7 +19,16 @@ const getBase = async ({ name, view }: BaseProps) => {
     .all();
 };
 
-export async function getMembers() {
+export interface Member {
+  name: string;
+  location: string;
+  link: string;
+  title?: string;
+  region: string;
+  focus: { name: string; id: string }[];
+}
+
+export async function getMembers(): Promise<Member | Member[]> {
   return Promise.all([
     getBase({ name: "Members", view: "Approved" }),
     getBase({ name: "Focuses", view: "Approved" }),
@@ -44,8 +53,14 @@ export async function getMembers() {
                 .filter((thisFoc) => foc === thisFoc.id)
                 .map((foc) => {
                   return {
-                    name: foc.fields["Name"],
-                    id: foc.fields["ID"],
+                    name:
+                      typeof foc.fields["Name"] === "string"
+                        ? foc.fields["Name"]
+                        : null,
+                    id:
+                      typeof foc.fields["ID"] === "string"
+                        ? foc.fields["ID"]
+                        : null,
                   };
                 })[0] || null
             );
@@ -54,27 +69,49 @@ export async function getMembers() {
       };
 
       return {
-        name: member.fields["Name"] || null,
-        location: member.fields["Location"] || null,
-        link: member.fields["Link"] || null,
-        title: member.fields["Title"] || null,
-        region: regionLookup,
+        name:
+          typeof member.fields["Name"] === "string"
+            ? member.fields["Name"]
+            : null,
+        location:
+          typeof member.fields["Location"] === "string"
+            ? member.fields["Location"]
+            : null,
+        link:
+          typeof member.fields["Link"] === "string"
+            ? member.fields["Link"]
+            : null,
+        title:
+          typeof member.fields["Title"] === "string"
+            ? member.fields["Title"]
+            : null,
+        region: typeof regionLookup === "string" ? regionLookup : null,
         focus: focusLookup(),
       };
     });
   });
 }
 
-export async function getFocuses() {
+export interface Focus {
+  name: string;
+  id: string;
+  members: string[];
+  count: number;
+}
+
+export async function getFocuses(): Promise<Focus[]> {
   const focuses = await getBase({ name: "Focuses", view: "Approved" });
 
   return focuses
     .filter((role) => role.fields["Name"])
     .map((role) => {
       return {
-        name: role.fields["Name"],
-        id: role.fields["ID"],
-        members: role.fields["Members"] ? role.fields["Members"] : null,
+        name:
+          typeof role.fields["Name"] === "string" ? role.fields["Name"] : null,
+        id: typeof role.fields["ID"] === "string" ? role.fields["ID"] : null,
+        members: Array.isArray(role.fields["Members"])
+          ? role.fields["Members"]
+          : null,
         count: Array.isArray(role.fields["Members"])
           ? role.fields["Members"].length
           : 0,
