@@ -6,7 +6,8 @@ import Pill from "@/components/Pill";
 import Title from "@/components/Title.js";
 import { Focus, getFocuses, getMembers, Member } from "@/lib/api";
 import Head from "next/head";
-import { useState } from "react";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
 
 export async function getStaticProps() {
   const members = await getMembers();
@@ -23,9 +24,42 @@ export async function getStaticProps() {
   };
 }
 
+interface DirectoryMember extends Member {
+  focus: { active?: boolean; id: string; name: string }[];
+}
+
+interface DirectoryFocus extends Focus {
+  active?: boolean;
+}
+
 export default function Home({ allMembers, allFocuses }) {
-  const [members, setMembers] = useState<Member[]>(allMembers);
-  const [focuses, setFocuses] = useState<Focus[]>(allFocuses);
+  const [members, setMembers] = useState<DirectoryMember[]>(allMembers);
+  const [focuses, setFocuses] = useState<DirectoryFocus[]>(allFocuses);
+
+  const handleFilterByFocuses = (id: string) => {
+    setFocuses(
+      focuses.map((foc) => ({
+        ...foc,
+        active: foc.id === id ? !foc.active : foc.active,
+      }))
+    );
+  };
+
+  useEffect(() => {
+    console.log("🍒 useEffect [focuses]");
+    const activeFocuses = focuses
+      .filter((foc) => foc.active)
+      .map((foc) => foc.id);
+    const newMembers = members.map((mem) => ({
+      ...mem,
+      focus: mem.focus.map((foc) => ({
+        ...foc,
+        active: activeFocuses.includes(foc.id),
+      })),
+    }));
+
+    setMembers(newMembers);
+  }, [focuses]);
 
   return (
     <div className="container">
@@ -39,7 +73,12 @@ export default function Home({ allMembers, allFocuses }) {
       <Nav />
       <Title className="title m0 p0" text="Hawaiians*in&nbsp;Technology" />
       <main>
-        {focuses && <FocusPicker focuses={focuses} />}
+        {focuses && (
+          <FocusPicker
+            focuses={focuses}
+            onFilterClick={handleFilterByFocuses}
+          />
+        )}
         {members && <MemberList members={members} />}
       </main>
       <style jsx>{`
@@ -51,34 +90,38 @@ export default function Home({ allMembers, allFocuses }) {
   );
 }
 
-interface MemberListProps {
-  members?: Member[];
+interface DirectoryMemberListProps {
+  members?: DirectoryMember[];
 }
 
-function MemberList({ members }: MemberListProps) {
+function MemberList({ members }: DirectoryMemberListProps) {
   return (
     <ul className="member-list">
       {members.map((member, i) => (
-        <li className="member" key={`member-${i}`}>
-          <div>
-            <h2 className="member__name">{member.name}</h2>
-          </div>
-          <div className="member__location">
-            <h3>{member.location}</h3>
-            <h4>{member.region}</h4>
-          </div>
-          <div>
-            <h3>{member.title}</h3>
-          </div>
-          <div>
-            <dl>
-              {member.focus.map((foc) => (
-                <dt>
-                  <Pill>{foc.name}</Pill>
-                </dt>
-              ))}
-            </dl>
-          </div>
+        <li key={`member-${i}`}>
+          <Link href={member.link}>
+            <div className="member">
+              <div>
+                <h2 className="member__name">{member.name}</h2>
+              </div>
+              <div className="member__location">
+                <h3>{member.location}</h3>
+                <h4>{member.region}</h4>
+              </div>
+              <div>
+                <h3>{member.title}</h3>
+              </div>
+              <div>
+                <dl>
+                  {member.focus.map((foc) => (
+                    <dt key={`member-pill-${foc.id}`}>
+                      <Pill active={foc.active}>{foc.name}</Pill>
+                    </dt>
+                  ))}
+                </dl>
+              </div>
+            </div>
+          </Link>
         </li>
       ))}
       <style jsx>{`
@@ -87,7 +130,7 @@ function MemberList({ members }: MemberListProps) {
           margin: 2rem 0 0;
           padding: 0;
         }
-        li.member {
+        div.member {
           display: grid;
           grid-template-columns: 1fr 1fr 1fr 1fr;
           column-gap: 1rem;
@@ -130,24 +173,25 @@ function MemberList({ members }: MemberListProps) {
 }
 
 interface FocusPickerProps {
-  focuses: Focus[];
+  focuses: DirectoryFocus[];
+  onFilterClick: (id: string) => any;
 }
 
-function FocusPicker({ focuses }: FocusPickerProps) {
-  const activeCount = 6;
+function FocusPicker({ focuses, onFilterClick }: FocusPickerProps) {
+  const visibleCount = 6;
   return (
     <ul>
-      {focuses.map((focus, i) => {
-        const disabled = i >= activeCount || focus.count === 0;
-        return (
-          <li
-            className={`${disabled ? "disabled" : ""}`}
-            key={`focus-filter-${i}`}
-          >
-            <Selectable headline={focus.name} fullWidth />
-          </li>
-        );
-      })}
+      {focuses.map((focus, i) => (
+        <li key={`focus-filter-${i}`}>
+          <Selectable
+            fullWidth
+            headline={focus.name}
+            onClick={() => onFilterClick(focus.id)}
+            selected={focus.active}
+            disabled={i >= visibleCount || focus.count === 0}
+          />
+        </li>
+      ))}
       <style jsx>{`
         ul {
           display: flex;
@@ -157,13 +201,9 @@ function FocusPicker({ focuses }: FocusPickerProps) {
         }
         li {
           flex-shrink: 0;
-          width: calc((100vw - 4rem) / ${activeCount} - 1rem);
+          width: calc((100vw - 4rem) / ${visibleCount} - 1rem);
           margin: 0 0.5rem 0 0;
           padding: 0;
-        }
-        li.disabled {
-          pointer-events: none;
-          opacity: 0.5;
         }
       `}</style>
     </ul>
