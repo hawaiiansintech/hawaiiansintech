@@ -5,6 +5,7 @@ import Nav from "@/components/Nav.js";
 import Pill from "@/components/Pill";
 import Title from "@/components/Title.js";
 import { Focus, getFocuses, getMembers, Member } from "@/lib/api";
+import { motion } from "framer-motion";
 import Head from "next/head";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -14,7 +15,12 @@ export async function getStaticProps() {
   const focuses = await getFocuses();
   return {
     props: {
-      allMembers: members,
+      allMembers: members
+        .map((mem) => ({
+          ...mem,
+          focus: mem.focus.map((foc) => ({ ...foc, active: false })),
+        }))
+        .sort(() => 0.5 - Math.random()),
       allFocuses: focuses.filter((focus) => {
         return focus;
         return focus.count > 0;
@@ -40,23 +46,35 @@ export default function Home({ allMembers, allFocuses }) {
     setFocuses(
       focuses.map((foc) => ({
         ...foc,
+        // add false active prop
         active: foc.id === id ? !foc.active : foc.active,
       }))
     );
   };
 
   useEffect(() => {
-    console.log("🍒 useEffect [focuses]");
-    const activeFocuses = focuses
-      .filter((foc) => foc.active)
-      .map((foc) => foc.id);
-    const newMembers = members.map((mem) => ({
-      ...mem,
-      focus: mem.focus.map((foc) => ({
-        ...foc,
-        active: activeFocuses.includes(foc.id),
-      })),
-    }));
+    const newMembers = members
+      .map((mem) => ({
+        ...mem,
+        focus: mem.focus.map((foc) => ({
+          ...foc,
+          // update member focuses if filtered
+          active: focuses
+            .filter((foc) => foc.active)
+            .map((foc) => foc.id)
+            .includes(foc.id),
+        })),
+      }))
+      // sort by number of focuses set
+      .sort((a, b) => {
+        const firstActive = a.focus
+          .map((foc) => foc.active)
+          .filter((foc) => foc).length;
+        const nextActive = b.focus
+          .map((foc) => foc.active)
+          .filter((foc) => foc).length;
+        return nextActive > firstActive ? 1 : -1;
+      });
 
     setMembers(newMembers);
   }, [focuses]);
@@ -96,40 +114,30 @@ interface DirectoryMemberListProps {
 
 function MemberList({ members }: DirectoryMemberListProps) {
   return (
-    <ul className="member-list">
+    <>
       {members.map((member, i) => (
-        <li key={`member-${i}`}>
+        <motion.div layout="position" key={`member-${member.name}`}>
           <Link href={member.link}>
             <div className="member">
-              <div>
-                <h2 className="member__name">{member.name}</h2>
-              </div>
+              <h2 className="member__name">{member.name}</h2>
               <div className="member__location">
                 <h3>{member.location}</h3>
                 <h4>{member.region}</h4>
               </div>
-              <div>
-                <h3>{member.title}</h3>
-              </div>
-              <div>
-                <dl>
-                  {member.focus.map((foc) => (
-                    <dt key={`member-pill-${foc.id}`}>
-                      <Pill active={foc.active}>{foc.name}</Pill>
-                    </dt>
-                  ))}
-                </dl>
-              </div>
+              <h3>{member.title}</h3>
+              <dl>
+                {member.focus.map((foc) => (
+                  <dt key={`member-pill-${foc.id}`}>
+                    <Pill active={foc.active}>{foc.name}</Pill>
+                  </dt>
+                ))}
+              </dl>
             </div>
           </Link>
-        </li>
+        </motion.div>
       ))}
+
       <style jsx>{`
-        ul.member-list {
-          list-style: none;
-          margin: 2rem 0 0;
-          padding: 0;
-        }
         div.member {
           display: grid;
           grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -140,7 +148,7 @@ function MemberList({ members }: DirectoryMemberListProps) {
         dl {
           display: flex;
           flex-wrap: wrap;
-          margin-top: 0.5rem;
+          margin: 0;
         }
         dt {
           margin-right: 0.25rem;
@@ -168,7 +176,7 @@ function MemberList({ members }: DirectoryMemberListProps) {
           color: var(--color-text-alt-2);
         }
       `}</style>
-    </ul>
+    </>
   );
 }
 

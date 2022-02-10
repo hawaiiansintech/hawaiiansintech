@@ -9,6 +9,7 @@ export default function Pill({ active, children }: PillProps) {
       {children}
       <style jsx>{`
         span {
+          display: inline-block;
           font-size: 1rem;
           font-weight: 500;
           padding: 0.25rem 0.5rem;

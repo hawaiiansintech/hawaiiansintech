@@ -28,7 +28,7 @@ export interface Member {
   focus: { name: string; id: string }[];
 }
 
-export async function getMembers(): Promise<Member | Member[]> {
+export async function getMembers(): Promise<Member[]> {
   return Promise.all([
     getBase({ name: "Members", view: "Approved" }),
     getBase({ name: "Focuses", view: "Approved" }),

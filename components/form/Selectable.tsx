@@ -39,7 +39,6 @@ export default function Selectable({
     <button
       id={value || headlineKebab}
       value={value || headlineKebab}
-      className="button-box"
       onClick={onClick}
       tabIndex={disabled ? -1 : undefined}
       type="button"
@@ -49,7 +48,7 @@ export default function Selectable({
       {badgeNumber ? <span>{badgeNumber}</span> : null}
       {onClear ? <span onClick={onClear}>×</span> : null}
       <style jsx>{`
-        .button-box {
+        button {
           ${cssHelperButtonReset}
           display: flex;
           align-items: ${centered ? "center" : "flex-end"};
@@ -63,7 +62,7 @@ export default function Selectable({
           border-radius: var(--border-radius-medium);
           text-align: ${centered ? "center" : "left"};
           padding: 0.5rem 0.75rem;
-          transition: all 150ms ease-out;
+          transition: background 150ms ease-out;
           background: ${selected
             ? variant === SelectableVariant.Alt
               ? "var(--color-border-alt-2)"
@@ -80,7 +79,7 @@ export default function Selectable({
           opacity: ${disabled ? "0.5" : "initial"};
           pointer-events: ${disabled ? "none" : "inherit"};
         }
-        .button-box:after {
+        button:after {
           content: "";
           display: block;
           align-self: flex-end;
@@ -98,7 +97,7 @@ export default function Selectable({
             ? "#fff"
             : "transparent"};
         }
-        .button-box:hover {
+        button:hover {
           border-color: ${selected
             ? variant === SelectableVariant.Alt
               ? "var(--color-border-alt-3)"
@@ -107,7 +106,7 @@ export default function Selectable({
             ? "var(--color-border-alt-2)"
             : "var(--color-border-alt)"};
         }
-        .button-box:focus {
+        button:focus {
           border-color: ${selected
             ? variant === SelectableVariant.Alt
               ? "var(--color-border-alt-2)"
@@ -125,6 +124,7 @@ export default function Selectable({
           font-size: 1rem;
           font-weight: 600;
           color: ${selected ? "var(--color-text-overlay)" : "initial"};
+          transition: color 150ms ease-out;
         }
         h6 {
           margin: 0.125rem 0 0;

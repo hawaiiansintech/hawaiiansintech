@@ -14,7 +14,7 @@
     "babel-plugin-inline-react-svg": "^1.1.1",
     "drive-db": "^6.0.0",
     "formik": "^2.2.9",
-    "framer-motion": "^1.11.1",
+    "framer-motion": "^6.2.4",
     "fuzzysort": "^1.1.4",
     "js-yaml": "^3.13.1",
     "moment": "^2.29.1",
