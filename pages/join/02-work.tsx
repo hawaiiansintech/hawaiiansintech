@@ -22,7 +22,6 @@ import { useEffect, useState } from "react";
 import { scrollToTop } from "../../helpers.js";
 
 const NEXT_PAGE = "03-company";
-const SELECTABLE_COLUMN_COUNT = 3;
 
 export async function getStaticProps() {
   let focuses = (await getFocuses()) ?? [];
@@ -49,6 +48,7 @@ export default function JoinStep2({ focuses }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<ErrorMessageProps>(undefined);
   const [isValid, setIsValid] = useState<boolean>(false);
+  const [columnCount, setColumnCount] = useState<2 | 3>(3);
 
   // check localStorage and set pre-defined fields
   useEffect(() => {
@@ -79,6 +79,20 @@ export default function JoinStep2({ focuses }) {
   useEffect(() => {
     if (error) scrollToTop();
   }, [error]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      let mql = window.matchMedia("(min-width: 640px)");
+      if (mql.matches) {
+        setColumnCount(3);
+      } else {
+        setColumnCount(2);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const totalFocusesSelected =
     focusesSelected.length + (focusSuggested ? 1 : 0);
@@ -174,7 +188,7 @@ export default function JoinStep2({ focuses }) {
           }
         />
         <div style={{ marginTop: "1rem" }}>
-          <SelectableGrid columns={SELECTABLE_COLUMN_COUNT}>
+          <SelectableGrid columns={columnCount}>
             {focuses.map((focus, i: number) => {
               const isDisabled =
                 isMaxSelected && !focusesSelected.includes(focus.id);
@@ -193,9 +207,8 @@ export default function JoinStep2({ focuses }) {
             <div
               style={{
                 gridColumn: `span ${
-                  Math.ceil(focuses.length / SELECTABLE_COLUMN_COUNT) *
-                    SELECTABLE_COLUMN_COUNT -
-                    focuses.length || SELECTABLE_COLUMN_COUNT
+                  Math.ceil(focuses.length / columnCount) * columnCount -
+                    focuses.length || columnCount
                 }`,
               }}
             >

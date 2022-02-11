@@ -32,7 +32,7 @@ export default function FocusPicker({
         ul {
           display: flex;
           list-style: none;
-          margin: 0;
+          margin: 0 0 2rem;
           padding: 0;
         }
         li {

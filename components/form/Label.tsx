@@ -78,9 +78,8 @@ function LabelHint({ hint }: LabelHintProps) {
         <InfoSVG highlight={showHint} />
       </span>
 
-      <article>
-        <main>{hint}</main>
-      </article>
+      <main>{hint}</main>
+
       <style jsx>{`
         button {
           ${cssHelperButtonReset}
@@ -104,7 +103,7 @@ function LabelHint({ hint }: LabelHintProps) {
           position: absolute;
           left: -2rem;
         }
-        article {
+        main {
           position: absolute;
           right: 0;
           z-index: 100;
@@ -114,6 +113,10 @@ function LabelHint({ hint }: LabelHintProps) {
           background: var(--color-background-white);
           padding: 0.5rem;
           border-radius: var(--border-radius-small);
+          line-height: 150%;
+          font-size: 0.8rem;
+          color: var(--color-text-alt-2);
+          font-weight: 400;
           user-select: none;
           pointer-events: ${showHint ? "initial" : "none"};
           transform: ${showHint ? "translateY(0)" : "translateY(-0.5rem)"};
@@ -125,12 +128,6 @@ function LabelHint({ hint }: LabelHintProps) {
         header h3 {
           margin: 0;
           line-height: 120%;
-        }
-        main {
-          line-height: 150%;
-          font-size: 0.8rem;
-          color: var(--color-text-alt-2);
-          font-weight: 400;
         }
       `}</style>
     </button>

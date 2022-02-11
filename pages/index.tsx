@@ -40,16 +40,14 @@ export default function Home({ allMembers, allFocuses }) {
   };
 
   useEffect(() => {
+    const activeFocuses = focuses.filter((foc) => foc.active);
     const newMembers = members
       .map((mem) => ({
         ...mem,
         focus: mem.focus.map((foc) => ({
           ...foc,
           // update member focuses if filtered
-          active: focuses
-            .filter((foc) => foc.active)
-            .map((foc) => foc.id)
-            .includes(foc.id),
+          active: activeFocuses.map((foc) => foc.id).includes(foc.id),
         })),
       }))
       // sort by number of focuses set

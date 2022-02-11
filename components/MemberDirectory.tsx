@@ -36,11 +36,14 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
       <style jsx>{`
         .member {
           display: grid;
-          grid-template-columns: 1fr 1fr 1fr 1fr;
+          grid-template-columns: 1.5fr 1fr 1fr 0.75fr;
           column-gap: 1rem;
           border-bottom: 0.1rem solid var(--color-border-alt);
-          padding: 2rem 1rem;
-          color: var(--color-text-alt);
+          padding: 1rem;
+        }
+        dl,
+        dt {
+          overflow: hidden;
         }
         dl {
           display: flex;
@@ -55,22 +58,23 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
         h3,
         h4 {
           margin: 0;
-          color: inherit;
         }
         h2 {
+          color: var(--color-text);
           font-size: 2rem;
-          margin: 0;
           font-weight: 500;
+          margin: 0;
         }
         h3 {
+          color: var(--color-text-alt);
           font-size: 1.5rem;
           font-weight: 400;
         }
         h4 {
-          margin-top: 0.25rem;
+          color: var(--color-text-alt-2);
           font-size: 1.25rem;
           font-weight: 400;
-          color: var(--color-text-alt-2);
+          margin-top: 0.25rem;
         }
       `}</style>
     </>

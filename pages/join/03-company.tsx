@@ -33,7 +33,6 @@ export async function getStaticProps() {
 }
 
 const MAX_COUNT = 3;
-const SELECTABLE_COLUMN_COUNT = 3;
 const TECHNOLOGY_LABEL = "Internet / Technology";
 const DEFER_LABEL = "N/A, or Prefer Not to Answer";
 
@@ -48,6 +47,7 @@ export default function JoinStep3({ industries }) {
   const [showSuggestButton, setShowSuggestButton] = useState(true);
   const [error, setError] = useState<ErrorMessageProps>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [columnCount, setColumnCount] = useState<2 | 3>(3);
 
   const totalIndustriesSelected =
     industriesSelected.length + (industrySuggested ? 1 : 0);
@@ -98,6 +98,20 @@ export default function JoinStep3({ industries }) {
   useEffect(() => {
     if (error) scrollToTop();
   }, [error]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      let mql = window.matchMedia("(min-width: 640px)");
+      if (mql.matches) {
+        setColumnCount(3);
+      } else {
+        setColumnCount(2);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     if (isValid) setError(undefined);
@@ -187,12 +201,12 @@ export default function JoinStep3({ industries }) {
             }
           />
           <div style={{ margin: "1rem auto 2rem" }}>
-            <SelectableGrid columns={SELECTABLE_COLUMN_COUNT}>
+            <SelectableGrid columns={columnCount}>
               {technologyInd && (
                 <div
                   style={{
                     display: "flex",
-                    gridColumn: `span ${SELECTABLE_COLUMN_COUNT}`,
+                    gridColumn: `span ${columnCount}`,
                   }}
                 >
                   <Selectable
@@ -234,7 +248,7 @@ export default function JoinStep3({ industries }) {
                   gridAutoRows: "1fr",
                   columnGap: "0.5rem",
                   rowGap: "0.5rem",
-                  gridColumn: `span ${SELECTABLE_COLUMN_COUNT}`,
+                  gridColumn: `span ${columnCount}`,
                 }}
               >
                 {deferInd && (

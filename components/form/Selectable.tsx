@@ -81,7 +81,7 @@ export default function Selectable({
         }
         button:after {
           content: "";
-          display: block;
+          display: ${variant === SelectableVariant.Alt ? "none" : "block"};
           align-self: flex-end;
           width: 1rem;
           height: 1rem;
