@@ -108,6 +108,7 @@ export default function JoinStep3({ industries }) {
         setColumnCount(2);
       }
     };
+
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -123,10 +124,10 @@ export default function JoinStep3({ industries }) {
 
   const handleSelect = (industry) => {
     let nextIndustriesSelected = [...industriesSelected];
-    const index = industriesSelected.indexOf(industry);
-    const isSelected = index > -1;
+    const isSelected = industriesSelected.includes(industry);
 
     if (isSelected) {
+      const index = industriesSelected.indexOf(industry);
       nextIndustriesSelected.splice(index, 1);
     } else if (industriesSelected.length < MAX_COUNT) {
       nextIndustriesSelected.push(industry);
@@ -188,7 +189,7 @@ export default function JoinStep3({ industries }) {
 
         <div style={{ marginBottom: "2rem" }}>
           <Label
-            label="Which of the following best describes the industry that your company operates within?"
+            label="Which of the following best describes the industrie(s) that you work within?"
             labelTranslation="Ehia ka poʻe e hana ma kou wahi hana?"
             hint={
               <>

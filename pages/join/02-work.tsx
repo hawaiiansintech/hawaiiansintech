@@ -100,15 +100,15 @@ export default function JoinStep2({ focuses }) {
 
   useEffect(() => {
     const isValid = totalFocusesSelected >= 1 && !!yearsExperience;
-    setIsValid(isValid);
     if (isValid) setError(undefined);
+    setIsValid(isValid);
   }, [yearsExperience, focusSuggested, focusesSelected]);
 
   const handleSelect = (focusID: string) => {
     let newFocusesSelected = [...focusesSelected];
-    const index = focusesSelected.indexOf(focusID);
-    const isSelected = index > -1;
+    const isSelected = focusesSelected.includes(focusID);
     if (isSelected) {
+      const index = focusesSelected.indexOf(focusID);
       newFocusesSelected.splice(index, 1);
     } else if (focusesSelected.length < MAX_COUNT) {
       newFocusesSelected.push(focusID);
@@ -126,23 +126,16 @@ export default function JoinStep2({ focuses }) {
       });
       return;
     }
+    // Clear pre-existing data
+    removeItem("jfFocuses");
+    removeItem("jfFocusSuggested");
+    removeItem("jfTitle");
+    removeItem("jfYearsExperience");
     // Set as stringified array
-    if (focusesSelected.length) {
-      setItem("jfFocuses", JSON.stringify(focusesSelected));
-    } else {
-      removeItem("jfFocuses");
-    }
-    if (focusSuggested) {
-      setItem("jfFocusSuggested", focusSuggested);
-    } else {
-      removeItem("jfFocusSuggested");
-    }
-    if (title) {
-      setItem("jfTitle", title);
-    } else {
-      removeItem("jfTitle");
-    }
-    setItem("jfYearsExperience", yearsExperience);
+    if (focusesSelected) setItem("jfFocuses", JSON.stringify(focusesSelected));
+    if (focusSuggested) setItem("jfFocusSuggested", focusSuggested);
+    if (title) setItem("jfTitle", title);
+    if (yearsExperience) setItem("jfYearsExperience", yearsExperience);
     router.push({
       pathname: NEXT_PAGE,
     });
