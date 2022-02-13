@@ -66,7 +66,7 @@ export default function InputBox({
         }
         .input-box:focus {
           border-color: var(--color-brand);
-          box-shadow: var(--box-shadow-outline-button);
+          box-shadow: ${theme.elevation.two.brand};
         }
       `}</style>
     </div>

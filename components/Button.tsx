@@ -1,4 +1,5 @@
 import Link from "next/link";
+import theme from "styles/theme";
 import { cssHelperButtonReset } from "../styles/global.js";
 import LoadingSpinner from "./LoadingSpinner";
 
@@ -47,10 +48,10 @@ export default function Button({
         padding: ${size === ButtonSize.Default ? "1.2rem" : "0.2rem 0.4rem"};
         width: ${fullWidth ? "100%" : "initial"};
         color: ${disabled
-          ? "var(--color-text-button-disabled)"
+          ? theme.color.brand.base
           : loading
           ? "transparent"
-          : "var(--color-text-button)"};
+          : theme.color.text.overlay.base};
         border: 0.25rem solid transparent;
         border-radius: ${size === ButtonSize.Default
           ? "var(--border-radius-medium)"
@@ -58,10 +59,10 @@ export default function Button({
         font-size: ${size === ButtonSize.Default ? "1rem" : "0.875rem"};
         font-weight: 600;
         background: ${disabled
-          ? "var(--color-background-button-disabled)"
+          ? theme.color.background.disabled
           : loading
-          ? "var(--color-background-button-loading)"
-          : "var(--color-brand)"};
+          ? theme.color.brand.faded
+          : theme.color.brand.base};
         cursor: ${disabled || loading ? "not-allowed" : "pointer"};
       }
       .button:hover {
@@ -69,18 +70,16 @@ export default function Button({
           ? "transparent"
           : "var(--color-brand-alt)"};
         color: ${disabled
-          ? "var(--color-text-button-disabled)"
+          ? theme.color.text.overlay.alt2
           : loading
           ? "transparent"
-          : "var(--color-text-button)"};
+          : theme.color.text.overlay.base};
       }
       .button:focus {
         border-color: ${loading || disabled
           ? "transparent"
           : "var(--color-brand-alt)"};
-        box-shadow: ${disabled || loading
-          ? "none"
-          : "var(--box-shadow-outline-button)"};
+        box-shadow: ${disabled || loading ? "none" : theme.elevation.two.brand};
       }
       .button:focus:not(:focus-visible) {
         outline: none;

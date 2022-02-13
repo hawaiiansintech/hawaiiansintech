@@ -17,7 +17,7 @@ export default function ErrorMessage({ headline, body }: ErrorMessageProps) {
       </main>
       <style jsx>{`
         .error-message {
-          background: var(--color-error-alpha);
+          background: var(--color-background-error);
           border-radius: 4px;
           padding: 1rem;
           display: flex;

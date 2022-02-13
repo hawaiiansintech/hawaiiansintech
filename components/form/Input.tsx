@@ -73,7 +73,7 @@ export default function Input({
         }
         input:focus {
           border-color: var(--color-brand);
-          box-shadow: var(--box-shadow-outline-button);
+          box-shadow: ${theme.elevation.two.brand};
           background: white;
         }
         input:focus::placeholder {
@@ -96,7 +96,7 @@ export function FieldError({ children }: { children: React.ReactNode }) {
           display: block;
           margin-top: 0.25rem;
           font-size: 0.9rem;
-          color: var(--color-error);
+          color: var(--color-text-error);
         }
       `}</style>
     </span>

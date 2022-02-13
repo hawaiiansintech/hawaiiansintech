@@ -15,7 +15,7 @@ export default function ErrorNotif() {
       />
       <style jsx>{`
         svg {
-          fill: var(--color-error);
+          fill: var(--color-text-error);
         }
       `}</style>
     </svg>

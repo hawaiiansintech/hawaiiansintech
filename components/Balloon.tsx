@@ -39,7 +39,7 @@ export default function Balloon({ message, link, onClose }: BalloonProps) {
           display: flex;
           align-items: center;
           border-radius: var(--border-radius-small);
-          background: var(--color-background-white);
+          background: var(--color-background-float);
           padding: ${onClose ? "0.5rem 0.5rem 0.5rem 1.5rem" : "1rem"};
           margin: 0 auto 2rem;
           text-align: center;

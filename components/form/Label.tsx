@@ -110,7 +110,7 @@ function LabelHint({ hint }: LabelHintProps) {
           width: max-content;
           max-width: 24rem;
           border: 0.1rem solid var(--color-border);
-          background: var(--color-background-white);
+          background: var(--color-background-float);
           padding: 0.5rem;
           border-radius: var(--border-radius-small);
           line-height: 150%;

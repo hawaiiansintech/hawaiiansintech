@@ -1,55 +1,40 @@
 import css from "styled-jsx/css";
+import theme from "./theme";
 
 export default css.global`
   :root {
-    --color-brand: #fc7442;
-    --color-brand-alpha: #fc744233;
-    --color-brand-alt: #ec4427;
-    --color-brand-alt-2: #db4126;
-    --color-brand-faded: #cf8870;
-    --color-link: var(--color-brand);
-    --color-link-alt: var(--color-brand-alt);
-    --color-text: #373332;
-    --color-text-alt: #585150;
-    --color-text-alt-2: #847876;
-    --color-text-alt-3: #9f8986;
-    --color-text-overlay: #fff;
-    --color-text-overlay-alt: #ffffffdd;
-    --color-text-overlay-alt-2: #ffffffaa;
-    --color-border: #dacbc8;
-    --color-border-alt: #bda9a5;
-    --color-border-alt-2: #ac9a97;
-    --color-border-alt-3: #978a88;
-    --color-background: #e5e5e5;
-    --color-background-alt: #dacbc8;
-    --color-background-alt-2: #c9b5b1;
-    --color-background-white: #fff;
-    --color-error: #e3523a;
-    --color-error-alpha: rgba(227, 82, 58, 0.0625);
+    --color-brand: ${theme.color.brand.base};
+    --color-brand-alpha: ${theme.color.brand.alpha};
+    --color-brand-alt: ${theme.color.brand.alt};
+    --color-brand-alt-2: ${theme.color.brand.alt2};
+    --color-brand-faded: ${theme.color.brand.faded};
+    --color-link: ${theme.color.link.base};
+    --color-link-alt: ${theme.color.link.alt};
+    --color-text: ${theme.color.text.base};
+    --color-text-alt: ${theme.color.text.alt};
+    --color-text-alt-2: ${theme.color.text.alt2};
+    --color-text-alt-3: ${theme.color.text.alt3};
+    --color-text-error: ${theme.color.text.error};
+    --color-text-overlay: ${theme.color.text.overlay.base};
+    --color-text-overlay-alt: ${theme.color.text.overlay.alt};
+    --color-text-overlay-alt-2: ${theme.color.text.overlay.alt2};
+    --color-border: ${theme.color.border.base};
+    --color-border-alt: ${theme.color.border.alt};
+    --color-border-alt-2: ${theme.color.border.alt2};
+    --color-border-alt-3: ${theme.color.border.alt3};
+    --color-background: ${theme.color.background.base};
+    --color-background-alt: ${theme.color.background.alt};
+    --color-background-alt-2: ${theme.color.background.alt2};
+    --color-background-error: ${theme.color.background.error};
+    --color-background-float: ${theme.color.background.float};
 
-    --color-background-button: linear-gradient(
-      to top right,
-      var(--color-brand),
-      var(--color-brand-alt)
-    );
-    --color-background-button-loading: var(--color-brand-faded);
-    --color-background-button-disabled: #dddddd;
+    --border-radius-x-small: ${theme.borderRadius.xs};
+    --border-radius-small: ${theme.borderRadius.sm};
+    --border-radius-medium: ${theme.borderRadius.md};
+    --border-radius-large: ${theme.borderRadius.lg};
 
-    --color-text-button: #fff;
-    --color-text-button-disabled: #5c5a5e;
-
-    --box-shadow-outline-button: rgba(252, 116, 66, 0.5) 0px 0px 1rem;
-    --box-shadow-outline-button-alt: rgba(0, 0, 0, 0.05) 0px 0px 1rem;
-    --box-shadow-outline-button-small: rgba(252, 116, 66, 0.5) 0px 0px 0.5rem;
-    --box-shadow-outline-undo-button: rgba(56, 56, 56, 0.25) 0px 0px 0.5rem;
-
-    --border-radius-x-small: 0.25rem;
-    --border-radius-small: 0.5rem;
-    --border-radius-medium: 1rem;
-    --border-radius-large: 1.25rem;
-
-    --width-page-interior: 42rem;
-    --width-floating-balloon: 28rem;
+    --width-page-interior: ${theme.layout.width.interior};
+    --width-resp-small: ${theme.layout.breakPoints.small};
   }
 
   html {

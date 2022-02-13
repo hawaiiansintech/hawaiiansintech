@@ -4,7 +4,7 @@ export enum HorizontalRuleBackground {
   Base = "var(--color-background)",
   Alt = "var(--color-background-alt)",
   Alt2 = "var(--color-background-alt-2)",
-  White = "var(--color-background-white)",
+  White = "var(--color-background-float)",
 }
 
 interface HorizontalRuleProps {

@@ -1,3 +1,4 @@
+import theme from "styles/theme";
 import { toKebab } from "../../helpers.js";
 
 interface RadioBoxProps {
@@ -80,7 +81,7 @@ export default function RadioBox(props: RadioBoxProps) {
         }
         input:focus + label {
           border-color: var(--color-brand-alt);
-          box-shadow: var(--box-shadow-outline-button-small);
+          box-shadow: ${theme.elevation.one.brand};
         }
         input:not(:checked) + label:focus {
           border-color: var(--color-border-alt);

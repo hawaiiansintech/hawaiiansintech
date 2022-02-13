@@ -1,3 +1,4 @@
+import theme from "styles/theme";
 import { toKebab } from "../../helpers.js";
 import { cssHelperButtonReset } from "../../styles/global.js";
 
@@ -115,8 +116,8 @@ export default function Selectable({
             ? "var(--color-border-alt-2)"
             : "var(--color-border-alt)"};
           box-shadow: ${selected
-            ? "var(--box-shadow-outline-button)"
-            : "var(--box-shadow-outline-button-alt)"};
+            ? theme.elevation.two.brand
+            : theme.elevation.two.desat};
         }
         h4 {
           flex-grow: 1;
