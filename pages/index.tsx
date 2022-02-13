@@ -13,12 +13,10 @@ export async function getStaticProps() {
   const focuses = await getFocuses();
   return {
     props: {
-      allMembers: members
-        .map((mem) => ({
-          ...mem,
-          focus: mem.focus.map((foc) => ({ ...foc, active: false })),
-        }))
-        .sort(() => 0.5 - Math.random()),
+      allMembers: members.map((mem) => ({
+        ...mem,
+        focus: mem.focus.map((foc) => ({ ...foc, active: false })),
+      })),
       allFocuses: focuses.filter((focus) => focus.count > 0),
     },
     revalidate: 60,
@@ -58,7 +56,9 @@ export default function Home({ allMembers, allFocuses }) {
         const nextActive = b.focus
           .map((foc) => foc.active)
           .filter((foc) => foc).length;
+        // if same count, randomize
         if (nextActive === firstActive) return 0.5 - Math.random();
+        // or sort by
         return nextActive > firstActive ? 1 : -1;
       });
 
