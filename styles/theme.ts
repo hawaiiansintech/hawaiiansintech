@@ -4,9 +4,7 @@ const theme = {
       base: "#fc7442",
       alpha: "#fc744233",
       alt: "#ec4427",
-      alt2: "#db4126",
       faded: "#cf8870",
-      gradient: `linear-gradient(to top right, #fc7442, #ec4427)`,
     },
     link: { base: "#fc7442", alt: "#ec4427" },
     text: {
@@ -27,6 +25,7 @@ const theme = {
       base: "#e5e5e5",
       alt: "#dacbc8",
       alt2: "#c9b5b1",
+      alt3: "#bda9a5",
       disabled: "#ddd",
       error: "rgba(227, 82, 58, 0.0625)",
       float: "#fff",
@@ -34,12 +33,12 @@ const theme = {
   },
   elevation: {
     one: {
-      brand: "rgba(252, 116, 66, 0.5) 0px 0px 0.5rem",
-      desat: "rgba(0, 0, 0, 0.5) 0px 0px 0.5rem",
+      brand: "rgba(252, 116, 66, 0.25) 0px 0px 0.5rem",
+      desat: "rgba(0, 0, 0, 0.02) 0px 0rem 0.5rem",
     },
     two: {
-      brand: "rgba(252, 116, 66, 0.5) 0px 0px 1rem",
-      desat: "rgba(0, 0, 0, 0.5) 0px 0px 1rem",
+      brand: "rgba(252, 116, 66, 0.25) 0px 0px 1rem",
+      desat: "rgba(0, 0, 0, 0.04) 0px 0rem 1rem",
     },
   },
   borderRadius: {

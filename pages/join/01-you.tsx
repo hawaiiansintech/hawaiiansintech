@@ -10,6 +10,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import theme from "styles/theme";
 import urlRegex from "url-regex";
 import * as Yup from "yup";
 
@@ -67,15 +68,16 @@ export default function JoinStep1(props) {
   const renderButton = () => {
     if (name || location || website)
       return (
+        // TODO remove this hardcoded css
         <div
           style={{
-            border: "0.125rem solid var(--color-border)",
-            borderRadius: "var(--border-radius-small)",
+            border: `0.125rem solid ${theme.color.border.base}`,
+            borderRadius: theme.borderRadius.sm,
             padding: "1rem",
             marginBottom: "2rem",
             display: "flex",
             justifyContent: "center",
-            color: "var(--color-text-alt-2)",
+            color: theme.color.text.alt2,
           }}
         >
           <UndoButton
@@ -120,7 +122,7 @@ export default function JoinStep1(props) {
       <section
         style={{
           margin: "2rem auto 0",
-          maxWidth: "var(--width-page-interior)",
+          maxWidth: theme.layout.width.interior,
         }}
       >
         {renderButton()}

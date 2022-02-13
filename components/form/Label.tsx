@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import theme from "styles/theme";
 import { cssHelperButtonReset } from "../../styles/global";
 
 interface LabelProps {
@@ -53,7 +54,7 @@ export default function Label({
           font-size: 0.9rem;
           line-height: 150%;
           font-weight: 400;
-          color: var(--color-brand-faded);
+          color: ${theme.color.brand.faded};
           font-style: italic;
         }
       `}</style>
@@ -89,7 +90,7 @@ function LabelHint({ hint }: LabelHintProps) {
           cursor: pointer;
           border: 1px solid transparent;
           margin-left: 0.75rem;
-          border-radius: var(--border-radius-x-small);
+          border-radius: ${theme.borderRadius.xs};
         }
         button:focus {
           border-color: var(--color-brand-alpha);
@@ -109,13 +110,13 @@ function LabelHint({ hint }: LabelHintProps) {
           z-index: 100;
           width: max-content;
           max-width: 24rem;
-          border: 0.1rem solid var(--color-border);
-          background: var(--color-background-float);
+          border: 0.1rem solid ${theme.color.border.base};
+          background: ${theme.color.background.float};
           padding: 0.5rem;
-          border-radius: var(--border-radius-small);
+          border-radius: ${theme.borderRadius.sm};
           line-height: 150%;
           font-size: 0.8rem;
-          color: var(--color-text-alt-2);
+          color: ${theme.color.text.alt2};
           font-weight: 400;
           user-select: none;
           pointer-events: ${showHint ? "initial" : "none"};
@@ -153,14 +154,14 @@ function InfoSVG({ highlight }: InfoSVGProps) {
       <style jsx>{`
         rect {
           fill: ${highlight
-            ? "var(--color-brand)"
-            : "var(--color-background-alt-2)"};
+            ? theme.color.brand.base
+            : theme.color.background.alt2};
           transition: ${highlight
             ? "all 150ms ease-out"
             : "all 150ms ease-out 250ms"};
         }
         path {
-          fill: var(--color-text-overlay-alt-2);
+          fill: ${theme.color.text.overlay.alt2};
         }
       `}</style>
     </svg>

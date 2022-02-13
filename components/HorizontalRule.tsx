@@ -1,4 +1,5 @@
 import React from "react";
+import theme from "styles/theme";
 
 export enum HorizontalRuleBackground {
   Base = "var(--color-background)",
@@ -42,10 +43,10 @@ export default function HorizontalRule({
           display: block;
           width: 100%;
           border: none;
-          border-top: 0.125rem solid var(--color-border-alt);
+          border-top: 0.125rem solid ${theme.color.border.alt};
         }
         span {
-          color: var(--color-text-alt-2);
+          color: ${theme.color.text.alt2};
           font-weight: 400;
           font-size: 0.75rem;
           letter-spacing: 0.1rem;

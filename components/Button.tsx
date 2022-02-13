@@ -1,6 +1,6 @@
 import Link from "next/link";
 import theme from "styles/theme";
-import { cssHelperButtonReset } from "../styles/global.js";
+import { cssHelperButtonReset } from "../styles/global";
 import LoadingSpinner from "./LoadingSpinner";
 
 export enum ButtonSize {
@@ -48,29 +48,29 @@ export default function Button({
         padding: ${size === ButtonSize.Default ? "1.2rem" : "0.2rem 0.4rem"};
         width: ${fullWidth ? "100%" : "initial"};
         color: ${disabled
-          ? theme.color.brand.base
+          ? theme.color.text.alt2
           : loading
           ? "transparent"
           : theme.color.text.overlay.base};
         border: 0.25rem solid transparent;
         border-radius: ${size === ButtonSize.Default
-          ? "var(--border-radius-medium)"
-          : "var(--border-radius-small)"};
+          ? theme.borderRadius.md
+          : theme.borderRadius.sm};
         font-size: ${size === ButtonSize.Default ? "1rem" : "0.875rem"};
         font-weight: 600;
         background: ${disabled
           ? theme.color.background.disabled
           : loading
-          ? theme.color.brand.faded
+          ? theme.color.brand.alpha
           : theme.color.brand.base};
         cursor: ${disabled || loading ? "not-allowed" : "pointer"};
       }
       .button:hover {
         border-color: ${disabled || loading
           ? "transparent"
-          : "var(--color-brand-alt)"};
+          : theme.color.brand.alt};
         color: ${disabled
-          ? theme.color.text.overlay.alt2
+          ? theme.color.text.alt2
           : loading
           ? "transparent"
           : theme.color.text.overlay.base};
@@ -78,7 +78,7 @@ export default function Button({
       .button:focus {
         border-color: ${loading || disabled
           ? "transparent"
-          : "var(--color-brand-alt)"};
+          : theme.color.brand.alt};
         box-shadow: ${disabled || loading ? "none" : theme.elevation.two.brand};
       }
       .button:focus:not(:focus-visible) {

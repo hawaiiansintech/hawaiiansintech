@@ -17,6 +17,7 @@ import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import theme from "styles/theme";
 // TODO FIX SERVER LINK ON PRODUCTION
 import { server } from "../../config";
 
@@ -188,7 +189,7 @@ export default function Status({
         </Head>
         <div
           style={{
-            maxWidth: "var(--width-page-interior)",
+            maxWidth: theme.layout.width.interior,
             margin: "0 auto 2rem",
             display: "flex",
             flexDirection: "column",
@@ -235,16 +236,16 @@ export default function Status({
         }
         .status-rule-box {
           padding: 1rem;
-          background: var(--color-background-alt);
-          border-radius: var(--border-radius-medium);
-          color: var(--color-text-alt-2);
+          background: ${theme.color.background.alt};
+          border-radius: ${theme.borderRadius.md};
+          color: ${theme.color.text.alt2};
           margin-top: 2rem;
         }
         .status-last-modified {
           font-weight: 400;
           font-style: italic;
           text-align: center;
-          color: var(--color-text-alt-2);
+          color: ${theme.color.text.alt2};
         }
       `}</style>
     </>

@@ -1,3 +1,5 @@
+import theme from "styles/theme";
+
 export default function ErrorNotif() {
   return (
     <svg
@@ -15,7 +17,7 @@ export default function ErrorNotif() {
       />
       <style jsx>{`
         svg {
-          fill: var(--color-text-error);
+          fill: ${theme.color.text.error};
         }
       `}</style>
     </svg>

@@ -18,6 +18,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import theme from "styles/theme";
 import { scrollToTop } from "../../helpers.js";
 
 const NEXT_PAGE = "04-contact";
@@ -182,7 +183,7 @@ export default function JoinStep3({ industries }) {
       <section
         style={{
           margin: "0 auto 1rem",
-          maxWidth: "var(--width-page-interior)",
+          maxWidth: theme.layout.width.interior,
         }}
       >
         {error && <ErrorMessage headline={error.headline} body={error.body} />}

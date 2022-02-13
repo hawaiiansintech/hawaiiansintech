@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import theme from "styles/theme";
 
 interface ProgressBarProps {
   headline?: string;
@@ -46,7 +47,7 @@ export default function ProgressBar({
                     margin: "0",
                     width: "100%",
                     height: "100%",
-                    backgroundColor: "var(--color-brand)",
+                    backgroundColor: theme.color.brand.base,
                     transformOrigin: "0 0",
                   }}
                 />
@@ -74,16 +75,16 @@ export default function ProgressBar({
         }
         .progress-bar-segment {
           height: 0.5rem;
-          background-color: var(--color-border);
+          background-color: ${theme.color.background.alt};
         }
         .progress-bar-segment--filled {
-          background-color: var(--color-brand);
+          background-color: ${theme.color.brand.base};
         }
         h3 {
           font-size: 1rem;
           font-weight: 600;
           margin: 0 0 0.5rem;
-          color: var(--color-brand);
+          color: ${theme.color.brand.base};
         }
         h6 {
           font-size: 0.6rem;

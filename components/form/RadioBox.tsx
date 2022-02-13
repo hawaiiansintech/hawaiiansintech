@@ -40,11 +40,11 @@ export default function RadioBox(props: RadioBoxProps) {
           display: flex;
           align-items: center;
           position: relative;
-          border: 0.25rem solid var(--color-brand-alt);
-          background: var(--color-brand);
-          color: var(--color-text-overlay);
+          border: 0.25rem solid ${theme.color.brand.alt};
+          background: ${theme.color.brand.base};
+          color: ${theme.color.text.overlay.base};
           margin: 0;
-          border-radius: var(--border-radius-small);
+          border-radius: ${theme.borderRadius.sm};
           text-align: center;
           padding: 0.25rem 0.5rem;
           cursor: pointer;
@@ -57,40 +57,40 @@ export default function RadioBox(props: RadioBoxProps) {
           height: 1rem;
           width: 1rem;
           background: #fff;
-          border: 0.35rem solid var(--color-brand-alt);
+          border: 0.35rem solid ${theme.color.brand.alt};
           border-radius: 50%;
           margin-right: 0.5rem;
         }
         input:not(:checked) + label {
-          background: var(--color-border);
+          background: ${theme.color.background.alt};
           border-color: transparent;
           color: initial;
         }
         input:not(:checked) + label:before {
           background: transparent;
-          border: 0.2rem solid var(--color-border-alt);
+          border: 0.2rem solid ${theme.color.border.alt};
         }
         input:not(:checked) + label:after {
           border-color: transparent;
         }
         label:hover {
-          border-color: var(--color-brand-alt);
+          border-color: ${theme.color.brand.alt};
         }
         input:not(:checked) + label:hover {
-          border-color: var(--color-border-alt);
+          border-color: ${theme.color.border.alt};
         }
         input:focus + label {
-          border-color: var(--color-brand-alt);
+          border-color: ${theme.color.brand.alt};
           box-shadow: ${theme.elevation.one.brand};
         }
         input:not(:checked) + label:focus {
-          border-color: var(--color-border-alt);
+          border-color: ${theme.color.border.alt};
         }
         label:focus:hover {
-          border-color: var(--color-brand-alt);
+          border-color: ${theme.color.brand.alt};
         }
         input:not(:checked) + label:focus:hover {
-          border-color: var(--color-border-alt);
+          border-color: ${theme.color.border.alt};
         }
         h3 {
           font-size: 1rem;

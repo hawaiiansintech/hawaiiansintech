@@ -1,4 +1,5 @@
 import Link from "next/link";
+import theme from "styles/theme";
 
 interface UndoButtonProps {
   children: React.ReactNode;
@@ -20,14 +21,15 @@ export default function UndoButton({
       .undo-button {
         padding: 0.125em 0.25em;
         border: 0.125rem solid transparent;
-        border-radius: var(--border-radius-x-small);
+        border-radius: ${theme.borderRadius.xs};
         font-size: 0.8em;
         font-weight: 600;
-        background: var(--color-border);
+        background: ${theme.color.background.alt};
         cursor: pointer;
+        transition: background 150ms ease-out;
       }
       .undo-button:hover {
-        background: var(--color-border-alt);
+        background: ${theme.color.border.alt};
       }
       .undo-button:focus {
         box-shadow: var(--box-shadow-outline-undo-button);

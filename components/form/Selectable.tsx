@@ -1,6 +1,6 @@
 import theme from "styles/theme";
 import { toKebab } from "../../helpers.js";
-import { cssHelperButtonReset } from "../../styles/global.js";
+import { cssHelperButtonReset } from "../../styles/global";
 
 export enum SelectableVariant {
   Primary = "primary",
@@ -60,21 +60,21 @@ export default function Selectable({
           line-height: 120%;
           margin: 0;
           height: 100%;
-          border-radius: var(--border-radius-medium);
+          border-radius: ${theme.borderRadius.md};
           text-align: ${centered ? "center" : "left"};
           padding: 0.5rem 0.75rem;
           transition: background 150ms ease-out;
           background: ${selected
             ? variant === SelectableVariant.Alt
-              ? "var(--color-border-alt-2)"
-              : "var(--color-brand)"
+              ? theme.color.border.alt2
+              : theme.color.brand.base
             : variant === SelectableVariant.Alt
-            ? "var(--color-border-alt)"
-            : "var(--color-border)"};
+            ? theme.color.border.alt
+            : theme.color.border.base};
           border-color: ${selected
             ? variant === SelectableVariant.Alt
-              ? "var(--color-border-alt-3)"
-              : "var(--color-brand-alt)"
+              ? theme.color.border.alt3
+              : theme.color.brand.alt
             : "transparent"};
           width: ${fullWidth ? "100%" : "initial"};
           opacity: ${disabled ? "0.5" : "initial"};
@@ -87,13 +87,13 @@ export default function Selectable({
           width: 1rem;
           height: 1rem;
           margin-left: 0.5rem;
-          border-radius: var(--border-radius-x-small);
+          border-radius: ${theme.borderRadius.xs};
           flex-shrink: 0;
           border-style: ${variant === SelectableVariant.Alt ? "none" : "solid"};
           border-width: ${selected ? "0.35rem" : "0.2rem"};
           border-color: ${selected
-            ? "var(--color-brand-alt)"
-            : "var(--color-border-alt)"};
+            ? theme.color.brand.alt
+            : theme.color.border.alt};
           background: ${selected && variant !== SelectableVariant.Alt
             ? "#fff"
             : "transparent"};
@@ -101,20 +101,20 @@ export default function Selectable({
         button:hover {
           border-color: ${selected
             ? variant === SelectableVariant.Alt
-              ? "var(--color-border-alt-3)"
-              : "var(--color-brand-alt)"
+              ? theme.color.border.alt3
+              : theme.color.brand.alt
             : variant === SelectableVariant.Alt
-            ? "var(--color-border-alt-2)"
-            : "var(--color-border-alt)"};
+            ? theme.color.border.alt2
+            : theme.color.border.alt};
         }
         button:focus {
           border-color: ${selected
             ? variant === SelectableVariant.Alt
-              ? "var(--color-border-alt-2)"
-              : "var(--color-brand-alt)"
+              ? theme.color.border.alt2
+              : theme.color.brand.alt
             : variant === SelectableVariant.Alt
-            ? "var(--color-border-alt-2)"
-            : "var(--color-border-alt)"};
+            ? theme.color.border.alt2
+            : theme.color.border.alt};
           box-shadow: ${selected
             ? theme.elevation.two.brand
             : theme.elevation.two.desat};
@@ -124,7 +124,7 @@ export default function Selectable({
           margin: 0;
           font-size: 1rem;
           font-weight: 600;
-          color: ${selected ? "var(--color-text-overlay)" : "initial"};
+          color: ${selected ? theme.color.text.overlay.base : "initial"};
           transition: color 150ms ease-out;
         }
         h6 {
@@ -132,8 +132,8 @@ export default function Selectable({
           font-size: 0.75rem;
           font-weight: 400;
           color: ${selected
-            ? "var(--color-text-overlay-alt)"
-            : "var(--color-text-alt)"};
+            ? theme.color.text.overlay.alt
+            : theme.color.text.alt};
         }
         span {
           position: absolute;
@@ -150,10 +150,10 @@ export default function Selectable({
           font-size: 0.8em;
           background: ${selected
             ? variant === SelectableVariant.Alt
-              ? "var(--color-border-alt-3)"
-              : "var(--color-brand-alt)"
-            : "var(--color-border-alt-2)"};
-          color: var(--color-text-overlay);
+              ? theme.color.border.alt3
+              : theme.color.brand.alt
+            : theme.color.border.alt2};
+          color: ${theme.color.text.overlay.base};
         }
       `}</style>
     </button>
@@ -176,8 +176,8 @@ export function SelectableGrid({ children, columns = 3 }: SelectableGridProps) {
       </div>
       <style jsx>{`
         .selectable-grid {
-          background: var(--color-background-alt-2);
-          border-radius: var(--border-radius-large);
+          background: ${theme.color.background.alt2};
+          border-radius: ${theme.borderRadius.lg};
           padding: 0.5rem;
         }
         .selectable-grid__container {

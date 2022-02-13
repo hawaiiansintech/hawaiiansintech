@@ -1,4 +1,5 @@
 import Link from "next/link";
+import theme from "styles/theme";
 import Button, { ButtonSize } from "./Button";
 import { Icon, IconAsset, IconColor } from "./icon/icon";
 
@@ -32,18 +33,18 @@ export default function StartOption({
           .start-option {
             padding: 1rem;
             margin-bottom: 1rem;
-            border-radius: var(--border-radius-medium);
-            background: var(--color-background-alt);
+            border-radius: ${theme.borderRadius.md};
+            background: ${theme.color.background.alt};
             border: 0.25rem solid transparent;
             cursor: pointer;
           }
           .start-option:hover {
-            border-color: var(--color-border-alt);
+            border-color: ${theme.color.border.alt};
             cursor: pointer;
           }
           .start-option:active,
           .start-option:focus {
-            background-color: var(--color-border-alt);
+            background-color: ${theme.color.background.alt3};
           }
           .start-option__cta {
             margin-top: 1rem;
@@ -60,7 +61,7 @@ export default function StartOption({
           h3 {
             font-size: 0.875rem;
             font-weight: 400;
-            color: var(--color-text-alt);
+            color: ${theme.color.text.alt};
           }
         `}</style>
       </div>

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import theme from "styles/theme";
 import CheckSVG from "./icon/CheckSVG.js";
 import CloseSVG from "./icon/CloseSVG.js";
 
@@ -17,7 +18,6 @@ export default function Filter({
   items,
   handleFilterClick,
   handleCloseFilter,
-  categoryName,
 }) {
   let countItems = {};
   items.forEach((item) => {
@@ -79,11 +79,11 @@ export default function Filter({
         .sidebar {
           width: 100%;
           max-width: 420px;
-          background: var(--color-background);
-          color: var(--color-text);
+          background: ${theme.color.background.base};
+          color: ${theme.color.text.base};
           padding: 2.5rem;
           min-height: 100vh;
-          border-left: 5px solid var(--color-text);
+          border-left: 5px solid ${theme.color.text.base};
         }
 
         .close {
@@ -125,12 +125,12 @@ function FilterItem({ label, active, onClick, count }) {
         }
 
         .filterItem:hover {
-          color: var(--color-link);
+          color: ${theme.color.link.base};
         }
         .filterItem__count {
           font-size: 0.75em;
           margin-left: 0.5rem;
-          color: var(--color-link);
+          color: ${theme.color.link.base};
         }
 
         .check {

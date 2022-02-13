@@ -1,3 +1,5 @@
+import theme from "styles/theme";
+
 interface PillProps {
   active?: boolean;
   children: React.ReactNode;
@@ -17,13 +19,13 @@ export default function Pill({ active, children }: PillProps) {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          border-radius: var(--border-radius-small);
+          border-radius: ${theme.borderRadius.sm};
           border: 0.2rem solid transparent;
           background: ${active
-            ? "var(--color-brand-alpha)"
-            : "var(--color-background-alt)"};
-          color: ${active ? "var(--color-brand)" : "var(--color-text-alt-2)"};
-          border-color: ${active ? "var(--color-brand-alpha)" : "transparent"};
+            ? theme.color.brand.alpha
+            : theme.color.background.alt};
+          color: ${active ? theme.color.brand.base : theme.color.text.alt2};
+          border-color: ${active ? theme.color.brand.alpha : "transparent"};
         }
       `}</style>
     </span>

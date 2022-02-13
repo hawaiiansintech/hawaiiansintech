@@ -4,6 +4,7 @@ import MetaTags from "@/components/Metatags.js";
 import StartOption from "@/components/StartOption";
 import Head from "next/head";
 import Link from "next/link";
+import theme from "styles/theme";
 
 export default function Join() {
   return (
@@ -28,7 +29,7 @@ export default function Join() {
       <section
         style={{
           margin: "0 auto 1rem",
-          maxWidth: "var(--width-page-interior)",
+          maxWidth: theme.layout.width.interior,
         }}
       >
         <div style={{ margin: "2rem auto 0", textAlign: "center" }}>
@@ -42,7 +43,7 @@ export default function Join() {
             gridColumnGap: "1rem",
             gridRowGap: "1rem",
             margin: "1rem 0",
-            maxWidth: "var(--width-page-interior)",
+            maxWidth: theme.layout.width.interior,
           }}
         >
           <StartOption

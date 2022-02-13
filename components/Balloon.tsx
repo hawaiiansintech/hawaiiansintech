@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React from "react";
+import theme from "styles/theme";
 import { cssHelperButtonReset } from "../styles/global";
 import { Icon, IconAsset } from "./icon/icon";
 
@@ -38,13 +39,12 @@ export default function Balloon({ message, link, onClose }: BalloonProps) {
           transform: translateX(-50%);
           display: flex;
           align-items: center;
-          border-radius: var(--border-radius-small);
-          background: var(--color-background-float);
+          border-radius: ${theme.borderRadius.sm};
+          background: ${theme.color.background.float};
           padding: ${onClose ? "0.5rem 0.5rem 0.5rem 1.5rem" : "1rem"};
           margin: 0 auto 2rem;
           text-align: center;
-          box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.125),
-            0 0 0.125rem 0 var(--color-background);
+          box-shadow: ${theme.elevation.two.desat};
         }
         .balloon__body {
           flex-grow: 1;

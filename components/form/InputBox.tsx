@@ -1,3 +1,5 @@
+import theme from "styles/theme";
+
 interface InputBoxProps {
   border?: boolean;
   disabled?: boolean;
@@ -7,7 +9,6 @@ interface InputBoxProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => any;
   onEnter?: () => any;
   fullWidth?: boolean;
-  selected?: string;
   value?: string;
 }
 
@@ -20,7 +21,6 @@ export default function InputBox({
   onChange,
   onEnter,
   fullWidth,
-  selected,
   value,
 }: InputBoxProps) {
   return (
@@ -42,30 +42,31 @@ export default function InputBox({
         input {
           position: relative;
           border: 0.25rem solid transparent;
-          ${border || "background: var(--color-border);"};
-          ${border ? "border-color: var(--color-border);" : ""}
-          ${selected ? "background: var(--color-brand);" : ""}
-          ${selected ? "color: #fff;" : ""}
-          ${fullWidth ? "width: 100%;" : ""}
           height: 100%;
           font-size: 1rem;
           font-weight: 600;
           line-height: 120%;
           margin: 0;
-          border-radius: var(--border-radius-medium);
+          border-radius: ${theme.borderRadius.md};
           text-align: center;
           padding: 1rem;
           transition: all 150ms ease-out;
-          ${disabled && "opacity: 0.5; pointer-events: none;"}
+          opacity: ${disabled ? "0.5" : "1"};
+          pointer-events: ${disabled ? "none" : "initial"};
+          width: ${fullWidth ? "100%" : "initial"};
+          background: ${border
+            ? theme.color.background.float
+            : theme.color.border.base};
+          border-color: ${border ? theme.color.border.base : "transparent"};
         }
         .input-box:hover {
-          border-color: var(--color-brand);
+          border-color: ${theme.color.brand.base};
         }
         .input-box:active {
-          color: var(--color-brand-alt);
+          color: ${theme.color.brand.alt};
         }
         .input-box:focus {
-          border-color: var(--color-brand);
+          border-color: ${theme.color.brand.base};
           box-shadow: ${theme.elevation.two.brand};
         }
       `}</style>

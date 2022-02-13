@@ -6,7 +6,6 @@ export default css.global`
     --color-brand: ${theme.color.brand.base};
     --color-brand-alpha: ${theme.color.brand.alpha};
     --color-brand-alt: ${theme.color.brand.alt};
-    --color-brand-alt-2: ${theme.color.brand.alt2};
     --color-brand-faded: ${theme.color.brand.faded};
     --color-link: ${theme.color.link.base};
     --color-link-alt: ${theme.color.link.alt};
@@ -49,8 +48,8 @@ export default css.global`
 
   body {
     font-family: "Helvetica Now Display", "Helvetica Neue", "Helvetica";
-    background: var(--color-background);
-    color: var(--color-text);
+    background: ${theme.color.background.base};
+    color: ${theme.color.text.base};
     font-weight: 500;
     margin: 0;
     padding: 0;
@@ -64,11 +63,11 @@ export default css.global`
 
   a {
     text-decoration: none;
-    color: var(--color-link);
+    color: ${theme.color.link.base};
   }
 
   a:hover {
-    color: var(--color-link-alt);
+    color: ${theme.color.link.alt};
   }
 
   /* Animations
@@ -110,7 +109,7 @@ export default css.global`
   table tbody td,
   table thead td {
     border: none;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid ${theme.color.border.base};
   }
 
   table.large thead {
@@ -127,8 +126,7 @@ export default css.global`
   }
 
   table tbody tr:hover {
-    /* background: #111111; */
-    color: var(--color-link);
+    color: ${theme.color.link.base};
   }
 
   /* Rethink is the best aproch */
@@ -172,7 +170,7 @@ export default css.global`
   }
 
   .arrowback {
-    color: var(--color-text);
+    color: ${theme.color.text.base};
     font-size: 3rem;
     text-decoration: none;
     cursor: pointer;
@@ -185,7 +183,7 @@ export default css.global`
   }
 
   a.link {
-    --color: var(--color-text);
+    --color: ${theme.color.text.base};
     position: relative;
     color: var(--color);
     text-decoration: none;
@@ -212,7 +210,7 @@ export default css.global`
   }
 
   a.link:hover {
-    --color: var(--color-link);
+    color: ${theme.color.link.base};
   }
 
   a.link:after {
@@ -226,7 +224,7 @@ export default css.global`
   .sticky tr {
     position: fixed;
     width: 95vw;
-    background: var(--color-background);
+    background: ${theme.color.background.base};
     padding: 1.5rem 0 1rem 0;
     display: table;
     top: -4rem;

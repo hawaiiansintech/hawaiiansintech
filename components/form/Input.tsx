@@ -1,4 +1,5 @@
 import React from "react";
+import theme from "styles/theme";
 import { toKebab } from "../../helpers.js";
 import Label from "./Label";
 
@@ -63,21 +64,21 @@ export default function Input({
           width: 100%;
           padding: 0.5rem 0.75rem;
           font-size: 1.4rem;
-          border-radius: var(--border-radius-small);
+          border-radius: ${theme.borderRadius.sm};
           border: 0.2rem solid transparent;
-          border-color: ${error ? "red" : "var(--color-border)"};
-          background: var(--color-border);
+          border-color: ${error ? "red" : "transparent"};
+          background: ${theme.color.border.base};
         }
         input::placeholder {
-          color: var(--color-text-alt-2);
+          color: ${theme.color.text.alt2};
         }
         input:focus {
-          border-color: var(--color-brand);
+          border-color: ${theme.color.brand.base};
           box-shadow: ${theme.elevation.two.brand};
           background: white;
         }
         input:focus::placeholder {
-          color: var(--color-text-alt-3);
+          color: ${theme.color.text.alt3};
         }
         .input__label {
           margin-bottom: 1rem;
@@ -96,7 +97,7 @@ export function FieldError({ children }: { children: React.ReactNode }) {
           display: block;
           margin-top: 0.25rem;
           font-size: 0.9rem;
-          color: var(--color-text-error);
+          color: ${theme.color.text.error};
         }
       `}</style>
     </span>

@@ -1,8 +1,9 @@
 import Link from "next/link";
+import theme from "styles/theme";
 
-export default function Nav(props) {
+export default function Nav() {
   return (
-    <ul className="auxNav" {...props}>
+    <ul className="auxNav">
       <li>
         <Link href="/about">
           <a>About</a>
@@ -28,13 +29,13 @@ export default function Nav(props) {
         }
 
         ul li a {
-          color: var(--color-text);
+          color: ${theme.color.text.base};
           text-decoration: none;
           transition: color 150ms ease;
         }
 
         ul li a:hover {
-          color: var(--color-link);
+          color: ${theme.color.link.base};
         }
       `}</style>
     </ul>

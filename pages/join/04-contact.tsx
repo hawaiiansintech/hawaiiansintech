@@ -12,6 +12,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import theme from "styles/theme";
 import * as Yup from "yup";
 import { clearAllStoredFields } from "./01-you";
 
@@ -133,7 +134,7 @@ export default function JoinStep4() {
       <section
         style={{
           margin: "2rem auto 0",
-          maxWidth: "var(--width-page-interior)",
+          maxWidth: theme.layout.width.interior,
         }}
       >
         {error && (

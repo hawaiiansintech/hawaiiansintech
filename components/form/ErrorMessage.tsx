@@ -1,4 +1,5 @@
-import ErrorNotifSVG from "../icon/ErrorNotifSVG.js";
+import theme from "styles/theme";
+import ErrorNotifSVG from "../icon/ErrorNotifSVG";
 
 export interface ErrorMessageProps {
   headline: string;
@@ -17,7 +18,7 @@ export default function ErrorMessage({ headline, body }: ErrorMessageProps) {
       </main>
       <style jsx>{`
         .error-message {
-          background: var(--color-background-error);
+          background: ${theme.color.background.error};
           border-radius: 4px;
           padding: 1rem;
           display: flex;
