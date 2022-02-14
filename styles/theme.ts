@@ -52,7 +52,8 @@ const theme = {
       interior: "42rem",
     },
     breakPoints: {
-      small: "48rem",
+      small: "32rem",
+      medium: "60rem",
     },
   },
 };

@@ -14,7 +14,7 @@ import Selectable, {
 import { Heading } from "@/components/Heading";
 import MetaTags from "@/components/Metatags.js";
 import { getFocuses } from "@/lib/api";
-import { useStorage } from "@/lib/hooks";
+import { useStorage, useWindowWidth } from "@/lib/hooks";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -39,6 +39,7 @@ const MAX_COUNT = 3;
 export default function JoinStep2({ focuses }) {
   const router = useRouter();
   const { getItem, setItem, removeItem } = useStorage();
+  const width = useWindowWidth();
 
   const [focusesSelected, setFocusesSelected] = useState<string[]>([]);
   const [focusSuggested, setFocusSuggested] = useState<string>("");
@@ -82,18 +83,15 @@ export default function JoinStep2({ focuses }) {
   }, [error]);
 
   useEffect(() => {
-    const handleResize = () => {
-      let mql = window.matchMedia("(min-width: 640px)");
-      if (mql.matches) {
-        setColumnCount(3);
-      } else {
-        setColumnCount(2);
-      }
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    let mql = window.matchMedia(
+      `(min-width: ${theme.layout.breakPoints.small})`
+    );
+    if (mql.matches) {
+      setColumnCount(3);
+    } else {
+      setColumnCount(2);
+    }
+  }, [width]);
 
   const totalFocusesSelected =
     focusesSelected.length + (focusSuggested ? 1 : 0);

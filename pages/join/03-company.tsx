@@ -13,7 +13,7 @@ import Selectable, {
 import { Heading } from "@/components/Heading";
 import MetaTags from "@/components/Metatags.js";
 import { getIndustries } from "@/lib/api";
-import { useStorage } from "@/lib/hooks";
+import { useStorage, useWindowWidth } from "@/lib/hooks";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -40,6 +40,8 @@ const DEFER_LABEL = "N/A, or Prefer Not to Answer";
 export default function JoinStep3({ industries }) {
   const { getItem, setItem, removeItem } = useStorage();
   const router = useRouter();
+  const width = useWindowWidth();
+
   const [companySize, setCompanySize] = useState<string>();
   const [industrySuggested, setIndustrySuggested] = useState("");
   const [deferIndustrySelected, setDeferIndustrySelected] =
@@ -101,19 +103,15 @@ export default function JoinStep3({ industries }) {
   }, [error]);
 
   useEffect(() => {
-    const handleResize = () => {
-      let mql = window.matchMedia("(min-width: 640px)");
-      if (mql.matches) {
-        setColumnCount(3);
-      } else {
-        setColumnCount(2);
-      }
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    let mql = window.matchMedia(
+      `(min-width: ${theme.layout.breakPoints.small})`
+    );
+    if (mql.matches) {
+      setColumnCount(3);
+    } else {
+      setColumnCount(2);
+    }
+  }, [width]);
 
   useEffect(() => {
     if (isValid) setError(undefined);

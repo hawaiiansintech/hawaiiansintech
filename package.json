@@ -17,6 +17,7 @@
     "framer-motion": "^6.2.4",
     "fuzzysort": "^1.1.4",
     "js-yaml": "^3.13.1",
+    "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "next": "^11.0.1",
     "next-absolute-url": "^1.2.2",

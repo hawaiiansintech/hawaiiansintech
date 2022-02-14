@@ -4,20 +4,22 @@ import MemberDirectory, { DirectoryMember } from "@/components/MemberDirectory";
 import MetaTags from "@/components/Metatags.js";
 import Nav from "@/components/Nav";
 import Title from "@/components/Title.js";
-import { getFocuses, getMembers } from "@/lib/api";
+import { Focus, getFocuses, getMembers, Member } from "@/lib/api";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
 
 export async function getStaticProps() {
-  const members = await getMembers();
-  const focuses = await getFocuses();
+  const members: Member[] = await getMembers();
+  const focuses: Focus[] = await getFocuses();
   return {
     props: {
       allMembers: members.map((mem) => ({
         ...mem,
+        // mutate & add active prop
         focus: mem.focus.map((foc) => ({ ...foc, active: false })),
       })),
-      allFocuses: focuses.filter((focus) => focus.count > 0),
+      // allFocuses: focuses.filter((focus) => focus.count > 0),
+      allFocuses: focuses,
     },
     revalidate: 60,
   };
@@ -27,12 +29,12 @@ export default function Home({ allMembers, allFocuses }) {
   const [members, setMembers] = useState<DirectoryMember[]>(allMembers);
   const [focuses, setFocuses] = useState<FocusPickerFocus[]>(allFocuses);
 
-  const handleFilterByFocuses = (id: string) => {
+  const handleFilterByFocuses = (id?: string) => {
     setFocuses(
       focuses.map((foc) => ({
         ...foc,
         // add false active prop
-        active: foc.id === id ? !foc.active : foc.active,
+        active: id ? (id === foc.id ? !foc.active : foc.active) : false,
       }))
     );
   };
@@ -66,30 +68,39 @@ export default function Home({ allMembers, allFocuses }) {
   }, [focuses]);
 
   return (
-    <div className="container">
-      <Head>
-        <title>Hawaiians in Technology</title>
-        <link id="favicon" rel="alternate icon" href="/favicon.ico" />
-        <MetaTags />
-      </Head>
+    <>
+      <div className="container">
+        <Head>
+          <title>Hawaiians in Technology</title>
+          <link id="favicon" rel="alternate icon" href="/favicon.ico" />
+          <MetaTags />
+        </Head>
 
-      <HitLogo />
-      <Nav />
-      <Title className="title m0 p0" text="Hawaiians*in&nbsp;Technology" />
-      <main>
-        {focuses && (
-          <FocusPicker
-            focuses={focuses}
-            onFilterClick={handleFilterByFocuses}
-          />
-        )}
-        {members && <MemberDirectory members={members} />}
-      </main>
-      <style jsx>{`
-        main {
-          margin-top: 10rem;
-        }
-      `}</style>
-    </div>
+        <HitLogo />
+        <Nav />
+        <Title className="title m0 p0" text="Hawaiians*in&nbsp;Technology" />
+      </div>
+      <div>
+        <aside>
+          {focuses && (
+            <FocusPicker
+              focuses={focuses}
+              onFilterClick={handleFilterByFocuses}
+            />
+          )}
+        </aside>
+        <main className="container">
+          {members && <MemberDirectory members={members} />}
+        </main>
+        <style jsx>{`
+          main {
+          }
+          aside {
+            overflow: hidden;
+            margin-top: 8rem;
+          }
+        `}</style>
+      </div>
+    </>
   );
 }

@@ -8,15 +8,15 @@ export enum SelectableVariant {
 }
 
 interface SelectableProps {
-  border?: boolean;
   badgeNumber?: string | number;
+  border?: boolean;
+  byline?: string;
   centered?: boolean;
   disabled?: boolean;
-  headline: string;
-  byline?: string;
-  onClick?: (e: React.MouseEvent) => any;
-  onClear?: (e: React.MouseEvent) => any;
   fullWidth?: boolean;
+  headline: string;
+  onClear?: (e: React.MouseEvent) => any;
+  onClick?: (e: React.MouseEvent) => any;
   selected?: boolean;
   value?: string;
   variant?: SelectableVariant;
@@ -56,7 +56,6 @@ export default function Selectable({
           position: relative;
           border: 0.25rem solid transparent;
           overflow-wrap: anywhere;
-          min-height: 4rem;
           line-height: 120%;
           margin: 0;
           height: 100%;

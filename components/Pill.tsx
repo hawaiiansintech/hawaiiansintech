@@ -12,10 +12,10 @@ export default function Pill({ active, children }: PillProps) {
       <style jsx>{`
         span {
           display: inline-block;
-          font-size: 1rem;
+          font-size: 0.9rem;
           width: 100%;
           font-weight: 500;
-          padding: 0.25rem 0.5rem;
+          padding: 0.125rem 0.25rem;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -26,6 +26,12 @@ export default function Pill({ active, children }: PillProps) {
             : theme.color.background.alt};
           color: ${active ? theme.color.brand.base : theme.color.text.alt2};
           border-color: ${active ? theme.color.brand.alpha : "transparent"};
+        }
+        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
+          span {
+            font-size: 1rem;
+            padding: 0.25rem 0.5rem;
+          }
         }
       `}</style>
     </span>
