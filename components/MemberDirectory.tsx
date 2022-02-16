@@ -106,13 +106,13 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
         h3 {
           font-weight: 400;
         }
-        .member__location h3:after {
-          content: ",";
-          margin-right: 0.25rem;
-        }
         h4 {
           font-weight: 400;
           margin-top: 0.25rem;
+        }
+        .member__location h3:after {
+          content: ",";
+          margin-right: 0.25rem;
         }
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
           .member {
@@ -153,6 +153,13 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
           h4 {
             font-size: 1.25rem;
             color: ${theme.color.text.alt2};
+          }
+          .member:hover h3 {
+            color: inherit;
+          }
+
+          .member:hover h4 {
+            color: ${theme.color.text.alt3};
           }
         }
       `}</style>
