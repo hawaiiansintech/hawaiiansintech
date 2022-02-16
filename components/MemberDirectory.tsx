@@ -16,7 +16,7 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
     members.filter((mem) => mem.focus.filter((foc) => foc.active).length > 0)
       .length > 0;
   return (
-    <>
+    <section>
       {members.map((member, i) => {
         const isDisabled =
           member.focus.filter((foc) => foc.active).length === 0;
@@ -48,11 +48,14 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
       })}
 
       <style jsx>{`
+        section {
+          border-top: 0.1rem solid ${theme.color.border.alt};
+        }
         .member {
           display: block;
           padding: 1rem 0;
           color: ${theme.color.text.base};
-          border-top: 0.1rem solid ${theme.color.border.alt};
+          border-bottom: 0.1rem solid ${theme.color.border.alt};
         }
         .member:hover {
           color: ${theme.color.text.alt2};
@@ -153,6 +156,6 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
           }
         }
       `}</style>
-    </>
+    </section>
   );
 }

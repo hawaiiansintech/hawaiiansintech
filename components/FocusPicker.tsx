@@ -2,6 +2,7 @@ import { Focus } from "@/lib/api";
 import { useWindowWidth } from "@/lib/hooks";
 import { useEffect, useRef, useState } from "react";
 import theme from "styles/theme";
+import Button, { ButtonSize, ButtonVariant } from "./Button";
 import Selectable, { SelectableSize } from "./form/Selectable";
 
 export interface FocusPickerFocus extends Focus {
@@ -71,8 +72,8 @@ export default function FocusPicker({
         <style jsx>{`
           ul {
             list-style: none;
-            margin: 0 0.5rem 0.5rem 0;
-            padding: 0 1rem;
+            margin: 0 0.5rem 0 0;
+            padding: 0;
             display: flex;
             flex-wrap: wrap;
             overflow: hidden;
@@ -90,7 +91,6 @@ export default function FocusPicker({
           @media screen and (min-width: ${theme.layout.breakPoints.small}) {
             ul {
               margin-bottom: 0.75rem;
-              padding: 0 2rem;
             }
           }
           @media screen and (min-width: ${theme.layout.breakPoints.medium}) {
@@ -103,27 +103,13 @@ export default function FocusPicker({
         `}</style>
       </ul>
       {showButton && (
-        <a href="#" onClick={() => setMenuExpanded(!menuExpanded)}>
+        <Button
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Small}
+          onClick={() => setMenuExpanded(!menuExpanded)}
+        >
           {menuExpanded ? "Show Less" : "Show More"}
-          <style jsx>{`
-            a {
-              margin: 0 1rem;
-              color: ${menuExpanded
-                ? theme.color.brand.base
-                : theme.color.brand.base};
-            }
-            @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-              a {
-                margin: 0 2rem;
-              }
-            }
-            @media screen and (min-width: ${theme.layout.breakPoints.medium}) {
-              a {
-                display: none;
-              }
-            }
-          `}</style>
-        </a>
+        </Button>
       )}
     </>
   );

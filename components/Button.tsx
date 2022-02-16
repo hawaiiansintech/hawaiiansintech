@@ -52,7 +52,7 @@ export default function Button({
       .button {
         ${cssHelperButtonReset}
         position: relative;
-        padding: ${size === ButtonSize.Default ? "1.2rem" : "0.2rem 0.4rem"};
+        padding: ${size === ButtonSize.Default ? "1.2rem" : "0.4rem 0.8rem"};
         width: ${fullWidth ? "100%" : "initial"};
         color: ${disabled
           ? theme.color.text.alt2

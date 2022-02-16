@@ -74,7 +74,7 @@ export default function Selectable({
           padding: ${size === SelectableSize.Small
             ? "0.25rem 0.5rem"
             : size === SelectableSize.Large
-            ? "0.75rem 1rem"
+            ? "0.5rem 0.75rem"
             : "0.5rem 0.75rem"};
           transition: background 150ms ease-out;
           background: ${selected
@@ -141,12 +141,12 @@ export default function Selectable({
           transition: color 150ms ease-out;
         }
         h6 {
-          margin: 0.125rem 0 0;
-          font-size: 0.75rem;
-          font-weight: 400;
+          margin: 0 0 0 0.5rem;
+          font-size: 0.9rem;
+          font-weight: 500;
           color: ${selected
             ? theme.color.text.overlay.alt
-            : theme.color.text.alt};
+            : theme.color.text.alt2};
         }
         span {
           position: absolute;

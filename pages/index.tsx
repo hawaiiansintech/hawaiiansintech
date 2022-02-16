@@ -103,6 +103,12 @@ export default function Home({ allMembers, allFocuses }) {
           }
           aside {
             margin: 8rem 0 2rem;
+            padding: 0 1rem;
+          }
+          @media screen and (min-width: ${theme.layout.breakPoints.small}) {
+            aside {
+              padding: 0 2rem;
+            }
           }
         `}</style>
       </div>
