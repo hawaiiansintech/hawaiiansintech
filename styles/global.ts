@@ -255,7 +255,7 @@ export default css.global`
 
   /* Responsive
  ----------------------------- */
-  @media (max-width: 480px) {
+  @media (max-width: ${theme.layout.breakPoints.small}) {
     :root {
       font-size: 12px;
     }

@@ -7,6 +7,12 @@ export enum SelectableVariant {
   Alt = "alt",
 }
 
+export enum SelectableSize {
+  Small = "primary",
+  Default = "default",
+  Large = "large",
+}
+
 interface SelectableProps {
   badgeNumber?: string | number;
   border?: boolean;
@@ -18,6 +24,7 @@ interface SelectableProps {
   onClear?: (e: React.MouseEvent) => any;
   onClick?: (e: React.MouseEvent) => any;
   selected?: boolean;
+  size?: SelectableSize;
   value?: string;
   variant?: SelectableVariant;
 }
@@ -32,6 +39,7 @@ export default function Selectable({
   onClear,
   fullWidth,
   selected,
+  size = SelectableSize.Small,
   value,
   variant = SelectableVariant.Primary,
 }: SelectableProps) {
@@ -59,9 +67,15 @@ export default function Selectable({
           line-height: 120%;
           margin: 0;
           height: 100%;
-          border-radius: ${theme.borderRadius.md};
+          border-radius: ${size === SelectableSize.Small
+            ? theme.borderRadius.sm
+            : theme.borderRadius.md};
           text-align: ${centered ? "center" : "left"};
-          padding: 0.5rem 0.75rem;
+          padding: ${size === SelectableSize.Small
+            ? "0.25rem 0.5rem"
+            : size === SelectableSize.Large
+            ? "0.75rem 1rem"
+            : "0.5rem 0.75rem"};
           transition: background 150ms ease-out;
           background: ${selected
             ? variant === SelectableVariant.Alt
@@ -112,8 +126,8 @@ export default function Selectable({
               ? theme.color.border.alt2
               : theme.color.brand.alt
             : variant === SelectableVariant.Alt
-            ? theme.color.border.alt2
-            : theme.color.border.alt};
+            ? theme.color.border.alt3
+            : theme.color.border.alt2};
           box-shadow: ${selected
             ? theme.elevation.two.brand
             : theme.elevation.two.desat};

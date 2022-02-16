@@ -21,11 +21,11 @@ export default function Pill({ active, children }: PillProps) {
           text-overflow: ellipsis;
           border-radius: ${theme.borderRadius.sm};
           border: 0.2rem solid transparent;
-          background: ${active
+          background: ${active ? theme.color.brand.alpha : "transparent"};
+          color: ${active ? theme.color.brand.base : theme.color.text.alt};
+          border-color: ${active
             ? theme.color.brand.alpha
-            : theme.color.background.alt};
-          color: ${active ? theme.color.brand.base : theme.color.text.alt2};
-          border-color: ${active ? theme.color.brand.alpha : "transparent"};
+            : theme.color.border.base};
         }
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
           span {

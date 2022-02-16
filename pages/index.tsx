@@ -7,6 +7,7 @@ import Title from "@/components/Title.js";
 import { Focus, getFocuses, getMembers, Member } from "@/lib/api";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
+import theme from "styles/theme";
 
 export async function getStaticProps() {
   const members: Member[] = await getMembers();
@@ -18,8 +19,9 @@ export async function getStaticProps() {
         // mutate & add active prop
         focus: mem.focus.map((foc) => ({ ...foc, active: false })),
       })),
-      // allFocuses: focuses.filter((focus) => focus.count > 0),
-      allFocuses: focuses,
+      allFocuses: focuses
+        .filter((focus) => focus.count > 0)
+        .sort((a, b) => b.count - a.count),
     },
     revalidate: 60,
   };
@@ -89,15 +91,18 @@ export default function Home({ allMembers, allFocuses }) {
             />
           )}
         </aside>
-        <main className="container">
-          {members && <MemberDirectory members={members} />}
-        </main>
+        <main>{members && <MemberDirectory members={members} />}</main>
         <style jsx>{`
           main {
+            padding: 0 1rem;
+          }
+          @media screen and (min-width: ${theme.layout.breakPoints.medium}) {
+            main {
+              padding: 0 1rem;
+            }
           }
           aside {
-            overflow: hidden;
-            margin-top: 8rem;
+            margin: 8rem 0 2rem;
           }
         `}</style>
       </div>

@@ -23,7 +23,8 @@ const theme = {
     },
     background: {
       base: "#e5e5e5",
-      alt: "#dacbc8",
+      // alt: "#ddd9d9",
+      alt: "#ddd9d9",
       alt2: "#c9b5b1",
       alt3: "#bda9a5",
       disabled: "#ddd",
@@ -52,7 +53,7 @@ const theme = {
       interior: "42rem",
     },
     breakPoints: {
-      small: "32rem",
+      small: "40rem",
       medium: "60rem",
     },
   },
