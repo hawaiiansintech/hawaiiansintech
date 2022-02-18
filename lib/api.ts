@@ -26,6 +26,7 @@ export interface Member {
   title?: string;
   region: string;
   focus: { name: string; id: string }[];
+  id?: string;
 }
 
 export async function getMembers(): Promise<Member[]> {
@@ -84,6 +85,10 @@ export async function getMembers(): Promise<Member[]> {
         title:
           typeof member.fields["Title"] === "string"
             ? member.fields["Title"]
+            : null,
+        id:
+          typeof member.fields["RecordID"] === "string"
+            ? member.fields["RecordID"]
             : null,
         region: typeof regionLookup === "string" ? regionLookup : null,
         focus: focusLookup(),

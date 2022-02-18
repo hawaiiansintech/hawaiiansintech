@@ -21,7 +21,7 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
         const isDisabled =
           member.focus.filter((foc) => foc.active).length === 0;
         return (
-          <motion.div layout="position" key={`member-${member.name}`}>
+          <motion.div layout="position" key={`member-${member.id}`}>
             <a
               href={member.link}
               target="_blank"
