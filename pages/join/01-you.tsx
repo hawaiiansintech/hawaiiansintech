@@ -186,7 +186,7 @@ export default function JoinStep1(props) {
                       <em>we out here</em>.
                     </>
                   }
-                  placeholder="City, State"
+                  placeholder="Island/City, State"
                   onBlur={props.handleBlur}
                   onChange={props.handleChange}
                   error={props.touched.location && props.errors.location}
