@@ -34,17 +34,6 @@ yarn dev
 
 In your browser, open `localhost:3000`.
 
-#### TIP
-
-If the airtable API key is missing, you can simulate it by changing this line in `index.js`
-```javascript
-import { fetchTechnologists } from "../lib/api";
-```
-to
-```javascript
-import { fetchTechnologists } from "../lib/stubApi";
-```
-
 ### Deploy at vercel
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https%3A%2F%2Fgithub.com%2Fhawaiians%2Fhawaiiansintech)

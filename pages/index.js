@@ -10,7 +10,7 @@ import FilterSVG from "../components/Icons/FilterSVG.js";
 import HitLogo from "../components/HitLogo.js";
 
 export default function Home({ technologists, filters }) {
-  const [isReady] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const [technologistsList, setTechnologistsList] = useState(null);
   const [filterIsOpen, setFilterIsOpen] = useState(false);
   const [filterList, setFilterList] = useState(filters);
