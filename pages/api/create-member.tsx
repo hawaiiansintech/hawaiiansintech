@@ -155,8 +155,6 @@ const addSgContact = async (fields: MemberFields) => {
       },
     })
       .then((response) => {
-        console.log("🤔 response");
-        console.log(response);
         resolve(response);
       })
       .catch((error) => {
@@ -206,19 +204,23 @@ export default async function handler(req, res) {
           return body;
         }
       );
-      await addSgContact({
+      const contact = await addSgContact({
         ...req.body,
         recordID: recordID,
       }).then(() => {
         console.log("✅ added member to sendgrid");
       });
-      await sendSgEmail({
+      console.log("🤔 contact");
+      console.log(contact);
+      const email = await sendSgEmail({
         email: req.body.email,
         name: req.body.name,
         airtableID: recordID,
       }).then(() => {
         console.log("✅ sent member email via sendgrid");
       });
+      console.log("🤔 email");
+      console.log(email);
       return res.status(200).json({ message: "Successfully added member." });
     } else {
       return res.status(422).json({
