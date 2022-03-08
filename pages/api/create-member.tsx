@@ -155,6 +155,8 @@ const addSgContact = async (fields: MemberFields) => {
       },
     })
       .then((response) => {
+        console.log("🤔 response");
+        console.log(response);
         resolve(response);
       })
       .catch((error) => {
