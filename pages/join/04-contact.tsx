@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import theme from "styles/theme";
 import * as Yup from "yup";
+import { clearAllStoredFields } from "./01-you";
 
 export default function JoinStep4() {
   const router = useRouter();
@@ -153,7 +154,7 @@ export default function JoinStep4() {
             const res: Response | any = await createMember();
             const resJSON = await res.json();
             if (res.ok) {
-              // clearAllStoredFields();
+              clearAllStoredFields();
               router.push({ pathname: "thank-you" });
             } else if (res.status === 422) {
               setLoading(false);

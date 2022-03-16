@@ -204,25 +204,19 @@ export default async function handler(req, res) {
           return body;
         }
       );
-      console.log("🤔 recordID");
-      console.log(recordID);
-      const contact = await addSgContact({
+      await addSgContact({
         ...req.body,
         recordID: recordID,
       }).then(() => {
         console.log("✅ added member to sendgrid");
       });
-      console.log("🤔 contact");
-      console.log(contact);
-      const email = await sendSgEmail({
+      await sendSgEmail({
         email: req.body.email,
         name: req.body.name,
         airtableID: recordID,
       }).then(() => {
         console.log("✅ sent member email via sendgrid");
       });
-      console.log("🤔 email");
-      console.log(email);
       return res.status(200).json({ message: "Successfully added member." });
     } else {
       return res.status(422).json({
