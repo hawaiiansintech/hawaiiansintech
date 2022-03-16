@@ -14,7 +14,6 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import theme from "styles/theme";
 import * as Yup from "yup";
-import { clearAllStoredFields } from "./01-you";
 
 export default function JoinStep4() {
   const router = useRouter();
@@ -79,7 +78,7 @@ export default function JoinStep4() {
       ([...JSON.parse(getItem("jfIndustries") || "[]")].length < 1 &&
         !getItem("jfIndustrySuggested")) ||
       !getItem("jfCompanySize");
-    if (invalid) router.push({ pathname: "01-you", query: { r: "03" } });
+    if (invalid) router.push({ pathname: "01-you", query: { r: "04" } });
   }, []);
 
   // check localStorage and set pre-defined fields
@@ -154,7 +153,7 @@ export default function JoinStep4() {
             const res: Response | any = await createMember();
             const resJSON = await res.json();
             if (res.ok) {
-              clearAllStoredFields();
+              // clearAllStoredFields();
               router.push({ pathname: "thank-you" });
             } else if (res.status === 422) {
               setLoading(false);
@@ -163,6 +162,8 @@ export default function JoinStep4() {
                 body: resJSON.body,
               });
             } else {
+              console.log("🤔 res");
+              console.log(res);
               setLoading(false);
               setError({
                 headline: "Gonfunnit, looks like something went wrong!",
