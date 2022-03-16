@@ -162,8 +162,6 @@ export default function JoinStep4() {
                 body: resJSON.body,
               });
             } else {
-              console.log("🤔 res");
-              console.log(res);
               setLoading(false);
               setError({
                 headline: "Gonfunnit, looks like something went wrong!",

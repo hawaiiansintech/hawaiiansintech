@@ -204,6 +204,8 @@ export default async function handler(req, res) {
           return body;
         }
       );
+      console.log("🤔 recordID");
+      console.log(recordID);
       const contact = await addSgContact({
         ...req.body,
         recordID: recordID,
