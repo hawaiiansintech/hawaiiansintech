@@ -177,15 +177,6 @@ export default function JoinStep1(props) {
                   value={props.values.location}
                   label="Where you stay now days?"
                   labelTranslation="Ma hea ʻoe e noho ʻana?"
-                  labelHint={
-                    <>
-                      <strong>
-                        We've got technical kanaka all over the world.
-                      </strong>{" "}
-                      Share where you're at — so people know{" "}
-                      <em>we out here</em>.
-                    </>
-                  }
                   placeholder="Island/City, State"
                   onBlur={props.handleBlur}
                   onChange={props.handleChange}
@@ -197,16 +188,6 @@ export default function JoinStep1(props) {
                 value={props.values.website}
                 label="What’s your LinkedIn / professional website?"
                 labelTranslation="He aha kou wahi uila ’oihana?"
-                labelHint={
-                  <>
-                    <strong>
-                      People may be looking to learn more about you.
-                    </strong>{" "}
-                    Where should we send them? LinkedIn has seemed to work
-                    particularly well so far! It's a great way to connect with
-                    other kanaka.
-                  </>
-                }
                 onBlur={props.handleBlur}
                 onChange={props.handleChange}
                 error={props.touched.website && props.errors.website}
