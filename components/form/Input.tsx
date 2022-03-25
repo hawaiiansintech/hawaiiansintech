@@ -5,6 +5,7 @@ import Label from "./Label";
 
 interface InputProps {
   defaultValue?: string;
+  disabled?: boolean;
   error?: string;
   label?: string;
   labelTranslation?: string;
@@ -20,6 +21,7 @@ interface InputProps {
 
 export default function Input({
   defaultValue,
+  disabled,
   error,
   label,
   labelTranslation,
@@ -56,6 +58,7 @@ export default function Input({
         onChange={onChange}
         onFocus={onFocus}
         value={value}
+        disabled={disabled}
       />
       {error && <FieldError>{error}</FieldError>}
 
@@ -67,10 +70,16 @@ export default function Input({
           border-radius: ${theme.borderRadius.sm};
           border: 0.2rem solid transparent;
           border-color: ${error ? "red" : "transparent"};
-          background: ${theme.color.border.base};
+          opacity: ${disabled ? "0.5" : "1"};
+          background: ${theme.color.background.alt};
         }
         input::placeholder {
           color: ${theme.color.text.alt2};
+        }
+        input:disabled {
+          border-color: ${theme.color.border.alt};
+          pointer-events: none;
+          background: none;
         }
         input:focus {
           border-color: ${theme.color.brand.base};

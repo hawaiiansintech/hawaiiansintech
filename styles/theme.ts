@@ -23,8 +23,7 @@ const theme = {
     },
     background: {
       base: "#e5e5e5",
-      // alt: "#ddd9d9",
-      alt: "#ddd9d9",
+      alt: "#dacbc8",
       alt2: "#c9b5b1",
       alt3: "#bda9a5",
       disabled: "#ddd",

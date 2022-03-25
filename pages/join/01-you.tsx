@@ -21,6 +21,7 @@ const ALL_STORED_FIELDS = [
   "jfFocuses",
   "jfFocusSuggested",
   "jfTitle",
+  "jfDeferTitle",
   "jfYearsExperience",
   "jfIndustries",
   "jfIndustrySuggested",

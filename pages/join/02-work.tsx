@@ -1,4 +1,5 @@
 import Button from "@/components/Button";
+import CheckBox from "@/components/form/CheckBox";
 import ErrorMessage, {
   ErrorMessageProps,
 } from "@/components/form/ErrorMessage";
@@ -44,9 +45,10 @@ export default function JoinStep2({ focuses }) {
   const [focusesSelected, setFocusesSelected] = useState<string[]>([]);
   const [focusSuggested, setFocusSuggested] = useState<string>("");
   const [title, setTitle] = useState<string>("");
+  const [deferTitle, setDeferTitle] = useState<"true" | "false">("false");
   const [yearsExperience, setYearsExperience] = useState<string>();
-  const [showSuggestButton, setShowSuggestButton] = useState(true);
 
+  const [showSuggestButton, setShowSuggestButton] = useState(true);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<ErrorMessageProps>(undefined);
   const [isValid, setIsValid] = useState<boolean>(false);
@@ -57,6 +59,7 @@ export default function JoinStep2({ focuses }) {
     let storedFocuses = getItem("jfFocuses");
     let storedFocusSuggested = getItem("jfFocusSuggested");
     let storedTitle = getItem("jfTitle");
+    let storedDeferTitle = getItem("jfDeferTitle");
     let storedYearsExperience = getItem("jfYearsExperience");
     if (storedFocuses) {
       // Convert string "[]" to parsable JSON
@@ -67,7 +70,11 @@ export default function JoinStep2({ focuses }) {
       setFocusesSelected(match);
     }
     if (storedFocusSuggested) setFocusSuggested(storedFocusSuggested);
-    if (storedTitle) setTitle(storedTitle);
+    if (storedDeferTitle === "true") {
+      setDeferTitle(storedDeferTitle);
+      setTitle("");
+    }
+    if (storedDeferTitle !== "true" && storedTitle) setTitle(storedTitle);
     if (storedYearsExperience) setYearsExperience(storedYearsExperience);
   }, []);
 
@@ -129,10 +136,15 @@ export default function JoinStep2({ focuses }) {
     removeItem("jfFocuses");
     removeItem("jfFocusSuggested");
     removeItem("jfTitle");
+    removeItem("jfDeferTitle");
     removeItem("jfYearsExperience");
     // Set as stringified array
     if (focusesSelected) setItem("jfFocuses", JSON.stringify(focusesSelected));
     if (focusSuggested) setItem("jfFocusSuggested", focusSuggested);
+    if (!title) setDeferTitle("true");
+    if (deferTitle === "true" || !title) {
+      setItem("jfDeferTitle", "true");
+    }
     if (title) setItem("jfTitle", title);
     if (yearsExperience) setItem("jfYearsExperience", yearsExperience);
     router.push({
@@ -156,7 +168,7 @@ export default function JoinStep2({ focuses }) {
         currentCount={2}
         totalCount={4}
       />
-      <div style={{ marginTop: "4rem" }}>
+      <div style={{ marginTop: "2rem" }}>
         <Heading>Welcome to our little hui.</Heading>
       </div>
       <section
@@ -166,10 +178,12 @@ export default function JoinStep2({ focuses }) {
         }}
       >
         {error && <ErrorMessage headline={error.headline} body={error.body} />}
-        <Label
-          label="Which of the following best describes your field of work?"
-          labelTranslation="He aha kou (mau) hana ʻoi a pau?"
-        />
+        <div style={{ margin: "2rem 0" }}>
+          <Label
+            label="Which of the following best describes your field of work?"
+            labelTranslation="He aha kou (mau) hana ʻoi a pau?"
+          />
+        </div>
         <div style={{ marginTop: "1rem" }}>
           <SelectableGrid columns={columnCount}>
             {focuses.map((focus, i: number) => {
@@ -234,18 +248,7 @@ export default function JoinStep2({ focuses }) {
             </div>
           </SelectableGrid>
         </div>
-
         <div style={{ margin: "2rem 0" }}>
-          <Input
-            name="title"
-            label="What’s your current title?"
-            labelTranslation="ʻO wai kou kūlana i hana?"
-            placeholder="e.g. Software Engineer"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </div>
-        <div style={{ marginBottom: "2rem" }}>
           <Label
             label="How many years of experience do you have in your field?"
             labelTranslation="Ehia ka makahiki o kou hana ʻana ma kou ʻoi hana?"
@@ -274,6 +277,28 @@ export default function JoinStep2({ focuses }) {
                 />
               </div>
             ))}
+          </div>
+        </div>
+
+        <div style={{ margin: "2rem 0" }}>
+          <Input
+            name="title"
+            label="What’s your current title?"
+            labelTranslation="ʻO wai kou kūlana i hana?"
+            placeholder="e.g. Software Engineer"
+            value={deferTitle === "true" ? " " : title}
+            disabled={deferTitle === "true"}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <div style={{ marginTop: "1rem", display: "inline-block" }}>
+            <CheckBox
+              checked={deferTitle === "true"}
+              label={"N/A, or Prefer not to answer"}
+              id="defer-title"
+              onClick={() =>
+                setDeferTitle(deferTitle === "true" ? "false" : "true")
+              }
+            />
           </div>
         </div>
         <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
