@@ -58,7 +58,7 @@ export default css.global`
   .container {
     position: relative;
     margin: 0 auto;
-    padding: 3rem 4rem;
+    padding: 3rem 2rem;
   }
 
   a {
@@ -148,10 +148,6 @@ export default css.global`
 
   .letter {
     display: inline-block;
-  }
-
-  .title {
-    padding-top: 26vh;
   }
 
   .auxNav {

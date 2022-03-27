@@ -23,7 +23,6 @@ export default function Title(props) {
 
   return (
     <motion.h1
-      className="m0 p0"
       {...props}
       variants={container}
       initial={noAnimation ? "show" : "hidden"}

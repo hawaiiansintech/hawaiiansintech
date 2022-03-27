@@ -80,7 +80,9 @@ export default function Home({ allMembers, allFocuses }) {
 
         <HitLogo />
         <Nav />
-        <Title className="title m0 p0" text="Hawaiians*in&nbsp;Technology" />
+        <div style={{ paddingTop: "26vh" }}>
+          <Title className="m0 p0" text="Hawaiians*in&nbsp;Technology" />
+        </div>
       </div>
       <div>
         <aside>

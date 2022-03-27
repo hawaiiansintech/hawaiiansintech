@@ -37,11 +37,13 @@ export default function Home({ technologists }) {
         <a className="auxNav arrowback">←</a>
       </Link>
 
-      <Title
-        className="title m0 p0"
-        text="Hawaiians*in&nbsp;Technology&nbsp;is&nbsp;a"
-        noAnimation
-      />
+      <div style={{ paddingTop: "26vh" }}>
+        <Title
+          className="m0 p0"
+          text="Hawaiians*in&nbsp;Technology&nbsp;is&nbsp;a"
+          noAnimation
+        />
+      </div>
 
       <motion.div
         variants={container}
