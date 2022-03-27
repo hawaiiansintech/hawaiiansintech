@@ -56,9 +56,9 @@ export default css.global`
   }
 
   .container {
-    width: calc(100% - 4rem);
-    margin: 3rem auto;
     position: relative;
+    margin: 0 auto;
+    padding: 3rem 4rem;
   }
 
   a {
@@ -271,7 +271,8 @@ export default css.global`
     }
 
     .container {
-      width: calc(100% - 2rem);
+      padding-left: 2rem;
+      padding-right: 2rem;
     }
 
     .tileArtist {
