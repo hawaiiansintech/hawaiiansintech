@@ -1,5 +1,6 @@
 import HitLogo from "@/components/HitLogo.js";
 import MetaTags from "@/components/Metatags.js";
+import { Subtitle } from "@/components/Title.js";
 import Head from "next/head";
 
 export default function ThankYou() {
@@ -16,10 +17,19 @@ export default function ThankYou() {
           <HitLogo />
         </header>
         <main>
-          <h1>Submission successful</h1>
+          <div className="thank-you__heading">
+            <Subtitle text="Submission&nbsp;successful" />
+            <span>
+              {" "}
+              <img
+                src={"/images/shaka.gif"}
+                alt="Animated shaka, rotating left to right, real loose"
+              />
+            </span>
+          </div>
           <h2>
-            We'll be in touch once we review your profile and push it live. We
-            review all entries manually.
+            Mahalo for your interest! We'll follow up with the provided email
+            address once we review your profile.
           </h2>
         </main>
       </div>
@@ -28,6 +38,10 @@ export default function ThankYou() {
           height: 100vh;
           display: flex;
           flex-direction: column;
+        }
+        .thank-you__heading {
+          display: inline-flex;
+          align-items: center;
         }
         header,
         main {
@@ -49,9 +63,8 @@ export default function ThankYou() {
           flex-grow: 1;
           flex-shrink: 0;
         }
-        h1 {
-          font-size: 3.2rem;
-          margin: 0;
+        aside {
+          flex-shrink: 0;
         }
         h2 {
           font-size: 1.2rem;
@@ -59,6 +72,10 @@ export default function ThankYou() {
           font-weight: 400;
           line-height: 150%;
           max-width: 28rem;
+        }
+        img {
+          width: 4.8rem;
+          margin-left: 1rem;
         }
       `}</style>
     </>

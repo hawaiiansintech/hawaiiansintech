@@ -1,5 +1,5 @@
 import MetaTags from "@/components/Metatags.js";
-import Title from "@/components/Title.js";
+import { Title } from "@/components/Title.js";
 import { motion } from "framer-motion";
 import Head from "next/head";
 import Link from "next/link";

@@ -18,12 +18,13 @@ const item = {
   },
 };
 
-export default function Title(props) {
+export function Title(props) {
   const { text, noAnimation } = props;
 
   return (
     <motion.h1
       {...props}
+      className="m0 p0"
       variants={container}
       initial={noAnimation ? "show" : "hidden"}
       animate="show"
@@ -37,5 +38,28 @@ export default function Title(props) {
         );
       })}
     </motion.h1>
+  );
+}
+
+export function Subtitle(props) {
+  const { text, noAnimation } = props;
+
+  return (
+    <motion.h2
+      {...props}
+      className="m0 p0"
+      variants={container}
+      initial={noAnimation ? "show" : "hidden"}
+      animate="show"
+    >
+      {text.split("").map((l, i) => {
+        if (l == "*") return <br key={`${l}-${i}`} />;
+        return (
+          <motion.span className="letter" variants={item} key={`${l}-${i}`}>
+            {l}
+          </motion.span>
+        );
+      })}
+    </motion.h2>
   );
 }

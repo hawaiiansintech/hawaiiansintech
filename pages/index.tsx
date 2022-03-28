@@ -3,7 +3,7 @@ import HitLogo from "@/components/HitLogo.js";
 import MemberDirectory, { DirectoryMember } from "@/components/MemberDirectory";
 import MetaTags from "@/components/Metatags.js";
 import Nav from "@/components/Nav";
-import Title from "@/components/Title.js";
+import { Title } from "@/components/Title.js";
 import { Focus, getFocuses, getMembers, Member } from "@/lib/api";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";

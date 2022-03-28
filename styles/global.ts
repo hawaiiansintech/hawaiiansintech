@@ -90,6 +90,13 @@ export default css.global`
     font-weight: 500;
     font-feature-settings: "ss08" on, "ss01" on, "salt" on, "cpsp" on;
   }
+  h2 {
+    font-size: 3.2rem;
+    letter-spacing: -0.03em;
+    line-height: 100%;
+    font-weight: 500;
+    font-feature-settings: "ss08" on, "ss01" on, "salt" on, "cpsp" on;
+  }
 
   /* Utils 
  ----------------------------- */

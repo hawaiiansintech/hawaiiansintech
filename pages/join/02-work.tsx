@@ -168,7 +168,7 @@ export default function JoinStep2({ focuses }) {
         currentCount={2}
         totalCount={4}
       />
-      <div style={{ marginTop: "2rem" }}>
+      <div style={{ marginTop: "4rem" }}>
         <Heading>Welcome to our little hui.</Heading>
       </div>
       <section
