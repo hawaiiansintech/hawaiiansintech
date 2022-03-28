@@ -71,13 +71,12 @@ export default function Home({ allMembers, allFocuses }) {
 
   return (
     <>
+      <Head>
+        <title>Hawaiians in Technology</title>
+        <link id="favicon" rel="alternate icon" href="/favicon.ico" />
+        <MetaTags />
+      </Head>
       <div className="container">
-        <Head>
-          <title>Hawaiians in Technology</title>
-          <link id="favicon" rel="alternate icon" href="/favicon.ico" />
-          <MetaTags />
-        </Head>
-
         <HitLogo />
         <Nav />
         <div style={{ paddingTop: "26vh" }}>
