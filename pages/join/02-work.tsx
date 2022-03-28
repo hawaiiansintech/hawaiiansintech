@@ -17,11 +17,11 @@ import MetaTags from "@/components/Metatags.js";
 import { getFocuses } from "@/lib/api";
 import { useStorage, useWindowWidth } from "@/lib/hooks";
 import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import theme from "styles/theme";
 import { scrollToTop } from "../../helpers.js";
+import JoinHeader from "./components/join-header";
 
 const NEXT_PAGE = "03-company";
 
@@ -153,165 +153,166 @@ export default function JoinStep2({ focuses }) {
   };
 
   return (
-    <div className="container">
+    <>
       <Head>
         <title>Hawaiians in Technology | Join</title>
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <Link href="/" shallow={true}>
-        <a className="auxNav arrowback">←</a>
-      </Link>
-      <ProgressBar
-        headline="Public"
-        label="What You Do"
-        currentCount={2}
-        totalCount={4}
-      />
-      <div style={{ marginTop: "4rem" }}>
+      <JoinHeader>
+        <ProgressBar
+          headline="Public"
+          label="What You Do"
+          currentCount={2}
+          totalCount={4}
+        />
+      </JoinHeader>
+      <div className="container">
         <Heading>Welcome to our little hui.</Heading>
-      </div>
-      <section
-        style={{
-          margin: "0 auto 1rem",
-          maxWidth: theme.layout.width.interior,
-        }}
-      >
-        {error && <ErrorMessage headline={error.headline} body={error.body} />}
-        <div style={{ margin: "2rem 0" }}>
-          <Label
-            label="Which of the following best describes your field of work?"
-            labelTranslation="He aha kou (mau) hana ʻoi a pau?"
-          />
-        </div>
-        <div style={{ marginTop: "1rem" }}>
-          <SelectableGrid columns={columnCount}>
-            {focuses.map((focus, i: number) => {
-              const isDisabled =
-                isMaxSelected && !focusesSelected.includes(focus.id);
-              const isSelected = focusesSelected.includes(focus.id);
-
-              return (
-                <Selectable
-                  headline={focus.name}
-                  disabled={isDisabled}
-                  selected={isSelected}
-                  onClick={(e) => handleSelect(focus.id)}
-                  key={`Selectable-${i}-`}
-                />
-              );
-            })}
-            <div
-              style={{
-                gridColumn: `span ${
-                  Math.ceil(focuses.length / columnCount) * columnCount -
-                    focuses.length || columnCount
-                }`,
-              }}
-            >
-              {showSuggestButton ? (
-                <Selectable
-                  centered
-                  headline={
-                    focusSuggested
-                      ? `${focusSuggested}`
-                      : "+ Add technical / industry field"
-                  }
-                  onClick={() => setShowSuggestButton(false)}
-                  selected={!!focusSuggested}
-                  disabled={isMaxSelected && !!!focusSuggested}
-                  fullWidth
-                  variant={SelectableVariant.Alt}
-                  onClear={
-                    focusSuggested
-                      ? () =>
-                          window.confirm(
-                            "Are you sure you want to clear this field?"
-                          ) && setFocusSuggested("")
-                      : undefined
-                  }
-                />
-              ) : (
-                <InputBox
-                  fullWidth
-                  border
-                  focusedOnInit
-                  onChange={(e) => {
-                    setFocusSuggested(e.target.value);
-                  }}
-                  onBlur={() => setShowSuggestButton(true)}
-                  onEnter={() => setShowSuggestButton(true)}
-                  value={focusSuggested}
-                  disabled={isMaxSelected && !!!focusSuggested}
-                />
-              )}
-            </div>
-          </SelectableGrid>
-        </div>
-        <div style={{ margin: "2rem 0" }}>
-          <Label
-            label="How many years of experience do you have in your field?"
-            labelTranslation="Ehia ka makahiki o kou hana ʻana ma kou ʻoi hana?"
-          />
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              margin: "1rem auto 2rem",
-            }}
-          >
-            {[
-              "Less than a year",
-              "1 – 2 years",
-              "3 – 4 years",
-              "5 – 9 years",
-              "10 – 19 years",
-              "More than 20 years",
-            ].map((dur) => (
-              <div style={{ margin: "0 0.5rem 0.5rem 0" }} key={`dur-${dur}`}>
-                <RadioBox
-                  seriesOf="years-experience"
-                  checked={dur === yearsExperience}
-                  label={dur}
-                  onChange={() => setYearsExperience(dur)}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div style={{ margin: "2rem 0" }}>
-          <Input
-            name="title"
-            label="What’s your current title?"
-            labelTranslation="ʻO wai kou kūlana i hana?"
-            placeholder="e.g. Software Engineer"
-            value={deferTitle === "true" ? " " : title}
-            disabled={deferTitle === "true"}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <div style={{ marginTop: "1rem", display: "inline-block" }}>
-            <CheckBox
-              checked={deferTitle === "true"}
-              label={"N/A, or Prefer not to answer"}
-              id="defer-title"
-              onClick={() =>
-                setDeferTitle(deferTitle === "true" ? "false" : "true")
-              }
+        <section
+          style={{
+            margin: "0 auto 1rem",
+            maxWidth: theme.layout.width.interior,
+          }}
+        >
+          {error && (
+            <ErrorMessage headline={error.headline} body={error.body} />
+          )}
+          <div style={{ margin: "2rem 0" }}>
+            <Label
+              label="Which of the following best describes your field of work?"
+              labelTranslation="He aha kou (mau) hana ʻoi a pau?"
             />
           </div>
-        </div>
-        <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
-          <Button
-            fullWidth
-            onClick={handleSubmit}
-            loading={loading}
-            type="submit"
-          >
-            Continue
-          </Button>
-        </div>
-      </section>
-    </div>
+          <div style={{ marginTop: "1rem" }}>
+            <SelectableGrid columns={columnCount}>
+              {focuses.map((focus, i: number) => {
+                const isDisabled =
+                  isMaxSelected && !focusesSelected.includes(focus.id);
+                const isSelected = focusesSelected.includes(focus.id);
+
+                return (
+                  <Selectable
+                    headline={focus.name}
+                    disabled={isDisabled}
+                    selected={isSelected}
+                    onClick={(e) => handleSelect(focus.id)}
+                    key={`Selectable-${i}-`}
+                  />
+                );
+              })}
+              <div
+                style={{
+                  gridColumn: `span ${
+                    Math.ceil(focuses.length / columnCount) * columnCount -
+                      focuses.length || columnCount
+                  }`,
+                }}
+              >
+                {showSuggestButton ? (
+                  <Selectable
+                    centered
+                    headline={
+                      focusSuggested
+                        ? `${focusSuggested}`
+                        : "+ Add technical / industry field"
+                    }
+                    onClick={() => setShowSuggestButton(false)}
+                    selected={!!focusSuggested}
+                    disabled={isMaxSelected && !!!focusSuggested}
+                    fullWidth
+                    variant={SelectableVariant.Alt}
+                    onClear={
+                      focusSuggested
+                        ? () =>
+                            window.confirm(
+                              "Are you sure you want to clear this field?"
+                            ) && setFocusSuggested("")
+                        : undefined
+                    }
+                  />
+                ) : (
+                  <InputBox
+                    fullWidth
+                    border
+                    focusedOnInit
+                    onChange={(e) => {
+                      setFocusSuggested(e.target.value);
+                    }}
+                    onBlur={() => setShowSuggestButton(true)}
+                    onEnter={() => setShowSuggestButton(true)}
+                    value={focusSuggested}
+                    disabled={isMaxSelected && !!!focusSuggested}
+                  />
+                )}
+              </div>
+            </SelectableGrid>
+          </div>
+          <div style={{ margin: "2rem 0" }}>
+            <Label
+              label="How many years of experience do you have in your field?"
+              labelTranslation="Ehia ka makahiki o kou hana ʻana ma kou ʻoi hana?"
+            />
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                margin: "1rem auto 2rem",
+              }}
+            >
+              {[
+                "Less than a year",
+                "1 – 2 years",
+                "3 – 4 years",
+                "5 – 9 years",
+                "10 – 19 years",
+                "More than 20 years",
+              ].map((dur) => (
+                <div style={{ margin: "0 0.5rem 0.5rem 0" }} key={`dur-${dur}`}>
+                  <RadioBox
+                    seriesOf="years-experience"
+                    checked={dur === yearsExperience}
+                    label={dur}
+                    onChange={() => setYearsExperience(dur)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ margin: "2rem 0" }}>
+            <Input
+              name="title"
+              label="What’s your current title?"
+              labelTranslation="ʻO wai kou kūlana i hana?"
+              placeholder="e.g. Software Engineer"
+              value={deferTitle === "true" ? " " : title}
+              disabled={deferTitle === "true"}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            <div style={{ marginTop: "1rem", display: "inline-block" }}>
+              <CheckBox
+                checked={deferTitle === "true"}
+                label={"N/A, or Prefer not to answer"}
+                id="defer-title"
+                onClick={() =>
+                  setDeferTitle(deferTitle === "true" ? "false" : "true")
+                }
+              />
+            </div>
+          </div>
+          <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
+            <Button
+              fullWidth
+              onClick={handleSubmit}
+              loading={loading}
+              type="submit"
+            >
+              Continue
+            </Button>
+          </div>
+        </section>
+      </div>
+    </>
   );
 }

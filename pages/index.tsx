@@ -1,5 +1,5 @@
 import FocusPicker, { FocusPickerFocus } from "@/components/FocusPicker";
-import HitLogo from "@/components/HitLogo.js";
+import HitLogo from "@/components/HitLogo";
 import MemberDirectory, { DirectoryMember } from "@/components/MemberDirectory";
 import MetaTags from "@/components/Metatags.js";
 import Nav from "@/components/Nav";
