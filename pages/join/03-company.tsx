@@ -43,7 +43,7 @@ export default function JoinStep3({ industries }) {
 
   const [companySize, setCompanySize] = useState<string>();
   const [industrySuggested, setIndustrySuggested] = useState("");
-  const [deferIndustry, setDeferIndustry] = useState<boolean>(false);
+  const [deferIndustry, setDeferIndustry] = useState<"true">();
   const [industriesSelected, setIndustriesSelected] = useState<string[]>([]);
   const [showSuggestButton, setShowSuggestButton] = useState(true);
   const [error, setError] = useState<ErrorMessageProps>(null);
@@ -96,7 +96,7 @@ export default function JoinStep3({ industries }) {
       console.log("storedDeferIndustry");
       console.log(storedDeferIndustry);
       console.log(getItem("jfDeferIndustry"));
-      setDeferIndustry(true);
+      setDeferIndustry("true");
     }
     if (storedCompanySize) setCompanySize(storedCompanySize);
   }, []);
@@ -137,10 +137,10 @@ export default function JoinStep3({ industries }) {
     setLoading(true);
     if (isValid) {
       if (
-        deferIndustry ||
+        deferIndustry === "true" ||
         (industriesSelected.length < 1 && !industrySuggested)
       ) {
-        setDeferIndustry(true);
+        setDeferIndustry("true");
         setItem("jfDeferIndustry", "true");
         removeItem("jfIndustries");
         removeItem("jfIndustrySuggested");
@@ -215,7 +215,7 @@ export default function JoinStep3({ industries }) {
                       disabled={
                         (isMaxSelected &&
                           !industriesSelected.includes(technologyInd.id)) ||
-                        deferIndustry
+                        deferIndustry === "true"
                       }
                       selected={
                         industriesSelected.includes(technologyInd.id) &&
@@ -234,7 +234,7 @@ export default function JoinStep3({ industries }) {
                   return (
                     <Selectable
                       headline={industry.name}
-                      disabled={isDisabled || deferIndustry}
+                      disabled={isDisabled || deferIndustry === "true"}
                       selected={isSelected && !deferIndustry}
                       onClick={(e) => handleSelect(industry.id)}
                       key={`ind-${i}`}
@@ -256,8 +256,12 @@ export default function JoinStep3({ industries }) {
                     headline={"N/A, or Prefer Not to Answer"}
                     fullWidth
                     disabled={isMaxSelected && !deferIndustry}
-                    selected={deferIndustry}
-                    onClick={() => setDeferIndustry(!deferIndustry)}
+                    selected={deferIndustry === "true"}
+                    onClick={() =>
+                      setDeferIndustry(
+                        deferIndustry === "true" ? undefined : "true"
+                      )
+                    }
                   />
                   {showSuggestButton ? (
                     <Selectable
@@ -269,7 +273,8 @@ export default function JoinStep3({ industries }) {
                       onClick={() => setShowSuggestButton(false)}
                       selected={!!industrySuggested && !deferIndustry}
                       disabled={
-                        (isMaxSelected && !!!industrySuggested) || deferIndustry
+                        (isMaxSelected && !!!industrySuggested) ||
+                        deferIndustry === "true"
                       }
                       fullWidth
                       centered
