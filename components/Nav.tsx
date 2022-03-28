@@ -18,7 +18,7 @@ export default function Nav() {
 
       <style jsx>{`
         ul {
-          padding: 0;
+          padding: 3rem 0 2rem 0;
           margin: 0;
           display: flex;
         }

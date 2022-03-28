@@ -1,7 +1,9 @@
-import HitLogo from "@/components/HitLogo.js";
-import MetaTags from "@/components/Metatags.js";
-import { Subtitle } from "@/components/Title.js";
+import HitLogo from "@/components/HitLogo";
+import MetaTags from "@/components/Metatags";
+import { Subtitle } from "@/components/Title";
 import Head from "next/head";
+import Link from "next/link";
+import theme from "styles/theme";
 
 export default function ThankYou() {
   return (
@@ -13,7 +15,9 @@ export default function ThankYou() {
       </Head>
       <div className="thank-you">
         <header>
-          <a href="/">Back to home</a>
+          <Link href="/" passHref>
+            <a>Back to home</a>
+          </Link>
           <HitLogo />
         </header>
         <main>
@@ -52,6 +56,21 @@ export default function ThankYou() {
           padding-bottom: 2rem;
           flex-shrink: 0;
         }
+        header a {
+          padding: 0.5rem 0.75rem;
+          background: ${theme.color.brand.alpha};
+          color: ${theme.color.brand.base};
+          border-radius: ${theme.borderRadius.sm};
+          border: 0.2rem solid transparent;
+          transition: border 150ms ease-out;
+        }
+        header a:hover,
+        header a:focus {
+          border-color: ${theme.color.brand.alpha};
+        }
+        header a:active {
+          border-color: ${theme.color.brand.base};
+        }
         main {
           padding-top: 2rem;
           padding-bottom: 2rem;
@@ -63,17 +82,14 @@ export default function ThankYou() {
           flex-grow: 1;
           flex-shrink: 0;
         }
-        aside {
-          flex-shrink: 0;
-        }
-        h2 {
+        main h2 {
           font-size: 1.2rem;
           margin: 2rem 0 0;
           font-weight: 400;
           line-height: 150%;
           max-width: 28rem;
         }
-        img {
+        main img {
           width: 4.8rem;
           margin-left: 1rem;
         }
