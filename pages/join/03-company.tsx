@@ -35,7 +35,6 @@ export async function getStaticProps() {
 
 const MAX_COUNT = 3;
 const TECHNOLOGY_LABEL = "Internet / Technology";
-const DEFER_LABEL = "N/A, or Prefer Not to Answer";
 
 export default function JoinStep3({ industries }) {
   const { getItem, setItem, removeItem } = useStorage();
@@ -44,8 +43,7 @@ export default function JoinStep3({ industries }) {
 
   const [companySize, setCompanySize] = useState<string>();
   const [industrySuggested, setIndustrySuggested] = useState("");
-  const [deferIndustrySelected, setDeferIndustrySelected] =
-    useState<boolean>(false);
+  const [deferIndustry, setDeferIndustry] = useState<boolean>(false);
   const [industriesSelected, setIndustriesSelected] = useState<string[]>([]);
   const [showSuggestButton, setShowSuggestButton] = useState(true);
   const [error, setError] = useState<ErrorMessageProps>(null);
@@ -56,16 +54,13 @@ export default function JoinStep3({ industries }) {
     industriesSelected.length + (industrySuggested ? 1 : 0);
   const isMaxSelected = totalIndustriesSelected >= MAX_COUNT;
 
-  const isValid = totalIndustriesSelected >= 1 && !!companySize;
+  const isValid = !!companySize;
 
   let technologyInd =
     industries.find((item) => item.name === TECHNOLOGY_LABEL) || null;
-  let deferInd = industries.find((item) => item.name === DEFER_LABEL) || null;
   if (technologyInd) {
     industries = [
-      ...industries.filter(
-        (item) => item.name !== TECHNOLOGY_LABEL && item.name !== DEFER_LABEL
-      ),
+      ...industries.filter((item) => item.name !== TECHNOLOGY_LABEL),
     ];
   }
 
@@ -84,18 +79,26 @@ export default function JoinStep3({ industries }) {
   // check localStorage and set pre-defined fields
   useEffect(() => {
     let storedIndustries = getItem("jfIndustries");
+    let storedDeferIndustry = getItem("jfDeferIndustry");
     let storedCompanySize = getItem("jfCompanySize");
     let storedIndustrySuggested = getItem("jfIndustrySuggested");
-    if (storedIndustries) {
+    if (!storedDeferIndustry && storedIndustries) {
       // Convert string "[]" to parsable JSON
       storedIndustries = JSON.parse(storedIndustries);
-      let match = [...industries, technologyInd, deferInd]
+      let match = [...industries, technologyInd]
         .filter((ind) => storedIndustries.includes(ind?.id))
         .map((ind) => ind.id);
       setIndustriesSelected(match);
     }
+    if (!storedDeferIndustry && storedIndustrySuggested)
+      setIndustrySuggested(storedIndustrySuggested);
+    if (storedDeferIndustry) {
+      console.log("storedDeferIndustry");
+      console.log(storedDeferIndustry);
+      console.log(getItem("jfDeferIndustry"));
+      setDeferIndustry(true);
+    }
     if (storedCompanySize) setCompanySize(storedCompanySize);
-    if (storedIndustrySuggested) setIndustrySuggested(storedIndustrySuggested);
   }, []);
 
   useEffect(() => {
@@ -117,10 +120,6 @@ export default function JoinStep3({ industries }) {
     if (isValid) setError(undefined);
   }, [companySize, industrySuggested, industriesSelected]);
 
-  useEffect(() => {
-    setDeferIndustrySelected(industriesSelected.includes(deferInd.id));
-  }, [industriesSelected]);
-
   const handleSelect = (industry) => {
     let nextIndustriesSelected = [...industriesSelected];
     const isSelected = industriesSelected.includes(industry);
@@ -135,22 +134,33 @@ export default function JoinStep3({ industries }) {
   };
 
   const handleSubmit = () => {
-    const industryDefered = industriesSelected.includes(deferInd.id);
     setLoading(true);
     if (isValid) {
-      if (industryDefered) {
-        setItem("jfIndustries", JSON.stringify([deferInd.id]));
+      if (
+        deferIndustry ||
+        (industriesSelected.length < 1 && !industrySuggested)
+      ) {
+        setDeferIndustry(true);
+        setItem("jfDeferIndustry", "true");
+        removeItem("jfIndustries");
+        removeItem("jfIndustrySuggested");
       } else {
-        setItem("jfIndustries", JSON.stringify(industriesSelected));
+        removeItem("jfDeferIndustry");
       }
+
+      if (industriesSelected.length > 0) {
+        setItem("jfIndustries", JSON.stringify(industriesSelected));
+      } else {
+        removeItem("jfIndustries");
+      }
+
+      if (industrySuggested) setItem("jfIndustrySuggested", industrySuggested);
+
       if (companySize) setItem("jfCompanySize", companySize);
 
-      if (industrySuggested && !industryDefered) {
-        setItem("jfIndustrySuggested", industrySuggested);
-      } else {
-        removeItem("jfIndustrySuggested");
-      }
-      router.push({ pathname: NEXT_PAGE });
+      setTimeout(() => {
+        router.push({ pathname: NEXT_PAGE });
+      }, 500);
     } else {
       setLoading(false);
       setError({
@@ -205,11 +215,11 @@ export default function JoinStep3({ industries }) {
                       disabled={
                         (isMaxSelected &&
                           !industriesSelected.includes(technologyInd.id)) ||
-                        deferIndustrySelected
+                        deferIndustry
                       }
                       selected={
                         industriesSelected.includes(technologyInd.id) &&
-                        !deferIndustrySelected
+                        !deferIndustry
                       }
                       onClick={() => handleSelect(technologyInd.id)}
                       fullWidth
@@ -224,8 +234,8 @@ export default function JoinStep3({ industries }) {
                   return (
                     <Selectable
                       headline={industry.name}
-                      disabled={isDisabled || deferIndustrySelected}
-                      selected={isSelected && !deferIndustrySelected}
+                      disabled={isDisabled || deferIndustry}
+                      selected={isSelected && !deferIndustry}
                       onClick={(e) => handleSelect(industry.id)}
                       key={`ind-${i}`}
                     />
@@ -242,15 +252,13 @@ export default function JoinStep3({ industries }) {
                     gridColumn: `span ${columnCount}`,
                   }}
                 >
-                  {deferInd && (
-                    <Selectable
-                      headline={deferInd.name}
-                      fullWidth
-                      disabled={isMaxSelected && !deferIndustrySelected}
-                      selected={deferIndustrySelected}
-                      onClick={() => handleSelect(deferInd.id)}
-                    />
-                  )}
+                  <Selectable
+                    headline={"N/A, or Prefer Not to Answer"}
+                    fullWidth
+                    disabled={isMaxSelected && !deferIndustry}
+                    selected={deferIndustry}
+                    onClick={() => setDeferIndustry(!deferIndustry)}
+                  />
                   {showSuggestButton ? (
                     <Selectable
                       headline={
@@ -259,16 +267,15 @@ export default function JoinStep3({ industries }) {
                           : "+ Add industry"
                       }
                       onClick={() => setShowSuggestButton(false)}
-                      selected={!!industrySuggested && !deferIndustrySelected}
+                      selected={!!industrySuggested && !deferIndustry}
                       disabled={
-                        (isMaxSelected && !!!industrySuggested) ||
-                        deferIndustrySelected
+                        (isMaxSelected && !!!industrySuggested) || deferIndustry
                       }
                       fullWidth
                       centered
                       variant={SelectableVariant.Alt}
                       onClear={
-                        industrySuggested && !deferIndustrySelected
+                        industrySuggested && !deferIndustry
                           ? () =>
                               window.confirm(
                                 "Are you sure you want to clear this field?"

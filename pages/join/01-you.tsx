@@ -24,6 +24,7 @@ const ALL_STORED_FIELDS = [
   "jfDeferTitle",
   "jfYearsExperience",
   "jfIndustries",
+  "jfDeferIndustry",
   "jfIndustrySuggested",
   "jfCompanySize",
 ];

@@ -74,12 +74,14 @@ export default function JoinStep4() {
       !getItem("jfLocation") ||
       !getItem("jfWebsite") ||
       !getItem("jfYearsExperience") ||
+      (!getItem("jfTitle") && !getItem("jfDeferTitle")) ||
       ([...JSON.parse(getItem("jfFocuses") || "[]")].length < 1 &&
         !getItem("jfFocusSuggested")) ||
-      ([...JSON.parse(getItem("jfIndustries") || "[]")].length < 1 &&
+      (([...JSON.parse(getItem("jfIndustries") || "[]")].length < 1 ||
+        getItem("jfDeferIndustry")) &&
         !getItem("jfIndustrySuggested")) ||
-      !getItem("jfCompanySize");
-    if (invalid) router.push({ pathname: "01-you", query: { r: "04" } });
+      (!getItem("jfCompanySize") && !getItem("jfDeferCompanySize"));
+    // if (invalid) router.push({ pathname: "01-you", query: { r: "04" } });
   }, []);
 
   // check localStorage and set pre-defined fields
