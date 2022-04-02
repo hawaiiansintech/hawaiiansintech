@@ -49,7 +49,7 @@ const addPendingRecord = async ({
         if (err) {
           reject(err);
         }
-        resolve(record.getId());
+        resolve(record?.getId());
       });
   });
 };
@@ -125,7 +125,7 @@ const addToAirtable = async (fields: MemberFields): Promise<string> => {
       .base(process.env.AIRTABLE_BASE_NEW)("Members")
       .create(member, (err, record) => {
         if (err) reject(err);
-        resolve(record.getId());
+        resolve(record?.getId());
       });
   });
 };
