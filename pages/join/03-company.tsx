@@ -179,7 +179,7 @@ export default function JoinStep3({ industries }) {
       <JoinHeader>
         <ProgressBar
           headline="Public"
-          label="Where You Work"
+          label="Talent Profile (2/2)"
           currentCount={3}
           totalCount={4}
         />

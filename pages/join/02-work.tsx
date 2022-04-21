@@ -162,7 +162,7 @@ export default function JoinStep2({ focuses }) {
       <JoinHeader>
         <ProgressBar
           headline="Public"
-          label="What You Do"
+          label="Talent Profile (1/2)"
           currentCount={2}
           totalCount={4}
         />

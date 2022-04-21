@@ -17,7 +17,9 @@ export async function getStaticProps() {
       allMembers: members.map((mem) => ({
         ...mem,
         // mutate & add active prop
-        focus: mem.focus.map((foc) => ({ ...foc, active: false })),
+        focus: mem.focus
+          ? mem.focus.map((foc) => ({ ...foc, active: false }))
+          : [],
       })),
       allFocuses: focuses
         .filter((focus) => focus.count > 0)
@@ -92,6 +94,9 @@ export default function Home({ allMembers, allFocuses }) {
               onFilterClick={handleFilterByFocuses}
             />
           )}
+          <h5>
+            <strong>{members.length}</strong> kanaka
+          </h5>
         </aside>
         <main>{members && <MemberDirectory members={members} />}</main>
         <style jsx>{`
@@ -104,8 +109,22 @@ export default function Home({ allMembers, allFocuses }) {
             }
           }
           aside {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
             margin: 8rem 0 2rem;
             padding: 0 1rem;
+          }
+          h5 {
+            margin: 0;
+            text-align: right;
+            font-size: 1.125rem;
+            color: ${theme.color.text.alt2};
+            font-weight: 400;
+          }
+          h5 strong {
+            color: ${theme.color.text.alt};
+            font-weight: 500;
           }
           @media screen and (min-width: ${theme.layout.breakPoints.small}) {
             aside {
