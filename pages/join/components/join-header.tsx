@@ -29,14 +29,12 @@ export default function JoinHeader({ children, prevHref }: JoinHeaderProps) {
           align-items: center;
           width: 100%;
           grid-template-columns: 3rem 1fr 3rem;
-          grid-template-rows: 3rem;
           padding: 1rem;
           column-gap: 0.5rem;
         }
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
           .join-header {
             grid-template-columns: 5rem 1fr 5rem;
-            grid-template-rows: 5rem;
           }
         }
         button {
