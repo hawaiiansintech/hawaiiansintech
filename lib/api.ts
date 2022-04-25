@@ -1,4 +1,5 @@
 import airtable from "airtable";
+import { useEmailCloaker } from "helpers";
 
 airtable.configure({
   endpointUrl: "https://api.airtable.com",
@@ -19,81 +20,138 @@ const getBase = async ({ name, view }: BaseProps) => {
     .all();
 };
 
-export interface Member {
+export interface MemberPublic {
   name: string;
-  location: string;
-  link: string;
-  title?: string;
-  region: string;
+  companySize?: string;
+  emailAbbr?: string[];
   focus: { name: string; id: string }[];
   id?: string;
+  industry?: { name: string; id: string }[];
+  link: string;
+  location: string;
+  region: string;
+  title?: string;
+  yearsExperience?: string;
 }
 
-export async function getMembers(): Promise<Member[]> {
+export async function getMembers(): Promise<MemberPublic[]> {
   return Promise.all([
     getBase({ name: "Members", view: "Approved" }),
     getBase({ name: "Focuses", view: "Approved" }),
+    getBase({ name: "Industries", view: "Approved" }),
     getBase({ name: "Regions" }),
   ]).then((values) => {
-    const [members, focuses, regions] = values;
-    return members.map((member) => {
-      const regionLookup =
-        regions.find((region) => {
-          const memberRegion = member.fields["Region"];
-          if (memberRegion && Array.isArray(memberRegion)) {
-            return region.id === member.fields["Region"][0];
+    const [members, focuses, industries, regions] = values;
+    return members
+      .map((member) => {
+        const regionLookup =
+          regions.find((region) => {
+            const memberRegion = member.fields["Region"];
+            if (memberRegion && Array.isArray(memberRegion)) {
+              return region.id === member.fields["Region"][0];
+            }
+          })?.fields["Name"] || null;
+
+        const focusLookup = () => {
+          const memberFocus = member.fields["Focus"];
+          if (memberFocus && Array.isArray(memberFocus)) {
+            return memberFocus.map((foc) => {
+              return (
+                focuses
+                  .filter((thisFoc) => foc === thisFoc.id)
+                  .map((foc) => {
+                    return {
+                      name:
+                        typeof foc.fields["Name"] === "string"
+                          ? foc.fields["Name"]
+                          : null,
+                      id:
+                        typeof foc.fields["ID"] === "string"
+                          ? foc.fields["ID"]
+                          : null,
+                    };
+                  })[0] || null
+              );
+            });
           }
-        })?.fields["Name"] || null;
+          return null;
+        };
 
-      const focusLookup = () => {
-        const memberFocus = member.fields["Focus"];
-        if (memberFocus && Array.isArray(memberFocus)) {
-          return memberFocus.map((foc) => {
-            return (
-              focuses
-                .filter((thisFoc) => foc === thisFoc.id)
-                .map((foc) => {
-                  return {
-                    name:
-                      typeof foc.fields["Name"] === "string"
-                        ? foc.fields["Name"]
-                        : null,
-                    id:
-                      typeof foc.fields["ID"] === "string"
-                        ? foc.fields["ID"]
-                        : null,
-                  };
-                })[0] || null
-            );
-          });
+        const industryLookup = () => {
+          const memberIndustry = member.fields["Industry"];
+          if (memberIndustry && Array.isArray(memberIndustry)) {
+            return memberIndustry.map((ind) => {
+              return (
+                industries
+                  .filter((thisInd) => ind === thisInd.id)
+                  .map((ind) => {
+                    return {
+                      name:
+                        typeof ind.fields["Name"] === "string"
+                          ? ind.fields["Name"]
+                          : null,
+                      id:
+                        typeof ind.fields["ID"] === "string"
+                          ? ind.fields["ID"]
+                          : null,
+                    };
+                  })[0] || null
+              );
+            });
+          }
+          return null;
+        };
+
+        const emailLookup = () => {
+          const memberEmail = member.fields["Email"];
+          const [first, last, domain] = useEmailCloaker(memberEmail);
+          return [first, last, domain];
+        };
+
+        return {
+          name:
+            typeof member.fields["Name"] === "string"
+              ? member.fields["Name"]
+              : null,
+          location:
+            typeof member.fields["Location"] === "string"
+              ? member.fields["Location"]
+              : null,
+          link:
+            typeof member.fields["Link"] === "string"
+              ? member.fields["Link"]
+              : null,
+          title:
+            typeof member.fields["Title"] === "string"
+              ? member.fields["Title"]
+              : null,
+          id:
+            typeof member.fields["RecordID"] === "string"
+              ? member.fields["RecordID"]
+              : null,
+          companySize:
+            typeof member.fields["Company Size"] === "string"
+              ? member.fields["Company Size"]
+              : null,
+          yearsExperience:
+            typeof member.fields["Years of Experience"] === "string"
+              ? member.fields["Years of Experience"]
+              : null,
+          emailAbbr: emailLookup(),
+          region: typeof regionLookup === "string" ? regionLookup : null,
+          industry: industryLookup(),
+          focus: focusLookup(),
+        };
+      })
+      .sort((a, b) => {
+        if (a.name < b.name) {
+          return -1;
         }
-      };
-
-      return {
-        name:
-          typeof member.fields["Name"] === "string"
-            ? member.fields["Name"]
-            : null,
-        location:
-          typeof member.fields["Location"] === "string"
-            ? member.fields["Location"]
-            : null,
-        link:
-          typeof member.fields["Link"] === "string"
-            ? member.fields["Link"]
-            : null,
-        title:
-          typeof member.fields["Title"] === "string"
-            ? member.fields["Title"]
-            : null,
-        id:
-          typeof member.fields["RecordID"] === "string"
-            ? member.fields["RecordID"]
-            : null,
-        region: typeof regionLookup === "string" ? regionLookup : null,
-        focus: focusLookup(),
-      };
-    });
+        if (a.name > b.name) {
+          return 1;
+        }
+        return 0;
+      });
   });
 }
 

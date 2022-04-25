@@ -1,3 +1,4 @@
+import * as addrs from "email-addresses";
 import { useState } from "react";
 
 export function scrollToTop() {
@@ -59,4 +60,13 @@ export function useSessionStorage(key, initialValue) {
   };
 
   return [storedValue, setValue];
+}
+
+export function useEmailCloaker(initialValue) {
+  const email = addrs.parseOneAddress(initialValue);
+  return [
+    email?.local.charAt(0),
+    email?.local.charAt(email?.local.length - 1),
+    `@${email?.domain}`,
+  ];
 }

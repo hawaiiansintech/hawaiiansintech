@@ -55,6 +55,11 @@ const theme = {
       small: "40rem",
       medium: "60rem",
     },
+    zIndex: {
+      below: "100",
+      center: "110",
+      above: "120",
+    },
   },
 };
 export default theme;

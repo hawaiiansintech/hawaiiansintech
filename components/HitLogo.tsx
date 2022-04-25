@@ -21,7 +21,7 @@ export default function HitLogo({ inline }: HitLogoProps) {
         }
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
           .logo {
-            width: ${inline ? "100%" : "7.2rem"};
+            width: ${inline ? "100%" : "6.4rem"};
           }
         }
       `}</style>

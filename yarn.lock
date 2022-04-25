@@ -759,6 +759,11 @@ elliptic@^6.5.3:
     minimalistic-assert "^1.0.1"
     minimalistic-crypto-utils "^1.0.1"
 
+email-addresses@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/email-addresses/-/email-addresses-5.0.0.tgz#7ae9e7f58eef7d5e3e2c2c2d3ea49b78dc854fa6"
+  integrity sha512-4OIPYlA6JXqtVn8zpHpGiI7vE6EQOAg16aGnDMIAlZVinnoZ8208tW1hAbjWydgN/4PLTT9q+O1K6AH/vALJGw==
+
 emojis-list@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-2.1.0.tgz#4daa4d9db00f9819880c79fa457ae5b09a1fd389"

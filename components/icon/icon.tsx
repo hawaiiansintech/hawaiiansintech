@@ -3,10 +3,13 @@ import React from "react";
 export enum IconColor {
   Brand = "var(--color-brand)",
   Black = "var(--color-text-alt)",
+  Inherit = "inherit",
 }
 
 export enum IconAsset {
   Cap = "cap",
+  CaretLeft = "caret-left",
+  CaretRight = "caret-right",
   Network = "network",
   ArrowRight = "arrow-right",
   Close = "close",
@@ -21,6 +24,20 @@ interface IconProps {
 export function Icon({ alpha, asset, color = IconColor.Black }: IconProps) {
   const getAsset = (): JSX.Element => {
     switch (asset) {
+      case IconAsset.CaretLeft:
+        return (
+          <path
+            className="icon__base"
+            d="M26.768 9.914a1.5 1.5 0 1 0-2.122-2.121l2.122 2.121Zm-2.122 22.293a1.5 1.5 0 1 0 2.122-2.121l-2.122 2.121Zm0-24.414-9.732 9.732 2.121 2.121 9.733-9.732-2.122-2.121Zm2.122 22.293-9.733-9.732-2.12 2.12 9.731 9.733 2.122-2.121Zm-11.854-12.56a3.5 3.5 0 0 0 0 4.949l2.121-2.122a.5.5 0 0 1 0-.707l-2.12-2.12Z"
+          />
+        );
+      case IconAsset.CaretRight:
+        return (
+          <path
+            className="icon__base"
+            d="M13.94 9.914a1.5 1.5 0 0 1 2.12-2.121l-2.12 2.121Zm2.12 22.293a1.5 1.5 0 0 1-2.12-2.121l2.12 2.121Zm0-24.414 9.733 9.732-2.121 2.121-9.733-9.732 2.122-2.121Zm-2.12 22.293 9.732-9.732 2.12 2.12-9.731 9.733-2.122-2.121Zm11.853-12.56a3.5 3.5 0 0 1 0 4.949l-2.121-2.122a.5.5 0 0 0 0-.707l2.12-2.12Z"
+          />
+        );
       case IconAsset.Cap:
         return (
           <>
@@ -78,7 +95,7 @@ export function Icon({ alpha, asset, color = IconColor.Black }: IconProps) {
     <style jsx>{`
       .icon__base,
       .icon__accent {
-        fill: ${IconColor.Black};
+        fill: ${color === IconColor.Inherit ? "currentColor" : IconColor.Black};
       }
       .icon__accent--brand {
         fill: ${IconColor.Brand};

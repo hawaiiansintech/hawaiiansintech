@@ -4,13 +4,13 @@ import MemberDirectory, { DirectoryMember } from "@/components/MemberDirectory";
 import MetaTags from "@/components/Metatags.js";
 import Nav from "@/components/Nav";
 import { Title } from "@/components/Title.js";
-import { Focus, getFocuses, getMembers, Member } from "@/lib/api";
+import { Focus, getFocuses, getMembers, MemberPublic } from "@/lib/api";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import theme from "styles/theme";
 
 export async function getStaticProps() {
-  const members: Member[] = await getMembers();
+  const members: MemberPublic[] = await getMembers();
   const focuses: Focus[] = await getFocuses();
   return {
     props: {
