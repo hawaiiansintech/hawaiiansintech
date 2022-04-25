@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import theme from "styles/theme";
 import { scrollToTop } from "../../helpers";
 import JoinHeader from "./components/join-header";
+import { FORM_LINKS, useInvalid } from "./utils";
 
 const NEXT_PAGE = "04-contact";
 
@@ -54,8 +55,6 @@ export default function JoinStep3({ industries }) {
     industriesSelected.length + (industrySuggested ? 1 : 0);
   const isMaxSelected = totalIndustriesSelected >= MAX_COUNT;
 
-  const isValid = !!companySize;
-
   let technologyInd =
     industries.find((item) => item.name === TECHNOLOGY_LABEL) || null;
   if (technologyInd) {
@@ -65,16 +64,7 @@ export default function JoinStep3({ industries }) {
   }
 
   // check invalid situation via previous required entries
-  useEffect(() => {
-    const invalid =
-      !getItem("jfName") ||
-      !getItem("jfLocation") ||
-      !getItem("jfWebsite") ||
-      !getItem("jfYearsExperience") ||
-      ([...JSON.parse(getItem("jfFocuses") || "[]")].length < 1 &&
-        !getItem("jfFocusSuggested"));
-    if (invalid) router.push({ pathname: "01-you", query: { r: "03" } });
-  }, []);
+  useInvalid({ currentPage: "03-company" });
 
   // check localStorage and set pre-defined fields
   useEffect(() => {
@@ -93,9 +83,6 @@ export default function JoinStep3({ industries }) {
     if (!storedDeferIndustry && storedIndustrySuggested)
       setIndustrySuggested(storedIndustrySuggested);
     if (storedDeferIndustry) {
-      console.log("storedDeferIndustry");
-      console.log(storedDeferIndustry);
-      console.log(getItem("jfDeferIndustry"));
       setDeferIndustry("true");
     }
     if (storedCompanySize) setCompanySize(storedCompanySize);
@@ -116,10 +103,6 @@ export default function JoinStep3({ industries }) {
     }
   }, [width]);
 
-  useEffect(() => {
-    if (isValid) setError(undefined);
-  }, [companySize, industrySuggested, industriesSelected]);
-
   const handleSelect = (industry) => {
     let nextIndustriesSelected = [...industriesSelected];
     const isSelected = industriesSelected.includes(industry);
@@ -135,39 +118,34 @@ export default function JoinStep3({ industries }) {
 
   const handleSubmit = () => {
     setLoading(true);
-    if (isValid) {
-      if (
-        deferIndustry === "true" ||
-        (industriesSelected.length < 1 && !industrySuggested)
-      ) {
-        setDeferIndustry("true");
-        setItem("jfDeferIndustry", "true");
-        removeItem("jfIndustries");
-        removeItem("jfIndustrySuggested");
-      } else {
-        removeItem("jfDeferIndustry");
-      }
-
-      if (industriesSelected.length > 0) {
-        setItem("jfIndustries", JSON.stringify(industriesSelected));
-      } else {
-        removeItem("jfIndustries");
-      }
-
-      if (industrySuggested) setItem("jfIndustrySuggested", industrySuggested);
-
-      if (companySize) setItem("jfCompanySize", companySize);
-
-      setTimeout(() => {
-        router.push({ pathname: NEXT_PAGE });
-      }, 500);
+    if (industriesSelected.length > 0) {
+      setItem("jfIndustries", JSON.stringify(industriesSelected));
     } else {
-      setLoading(false);
-      setError({
-        headline: "Fields missing below.",
-        body: "Please fill all required fields below.",
-      });
+      removeItem("jfIndustries");
     }
+    if (industrySuggested) {
+      setItem("jfIndustrySuggested", industrySuggested);
+    } else {
+      removeItem("jfIndustrySuggested");
+    }
+    if (
+      deferIndustry ||
+      (industriesSelected.length < 1 && !industrySuggested)
+    ) {
+      setDeferIndustry("true");
+      setItem("jfDeferIndustry", "true");
+    } else {
+      removeItem("jfDeferIndustry");
+    }
+    if (companySize) {
+      setItem("jfCompanySize", companySize);
+    } else {
+      setCompanySize("N/A");
+      setItem("jfCompanySize", "N/A");
+    }
+    setTimeout(() => {
+      router.push({ pathname: FORM_LINKS[3] });
+    }, 500);
   };
   return (
     <>
