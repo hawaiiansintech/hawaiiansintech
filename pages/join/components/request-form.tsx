@@ -4,7 +4,7 @@ import { MemberPublic } from "@/lib/api";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import theme from "styles/theme";
-import { joinFormMap } from "../utils";
+import { FORM_LINKS } from "../utils";
 
 interface RequestFormProps {
   onToggle?: () => void;
@@ -30,7 +30,7 @@ export default function RequestForm({ onToggle }: RequestFormProps) {
 
   const handleSubmit = () => {
     let editMap: string = "";
-    joinFormMap.forEach((item, index) => {
+    FORM_LINKS.forEach((item, index) => {
       editMap += editing[index] ? "1" : "0";
     });
     if (editMap === "000") return;
@@ -40,10 +40,10 @@ export default function RequestForm({ onToggle }: RequestFormProps) {
     router.push({
       pathname:
         editMap[0] === "1"
-          ? joinFormMap[0]
+          ? FORM_LINKS[0]
           : editMap[1] === "1"
-          ? joinFormMap[1]
-          : joinFormMap[2],
+          ? FORM_LINKS[1]
+          : FORM_LINKS[2],
       query: { edit: editMap },
     });
   };

@@ -13,8 +13,8 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import theme from "styles/theme";
 import * as Yup from "yup";
-import { clearAllStoredFields } from "./01-you";
 import JoinHeader from "./components/join-header";
+import { clearAllStoredFields, useInvalid } from "./utils";
 
 export default function JoinStep4() {
   const router = useRouter();
@@ -68,21 +68,7 @@ export default function JoinStep4() {
   };
 
   // check invalid situation via previous required entries
-  useEffect(() => {
-    const invalid =
-      !getItem("jfName") ||
-      !getItem("jfLocation") ||
-      !getItem("jfWebsite") ||
-      !getItem("jfYearsExperience") ||
-      (!getItem("jfTitle") && !getItem("jfDeferTitle")) ||
-      ([...JSON.parse(getItem("jfFocuses") || "[]")].length < 1 &&
-        !getItem("jfFocusSuggested")) ||
-      (([...JSON.parse(getItem("jfIndustries") || "[]")].length < 1 ||
-        getItem("jfDeferIndustry")) &&
-        !getItem("jfIndustrySuggested")) ||
-      (!getItem("jfCompanySize") && !getItem("jfDeferCompanySize"));
-    // if (invalid) router.push({ pathname: "01-you", query: { r: "04" } });
-  }, []);
+  useInvalid({ currentPage: "04-contact" });
 
   // check localStorage and set pre-defined fields
   useEffect(() => {
