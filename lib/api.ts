@@ -104,6 +104,9 @@ export async function getMembers(): Promise<MemberPublic[]> {
 
         const emailLookup = () => {
           const memberEmail = member.fields["Email"];
+          if (member.fields["Email"] === undefined) {
+            return null;
+          }
           const [first, last, domain] = useEmailCloaker(memberEmail);
           return [first, last, domain];
         };
