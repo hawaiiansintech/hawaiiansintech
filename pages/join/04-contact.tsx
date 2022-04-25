@@ -13,7 +13,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import theme from "styles/theme";
 import * as Yup from "yup";
-import JoinHeader from "./components/join-header";
+import JoinHeader from "../../components/intake-form/JoinHeader";
 import { clearAllStoredFields, useInvalid } from "./utils";
 
 export default function JoinStep4() {
@@ -95,6 +95,29 @@ export default function JoinStep4() {
     if (storedCompanySize) setCompanySize(storedCompanySize);
   }, []);
 
+  const handleSubmit = async (values) => {
+    setLoading(true);
+    setError(undefined);
+    const res: Response | any = await createMember();
+    const resJSON = await res.json();
+    if (res.ok) {
+      clearAllStoredFields();
+      router.push({ pathname: "thank-you" });
+    } else if (res.status === 422) {
+      setLoading(false);
+      setError({
+        headline: resJSON.error,
+        body: resJSON.body,
+      });
+    } else {
+      setLoading(false);
+      setError({
+        headline: "Gonfunnit, looks like something went wrong!",
+        body: "Please try again later.",
+      });
+    }
+  };
+
   return (
     <>
       <Head>
@@ -134,27 +157,8 @@ export default function JoinStep4() {
             validateOnBlur={validateAfterSubmit}
             validateOnChange={validateAfterSubmit}
             validate={() => setValidateAfterSubmit(true)}
-            onSubmit={async (values) => {
-              setLoading(true);
-              setError(undefined);
-              const res: Response | any = await createMember();
-              const resJSON = await res.json();
-              if (res.ok) {
-                clearAllStoredFields();
-                router.push({ pathname: "thank-you" });
-              } else if (res.status === 422) {
-                setLoading(false);
-                setError({
-                  headline: resJSON.error,
-                  body: resJSON.body,
-                });
-              } else {
-                setLoading(false);
-                setError({
-                  headline: "Gonfunnit, looks like something went wrong!",
-                  body: "Please try again later.",
-                });
-              }
+            onSubmit={(values) => {
+              handleSubmit(values);
             }}
             validationSchema={Yup.object().shape({
               email: Yup.string()

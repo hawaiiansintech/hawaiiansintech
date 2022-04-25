@@ -6,7 +6,7 @@ import { useStorage } from "@/lib/hooks";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import JoinHeader from "./components/join-header";
+import JoinHeader from "../../components/intake-form/JoinHeader";
 import RequestForm from "./components/request-form";
 import { clearAllStoredFields } from "./utils";
 

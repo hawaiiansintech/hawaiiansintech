@@ -18,8 +18,8 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import theme from "styles/theme";
+import JoinHeader from "../../components/intake-form/JoinHeader";
 import { scrollToTop } from "../../helpers";
-import JoinHeader from "./components/join-header";
 import { FORM_LINKS, useInvalid } from "./utils";
 
 const NEXT_PAGE = "04-contact";

@@ -16,7 +16,7 @@ import Selectable, {
   SelectableVariant,
 } from "../form/Selectable";
 
-export interface WorkInformationFormInitialProps {
+export interface WorkExperienceInitialProps {
   focuses?: Focus[];
   deferTitle?: "true" | undefined;
   focusesSelected?: string[];
@@ -25,15 +25,15 @@ export interface WorkInformationFormInitialProps {
   yearsExperience?: string;
 }
 
-interface WorkInformationFormProps {
-  initial: WorkInformationFormInitialProps;
-  onSubmit?: (WorkInformationFormProps) => void;
+interface WorkExperienceProps {
+  initial: WorkExperienceInitialProps;
+  onSubmit?: (WorkExperienceProps) => void;
 }
 
-export default function WorkInformationForm({
+export default function WorkExperience({
   initial,
   onSubmit,
-}: WorkInformationFormProps) {
+}: WorkExperienceProps) {
   const width = useWindowWidth();
   const [columnCount, setColumnCount] = useState<2 | 3>(3);
   const [error, setError] = useState<ErrorMessageProps>(undefined);

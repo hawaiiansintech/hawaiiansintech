@@ -1,15 +1,15 @@
 import ProgressBar from "@/components/form/ProgressBar";
 import { Heading } from "@/components/Heading";
-import WorkInformationForm, {
-  WorkInformationFormInitialProps,
-} from "@/components/intake-form/WorkInformation";
+import WorkExperience, {
+  WorkExperienceInitialProps,
+} from "@/components/intake-form/WorkExperience";
 import MetaTags from "@/components/Metatags.js";
 import { getFocuses } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import JoinHeader from "./components/join-header";
+import JoinHeader from "../../components/intake-form/JoinHeader";
 import { FORM_LINKS, useInvalid } from "./utils";
 
 export async function getStaticProps() {
@@ -57,7 +57,7 @@ export default function JoinStep2({ focuses }) {
     if (storedYearsExperience) setYearsExperience(storedYearsExperience);
   }, []);
 
-  const handleSubmit = (values: WorkInformationFormInitialProps) => {
+  const handleSubmit = (values: WorkExperienceInitialProps) => {
     // Clear pre-existing data
     removeItem("jfFocuses");
     removeItem("jfFocusSuggested");
@@ -96,7 +96,7 @@ export default function JoinStep2({ focuses }) {
       <div className="container">
         <Heading>Welcome to our little hui.</Heading>
 
-        <WorkInformationForm
+        <WorkExperience
           initial={{
             focuses: focuses,
             focusesSelected: focusesSelected,
