@@ -1,9 +1,9 @@
-import { Member } from "@/lib/api";
+import { MemberPublic } from "@/lib/api";
 import { motion } from "framer-motion";
 import theme from "styles/theme";
 import Pill from "./Pill";
 
-export interface DirectoryMember extends Member {
+export interface DirectoryMember extends MemberPublic {
   focus: { active?: boolean; id: string; name: string }[];
 }
 
