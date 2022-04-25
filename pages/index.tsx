@@ -45,7 +45,7 @@ export default function Home({ allMembers, allFocuses }) {
 
   useEffect(() => {
     const activeFocuses = focuses.filter((foc) => foc.active);
-    const newMembers = members
+    const membersWithFocuses = members
       .map((mem) => ({
         ...mem,
         focus: mem.focus.map((foc) => ({
@@ -68,7 +68,7 @@ export default function Home({ allMembers, allFocuses }) {
         return nextActive > firstActive ? 1 : -1;
       });
 
-    setMembers(newMembers);
+    setMembers(membersWithFocuses);
   }, [focuses]);
 
   return (
