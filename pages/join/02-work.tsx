@@ -20,7 +20,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import theme from "styles/theme";
-import { scrollToTop } from "../../helpers.js";
+import { scrollToTop } from "../../helpers";
 import JoinHeader from "./components/join-header";
 
 const NEXT_PAGE = "03-company";

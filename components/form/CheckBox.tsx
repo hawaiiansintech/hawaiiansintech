@@ -1,5 +1,5 @@
 import theme from "styles/theme";
-import { toKebab } from "../../helpers.js";
+import { toKebab } from "../../helpers";
 
 interface CheckBoxProps {
   checked?: boolean;
