@@ -11,16 +11,16 @@ import Selectable, {
   SelectableVariant,
 } from "@/components/form/Selectable";
 import { Heading } from "@/components/Heading";
+import JoinHeader from "@/components/intake-form/JoinHeader";
 import MetaTags from "@/components/Metatags.js";
 import { getIndustries } from "@/lib/api";
 import { useStorage, useWindowWidth } from "@/lib/hooks";
+import { FORM_LINKS, useInvalid } from "@/lib/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import theme from "styles/theme";
-import JoinHeader from "../../components/intake-form/JoinHeader";
 import { scrollToTop } from "../../helpers";
-import { FORM_LINKS, useInvalid } from "./utils";
 
 const NEXT_PAGE = "04-contact";
 

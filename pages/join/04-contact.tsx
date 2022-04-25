@@ -5,16 +5,16 @@ import ErrorMessage, {
 import Input from "@/components/form/Input";
 import ProgressBar from "@/components/form/ProgressBar";
 import { Heading, Subheading } from "@/components/Heading";
+import JoinHeader from "@/components/intake-form/JoinHeader";
 import MetaTags from "@/components/Metatags.js";
 import { useStorage } from "@/lib/hooks";
+import { clearAllStoredFields, useInvalid } from "@/lib/utils";
 import { Formik } from "formik";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import theme from "styles/theme";
 import * as Yup from "yup";
-import JoinHeader from "../../components/intake-form/JoinHeader";
-import { clearAllStoredFields, useInvalid } from "./utils";
 
 export default function JoinStep4() {
   const router = useRouter();

@@ -1,16 +1,16 @@
 import ProgressBar from "@/components/form/ProgressBar";
 import { Heading } from "@/components/Heading";
+import JoinHeader from "@/components/intake-form/JoinHeader";
 import WorkExperience, {
   WorkExperienceInitialProps,
 } from "@/components/intake-form/WorkExperience";
 import MetaTags from "@/components/Metatags.js";
 import { getFocuses } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
+import { FORM_LINKS, useInvalid } from "@/lib/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import JoinHeader from "../../components/intake-form/JoinHeader";
-import { FORM_LINKS, useInvalid } from "./utils";
 
 export async function getStaticProps() {
   let focuses = (await getFocuses()) ?? [];

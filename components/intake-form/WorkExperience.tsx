@@ -1,16 +1,18 @@
+import Button from "@/components/Button";
+import CheckBox from "@/components/form/CheckBox";
+import ErrorMessage, {
+  ErrorMessageProps,
+} from "@/components/form/ErrorMessage";
+import Input from "@/components/form/Input";
+import InputBox from "@/components/form/InputBox";
+import Label from "@/components/form/Label";
+import RadioBox from "@/components/form/RadioBox";
 import { Focus } from "@/lib/api";
 import { useWindowWidth } from "@/lib/hooks";
-import { MAX_FOCUS_COUNT } from "@/pages/join/utils";
+import { MAX_FOCUS_COUNT } from "@/lib/utils";
 import { scrollToTop } from "helpers";
 import React, { useEffect, useState } from "react";
 import theme from "styles/theme";
-import Button from "../Button";
-import CheckBox from "../form/CheckBox";
-import ErrorMessage, { ErrorMessageProps } from "../form/ErrorMessage";
-import Input from "../form/Input";
-import InputBox from "../form/InputBox";
-import Label from "../form/Label";
-import RadioBox from "../form/RadioBox";
 import Selectable, {
   SelectableGrid,
   SelectableVariant,

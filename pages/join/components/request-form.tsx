@@ -1,10 +1,10 @@
 import Button, { ButtonSize } from "@/components/Button";
 import Selectable from "@/components/form/Selectable";
 import { MemberPublic } from "@/lib/api";
+import { FORM_LINKS } from "@/lib/utils";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import theme from "styles/theme";
-import { FORM_LINKS } from "../utils";
 
 interface RequestFormProps {
   onToggle?: () => void;
