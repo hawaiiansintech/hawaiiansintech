@@ -57,8 +57,8 @@ export default css.global`
 
   .container {
     position: relative;
-    margin: 0 auto;
-    padding: 3rem 2rem;
+    margin: 3rem auto;
+    padding: 0 2rem;
   }
 
   a {

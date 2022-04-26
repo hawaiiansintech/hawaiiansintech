@@ -9,6 +9,7 @@ import UndoButton from "../form/UndoButton";
 
 interface BasicInformationFormProps {
   initial?: { name?: string; location?: string; website?: string };
+  renderResetButton?: boolean;
   onReset: (any?) => void;
   onSubmit: (any?) => void;
 }
@@ -17,11 +18,13 @@ export default function BasicInformationForm({
   initial,
   onReset,
   onSubmit,
+  renderResetButton = true,
 }: BasicInformationFormProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [validateAfterSubmit, setValidateAfterSubmit] = useState(false);
 
   const renderButton = () => {
+    if (!renderResetButton) return;
     if (initial.name || initial.location || initial.website)
       return (
         // TODO remove this hardcoded css

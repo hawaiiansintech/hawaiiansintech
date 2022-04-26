@@ -90,6 +90,7 @@ export default function Input({
           color: ${theme.color.text.alt3};
         }
         .input__label {
+          display: inline-block;
           margin-bottom: 1rem;
         }
       `}</style>

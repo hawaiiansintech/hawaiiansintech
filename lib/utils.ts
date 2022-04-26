@@ -5,23 +5,25 @@ import { useEffect } from "react";
 export const FORM_LINKS = [`01-you`, `02-work`, `03-company`, `04-contact`];
 
 const ALL_STORED_FIELDS = [
-  "jfName",
-  "jfLocation",
-  "jfWebsite",
-  "jfFocuses",
-  "jfFocusSuggested",
-  "jfTitle",
-  "jfDeferTitle",
-  "jfYearsExperience",
-  "jfIndustries",
-  "jfDeferIndustry",
-  "jfIndustrySuggested",
-  "jfCompanySize",
+  "Name",
+  "Location",
+  "Website",
+  "Focuses",
+  "FocusSuggested",
+  "Title",
+  "DeferTitle",
+  "YearsExperience",
+  "Industries",
+  "DeferIndustry",
+  "IndustrySuggested",
+  "CompanySize",
+  "EmailAbbr",
+  "Id",
 ];
 
-export const clearAllStoredFields = () => {
+export const clearAllStoredFields = (prefix: string) => {
   const { removeItem } = useStorage();
-  ALL_STORED_FIELDS.map((item) => removeItem(item));
+  ALL_STORED_FIELDS.map((item) => removeItem(`${prefix}${item}`));
 };
 
 interface useInvalidProps {

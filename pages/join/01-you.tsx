@@ -8,13 +8,11 @@ import { clearAllStoredFields } from "@/lib/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import RequestForm from "./components/request-form";
 
 export default function JoinStep1(props) {
   const router = useRouter();
   const { r, edit } = router.query;
   const { getItem, setItem } = useStorage();
-  const [showEdit, setEditIsShowing] = useState<boolean>(true);
   const [name, setName] = useState<string>("");
   const [location, setLocation] = useState<string>("");
   const [website, setWebsite] = useState<string>("");
@@ -23,7 +21,7 @@ export default function JoinStep1(props) {
   useEffect(() => {
     if (!r) return;
 
-    clearAllStoredFields();
+    clearAllStoredFields("jf");
     setName("");
     setLocation("");
     setWebsite("");
@@ -41,7 +39,7 @@ export default function JoinStep1(props) {
   }, []);
 
   const handleToggle = () => {
-    setEditIsShowing(!showEdit);
+    router.push({ pathname: `/edit` });
   };
 
   const handleSubmit = (values) => {
@@ -55,7 +53,7 @@ export default function JoinStep1(props) {
     setName("");
     setLocation("");
     setWebsite("");
-    clearAllStoredFields();
+    clearAllStoredFields("jf");
   };
 
   return (
@@ -65,7 +63,7 @@ export default function JoinStep1(props) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader hideCenter={showEdit} showModify toggleEdit={handleToggle}>
+      <JoinHeader showModify toggleEdit={handleToggle}>
         <ProgressBar
           headline="Public"
           label="Who You Are"
@@ -73,25 +71,17 @@ export default function JoinStep1(props) {
           totalCount={4}
         />
       </JoinHeader>
-      <Heading>
-        {showEdit ? "Request Changes" : "Welcome to our little hui."}
-      </Heading>
-      {showEdit || (
-        <Subheading centered>
-          To join the directory, we just ask that you are{" "}
-          <strong>Native Hawaiian</strong> and work in the{" "}
-          <strong>field / industry of technology</strong>.
-        </Subheading>
-      )}
-      {showEdit ? (
-        <RequestForm onToggle={() => setEditIsShowing(!showEdit)} />
-      ) : (
-        <BasicInformationForm
-          initial={{ name: name, location: location, website: website }}
-          onSubmit={handleSubmit}
-          onReset={handleReset}
-        />
-      )}
+      <Heading>Welcome to our little hui.</Heading>
+      <Subheading centered>
+        To join the directory, we just ask that you are{" "}
+        <strong>Native Hawaiian</strong> and work in the{" "}
+        <strong>field / industry of technology</strong>.
+      </Subheading>
+      <BasicInformationForm
+        initial={{ name: name, location: location, website: website }}
+        onSubmit={handleSubmit}
+        onReset={handleReset}
+      />
     </>
   );
 }

@@ -8,7 +8,7 @@ import { Heading, Subheading } from "@/components/Heading";
 import JoinHeader from "@/components/intake-form/JoinHeader";
 import MetaTags from "@/components/Metatags.js";
 import { useStorage } from "@/lib/hooks";
-import { clearAllStoredFields, useInvalid } from "@/lib/utils";
+import { clearAllStoredFields } from "@/lib/utils";
 import { Formik } from "formik";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -68,7 +68,7 @@ export default function JoinStep4() {
   };
 
   // check invalid situation via previous required entries
-  useInvalid({ currentPage: "04-contact" });
+  // useInvalid({ currentPage: "04-contact" });
 
   // check localStorage and set pre-defined fields
   useEffect(() => {
@@ -101,7 +101,7 @@ export default function JoinStep4() {
     const res: Response | any = await createMember();
     const resJSON = await res.json();
     if (res.ok) {
-      clearAllStoredFields("jf");
+      clearAllStoredFields("edit");
       router.push({ pathname: "thank-you" });
     } else if (res.status === 422) {
       setLoading(false);
