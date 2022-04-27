@@ -29,7 +29,7 @@ export interface WorkExperienceInitialProps {
 
 interface WorkExperienceProps {
   initial: WorkExperienceInitialProps;
-  onSubmit?: (WorkExperienceProps) => void;
+  onSubmit?: (WorkExperienceInitialProps) => void;
 }
 
 export default function WorkExperience({
@@ -105,7 +105,6 @@ export default function WorkExperience({
 
   const handleSubmit = () => {
     if (!isValid) {
-      false;
       setError({
         headline: "Fields missing below.",
         body: "Please fill all required fields below.",

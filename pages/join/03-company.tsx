@@ -182,27 +182,21 @@ export default function JoinStep3({ industries }) {
             <div style={{ margin: "1rem auto 2rem" }}>
               <SelectableGrid columns={columnCount}>
                 {technologyInd && (
-                  <div
-                    style={{
-                      display: "flex",
-                      gridColumn: `span ${columnCount}`,
-                    }}
-                  >
-                    <Selectable
-                      headline={technologyInd.name}
-                      disabled={
-                        (isMaxSelected &&
-                          !industriesSelected.includes(technologyInd.id)) ||
-                        deferIndustry === "true"
-                      }
-                      selected={
-                        industriesSelected.includes(technologyInd.id) &&
-                        !deferIndustry
-                      }
-                      onClick={() => handleSelect(technologyInd.id)}
-                      fullWidth
-                    />
-                  </div>
+                  <Selectable
+                    headline={technologyInd.name}
+                    disabled={
+                      (isMaxSelected &&
+                        !industriesSelected.includes(technologyInd.id)) ||
+                      deferIndustry === "true"
+                    }
+                    selected={
+                      industriesSelected.includes(technologyInd.id) &&
+                      !deferIndustry
+                    }
+                    onClick={() => handleSelect(technologyInd.id)}
+                    fullWidth
+                    gridSpan={columnCount}
+                  />
                 )}
                 {industries.map((industry, i: number) => {
                   const isDisabled =

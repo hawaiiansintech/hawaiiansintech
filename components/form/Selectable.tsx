@@ -19,6 +19,7 @@ interface SelectableProps {
   byline?: string;
   centered?: boolean;
   disabled?: boolean;
+  gridSpan?: number;
   fullWidth?: boolean;
   headline: string;
   onClear?: (e: React.MouseEvent) => any;
@@ -34,6 +35,7 @@ export default function Selectable({
   byline,
   centered,
   disabled,
+  gridSpan,
   headline,
   onClick,
   onClear,
@@ -51,6 +53,7 @@ export default function Selectable({
       onClick={onClick}
       tabIndex={disabled ? -1 : undefined}
       type="button"
+      style={gridSpan ? { gridColumn: `span ${gridSpan}` } : {}}
     >
       <h4>{headline}</h4>
       {byline ? <h6>{byline}</h6> : null}

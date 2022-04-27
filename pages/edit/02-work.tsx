@@ -25,9 +25,16 @@ export async function getStaticProps() {
 
 export default function JoinStep2({ focuses }) {
   const router = useRouter();
-  const { getItem, setItem, removeItem } = useStorage();
+  const { getItem, setItem } = useStorage();
   const [userData, setUserData] = useState<MemberPublicEditing>({});
   const [editedData, setEditedData] = useState<MemberPublicEditing>({});
+
+  const removeModifiedFrom = (modified: MemberPublicEditing) => {
+    if (modified.focus) delete modified.focus;
+    if (modified.focusSuggested) delete modified.focusSuggested;
+    if (modified.yearsExperience) delete modified.yearsExperience;
+    if (modified.title || modified.title === "") delete modified.title;
+  };
 
   const updateEdited = (data: MemberPublicEditing) => {
     setItem(`editedData`, JSON.stringify(data));
@@ -46,25 +53,14 @@ export default function JoinStep2({ focuses }) {
     let modified: string | MemberPublicEditing = getItem("editedData");
     modified = modified ? JSON.parse(modified) : {};
     if (modified && typeof modified !== "string") {
-      if (modified.focus) delete modified.focus;
-      if (modified.focusSuggested) delete modified.focusSuggested;
-      if (modified.yearsExperience) delete modified.yearsExperience;
-      if (modified.title || modified.title === "") delete modified.title;
+      removeModifiedFrom(modified);
       updateEdited(modified);
     }
   }, []);
 
-  useEffect(() => {
-    if (!editedData) return;
-    // setItem(`editedData-${new Date()}`, JSON.stringify(editedData));
-  }, [editedData]);
-
   const handleSubmit = (values: WorkExperienceInitialProps) => {
     let modified: MemberPublicEditing = editedData || {};
-    if (modified.focus) delete modified.focus;
-    if (modified.focusSuggested) delete modified.focusSuggested;
-    if (modified.yearsExperience) delete modified.yearsExperience;
-    if (modified.title || modified.title === "") delete modified.title;
+    removeModifiedFrom(modified);
 
     if (
       !lodash.isEqual(

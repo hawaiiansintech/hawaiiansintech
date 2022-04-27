@@ -191,16 +191,26 @@ export async function getFocuses(): Promise<Focus[]> {
     });
 }
 
-export async function getIndustries() {
+export interface Industry {
+  name: string;
+  id: string;
+  members?: string[];
+  count?: number;
+}
+
+export async function getIndustries(): Promise<Industry[]> {
   const industries = await getBase({ name: "Industries", view: "Approved" });
 
   return industries
     .filter((role) => role.fields["Name"])
     .map((role) => {
       return {
-        name: role.fields["Name"],
-        id: role.fields["ID"],
-        members: role.fields["Members"] ? role.fields["Members"] : null,
+        name:
+          typeof role.fields["Name"] === "string" ? role.fields["Name"] : null,
+        id: typeof role.fields["ID"] === "string" ? role.fields["ID"] : null,
+        members: Array.isArray(role.fields["Members"])
+          ? role.fields["Members"]
+          : null,
         count: Array.isArray(role.fields["Members"])
           ? role.fields["Members"].length
           : 0,
