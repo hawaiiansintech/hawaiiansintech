@@ -6,7 +6,7 @@ import JoinHeader from "@/components/intake-form/JoinHeader";
 import MetaTags from "@/components/Metatags";
 import { MemberPublic } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
-import { clearAllStoredFields, FORM_LINKS } from "@/lib/utils";
+import { FORM_LINKS } from "@/lib/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -18,7 +18,7 @@ interface RequestFormProps {
 
 export default function RequestForm({ onToggle }: RequestFormProps) {
   const router = useRouter();
-  const { setItem } = useStorage();
+  const { setItem, removeItem } = useStorage();
   const [members, setMembers] = useState<MemberPublic[]>([]);
   const [disableButton, setButtonIsDisabled] = useState<boolean>(true);
   const [editing, setEditing] = useState<boolean[]>([false, false, false]);
@@ -37,36 +37,10 @@ export default function RequestForm({ onToggle }: RequestFormProps) {
   useEffect(() => {
     // reset selection
     setEditing([false, false, false]);
-    clearAllStoredFields("edit");
-    clearAllStoredFields("new");
+    removeItem("userData");
     // add all items in storage
     if (!memberSelected) return;
-    if (memberSelected?.name) setItem("editName", memberSelected.name);
-    if (memberSelected?.id) setItem("editId", memberSelected.id);
-    if (memberSelected?.link) setItem("editWebsite", memberSelected.link);
-    if (memberSelected?.title) setItem("editTitle", memberSelected.title);
-    if (memberSelected?.yearsExperience)
-      setItem("editYearsExperience", memberSelected.yearsExperience);
-    if (memberSelected?.companySize)
-      setItem("editCompanySize", memberSelected.companySize);
-    if (memberSelected?.location)
-      setItem(
-        "editLocation",
-        `${memberSelected.location}, ${memberSelected.region}`
-      );
-    if (memberSelected?.focus) {
-      setItem(
-        "editFocuses",
-        JSON.stringify(memberSelected.focus.map((foc) => foc.id))
-      );
-    }
-    if (memberSelected?.industry)
-      setItem(
-        "editIndustries",
-        JSON.stringify(memberSelected.industry.map((foc) => foc.id))
-      );
-    if (memberSelected?.emailAbbr)
-      setItem("editEmailAbbr", JSON.stringify(memberSelected.emailAbbr));
+    if (memberSelected) setItem("userData", JSON.stringify(memberSelected));
   }, [memberSelected]);
 
   useEffect(() => {

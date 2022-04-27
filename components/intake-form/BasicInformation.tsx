@@ -9,8 +9,7 @@ import UndoButton from "../form/UndoButton";
 
 interface BasicInformationFormProps {
   initial?: { name?: string; location?: string; website?: string };
-  renderResetButton?: boolean;
-  onReset: (any?) => void;
+  onReset?: (any?) => void;
   onSubmit: (any?) => void;
 }
 
@@ -18,13 +17,12 @@ export default function BasicInformationForm({
   initial,
   onReset,
   onSubmit,
-  renderResetButton = true,
 }: BasicInformationFormProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [validateAfterSubmit, setValidateAfterSubmit] = useState(false);
 
   const renderButton = () => {
-    if (!renderResetButton) return;
+    if (!onReset) return <></>;
     if (initial.name || initial.location || initial.website)
       return (
         // TODO remove this hardcoded css
@@ -36,10 +34,14 @@ export default function BasicInformationForm({
             marginBottom: "2rem",
             display: "flex",
             justifyContent: "center",
+            gap: "0.5rem",
             color: theme.color.text.alt2,
           }}
         >
-          <UndoButton onClick={onReset}>Clear form</UndoButton>
+          It looks like you might've gotten started already. Continue below or{" "}
+          <div>
+            <UndoButton onClick={onReset}>Clear all fields</UndoButton>
+          </div>
         </div>
       );
   };

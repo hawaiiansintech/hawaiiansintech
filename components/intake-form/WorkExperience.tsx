@@ -55,7 +55,7 @@ export default function WorkExperience({
     initial.yearsExperience
   );
   const totalFocusesSelected =
-    focusesSelected.length + (focusSuggested ? 1 : 0);
+    focusesSelected?.length + (focusSuggested ? 1 : 0);
   const isMaxSelected = totalFocusesSelected >= MAX_FOCUS_COUNT;
 
   useEffect(() => {
@@ -93,11 +93,11 @@ export default function WorkExperience({
 
   const handleSelect = (focusID: string) => {
     let newFocusesSelected = [...focusesSelected];
-    const isSelected = focusesSelected.includes(focusID);
+    const isSelected = focusesSelected?.includes(focusID);
     if (isSelected) {
-      const index = focusesSelected.indexOf(focusID);
+      const index = focusesSelected?.indexOf(focusID);
       newFocusesSelected.splice(index, 1);
-    } else if (focusesSelected.length < MAX_FOCUS_COUNT) {
+    } else if (focusesSelected?.length < MAX_FOCUS_COUNT) {
       newFocusesSelected.push(focusID);
     }
     setFocusesSelected(newFocusesSelected);
@@ -142,8 +142,8 @@ export default function WorkExperience({
           <SelectableGrid columns={columnCount}>
             {initial.focuses.map((focus, i: number) => {
               const isDisabled =
-                isMaxSelected && !focusesSelected.includes(focus.id);
-              const isSelected = focusesSelected.includes(focus.id);
+                isMaxSelected && !focusesSelected?.includes(focus.id);
+              const isSelected = focusesSelected?.includes(focus.id);
 
               return (
                 <Selectable

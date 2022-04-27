@@ -21,17 +21,23 @@ const getBase = async ({ name, view }: BaseProps) => {
 };
 
 export interface MemberPublic {
-  name: string;
+  name?: string;
   companySize?: string;
   emailAbbr?: string[];
-  focus: { name: string; id: string }[];
+  focus?: { name: string; id: string }[] | string[];
+  focusSuggested?: string;
   id?: string;
-  industry?: { name: string; id: string }[];
-  link: string;
-  location: string;
-  region: string;
+  industry?: { name: string; id: string }[] | string[];
+  industrySuggested?: string;
+  link?: string;
+  location?: string;
+  region?: string;
   title?: string;
   yearsExperience?: string;
+}
+
+export interface MemberPublicEditing extends MemberPublic {
+  editing?: { field: string; changeTo: string | string[] }[];
 }
 
 export async function getMembers(): Promise<MemberPublic[]> {
@@ -161,8 +167,8 @@ export async function getMembers(): Promise<MemberPublic[]> {
 export interface Focus {
   name: string;
   id: string;
-  members: string[];
-  count: number;
+  members?: string[];
+  count?: number;
 }
 
 export async function getFocuses(): Promise<Focus[]> {

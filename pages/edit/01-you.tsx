@@ -2,9 +2,11 @@ import ProgressBar from "@/components/form/ProgressBar";
 import { Heading } from "@/components/Heading";
 import BasicInformationForm from "@/components/intake-form/BasicInformation";
 import JoinHeader from "@/components/intake-form/JoinHeader";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import MetaTags from "@/components/Metatags.js";
+import { MemberPublicEditing } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
-import { clearAllStoredFields, FORM_LINKS } from "@/lib/utils";
+import { FORM_LINKS } from "@/lib/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -13,54 +15,34 @@ export default function JoinStep1(props) {
   const router = useRouter();
   const { r } = router.query;
   const { getItem, setItem, removeItem } = useStorage();
-  const [name, setName] = useState<string>("");
-  const [location, setLocation] = useState<string>("");
-  const [website, setWebsite] = useState<string>("");
-
-  // clear fields if param `r` is present
-  useEffect(() => {
-    if (!r) return;
-
-    clearAllStoredFields("edit");
-    setName("");
-    setLocation("");
-    setWebsite("");
-    if (typeof window !== "undefined")
-      window.history.replaceState(null, "", "/join/01-you");
-  }, [r]);
+  const [data, setData] = useState<MemberPublicEditing>();
 
   useEffect(() => {
-    let storedName = getItem("editName");
-    let updatedName = getItem("newName");
-    let storedLocation = getItem("editLocation");
-    let updatedLocation = getItem("newLocation");
-    let storedWebsite = getItem("editWebsite");
-    let updatedWebsite = getItem("newWebsite");
-    if (updatedName || storedName) setName(updatedName || storedName);
-    if (updatedLocation || storedLocation)
-      setLocation(updatedLocation || storedLocation);
-    if (updatedWebsite || storedWebsite)
-      setWebsite(updatedWebsite || storedWebsite);
+    let storedData = getItem("userData");
+    storedData = storedData ? JSON.parse(storedData) : "";
+    removeItem("editedData");
+    if (!storedData || typeof storedData === "string") return;
+    setData(storedData);
   }, []);
 
   const handleSubmit = (values) => {
-    removeItem("newName");
-    removeItem("newLocation");
-    removeItem("newWebsite");
-    if (getItem("editName") !== values.name) setItem("newName", values.name);
-    if (getItem("editLocation") !== values.location)
-      setItem("newLocation", values.location);
-    if (getItem("editWebsite") !== values.website)
-      setItem("newWebsite", values.website);
+    let modified: MemberPublicEditing = {};
+
+    if (values.name !== data.name) modified.name = values.name;
+    if (values.location !== `${data.location}, ${data.region}`)
+      modified.location = values.location;
+    if (values.website !== data.link) modified.link = values.website;
+
+    if (modified !== {}) {
+      setItem("editedData", JSON.stringify(modified));
+    }
+
     router.push({ pathname: FORM_LINKS[1], query: router.query });
   };
 
-  const handleReset = () => {
-    setName("");
-    setLocation("");
-    setWebsite("");
-    clearAllStoredFields("edit");
-  };
+  if (!data) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <>
@@ -78,12 +60,14 @@ export default function JoinStep1(props) {
         />
       </JoinHeader>
       <div className="container">
-        <Heading>Requesting changes for {name}</Heading>
+        <Heading>Requesting changes for {data.name}</Heading>
         <BasicInformationForm
-          initial={{ name: name, location: location, website: website }}
+          initial={{
+            name: data.name,
+            location: `${data.location}, ${data.region}`,
+            website: data.link,
+          }}
           onSubmit={handleSubmit}
-          onReset={handleReset}
-          renderResetButton={false}
         />
       </div>
     </>

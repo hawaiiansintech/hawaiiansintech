@@ -5,9 +5,10 @@ import WorkExperience, {
   WorkExperienceInitialProps,
 } from "@/components/intake-form/WorkExperience";
 import MetaTags from "@/components/Metatags.js";
-import { getFocuses } from "@/lib/api";
+import { getFocuses, MemberPublicEditing } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
 import { FORM_LINKS } from "@/lib/utils";
+import lodash from "lodash";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -25,77 +26,71 @@ export async function getStaticProps() {
 export default function JoinStep2({ focuses }) {
   const router = useRouter();
   const { getItem, setItem, removeItem } = useStorage();
+  const [userData, setUserData] = useState<MemberPublicEditing>({});
+  const [editedData, setEditedData] = useState<MemberPublicEditing>({});
 
-  const [name, setName] = useState<string>("");
-  const [focusesSelected, setFocusesSelected] = useState<string[]>([]);
-  const [focusSuggested, setFocusSuggested] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
-  const [deferTitle, setDeferTitle] = useState<"true">();
-  const [yearsExperience, setYearsExperience] = useState<string>();
+  const updateEdited = (data: MemberPublicEditing) => {
+    setItem(`editedData`, JSON.stringify(data));
+    setEditedData(data);
+  };
 
-  // check localStorage and set pre-defined fields
   useEffect(() => {
-    let storedName = getItem("editName");
-    let updatedName = getItem("newName");
-    let storedFocuses = getItem("editFocuses");
-    let updatedFocuses = getItem("newFocuses");
-    let storedFocusSuggested = getItem("editFocusSuggested");
-    let updatedFocusSuggested = getItem("newFocusSuggested");
-    let storedTitle = getItem("editTitle");
-    let updatedTitle = getItem("newTitle");
-    let storedDeferTitle = getItem("editDeferTitle");
-    let updatedDeferTitle = getItem("newDeferTitle");
-    let storedYearsExperience = getItem("editYearsExperience");
-    let updatedYearsExperience = getItem("newYearsExperience");
-    if (updatedFocuses || storedFocuses) {
-      let match = focuses
-        .filter((foc) =>
-          JSON.parse(updatedFocuses || storedFocuses).includes(foc.id)
-        )
-        .map((foc) => foc.id);
-      setFocusesSelected(match);
+    let userData: string = getItem("userData");
+    userData = userData ? JSON.parse(userData) : undefined;
+    if (userData && typeof userData !== "string") {
+      setUserData(userData);
+    } else {
+      router.push("/edit");
     }
-    if (updatedName || storedName) setName(updatedName || storedName);
-    if (updatedFocusSuggested || storedFocusSuggested)
-      setFocusSuggested(updatedFocusSuggested || storedFocusSuggested);
-    if (updatedDeferTitle || storedDeferTitle) {
-      setTitle("");
-      setDeferTitle("true");
+
+    let modified: string | MemberPublicEditing = getItem("editedData");
+    modified = modified ? JSON.parse(modified) : {};
+    if (modified && typeof modified !== "string") {
+      if (modified.focus) delete modified.focus;
+      if (modified.focusSuggested) delete modified.focusSuggested;
+      if (modified.yearsExperience) delete modified.yearsExperience;
+      if (modified.title || modified.title === "") delete modified.title;
+      updateEdited(modified);
     }
-    if (
-      !updatedDeferTitle &&
-      !storedDeferTitle &&
-      (updatedTitle || storedTitle)
-    )
-      setTitle(updatedTitle || storedTitle);
-    if (updatedYearsExperience || storedYearsExperience)
-      setYearsExperience(updatedYearsExperience || storedYearsExperience);
   }, []);
 
+  useEffect(() => {
+    if (!editedData) return;
+    // setItem(`editedData-${new Date()}`, JSON.stringify(editedData));
+  }, [editedData]);
+
   const handleSubmit = (values: WorkExperienceInitialProps) => {
-    // Clear pre-existing data
-    removeItem("newFocuses");
-    removeItem("newFocusSuggested");
-    removeItem("newTitle");
-    removeItem("newDeferTitle");
-    removeItem("newYearsExperience");
-    // Set as stringified array
-    if (getItem("editFocuses") !== JSON.stringify(values.focusesSelected))
-      setItem("newFocuses", JSON.stringify(values.focusesSelected));
+    let modified: MemberPublicEditing = editedData || {};
+    if (modified.focus) delete modified.focus;
+    if (modified.focusSuggested) delete modified.focusSuggested;
+    if (modified.yearsExperience) delete modified.yearsExperience;
+    if (modified.title || modified.title === "") delete modified.title;
+
     if (
-      getItem("editFocusSuggested") !== values.focusSuggested &&
-      values.focusSuggested
-    )
-      setItem("newFocusSuggested", values.focusSuggested);
-    if (getItem("editDeferTitle") !== values.deferTitle || !values.title) {
-      setItem("newDeferTitle", "true");
+      !lodash.isEqual(
+        values.focusesSelected,
+        userData?.focus?.map((foc) => foc.id)
+      )
+    ) {
+      modified.focus = values.focusesSelected;
     }
-    if (getItem("editTitle") !== values.title)
-      setItem("newTitle", values.title);
-    if (getItem("editYearsExperience") !== values.yearsExperience)
-      setItem("newYearsExperience", values.yearsExperience);
+    if (values.yearsExperience !== userData.yearsExperience) {
+      modified.yearsExperience = values.yearsExperience;
+    }
+    if (values.title !== userData.title) {
+      modified.title = values.title;
+    }
+    if (editedData.title === "") {
+      modified.title = values.title;
+    }
+    if (values.deferTitle) modified.title = "";
+    if (values.focusSuggested) modified.focusSuggested = values.focusSuggested;
+
+    if (modified && modified !== {}) updateEdited(modified);
     router.push({ pathname: FORM_LINKS[2], query: router.query });
   };
+
+  if (!userData) return <></>;
 
   return (
     <>
@@ -113,15 +108,15 @@ export default function JoinStep2({ focuses }) {
         />
       </JoinHeader>
       <div className="container">
-        <Heading>Requesting changes for {name}</Heading>
+        <Heading>Requesting changes for {userData.name}</Heading>
         <WorkExperience
           initial={{
-            focuses: focuses,
-            focusesSelected: focusesSelected,
-            focusSuggested: focusSuggested,
-            title: title,
-            deferTitle: deferTitle,
-            yearsExperience: yearsExperience,
+            focuses: focuses || [],
+            focusesSelected: userData?.focus?.map((foc) => foc.id) || [],
+            focusSuggested: editedData?.focusSuggested || "",
+            title: userData?.title || "",
+            deferTitle: userData?.title ? undefined : "true",
+            yearsExperience: userData?.yearsExperience || "",
           }}
           onSubmit={handleSubmit}
         />
