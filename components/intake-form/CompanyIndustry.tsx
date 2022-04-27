@@ -96,6 +96,12 @@ export default function CompanyIndustry({
 
   const handleSubmit = () => {
     setLoading(true);
+    if (companySize === "") {
+      setCompanySize("N/A");
+    }
+    if (industriesSelected.length === 0) {
+      setDeferIndustry("true");
+    }
     onSubmit({
       industriesSelected: industriesSelected,
       industrySuggested: industrySuggested,

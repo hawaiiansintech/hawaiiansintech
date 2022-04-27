@@ -7,8 +7,8 @@ import ProgressBar from "@/components/form/ProgressBar";
 import { Heading, Subheading } from "@/components/Heading";
 import JoinHeader from "@/components/intake-form/JoinHeader";
 import MetaTags from "@/components/Metatags.js";
+import { MemberPublic, MemberPublicEditing } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
-import { clearAllStoredFields } from "@/lib/utils";
 import { Formik } from "formik";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -19,89 +19,68 @@ import * as Yup from "yup";
 export default function JoinStep4() {
   const router = useRouter();
   const { getItem, setItem, removeItem } = useStorage();
-  const [email, setEmail] = useState<string>("");
+  const [other, setOther] = useState<string>("");
+  const [userData, setUserData] = useState<MemberPublicEditing>({});
+  const [editedData, setEditedData] = useState<MemberPublicEditing>({});
 
-  const [name, setName] = useState<string>("");
-  const [location, setLocation] = useState<string>("");
-  const [website, setWebsite] = useState<string>("");
-  const [focusesSelected, setFocusesSelected] = useState<string[]>([]);
-  const [focusSuggested, setFocusSuggested] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
-  const [industriesSelected, setIndustriesSelected] = useState<string[]>([]);
-  const [industrySuggested, setIndustrySuggested] = useState("");
-  const [companySize, setCompanySize] = useState("");
-  const [yearsExperience, setYearsExperience] = useState<string>();
-
-  const [validateAfterSubmit, setValidateAfterSubmit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<ErrorMessageProps>(undefined);
 
-  const createMember = async () => {
-    return new Promise((resolve, reject) => {
-      fetch("/api/create-member", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          location,
-          website,
-          focusesSelected,
-          focusSuggested,
-          title,
-          yearsExperience,
-          industriesSelected,
-          industrySuggested,
-          companySize,
-          email,
-        }),
-      }).then(
-        (response: Response) => {
-          resolve(response);
-        },
-        (error: Response) => {
-          reject(error);
-        }
-      );
-    });
-  };
+  // const submitRequest = async () => {
+  //   return new Promise((resolve, reject) => {
+  //     fetch("/api/create-member", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         name,
+  //         location,
+  //         website,
+  //         focusesSelected,
+  //         focusSuggested,
+  //         title,
+  //         yearsExperience,
+  //         industriesSelected,
+  //         industrySuggested,
+  //         companySize,
+  //         email,
+  //       }),
+  //     }).then(
+  //       (response: Response) => {
+  //         resolve(response);
+  //       },
+  //       (error: Response) => {
+  //         reject(error);
+  //       }
+  //     );
+  //   });
+  // };
 
-  // check invalid situation via previous required entries
-  // useInvalid({ currentPage: "04-contact" });
-
-  // check localStorage and set pre-defined fields
   useEffect(() => {
-    let storedName = getItem("jfName");
-    let storedLocation = getItem("jfLocation");
-    let storedWebsite = getItem("jfWebsite");
-    let storedFocuses = getItem("jfFocuses");
-    let storedFocusSuggested = getItem("jfFocusSuggested");
-    let storedTitle = getItem("jfTitle");
-    let storedYearsExperience = getItem("jfYearsExperience");
-    let storedIndustries = getItem("jfIndustries");
-    let storedIndustrySuggested = getItem("jfIndustrySuggested");
-    let storedCompanySize = getItem("jfCompanySize");
+    let userData: string = getItem("userData");
+    userData = userData ? JSON.parse(userData) : undefined;
+    if (userData && typeof userData !== "string") {
+      setUserData(userData);
+    } else {
+      router.push("/edit");
+    }
 
-    if (storedName) setName(storedName);
-    if (storedLocation) setLocation(storedLocation);
-    if (storedWebsite) setWebsite(storedWebsite);
-    if (storedFocuses) setFocusesSelected(JSON.parse(storedFocuses));
-    if (storedFocusSuggested) setFocusSuggested(storedFocusSuggested);
-    if (storedTitle) setTitle(storedTitle);
-    if (storedYearsExperience) setYearsExperience(storedYearsExperience);
-    if (storedIndustries) setIndustriesSelected(JSON.parse(storedIndustries));
-    if (storedIndustrySuggested) setIndustrySuggested(storedIndustrySuggested);
-    if (storedCompanySize) setCompanySize(storedCompanySize);
+    let modified: string | MemberPublicEditing = getItem("editedData");
+    modified = modified ? JSON.parse(modified) : {};
+    if (modified && typeof modified !== "string") {
+      setEditedData(modified);
+    }
   }, []);
 
   const handleSubmit = async (values) => {
     setLoading(true);
     setError(undefined);
-    const res: Response | any = await createMember();
+    const res: Response | any = await submitRequest();
     const resJSON = await res.json();
     if (res.ok) {
-      clearAllStoredFields("edit");
+      removeItem("userData");
+      removeItem("editData");
       router.push({ pathname: "thank-you" });
     } else if (res.status === 422) {
       setLoading(false);
@@ -117,7 +96,7 @@ export default function JoinStep4() {
       });
     }
   };
-
+  console.log(editedData);
   return (
     <>
       <Head>
@@ -134,12 +113,14 @@ export default function JoinStep4() {
         />
       </JoinHeader>
       <div className="container">
-        <Heading>Welcome to our little hui.</Heading>
-        <Subheading>
-          This email will be used to confirm any changes to your profile going
-          forward. We <strong>will not</strong> share your contact information
-          without your permission.
-        </Subheading>
+        <Heading>Requesting changes for {userData.name}</Heading>
+        {userData.emailAbbr && (
+          <Subheading centered>
+            We'll take a look, then confirm any changes with you at{" "}
+            <strong>{`${userData.emailAbbr[0]}...${userData.emailAbbr[1]}${userData.emailAbbr[2]}`}</strong>
+            . Mahalo for your patience!
+          </Subheading>
+        )}
         <section
           style={{
             margin: "2rem auto 0",
@@ -151,33 +132,28 @@ export default function JoinStep4() {
               <ErrorMessage headline={error.headline} body={error.body} />
             </div>
           )}
+          <DiffTable userData={userData} editedData={editedData} />
+
           <Formik
             enableReinitialize
-            initialValues={{ email: email }}
-            validateOnBlur={validateAfterSubmit}
-            validateOnChange={validateAfterSubmit}
-            validate={() => setValidateAfterSubmit(true)}
+            initialValues={{ other: other }}
             onSubmit={(values) => {
               handleSubmit(values);
             }}
             validationSchema={Yup.object().shape({
-              email: Yup.string()
-                .email("That email doesn't look right. Please try again.")
-                .required(
-                  "It's important that we can reach you. Email is required."
-                ),
+              other: Yup.string(),
             })}
           >
             {(props) => (
               <form onSubmit={props.handleSubmit}>
                 <Input
-                  name="email"
-                  label="What’s your email?"
-                  labelTranslation="He aha kou wahi leka uila?"
+                  name="other"
+                  label="Any issues? Anything else?"
+                  labelTranslation="He aha nā mea a pau?"
                   onBlur={props.handleBlur}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  error={props.touched.email && props.errors.email}
+                  value={other}
+                  onChange={(e) => setOther(e.target.value)}
+                  error={props.touched.other && props.errors.other}
                 />
                 <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
                   <Button fullWidth loading={loading} type="submit">
@@ -192,3 +168,161 @@ export default function JoinStep4() {
     </>
   );
 }
+
+const DiffTable = ({
+  editedData,
+  userData,
+}: {
+  editedData: MemberPublicEditing;
+  userData: MemberPublic;
+}) => {
+  return (
+    <div className="diff-table">
+      {editedData.name && (
+        <>
+          <div>
+            <strong>Name</strong>
+          </div>
+          <div>
+            <span>{userData.name}</span>
+            <span>{editedData.name}</span>
+          </div>
+        </>
+      )}
+      {editedData.location && (
+        <>
+          <div>
+            <strong>Location</strong>
+          </div>
+          <div>
+            <span>{`${userData.location}, ${userData.region}`}</span>
+            <span>{editedData.location}</span>
+          </div>
+        </>
+      )}
+      {editedData.link && (
+        <>
+          <div>
+            <strong>Website</strong>
+          </div>
+          <div>
+            <span>{userData.link}</span>
+            <span>{editedData.link}</span>
+          </div>
+        </>
+      )}
+      {editedData.focus && (
+        <>
+          <div>
+            <strong>Focus</strong>
+          </div>
+          <div>
+            <span>
+              {userData.focus?.length
+                ? `${userData.focus.length} focus`
+                : "None"}
+              {(userData?.focus?.length > 1 || userData?.focus?.length === 0) &&
+                "es"}
+            </span>
+            <span>
+              {editedData.focus.length} focus
+              {(editedData.focus.length > 1 || editedData.focus.length === 0) &&
+                "es"}
+            </span>
+          </div>
+        </>
+      )}
+      {editedData.title || editedData.title === "" ? (
+        <>
+          <div>
+            <strong>Title</strong>
+          </div>
+          <div>
+            <span>{userData.title}</span>
+            <span>
+              {editedData.title === "" ? <em>No title</em> : editedData.title}
+            </span>
+          </div>
+        </>
+      ) : (
+        <></>
+      )}
+      {editedData.industry && (
+        <>
+          <div>
+            <strong>Industry</strong>
+          </div>
+          <div>
+            <span>
+              {userData.industry?.length ? userData.industry.length : "None"}
+              {userData.industry?.length > 1 || userData.industry?.length === 0
+                ? "ies"
+                : userData.industry?.length
+                ? "y"
+                : ""}
+            </span>
+            <span>
+              {editedData.industry.length} industr
+              {editedData.industry.length > 1 ||
+              editedData.industry.length === 0
+                ? "ies"
+                : "y"}
+            </span>
+          </div>
+        </>
+      )}
+      {editedData.companySize && (
+        <>
+          <div>
+            <strong>Company Size</strong>
+          </div>
+          <div>
+            <span>{userData.companySize ? userData.companySize : "None"}</span>
+            <span>{editedData.companySize}</span>
+          </div>
+        </>
+      )}
+      {editedData.yearsExperience && (
+        <>
+          <div>
+            <strong>Years Experience</strong>
+          </div>
+          <div>
+            <span>
+              {userData.yearsExperience ? userData.yearsExperience : "None"}
+            </span>
+            <span>{editedData.yearsExperience}</span>
+          </div>
+        </>
+      )}
+      <style jsx>{`
+        .diff-table {
+          margin-bottom: 2rem;
+          overflow: hidden;
+        }
+        .diff-table strong {
+          display: block;
+          font-size: 0.875rem;
+          margin: 1rem 0 0.25rem;
+        }
+        .diff-table span {
+          display: inline-block;
+          font-size: 1rem;
+          margin-bottom: 0.5rem;
+          margin-right: 0.5rem;
+          padding: 0.125rem 0.5rem;
+          border-radius: ${theme.borderRadius.xs};
+        }
+        .diff-table div span:nth-child(odd) {
+          background: rgba(179, 39, 25, 0.2);
+          color: rgba(179, 39, 25, 0.5);
+          text-decoration: line-through;
+        }
+        .diff-table div span:nth-child(even) {
+          background: rgba(186, 218, 85, 0.35);
+          color: rgb(91, 113, 23);
+        }
+      `}</style>
+    </div>
+  );
+};

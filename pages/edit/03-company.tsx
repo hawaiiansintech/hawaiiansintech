@@ -74,6 +74,9 @@ export default function JoinStep3({ industries }) {
     if (values.companySize !== userData.companySize) {
       modified.companySize = values.companySize;
     }
+    if (values.companySize === "") {
+      modified.companySize = "N/A";
+    }
     if (values.industriesSuggested) {
       modified.industrySuggested = values.industriesSuggested;
     }
