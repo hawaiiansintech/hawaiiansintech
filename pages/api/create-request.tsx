@@ -1,0 +1,124 @@
+import airtable from "airtable";
+
+airtable.configure({
+  endpointUrl: "https://api.airtable.com",
+  apiKey: process.env.AIRTABLE_KEY,
+});
+
+interface RequestFields {
+  name: string;
+  email: string;
+  location: string;
+  website: string;
+  focusesSelected?: string | string[];
+  focusSuggested?: string;
+  title?: string;
+  yearsExperience?: string;
+  industriesSelected?: string | string[];
+  industrySuggested?: string;
+  companySize?: string;
+  recordID?: string;
+}
+
+const addToAirtable = async (fields: RequestFields): Promise<string> => {
+  let member = {
+    Name: fields.name,
+    Email: fields.email,
+    Location: fields.location,
+    Link: fields.website,
+    "Company Size": fields.companySize,
+    "Years of Experience": fields.yearsExperience,
+    Status: "Pending",
+  };
+
+  let focuses;
+  if (fields.focusesSelected) focuses = fields.focusesSelected;
+  if (fields.focusSuggested) {
+    const focusID = await findRecord({
+      name: fields.focusSuggested,
+      table: "Focuses",
+    });
+    if (focusID) {
+      focuses = [...focuses, focusID];
+    } else {
+      const newFocusID = await addPendingRecord({
+        name: fields.focusSuggested,
+        table: "Focuses",
+      });
+      focuses = [...focuses, newFocusID];
+    }
+  }
+  if (focuses) member["Focus"] = focuses;
+
+  let industries;
+  if (fields.industriesSelected) industries = fields.industriesSelected;
+  if (fields.industrySuggested) {
+    const industryID = await findRecord({
+      name: fields.industrySuggested,
+      table: "Industries",
+    });
+    if (industryID) {
+      industries = [...industries, industryID];
+    } else {
+      const newIndustryID = await addPendingRecord({
+        name: fields.industrySuggested,
+        table: "Industries",
+      });
+      industries = [...industries, newIndustryID];
+    }
+  }
+  if (industries) member["Industry"] = industries;
+
+  if (fields.title) member["Title"] = fields.title;
+
+  return new Promise((resolve, reject) => {
+    airtable
+      .base(process.env.AIRTABLE_BASE_NEW)("Members")
+      .create(member, (err, record) => {
+        if (err) reject(err);
+        resolve(record?.getId());
+      });
+  });
+};
+
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Only POST requests allowed" });
+  }
+
+  try {
+    const isEmailUsed = await findEmail(req.body.email);
+    if (!isEmailUsed) {
+      const recordID: string = await addToAirtable({ ...req.body }).then(
+        (body) => {
+          console.log("✅ added member to airtable");
+          return body;
+        }
+      );
+      await addSgContact({
+        ...req.body,
+        recordID: recordID,
+      }).then(() => {
+        console.log("✅ added member to sendgrid");
+      });
+      await sendSgEmail({
+        email: req.body.email,
+        name: req.body.name,
+        airtableID: recordID,
+      }).then(() => {
+        console.log("✅ sent member email via sendgrid");
+      });
+      return res.status(200).json({ message: "Successfully added member." });
+    } else {
+      return res.status(422).json({
+        error: "This email is associated with another member.",
+        body: "We only allow one member per email address.",
+      });
+    }
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({
+      error: "Gonfunnit, looks like something went wrong!",
+      body: "Please try again later.",
+    });
+  }
+}

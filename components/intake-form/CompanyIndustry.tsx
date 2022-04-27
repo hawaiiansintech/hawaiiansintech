@@ -21,14 +21,14 @@ const TECHNOLOGY_LABEL = "Internet / Technology";
 export interface CompanyIndustryInitialProps {
   industries?: Industry[];
   industriesSelected?: string[];
-  industriesSuggested?: string;
+  industrySuggested?: string;
   deferIndustry?: "true" | undefined;
   companySize?: string;
 }
 
 interface CompanyIndustryProps {
   initial: CompanyIndustryInitialProps;
-  onSubmit?: (CompanyIndustryProps) => void;
+  onSubmit?: (CompanyIndustryInitialProps) => void;
 }
 
 export default function CompanyIndustry({
@@ -99,7 +99,7 @@ export default function CompanyIndustry({
     if (companySize === "") {
       setCompanySize("N/A");
     }
-    if (industriesSelected.length === 0) {
+    if (industriesSelected.length === 0 && !industrySuggested) {
       setDeferIndustry("true");
     }
     onSubmit({

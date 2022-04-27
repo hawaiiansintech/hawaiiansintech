@@ -26,36 +26,27 @@ export default function JoinStep4() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<ErrorMessageProps>(undefined);
 
-  // const submitRequest = async () => {
-  //   return new Promise((resolve, reject) => {
-  //     fetch("/api/create-member", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         name,
-  //         location,
-  //         website,
-  //         focusesSelected,
-  //         focusSuggested,
-  //         title,
-  //         yearsExperience,
-  //         industriesSelected,
-  //         industrySuggested,
-  //         companySize,
-  //         email,
-  //       }),
-  //     }).then(
-  //       (response: Response) => {
-  //         resolve(response);
-  //       },
-  //       (error: Response) => {
-  //         reject(error);
-  //       }
-  //     );
-  //   });
-  // };
+  const submitRequest = async () => {
+    return new Promise((resolve, reject) => {
+      fetch("/api/create-request", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userData,
+          editedData,
+        }),
+      }).then(
+        (response: Response) => {
+          resolve(response);
+        },
+        (error: Response) => {
+          reject(error);
+        }
+      );
+    });
+  };
 
   useEffect(() => {
     let userData: string = getItem("userData");
@@ -225,9 +216,17 @@ const DiffTable = ({
                 "es"}
             </span>
             <span>
-              {editedData.focus.length} focus
-              {(editedData.focus.length > 1 || editedData.focus.length === 0) &&
-                "es"}
+              {[...editedData.focus, editedData.focusSuggested].length
+                ? `${
+                    [...editedData.focus, editedData.focusSuggested].length
+                      ? "1"
+                      : "0"
+                  } focus${
+                    [...editedData.focus, editedData.focusSuggested].length > 1
+                      ? "es"
+                      : ""
+                  }`
+                : "New focus"}
             </span>
           </div>
         </>
@@ -262,9 +261,12 @@ const DiffTable = ({
                 : ""}
             </span>
             <span>
-              {editedData.industry.length} industr
-              {editedData.industry.length > 1 ||
-              editedData.industry.length === 0
+              {[...editedData.industry, editedData.industrySuggested].length}{" "}
+              industr
+              {[...editedData.industry, editedData.industrySuggested].length >
+                1 ||
+              [...editedData.industry, editedData.industrySuggested].length ===
+                0
                 ? "ies"
                 : "y"}
             </span>

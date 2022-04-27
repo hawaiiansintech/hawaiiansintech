@@ -77,8 +77,8 @@ export default function JoinStep3({ industries }) {
     if (values.companySize === "") {
       modified.companySize = "N/A";
     }
-    if (values.industriesSuggested) {
-      modified.industrySuggested = values.industriesSuggested;
+    if (values.industrySuggested) {
+      modified.industrySuggested = values.industrySuggested;
     }
 
     if (modified && modified !== {}) updateEdited(modified);

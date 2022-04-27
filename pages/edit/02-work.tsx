@@ -79,6 +79,9 @@ export default function JoinStep2({ focuses }) {
     if (editedData.title === "") {
       modified.title = values.title;
     }
+    if (values.focusSuggested === "") {
+      modified.focusSuggested = values.focusSuggested;
+    }
     if (values.deferTitle) modified.title = "";
     if (values.focusSuggested) modified.focusSuggested = values.focusSuggested;
 
