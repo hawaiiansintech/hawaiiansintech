@@ -31,7 +31,8 @@ export default function JoinStep2({ focuses }) {
 
   const removeModifiedFrom = (modified: MemberPublicEditing) => {
     if (modified.focus) delete modified.focus;
-    if (modified.focusSuggested) delete modified.focusSuggested;
+    if (modified.focusSuggested || modified.focusSuggested === "")
+      delete modified.focusSuggested;
     if (modified.yearsExperience) delete modified.yearsExperience;
     if (modified.title || modified.title === "") delete modified.title;
   };
@@ -79,11 +80,10 @@ export default function JoinStep2({ focuses }) {
     if (editedData.title === "") {
       modified.title = values.title;
     }
-    if (values.focusSuggested === "") {
+    if (values.focusSuggested && values.focusSuggested !== "") {
       modified.focusSuggested = values.focusSuggested;
     }
     if (values.deferTitle) modified.title = "";
-    if (values.focusSuggested) modified.focusSuggested = values.focusSuggested;
 
     if (modified && modified !== {}) updateEdited(modified);
     router.push({ pathname: FORM_LINKS[2], query: router.query });
@@ -94,7 +94,7 @@ export default function JoinStep2({ focuses }) {
   return (
     <>
       <Head>
-        <title>Hawaiians in Technology | Join</title>
+        <title>Hawaiians in Technology | Request Changes</title>
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
@@ -112,7 +112,7 @@ export default function JoinStep2({ focuses }) {
           initial={{
             focuses: focuses || [],
             focusesSelected: userData?.focus?.map((foc) => foc.id) || [],
-            focusSuggested: editedData?.focusSuggested || "",
+            focusSuggested: editedData?.focusSuggested || undefined,
             title: userData?.title || "",
             deferTitle: userData?.title ? undefined : "true",
             yearsExperience: userData?.yearsExperience || "",

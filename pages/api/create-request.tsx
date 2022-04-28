@@ -1,3 +1,4 @@
+import { MemberPublicEditing } from "@/lib/api";
 import airtable from "airtable";
 
 airtable.configure({
@@ -5,76 +6,75 @@ airtable.configure({
   apiKey: process.env.AIRTABLE_KEY,
 });
 
-interface RequestFields {
-  name: string;
-  email: string;
-  location: string;
-  website: string;
-  focusesSelected?: string | string[];
-  focusSuggested?: string;
-  title?: string;
-  yearsExperience?: string;
-  industriesSelected?: string | string[];
-  industrySuggested?: string;
-  companySize?: string;
-  recordID?: string;
-}
-
-const addToAirtable = async (fields: RequestFields): Promise<string> => {
-  let member = {
-    Name: fields.name,
-    Email: fields.email,
-    Location: fields.location,
-    Link: fields.website,
-    "Company Size": fields.companySize,
-    "Years of Experience": fields.yearsExperience,
-    Status: "Pending",
+const addToAirtable = async ({
+  userData,
+  editedData,
+  message,
+}: {
+  userData: MemberPublicEditing;
+  editedData: MemberPublicEditing;
+  message: string;
+}): Promise<string> => {
+  const getSummary = () => {
+    let summary = "";
+    if (editedData.name) {
+      summary = summary + `• Name: ${editedData.name}\n`;
+    }
+    if (editedData.title) {
+      summary = summary + `• Title: ${editedData.title}\n`;
+    }
+    if (editedData.link) {
+      summary = summary + `• Link: ${editedData.link}\n`;
+    }
+    if (editedData.location) {
+      summary = summary + `• Location: ${editedData.location}\n`;
+    }
+    if (editedData.focus) {
+      summary =
+        summary +
+        `• Focus(es) by id: [${editedData.focus.map(
+          (foc, i) => `${foc}${editedData.focus.length < i ? ", " : ""}`
+        )}]\n`;
+    }
+    if (editedData.focusSuggested) {
+      summary = summary + `• Focus (Suggested): ${editedData.focusSuggested}\n`;
+    }
+    if (editedData.yearsExperience) {
+      summary = summary + `• Years Experience: ${editedData.yearsExperience}\n`;
+    }
+    if (editedData.industry) {
+      summary =
+        summary +
+        `• Industri(es) by id: [${editedData.industry.map(
+          (foc, i) => `${foc}${editedData.industry.length < i ? ", " : ""}`
+        )}]\n`;
+    }
+    if (editedData.industrySuggested) {
+      summary =
+        summary + `• Industry (Suggested): ${editedData.industrySuggested}\n`;
+    }
+    if (editedData.companySize) {
+      summary = summary + `• Company Size: ${editedData.companySize}\n`;
+    }
+    if (message) {
+      summary = summary + `• Message: ${message}`;
+    }
+    return summary;
   };
+  const count = Object.keys(editedData).length;
+  console.log(Object.keys(editedData));
 
-  let focuses;
-  if (fields.focusesSelected) focuses = fields.focusesSelected;
-  if (fields.focusSuggested) {
-    const focusID = await findRecord({
-      name: fields.focusSuggested,
-      table: "Focuses",
-    });
-    if (focusID) {
-      focuses = [...focuses, focusID];
-    } else {
-      const newFocusID = await addPendingRecord({
-        name: fields.focusSuggested,
-        table: "Focuses",
-      });
-      focuses = [...focuses, newFocusID];
-    }
-  }
-  if (focuses) member["Focus"] = focuses;
-
-  let industries;
-  if (fields.industriesSelected) industries = fields.industriesSelected;
-  if (fields.industrySuggested) {
-    const industryID = await findRecord({
-      name: fields.industrySuggested,
-      table: "Industries",
-    });
-    if (industryID) {
-      industries = [...industries, industryID];
-    } else {
-      const newIndustryID = await addPendingRecord({
-        name: fields.industrySuggested,
-        table: "Industries",
-      });
-      industries = [...industries, newIndustryID];
-    }
-  }
-  if (industries) member["Industry"] = industries;
-
-  if (fields.title) member["Title"] = fields.title;
+  let requestData = {
+    Member: [userData.id],
+    Status: "Pending",
+    Summary: `(${count} requested changes)
+${getSummary()}`,
+  };
 
   return new Promise((resolve, reject) => {
     airtable
-      .base(process.env.AIRTABLE_BASE_NEW)("Members")
-      .create(member, (err, record) => {
+      .base(process.env.AIRTABLE_BASE_NEW)("Requests")
+      .create(requestData, (err, record) => {
         if (err) reject(err);
         resolve(record?.getId());
       });
@@ -85,36 +85,19 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Only POST requests allowed" });
   }
-
   try {
-    const isEmailUsed = await findEmail(req.body.email);
-    if (!isEmailUsed) {
-      const recordID: string = await addToAirtable({ ...req.body }).then(
-        (body) => {
-          console.log("✅ added member to airtable");
-          return body;
-        }
-      );
-      await addSgContact({
-        ...req.body,
-        recordID: recordID,
-      }).then(() => {
-        console.log("✅ added member to sendgrid");
+    const fdsa = await addToAirtable({ ...req.body })
+      .then((body) => {
+        console.log("✅ added request to airtable");
+        return body;
+      })
+      .catch(() => {
+        return res.status(500).json({
+          error: "Gonfunnit! Looks like something went wrong!",
+          body: "Please try again later. If it happens again, try reach out to let us know!",
+        });
       });
-      await sendSgEmail({
-        email: req.body.email,
-        name: req.body.name,
-        airtableID: recordID,
-      }).then(() => {
-        console.log("✅ sent member email via sendgrid");
-      });
-      return res.status(200).json({ message: "Successfully added member." });
-    } else {
-      return res.status(422).json({
-        error: "This email is associated with another member.",
-        body: "We only allow one member per email address.",
-      });
-    }
+    return res.status(200).json({ message: "Successfully sent request." });
   } catch (error) {
     return res.status(error.statusCode || 500).json({
       error: "Gonfunnit, looks like something went wrong!",

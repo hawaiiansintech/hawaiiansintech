@@ -36,6 +36,7 @@ export default function JoinStep4() {
         body: JSON.stringify({
           userData,
           editedData,
+          message: other,
         }),
       }).then(
         (response: Response) => {
@@ -87,11 +88,11 @@ export default function JoinStep4() {
       });
     }
   };
-  console.log(editedData);
+
   return (
     <>
       <Head>
-        <title>Hawaiians in Technology | Join</title>
+        <title>Hawaiians in Technology | Request Changes</title>
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>

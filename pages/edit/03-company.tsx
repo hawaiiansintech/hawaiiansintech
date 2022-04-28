@@ -34,7 +34,8 @@ export default function JoinStep3({ industries }) {
   const removeModifiedFrom = (modified: MemberPublicEditing) => {
     if (modified.industry) delete modified.industry;
     if (modified.companySize) delete modified.companySize;
-    if (modified.industrySuggested) delete modified.industrySuggested;
+    if (modified.industrySuggested || modified.industrySuggested === "")
+      delete modified.industrySuggested;
   };
 
   const updateEdited = (data: MemberPublicEditing) => {
@@ -90,7 +91,7 @@ export default function JoinStep3({ industries }) {
   return (
     <>
       <Head>
-        <title>Hawaiians in Technology | Join</title>
+        <title>Hawaiians in Technology | Request Changes</title>
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>

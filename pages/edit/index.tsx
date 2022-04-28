@@ -66,7 +66,7 @@ export default function RequestForm({ onToggle }: RequestFormProps) {
   return (
     <>
       <Head>
-        <title>Hawaiians in Technology | Join</title>
+        <title>Hawaiians in Technology | Request Changes</title>
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
