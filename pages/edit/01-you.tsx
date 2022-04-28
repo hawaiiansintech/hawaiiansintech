@@ -1,4 +1,3 @@
-import ProgressBar from "@/components/form/ProgressBar";
 import { Heading } from "@/components/Heading";
 import BasicInformationForm from "@/components/intake-form/BasicInformation";
 import JoinHeader from "@/components/intake-form/JoinHeader";
@@ -18,6 +17,11 @@ export default function JoinStep1(props) {
   const [data, setData] = useState<MemberPublicEditing>();
 
   useEffect(() => {
+    let userData: string = getItem("userData");
+    userData = userData ? JSON.parse(userData) : undefined;
+    if (!userData) {
+      router.push("/edit");
+    }
     let storedData = getItem("userData");
     storedData = storedData ? JSON.parse(storedData) : "";
     removeItem("editedData");
@@ -51,14 +55,7 @@ export default function JoinStep1(props) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader>
-        <ProgressBar
-          headline="REQUESTING CHANGES (1/2)"
-          label="Basic Information"
-          currentCount={1}
-          totalCount={2}
-        />
-      </JoinHeader>
+      <JoinHeader />
       <div className="container">
         <Heading>Requesting changes for {data.name}</Heading>
         <BasicInformationForm

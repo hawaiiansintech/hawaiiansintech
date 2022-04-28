@@ -1,6 +1,5 @@
 import Button, { ButtonSize } from "@/components/Button";
 import ProgressBar from "@/components/form/ProgressBar";
-import Selectable from "@/components/form/Selectable";
 import { Heading } from "@/components/Heading";
 import JoinHeader from "@/components/intake-form/JoinHeader";
 import MetaTags from "@/components/Metatags";
@@ -20,11 +19,7 @@ export default function RequestForm({ onToggle }: RequestFormProps) {
   const router = useRouter();
   const { setItem, removeItem } = useStorage();
   const [members, setMembers] = useState<MemberPublic[]>([]);
-  const [disableButton, setButtonIsDisabled] = useState<boolean>(true);
-  const [editing, setEditing] = useState<boolean[]>([false, false, false]);
   const [memberSelected, setMemberSelected] = useState<MemberPublic>();
-
-  const selected = editing.findIndex((el) => el) >= 0;
 
   useEffect(() => {
     fetch("/api/get-members")
@@ -36,26 +31,15 @@ export default function RequestForm({ onToggle }: RequestFormProps) {
 
   useEffect(() => {
     // reset selection
-    setEditing([false, false, false]);
     removeItem("userData");
     // add all items in storage
     if (!memberSelected) return;
     if (memberSelected) setItem("userData", JSON.stringify(memberSelected));
   }, [memberSelected]);
 
-  useEffect(() => {
-    setButtonIsDisabled(!selected);
-  }, [editing]);
-
   const handleSubmit = () => {
-    if (!selected) return;
-    let editMap: string = "";
-    FORM_LINKS.forEach((item, index) => {
-      editMap += editing[index] ? "1" : "0";
-    });
     router.push({
-      pathname: `/edit/${FORM_LINKS[editing.findIndex((el) => el)]}`,
-      query: { sections: editMap },
+      pathname: `/edit/${FORM_LINKS[0]}`,
     });
   };
 
@@ -102,63 +86,15 @@ export default function RequestForm({ onToggle }: RequestFormProps) {
           ))}
         </select>
         {memberSelected && (
-          <>
-            <h4>
-              I would like to <strong>update / change</strong>:
-            </h4>
-            <div className="request-form__options">
-              <Selectable
-                headline={"Basic Information"}
-                byline={`${
-                  (memberSelected.name ? 1 : 0) +
-                  (memberSelected.location ? 1 : 0) +
-                  (memberSelected.link ? 1 : 0)
-                } / 3 Completed`}
-                fullWidth
-                selected={editing[0]}
-                onClick={() =>
-                  setEditing([!editing[0], editing[1], editing[2]])
-                }
-              />
-              <Selectable
-                headline={`Work Experience`}
-                byline={`${
-                  (memberSelected.focus ? 1 : 0) +
-                  (memberSelected.title ? 1 : 0) +
-                  (memberSelected.yearsExperience ? 1 : 0)
-                } / 3 Completed`}
-                fullWidth
-                selected={editing[1]}
-                onClick={() =>
-                  setEditing([editing[0], !editing[1], editing[2]])
-                }
-              />
-              <Selectable
-                headline={`Company / Industry`}
-                byline={`${
-                  (memberSelected.industry ? 1 : 0) +
-                  (memberSelected.companySize ? 1 : 0)
-                } / 2 Completed`}
-                fullWidth
-                selected={editing[2]}
-                onClick={() =>
-                  setEditing([editing[0], editing[1], !editing[2]])
-                }
-              />
-            </div>
-
-            <Button
-              size={ButtonSize.Small}
-              onClick={handleSubmit}
-              disabled={disableButton}
-            >
-              Continue
-            </Button>
-            <a>Remove me from this list</a>
-          </>
+          <Button size={ButtonSize.Small} onClick={handleSubmit}>
+            Continue
+          </Button>
         )}
+        {/* <a>Remove me from this list</a> */}
         <style jsx>{`
           .request-form {
+            display: flex;
+            gap: 0.5rem;
             margin: 0 auto 1rem;
             max-width: ${theme.layout.width.interior};
             z-index: ${theme.layout.zIndex.above};

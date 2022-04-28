@@ -32,8 +32,8 @@ export default function ThankYou() {
             </span>
           </div>
           <h2>
-            Mahalo for keeping your profile up to date. We'll reach out as soon
-            as can.
+            Mahalo for keeping your profile up to date. We'll reach out once we
+            review your request.
           </h2>
         </main>
       </div>

@@ -1,4 +1,3 @@
-import ProgressBar from "@/components/form/ProgressBar";
 import { Heading } from "@/components/Heading";
 import JoinHeader from "@/components/intake-form/JoinHeader";
 import WorkExperience, {
@@ -98,14 +97,7 @@ export default function JoinStep2({ focuses }) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader>
-        <ProgressBar
-          headline="REQUESTING CHANGES (2/2)"
-          label="Work Experience"
-          currentCount={2}
-          totalCount={2}
-        />
-      </JoinHeader>
+      <JoinHeader />
       <div className="container">
         <Heading>Requesting changes for {userData.name}</Heading>
         <WorkExperience
