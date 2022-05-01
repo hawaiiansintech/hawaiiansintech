@@ -65,39 +65,50 @@ export default function RequestForm({ onToggle }: RequestFormProps) {
       <Heading>Request Changes</Heading>
       <div className="request-form">
         <label htmlFor="member-select">Request edit for:</label>
-        <select
-          name="member-select"
-          id="member-select"
-          onChange={(e) => {
-            setMemberSelected(
-              members.find((member) => member.id === e.target.value)
-            );
-          }}
-        >
-          {members?.length > 0 ? (
-            <option value="">Please choose an option</option>
-          ) : (
-            <option value="">loading</option>
+        <div className="request-form__input">
+          <select
+            name="member-select"
+            id="member-select"
+            onChange={(e) => {
+              setMemberSelected(
+                members.find((member) => member.id === e.target.value)
+              );
+            }}
+          >
+            {members?.length > 0 ? (
+              <option value="">Please choose an option</option>
+            ) : (
+              <option value="">loading</option>
+            )}
+            {members?.map((member: MemberPublic) => (
+              <option value={member.id} key={`member-${member.id}`}>
+                {member.name}
+              </option>
+            ))}
+          </select>
+          {memberSelected && (
+            <Button size={ButtonSize.Small} onClick={handleSubmit}>
+              Continue
+            </Button>
           )}
-          {members?.map((member: MemberPublic) => (
-            <option value={member.id} key={`member-${member.id}`}>
-              {member.name}
-            </option>
-          ))}
-        </select>
-        {memberSelected && (
-          <Button size={ButtonSize.Small} onClick={handleSubmit}>
-            Continue
-          </Button>
-        )}
+        </div>
         {/* <a>Remove me from this list</a> */}
         <style jsx>{`
           .request-form {
             display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 0 2rem;
             gap: 0.5rem;
             margin: 0 auto 1rem;
             max-width: ${theme.layout.width.interior};
             z-index: ${theme.layout.zIndex.above};
+          }
+          .request-form__input {
+            display: flex;
+            gap: 0.5rem;
+            flex-grow: 1;
+            flex-wrap: wrap;
           }
           .request-form__options {
             display: grid;
@@ -118,12 +129,13 @@ export default function RequestForm({ onToggle }: RequestFormProps) {
             font-weight: 400;
           }
           label {
-            margin: 0 0.5rem 0 0;
+            margin: 0;
             white-space: nowrap;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             color: ${theme.color.text.alt};
           }
           select {
+            flex-grow: 1;
             font-size: 1.25rem;
           }
         `}</style>
