@@ -3,7 +3,6 @@ import ErrorMessage, {
   ErrorMessageProps,
 } from "@/components/form/ErrorMessage";
 import Input from "@/components/form/Input";
-import ProgressBar from "@/components/form/ProgressBar";
 import { Heading, Subheading } from "@/components/Heading";
 import JoinHeader from "@/components/intake-form/JoinHeader";
 import MetaTags from "@/components/Metatags.js";
@@ -96,14 +95,7 @@ export default function JoinStep4() {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader>
-        <ProgressBar
-          headline="Private"
-          label="How to Reach You"
-          currentCount={4}
-          totalCount={4}
-        />
-      </JoinHeader>
+      <JoinHeader />
       <div className="container">
         <Heading>Requesting changes for {userData.name}</Heading>
         {userData.emailAbbr && (

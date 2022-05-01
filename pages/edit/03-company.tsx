@@ -1,4 +1,3 @@
-import ProgressBar from "@/components/form/ProgressBar";
 import { Heading } from "@/components/Heading";
 import CompanyIndustry, {
   CompanyIndustryInitialProps,
@@ -95,14 +94,7 @@ export default function JoinStep3({ industries }) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader>
-        <ProgressBar
-          headline="REQUESTING CHANGES (3/3)"
-          label="Company / Industry"
-          currentCount={3}
-          totalCount={3}
-        />
-      </JoinHeader>
+      <JoinHeader />
       <div className="container">
         <Heading>Requesting changes for {userData?.name}</Heading>
         <CompanyIndustry

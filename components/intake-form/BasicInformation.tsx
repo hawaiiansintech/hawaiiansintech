@@ -47,93 +47,91 @@ export default function BasicInformationForm({
   };
 
   return (
-    <div className="container">
-      <>
-        <section
-          style={{
-            margin: "2rem auto 0",
-            maxWidth: theme.layout.width.interior,
-          }}
-        >
-          {renderButton()}
+    <>
+      <section
+        style={{
+          margin: "2rem auto 0",
+          maxWidth: theme.layout.width.interior,
+        }}
+      >
+        {renderButton()}
 
-          <Formik
-            enableReinitialize
-            initialValues={{
-              name: initial.name,
-              location: initial.location,
-              website: initial.website,
-            }}
-            validateOnBlur={validateAfterSubmit}
-            validateOnChange={validateAfterSubmit}
-            validate={() => setValidateAfterSubmit(true)}
-            onSubmit={(values) => {
-              setLoading(true);
-              onSubmit(values);
-            }}
-            validationSchema={Yup.object().shape({
-              name: Yup.string().required(
-                "We need to know what to call you. Name is required."
+        <Formik
+          enableReinitialize
+          initialValues={{
+            name: initial.name,
+            location: initial.location,
+            website: initial.website,
+          }}
+          validateOnBlur={validateAfterSubmit}
+          validateOnChange={validateAfterSubmit}
+          validate={() => setValidateAfterSubmit(true)}
+          onSubmit={(values) => {
+            setLoading(true);
+            onSubmit(values);
+          }}
+          validationSchema={Yup.object().shape({
+            name: Yup.string().required(
+              "We need to know what to call you. Name is required."
+            ),
+            location: Yup.string().required(
+              "A location, imprecise or not, is required."
+            ),
+            website: Yup.string()
+              .matches(
+                urlRegex({ strict: false }),
+                "That URL looks funny. Please try again."
+              )
+              .required(
+                "A website is required; think about a place where people can learn more about you."
               ),
-              location: Yup.string().required(
-                "A location, imprecise or not, is required."
-              ),
-              website: Yup.string()
-                .matches(
-                  urlRegex({ strict: false }),
-                  "That URL looks funny. Please try again."
-                )
-                .required(
-                  "A website is required; think about a place where people can learn more about you."
-                ),
-            })}
-          >
-            {(props) => (
-              <form onSubmit={props.handleSubmit}>
-                <div style={{ marginBottom: "2rem" }}>
-                  <Input
-                    name="name"
-                    label="What’s your name?"
-                    value={props.values.name}
-                    labelTranslation="ʻO wai kou inoa?"
-                    placeholder="Full name"
-                    onBlur={props.handleBlur}
-                    onChange={props.handleChange}
-                    error={props.touched.name && props.errors.name}
-                  />
-                </div>
-                <div style={{ marginBottom: "2rem" }}>
-                  <Input
-                    name="location"
-                    value={props.values.location}
-                    label="Where you stay now days?"
-                    labelTranslation="Ma hea ʻoe e noho ʻana?"
-                    placeholder="Island/City, State"
-                    onBlur={props.handleBlur}
-                    onChange={props.handleChange}
-                    error={props.touched.location && props.errors.location}
-                  />
-                </div>
+          })}
+        >
+          {(props) => (
+            <form onSubmit={props.handleSubmit}>
+              <div style={{ marginBottom: "2rem" }}>
                 <Input
-                  name="website"
-                  value={props.values.website}
-                  label="What’s your LinkedIn / professional website?"
-                  labelTranslation="He aha kou wahi uila ’oihana?"
+                  name="name"
+                  label="What’s your name?"
+                  value={props.values.name}
+                  labelTranslation="ʻO wai kou inoa?"
+                  placeholder="Full name"
                   onBlur={props.handleBlur}
                   onChange={props.handleChange}
-                  error={props.touched.website && props.errors.website}
+                  error={props.touched.name && props.errors.name}
                 />
+              </div>
+              <div style={{ marginBottom: "2rem" }}>
+                <Input
+                  name="location"
+                  value={props.values.location}
+                  label="Where you stay now days?"
+                  labelTranslation="Ma hea ʻoe e noho ʻana?"
+                  placeholder="Island/City, State"
+                  onBlur={props.handleBlur}
+                  onChange={props.handleChange}
+                  error={props.touched.location && props.errors.location}
+                />
+              </div>
+              <Input
+                name="website"
+                value={props.values.website}
+                label="What’s your LinkedIn / professional website?"
+                labelTranslation="He aha kou wahi uila ’oihana?"
+                onBlur={props.handleBlur}
+                onChange={props.handleChange}
+                error={props.touched.website && props.errors.website}
+              />
 
-                <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
-                  <Button fullWidth loading={loading} type="submit">
-                    Continue
-                  </Button>
-                </div>
-              </form>
-            )}
-          </Formik>
-        </section>
-      </>
-    </div>
+              <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
+                <Button fullWidth loading={loading} type="submit">
+                  Continue
+                </Button>
+              </div>
+            </form>
+          )}
+        </Formik>
+      </section>
+    </>
   );
 }
