@@ -97,7 +97,7 @@ export default function JoinStep2({ focuses }) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader />
+      <JoinHeader backUrl="01-you" />
       <div className="container">
         <Heading>Requesting changes for {userData.name}</Heading>
         <WorkExperience

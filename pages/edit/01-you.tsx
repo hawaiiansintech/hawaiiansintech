@@ -55,7 +55,7 @@ export default function JoinStep1(props) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader />
+      <JoinHeader backUrl="/edit" />
       <div className="container">
         <Heading>Requesting changes for {data.name}</Heading>
         <BasicInformationForm

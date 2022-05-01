@@ -63,7 +63,7 @@ export default function JoinStep1(props) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader showModify toggleEdit={handleToggle}>
+      <JoinHeader toggle={{ onClick: handleToggle, show: true }}>
         <ProgressBar
           headline="Public"
           label="Who You Are"

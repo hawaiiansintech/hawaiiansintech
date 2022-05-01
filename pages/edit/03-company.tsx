@@ -94,7 +94,7 @@ export default function JoinStep3({ industries }) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader />
+      <JoinHeader backUrl="02-work" />
       <div className="container">
         <Heading>Requesting changes for {userData?.name}</Heading>
         <CompanyIndustry

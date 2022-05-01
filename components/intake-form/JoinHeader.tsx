@@ -5,31 +5,40 @@ import { cssHelperButtonReset } from "styles/global";
 import theme from "styles/theme";
 
 interface JoinHeaderProps {
+  backUrl?: string;
   children?: React.ReactNode;
-  hideCenter?: boolean;
-  showModify?: boolean;
-  toggleEdit?: (any) => void;
+  toggle?: {
+    byline?: string;
+    headline?: string;
+    onClick?: (any) => void;
+    show?: boolean;
+  };
 }
 
 export default function JoinHeader({
+  backUrl = "/",
   children,
-  showModify,
-  hideCenter,
-  toggleEdit,
+  toggle,
 }: JoinHeaderProps) {
   return (
     <header className="join-header">
       <nav className="join-header__nav">
         <div style={{ display: "flex", alignItems: "center" }}>
-          <Link href={"/"} shallow={true}>
+          <Link href={backUrl} shallow={true}>
             <a className="back-link">
               <Icon asset={IconAsset.CaretLeft} color={IconColor.Inherit} />
             </a>
           </Link>
-          {showModify && <JoinHeaderNav toggleEdit={toggleEdit} />}
+          {toggle?.show && (
+            <JoinHeaderToggle
+              byline={toggle?.byline || "On the List?"}
+              headline={toggle?.headline || "Request Changes"}
+              toggleEdit={toggle?.onClick}
+            />
+          )}
         </div>
       </nav>
-      {hideCenter ? null : <div className="join-header__main">{children}</div>}
+      {children ? <div className="join-header__main">{children}</div> : null}
       <div className="join-header__logo">
         <HitLogo />
       </div>
@@ -92,15 +101,21 @@ export default function JoinHeader({
   );
 }
 
-interface JoinHeaderNavProps {
+interface JoinHeaderToggleProps {
+  headline: string;
+  byline: string;
   toggleEdit?: (any) => void;
 }
 
-function JoinHeaderNav({ toggleEdit }: JoinHeaderNavProps) {
+export function JoinHeaderToggle({
+  byline,
+  headline,
+  toggleEdit,
+}: JoinHeaderToggleProps) {
   return (
     <button onClick={toggleEdit}>
-      <h4>On the list?</h4>
-      <h3>Request Changes</h3>
+      <h4>{byline}</h4>
+      <h3>{headline}</h3>
       <style jsx>{`
         button {
           ${cssHelperButtonReset}

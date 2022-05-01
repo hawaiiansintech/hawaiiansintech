@@ -95,7 +95,7 @@ export default function JoinStep4() {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader />
+      <JoinHeader backUrl="03-company" />
       <div className="container">
         <Heading>Requesting changes for {userData.name}</Heading>
         {userData.emailAbbr && (

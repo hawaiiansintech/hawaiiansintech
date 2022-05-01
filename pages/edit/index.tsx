@@ -1,5 +1,4 @@
 import Button, { ButtonSize } from "@/components/Button";
-import ProgressBar from "@/components/form/ProgressBar";
 import { Heading } from "@/components/Heading";
 import JoinHeader from "@/components/intake-form/JoinHeader";
 import MetaTags from "@/components/Metatags";
@@ -54,14 +53,14 @@ export default function RequestForm({ onToggle }: RequestFormProps) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader hideCenter showModify toggleEdit={handleToggle}>
-        <ProgressBar
-          headline="Public"
-          label="Who You Are"
-          currentCount={1}
-          totalCount={4}
-        />
-      </JoinHeader>
+      <JoinHeader
+        toggle={{
+          headline: "Join the List",
+          byline: "Not on the List?",
+          show: true,
+          onClick: handleToggle,
+        }}
+      />
       <Heading>Request Changes</Heading>
       <div className="request-form">
         <label htmlFor="member-select">Request edit for:</label>
