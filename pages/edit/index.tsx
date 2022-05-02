@@ -42,10 +42,6 @@ export default function RequestForm({ onToggle }: RequestFormProps) {
     });
   };
 
-  const handleToggle = () => {
-    router.push({ pathname: `/join` });
-  };
-
   return (
     <>
       <Head>
@@ -53,15 +49,7 @@ export default function RequestForm({ onToggle }: RequestFormProps) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <Nav
-        backUrl="/"
-        toggle={{
-          byline: "Join the list",
-          headline: "Go back",
-          show: true,
-          onClick: handleToggle,
-        }}
-      />
+      <Nav backUrl="/join/01-you" />
       <Heading>Request Changes</Heading>
       <div className="request-form">
         <label htmlFor="member-select">Request edit for:</label>

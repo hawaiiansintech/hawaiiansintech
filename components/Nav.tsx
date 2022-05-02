@@ -41,7 +41,7 @@ export default function Nav({
                 <a>About</a>
               </Link>
 
-              <Link href="/join">
+              <Link href="/join/01-you">
                 <a>Join</a>
               </Link>
             </div>

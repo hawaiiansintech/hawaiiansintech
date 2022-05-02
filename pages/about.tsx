@@ -201,7 +201,12 @@ export default function About() {
           line-height: 140%;
           letter-spacing: 0.01em;
           display: flex;
-          margin-top: 8rem;
+          margin: 8rem 1rem 0;
+        }
+        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
+          .moreabout {
+            margin: 0 2rem;
+          }
         }
 
         .moreabout > div {
