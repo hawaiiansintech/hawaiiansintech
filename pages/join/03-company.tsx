@@ -11,8 +11,8 @@ import Selectable, {
   SelectableVariant,
 } from "@/components/form/Selectable";
 import { Heading } from "@/components/Heading";
-import JoinHeader from "@/components/intake-form/JoinHeader";
 import MetaTags from "@/components/Metatags.js";
+import Nav from "@/components/Nav";
 import { getIndustries } from "@/lib/api";
 import { useStorage, useWindowWidth } from "@/lib/hooks";
 import { FORM_LINKS, useInvalid } from "@/lib/utils";
@@ -154,7 +154,7 @@ export default function JoinStep3({ industries }) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader />
+      <Nav backUrl="02-work" />
 
       <Heading>Welcome to our little hui.</Heading>
       <section

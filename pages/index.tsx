@@ -1,5 +1,4 @@
 import FocusPicker, { FocusPickerFocus } from "@/components/FocusPicker";
-import HitLogo from "@/components/HitLogo";
 import MemberDirectory, { DirectoryMember } from "@/components/MemberDirectory";
 import MetaTags from "@/components/Metatags.js";
 import Nav from "@/components/Nav";
@@ -73,18 +72,14 @@ export default function Home({ allMembers, allFocuses }) {
 
   return (
     <>
-      <div className="container">
-        <Head>
-          <title>Hawaiians in Technology</title>
-          <link id="favicon" rel="alternate icon" href="/favicon.ico" />
-          <MetaTags />
-        </Head>
-
-        <HitLogo />
-        <Nav />
-        <div style={{ paddingTop: "26vh" }}>
-          <Title className="m0 p0" text="Hawaiians*in&nbsp;Technology" />
-        </div>
+      <Head>
+        <title>Hawaiians in Technology</title>
+        <link id="favicon" rel="alternate icon" href="/favicon.ico" />
+        <MetaTags />
+      </Head>
+      <Nav primaryNav={{ show: true }} />
+      <div className="home-splash">
+        <Title className="m0 p0" text="Hawaiians*in&nbsp;Technology" />
       </div>
       <div>
         <aside>
@@ -99,40 +94,49 @@ export default function Home({ allMembers, allFocuses }) {
           </h5>
         </aside>
         <main>{members && <MemberDirectory members={members} />}</main>
-        <style jsx>{`
+      </div>
+      <style jsx>{`
+        .home-splash {
+          margin: 0 1rem;
+          padding-top: 26vh;
+        }
+        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
+          .home-splash {
+            margin: 0 2rem;
+          }
+        }
+        main {
+          padding: 0 1rem;
+        }
+        @media screen and (min-width: ${theme.layout.breakPoints.medium}) {
           main {
             padding: 0 1rem;
           }
-          @media screen and (min-width: ${theme.layout.breakPoints.medium}) {
-            main {
-              padding: 0 1rem;
-            }
-          }
+        }
+        aside {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-end;
+          margin: 8rem 0 2rem;
+          padding: 0 1rem;
+        }
+        h5 {
+          margin: 0;
+          text-align: right;
+          font-size: 1.125rem;
+          color: ${theme.color.text.alt2};
+          font-weight: 400;
+        }
+        h5 strong {
+          color: ${theme.color.text.alt};
+          font-weight: 500;
+        }
+        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
           aside {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin: 8rem 0 2rem;
-            padding: 0 1rem;
+            padding: 0 2rem;
           }
-          h5 {
-            margin: 0;
-            text-align: right;
-            font-size: 1.125rem;
-            color: ${theme.color.text.alt2};
-            font-weight: 400;
-          }
-          h5 strong {
-            color: ${theme.color.text.alt};
-            font-weight: 500;
-          }
-          @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-            aside {
-              padding: 0 2rem;
-            }
-          }
-        `}</style>
-      </div>
+        }
+      `}</style>
     </>
   );
 }

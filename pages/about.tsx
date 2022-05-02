@@ -1,15 +1,14 @@
 import MetaTags from "@/components/Metatags.js";
+import Nav from "@/components/Nav";
 import { Title } from "@/components/Title.js";
 import { motion } from "framer-motion";
 import Head from "next/head";
 import Link from "next/link";
+import theme from "styles/theme";
 
 const item = {
   hidden: { opacity: 0, y: "15%" },
   show: { opacity: 1, y: "0%" },
-  transition: {
-    easing: "easeInOut",
-  },
 };
 
 const container = {
@@ -24,49 +23,47 @@ const container = {
 
 const DISCORD_URL = "https://discord.gg/p7338Z5MJQ";
 
-export default function Home({ technologists }) {
+export default function About() {
   return (
-    <div className="container">
+    <>
       <Head>
         <title>Hawaiians in Technology | About</title>
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
+      <Nav backUrl="/" />
 
-      <Link href="/" shallow={true}>
-        <a className="auxNav arrowback">←</a>
-      </Link>
-
-      <div style={{ paddingTop: "26vh" }}>
+      <div className="about-splash">
         <Title
           className="m0 p0"
           text="Hawaiians*in&nbsp;Technology&nbsp;is&nbsp;a"
           noAnimation
         />
-      </div>
 
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        exit="hidden"
-      >
-        <p className="f1 extend">
-          <motion.span variants={item}>
-            directory and community of <strong>Native Hawaiians</strong> in the
-          </motion.span>{" "}
-          <motion.span variants={item}>
-            <strong>technology industry</strong>. The goal is to connect,
-            inspire, provide
-          </motion.span>{" "}
-          <motion.span variants={item}>
-            representation, and promote the presence of Native Hawaiians
-          </motion.span>{" "}
-          <motion.span variants={item}>
-            who work in the technology industry.
-          </motion.span>{" "}
-        </p>
-      </motion.div>
+        <motion.div
+          variants={container}
+          initial="hidden"
+          animate="show"
+          exit="hidden"
+        >
+          <p className="f1 extend">
+            <motion.span variants={item}>
+              directory and community of <strong>Native Hawaiians</strong> in
+              the
+            </motion.span>{" "}
+            <motion.span variants={item}>
+              <strong>technology industry</strong>. The goal is to connect,
+              inspire, provide
+            </motion.span>{" "}
+            <motion.span variants={item}>
+              representation, and promote the presence of Native Hawaiians
+            </motion.span>{" "}
+            <motion.span variants={item}>
+              who work in the technology industry.
+            </motion.span>{" "}
+          </p>
+        </motion.div>
+      </div>
 
       <div className="moreabout">
         <div className="col-left">
@@ -183,6 +180,16 @@ export default function Home({ technologists }) {
       </div>
 
       <style jsx>{`
+        .about-splash {
+          margin: 0 1rem;
+          padding-top: 26vh;
+        }
+        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
+          .about-splash {
+            margin: 0 2rem;
+          }
+        }
+
         .extend {
           margin: 0;
           max-width: 24ch;
@@ -245,6 +252,6 @@ export default function Home({ technologists }) {
           }
         }
       `}</style>
-    </div>
+    </>
   );
 }

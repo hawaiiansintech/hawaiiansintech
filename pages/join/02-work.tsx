@@ -1,10 +1,10 @@
 import ProgressBar from "@/components/form/ProgressBar";
 import { Heading } from "@/components/Heading";
-import JoinHeader from "@/components/intake-form/JoinHeader";
 import WorkExperience, {
   WorkExperienceInitialProps,
 } from "@/components/intake-form/WorkExperience";
 import MetaTags from "@/components/Metatags.js";
+import Nav from "@/components/Nav";
 import { getFocuses } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
 import { FORM_LINKS, useInvalid } from "@/lib/utils";
@@ -85,7 +85,7 @@ export default function JoinStep2({ focuses }) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader />
+      <Nav backUrl="01-you" />
 
       <Heading>Welcome to our little hui.</Heading>
 

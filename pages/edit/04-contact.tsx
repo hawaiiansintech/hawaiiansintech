@@ -4,8 +4,8 @@ import ErrorMessage, {
 } from "@/components/form/ErrorMessage";
 import Input from "@/components/form/Input";
 import { Heading, Subheading } from "@/components/Heading";
-import JoinHeader from "@/components/intake-form/JoinHeader";
 import MetaTags from "@/components/Metatags.js";
+import Nav from "@/components/Nav";
 import { MemberPublic, MemberPublicEditing } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
 import { Formik } from "formik";
@@ -95,7 +95,7 @@ export default function JoinStep4() {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader backUrl="03-company" />
+      <Nav backUrl="03-company" />
       <div className="container">
         <Heading>Requesting changes for {userData.name}</Heading>
         {userData.emailAbbr && (

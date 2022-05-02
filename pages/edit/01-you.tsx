@@ -1,8 +1,8 @@
 import { Heading } from "@/components/Heading";
 import BasicInformationForm from "@/components/intake-form/BasicInformation";
-import JoinHeader from "@/components/intake-form/JoinHeader";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import MetaTags from "@/components/Metatags.js";
+import Nav from "@/components/Nav";
 import { MemberPublicEditing } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
 import { FORM_LINKS } from "@/lib/utils";
@@ -55,7 +55,7 @@ export default function JoinStep1(props) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader backUrl="/edit" />
+      <Nav backUrl="/edit" />
       <div className="container">
         <Heading>Requesting changes for {data.name}</Heading>
         <BasicInformationForm

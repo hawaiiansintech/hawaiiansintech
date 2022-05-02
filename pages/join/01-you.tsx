@@ -1,8 +1,8 @@
 import ProgressBar from "@/components/form/ProgressBar";
 import { Heading, Subheading } from "@/components/Heading";
 import BasicInformationForm from "@/components/intake-form/BasicInformation";
-import JoinHeader from "@/components/intake-form/JoinHeader";
 import MetaTags from "@/components/Metatags.js";
+import Nav from "@/components/Nav";
 import { useStorage } from "@/lib/hooks";
 import { clearAllStoredFields } from "@/lib/utils";
 import Head from "next/head";
@@ -63,7 +63,7 @@ export default function JoinStep1(props) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader toggle={{ onClick: handleToggle, show: true }} />
+      <Nav backUrl="/" toggle={{ onClick: handleToggle, show: true }} />
 
       <Heading>Welcome to our little hui.</Heading>
       <Subheading centered>

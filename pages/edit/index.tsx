@@ -1,7 +1,7 @@
 import Button, { ButtonSize } from "@/components/Button";
 import { Heading } from "@/components/Heading";
-import JoinHeader from "@/components/intake-form/JoinHeader";
 import MetaTags from "@/components/Metatags";
+import Nav from "@/components/Nav";
 import { MemberPublic } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
 import { FORM_LINKS } from "@/lib/utils";
@@ -53,7 +53,8 @@ export default function RequestForm({ onToggle }: RequestFormProps) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader
+      <Nav
+        backUrl="/"
         toggle={{
           byline: "Join the list",
           headline: "Go back",

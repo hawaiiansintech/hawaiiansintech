@@ -1,9 +1,9 @@
 import { Heading } from "@/components/Heading";
-import JoinHeader from "@/components/intake-form/JoinHeader";
 import WorkExperience, {
   WorkExperienceInitialProps,
 } from "@/components/intake-form/WorkExperience";
 import MetaTags from "@/components/Metatags.js";
+import Nav from "@/components/Nav";
 import { getFocuses, MemberPublicEditing } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
 import { FORM_LINKS } from "@/lib/utils";
@@ -97,7 +97,7 @@ export default function JoinStep2({ focuses }) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader backUrl="01-you" />
+      <Nav backUrl="01-you" />
       <div className="container">
         <Heading>Requesting changes for {userData.name}</Heading>
         <WorkExperience

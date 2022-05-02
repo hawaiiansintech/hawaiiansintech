@@ -5,8 +5,8 @@ import ErrorMessage, {
 import Input from "@/components/form/Input";
 import ProgressBar from "@/components/form/ProgressBar";
 import { Heading, Subheading } from "@/components/Heading";
-import JoinHeader from "@/components/intake-form/JoinHeader";
 import MetaTags from "@/components/Metatags.js";
+import Nav from "@/components/Nav";
 import { useStorage } from "@/lib/hooks";
 import { clearAllStoredFields, useInvalid } from "@/lib/utils";
 import { Formik } from "formik";
@@ -125,7 +125,7 @@ export default function JoinStep4() {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader />
+      <Nav backUrl="03-company" />
 
       <Heading>Welcome to our little hui.</Heading>
       <Subheading>
