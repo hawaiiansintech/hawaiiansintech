@@ -30,7 +30,8 @@ export default function BasicInformationForm({
           style={{
             border: `0.125rem solid ${theme.color.border.base}`,
             borderRadius: theme.borderRadius.sm,
-            padding: "1rem",
+            fontSize: "0.875rem",
+            padding: "0.5rem",
             marginBottom: "2rem",
             display: "flex",
             justifyContent: "center",
@@ -51,6 +52,7 @@ export default function BasicInformationForm({
       <section
         style={{
           margin: "2rem auto 0",
+          padding: "0 2rem",
           maxWidth: theme.layout.width.interior,
         }}
       >

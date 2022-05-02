@@ -13,6 +13,7 @@ export function Heading(props: HeadingProps) {
         .heading {
           max-width: ${theme.layout.width.interior};
           margin: 0 auto 2rem;
+          padding: 0 2rem;
           font-size: ${props.small ? "1.2rem" : "2.4rem"};
           font-weight: 500;
           text-align: center;
@@ -40,6 +41,7 @@ export function Subheading(props: SubheadingProps) {
           max-width: ${theme.layout.width.interior};
           color: ${theme.color.text.alt};
           margin: 0 auto;
+          padding: 0 2rem;
           text-align: center;
           font-size: 1.4rem;
           font-weight: 400;

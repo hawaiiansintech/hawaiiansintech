@@ -63,14 +63,8 @@ export default function JoinStep1(props) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader toggle={{ onClick: handleToggle, show: true }}>
-        <ProgressBar
-          headline="Public"
-          label="Who You Are"
-          currentCount={1}
-          totalCount={4}
-        />
-      </JoinHeader>
+      <JoinHeader toggle={{ onClick: handleToggle, show: true }} />
+
       <Heading>Welcome to our little hui.</Heading>
       <Subheading centered>
         To join the directory, we just ask that you are{" "}
@@ -82,6 +76,9 @@ export default function JoinStep1(props) {
         onSubmit={handleSubmit}
         onReset={handleReset}
       />
+      <div style={{ margin: "1rem 0 4rem" }}>
+        <ProgressBar currentCount={1} totalCount={4} width="6.4rem" />
+      </div>
     </>
   );
 }

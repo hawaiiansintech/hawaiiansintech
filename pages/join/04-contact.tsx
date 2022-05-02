@@ -125,69 +125,65 @@ export default function JoinStep4() {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader>
-        <ProgressBar
-          headline="Private"
-          label="How to Reach You"
-          currentCount={4}
-          totalCount={4}
-        />
-      </JoinHeader>
-      <div className="container">
-        <Heading>Welcome to our little hui.</Heading>
-        <Subheading>
-          This email will be used to confirm any changes to your profile going
-          forward. We <strong>will not</strong> share your contact information
-          without your permission.
-        </Subheading>
-        <section
-          style={{
-            margin: "2rem auto 0",
-            maxWidth: theme.layout.width.interior,
+      <JoinHeader />
+
+      <Heading>Welcome to our little hui.</Heading>
+      <Subheading>
+        This email will be used to confirm any changes to your profile going
+        forward. We <strong>will not</strong> share your contact information
+        without your permission.
+      </Subheading>
+      <section
+        style={{
+          margin: "2rem auto 0",
+          padding: "0 2rem",
+          maxWidth: theme.layout.width.interior,
+        }}
+      >
+        {error && (
+          <div style={{ marginBottom: "1rem" }}>
+            <ErrorMessage headline={error.headline} body={error.body} />
+          </div>
+        )}
+        <Formik
+          enableReinitialize
+          initialValues={{ email: email }}
+          validateOnBlur={validateAfterSubmit}
+          validateOnChange={validateAfterSubmit}
+          validate={() => setValidateAfterSubmit(true)}
+          onSubmit={(values) => {
+            handleSubmit(values);
           }}
+          validationSchema={Yup.object().shape({
+            email: Yup.string()
+              .email("That email doesn't look right. Please try again.")
+              .required(
+                "It's important that we can reach you. Email is required."
+              ),
+          })}
         >
-          {error && (
-            <div style={{ marginBottom: "1rem" }}>
-              <ErrorMessage headline={error.headline} body={error.body} />
-            </div>
+          {(props) => (
+            <form onSubmit={props.handleSubmit}>
+              <Input
+                name="email"
+                label="What’s your email?"
+                labelTranslation="He aha kou wahi leka uila?"
+                onBlur={props.handleBlur}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                error={props.touched.email && props.errors.email}
+              />
+              <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
+                <Button fullWidth loading={loading} type="submit">
+                  Submit
+                </Button>
+              </div>
+            </form>
           )}
-          <Formik
-            enableReinitialize
-            initialValues={{ email: email }}
-            validateOnBlur={validateAfterSubmit}
-            validateOnChange={validateAfterSubmit}
-            validate={() => setValidateAfterSubmit(true)}
-            onSubmit={(values) => {
-              handleSubmit(values);
-            }}
-            validationSchema={Yup.object().shape({
-              email: Yup.string()
-                .email("That email doesn't look right. Please try again.")
-                .required(
-                  "It's important that we can reach you. Email is required."
-                ),
-            })}
-          >
-            {(props) => (
-              <form onSubmit={props.handleSubmit}>
-                <Input
-                  name="email"
-                  label="What’s your email?"
-                  labelTranslation="He aha kou wahi leka uila?"
-                  onBlur={props.handleBlur}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  error={props.touched.email && props.errors.email}
-                />
-                <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
-                  <Button fullWidth loading={loading} type="submit">
-                    Submit
-                  </Button>
-                </div>
-              </form>
-            )}
-          </Formik>
-        </section>
+        </Formik>
+      </section>
+      <div style={{ margin: "1rem 0 4rem" }}>
+        <ProgressBar currentCount={4} totalCount={4} width="6.4rem" />
       </div>
     </>
   );

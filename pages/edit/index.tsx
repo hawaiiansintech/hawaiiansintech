@@ -55,8 +55,8 @@ export default function RequestForm({ onToggle }: RequestFormProps) {
       </Head>
       <JoinHeader
         toggle={{
-          headline: "Join the List",
-          byline: "Not on the List?",
+          byline: "Join the list",
+          headline: "Go back",
           show: true,
           onClick: handleToggle,
         }}

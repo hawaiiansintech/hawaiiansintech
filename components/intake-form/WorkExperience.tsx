@@ -127,6 +127,7 @@ export default function WorkExperience({
       <section
         style={{
           margin: "0 auto 1rem",
+          padding: "0 2rem",
           maxWidth: theme.layout.width.interior,
         }}
       >

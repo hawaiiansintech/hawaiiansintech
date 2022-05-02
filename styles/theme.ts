@@ -49,7 +49,7 @@ const theme = {
   },
   layout: {
     width: {
-      interior: "42rem",
+      interior: "46rem",
     },
     breakPoints: {
       small: "40rem",

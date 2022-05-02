@@ -6,6 +6,7 @@ interface ProgressBarProps {
   label?: string;
   currentCount: number;
   totalCount: number;
+  width?: string;
 }
 
 const bar = {
@@ -22,6 +23,7 @@ export default function ProgressBar({
   label,
   currentCount,
   totalCount,
+  width,
 }: ProgressBarProps) {
   return (
     <div className="progress-bar">
@@ -59,7 +61,7 @@ export default function ProgressBar({
       <style jsx>{`
         .progress-bar {
           margin: 0 auto;
-          max-width: var(--width-page-interior);
+          max-width: ${width ? width : "var(--width-page-interior)"};
           text-align: center;
         }
         .progress-bar__segments {
@@ -70,7 +72,6 @@ export default function ProgressBar({
           grid-column-gap: 0.25rem;
           border-radius: 1rem;
           overflow: hidden;
-          max-width: 24rem;
           margin: 0 auto;
         }
         .progress-bar-segment {

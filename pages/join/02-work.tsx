@@ -85,28 +85,24 @@ export default function JoinStep2({ focuses }) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <JoinHeader>
-        <ProgressBar
-          headline="Public"
-          label="Talent Profile (1/2)"
-          currentCount={2}
-          totalCount={4}
-        />
-      </JoinHeader>
-      <div className="container">
-        <Heading>Welcome to our little hui.</Heading>
+      <JoinHeader />
 
-        <WorkExperience
-          initial={{
-            focuses: focuses,
-            focusesSelected: focusesSelected,
-            focusSuggested: focusSuggested,
-            title: title,
-            deferTitle: deferTitle,
-            yearsExperience: yearsExperience,
-          }}
-          onSubmit={handleSubmit}
-        />
+      <Heading>Welcome to our little hui.</Heading>
+
+      <WorkExperience
+        initial={{
+          focuses: focuses,
+          focusesSelected: focusesSelected,
+          focusSuggested: focusSuggested,
+          title: title,
+          deferTitle: deferTitle,
+          yearsExperience: yearsExperience,
+        }}
+        onSubmit={handleSubmit}
+      />
+
+      <div style={{ margin: "1rem 0 4rem" }}>
+        <ProgressBar currentCount={2} totalCount={4} width="6.4rem" />
       </div>
     </>
   );
