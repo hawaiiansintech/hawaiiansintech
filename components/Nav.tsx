@@ -76,6 +76,10 @@ export default function Nav({
         .primary-nav a {
           margin-right: 2rem;
           padding: 0.25rem;
+          color: ${theme.color.text.base};
+        }
+        .primary-nav a:hover {
+          color: ${theme.color.brand.base};
         }
         .back-link {
           display: block;
