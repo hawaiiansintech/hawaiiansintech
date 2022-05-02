@@ -85,7 +85,7 @@ export default function Nav({
           display: block;
           border-radius: ${theme.borderRadius.sm};
           color: ${theme.color.text.alt};
-          padding: 0.25rem 0.5rem;
+          padding: 0.25rem;
           margin-right: 2rem;
           transition: all 70ms ease-out;
         }
