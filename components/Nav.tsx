@@ -42,7 +42,9 @@ export default function Nav({
               </Link>
 
               <Link href="/join/01-you">
-                <a>Join</a>
+                <a>
+                  Join <span>/</span> Request Changes
+                </a>
               </Link>
             </div>
           ) : null}
@@ -80,6 +82,11 @@ export default function Nav({
         }
         .primary-nav a:hover {
           color: ${theme.color.brand.base};
+        }
+        .primary-nav a span {
+          color: ${theme.color.brand.base};
+          opacity: 0.5;
+          padding: 0 0.125rem;
         }
         .back-link {
           display: block;
