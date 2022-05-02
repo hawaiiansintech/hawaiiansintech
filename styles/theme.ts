@@ -1,12 +1,12 @@
 const theme = {
   color: {
     brand: {
-      base: "#fc7442",
-      alpha: "#fc744233",
-      alt: "#ec4427",
+      base: "#CB6A13",
+      alpha: "#CB6A1333",
+      alt: "#AD5A10",
       faded: "#cf8870",
     },
-    link: { base: "#fc7442", alt: "#ec4427" },
+    link: { base: "#CB6A13", alt: "#AD5A10" },
     text: {
       base: "#373332",
       alt: "#585150",
