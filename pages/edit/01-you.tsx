@@ -1,3 +1,4 @@
+import ProgressBar from "@/components/form/ProgressBar";
 import { Heading } from "@/components/Heading";
 import BasicInformationForm from "@/components/intake-form/BasicInformation";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -56,16 +57,17 @@ export default function JoinStep1(props) {
         <MetaTags />
       </Head>
       <Nav backUrl="/edit" />
-      <div className="container">
-        <Heading>Requesting changes for {data.name}</Heading>
-        <BasicInformationForm
-          initial={{
-            name: data.name,
-            location: `${data.location}, ${data.region}`,
-            website: data.link,
-          }}
-          onSubmit={handleSubmit}
-        />
+      <Heading>Requesting changes for {data.name}</Heading>
+      <BasicInformationForm
+        initial={{
+          name: data.name,
+          location: `${data.location}, ${data.region}`,
+          website: data.link,
+        }}
+        onSubmit={handleSubmit}
+      />
+      <div style={{ margin: "1rem 0 4rem" }}>
+        <ProgressBar currentCount={1} totalCount={4} width="6.4rem" />
       </div>
     </>
   );

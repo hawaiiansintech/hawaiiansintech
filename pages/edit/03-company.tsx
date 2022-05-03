@@ -1,3 +1,4 @@
+import ProgressBar from "@/components/form/ProgressBar";
 import { Heading } from "@/components/Heading";
 import CompanyIndustry, {
   CompanyIndustryInitialProps,
@@ -95,20 +96,20 @@ export default function JoinStep3({ industries }) {
         <MetaTags />
       </Head>
       <Nav backUrl="02-work" />
-      <div className="container">
-        <Heading>Requesting changes for {userData?.name}</Heading>
-        <CompanyIndustry
-          initial={{
-            industries: industries,
-            deferIndustry:
-              userData?.industry?.length === 0 ? undefined : "true",
-            industriesSelected: userData?.industry
-              ? userData?.industry.map((ind) => ind.id)
-              : [],
-            companySize: userData?.companySize || "",
-          }}
-          onSubmit={handleSubmit}
-        />
+      <Heading>Requesting changes for {userData?.name}</Heading>
+      <CompanyIndustry
+        initial={{
+          industries: industries,
+          deferIndustry: userData?.industry?.length === 0 ? undefined : "true",
+          industriesSelected: userData?.industry
+            ? userData?.industry.map((ind) => ind.id)
+            : [],
+          companySize: userData?.companySize || "",
+        }}
+        onSubmit={handleSubmit}
+      />
+      <div style={{ margin: "1rem 0 4rem" }}>
+        <ProgressBar currentCount={3} totalCount={4} width="6.4rem" />
       </div>
     </>
   );

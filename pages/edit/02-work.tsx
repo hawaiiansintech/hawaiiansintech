@@ -1,3 +1,4 @@
+import ProgressBar from "@/components/form/ProgressBar";
 import { Heading } from "@/components/Heading";
 import WorkExperience, {
   WorkExperienceInitialProps,
@@ -98,19 +99,20 @@ export default function JoinStep2({ focuses }) {
         <MetaTags />
       </Head>
       <Nav backUrl="01-you" />
-      <div className="container">
-        <Heading>Requesting changes for {userData.name}</Heading>
-        <WorkExperience
-          initial={{
-            focuses: focuses || [],
-            focusesSelected: userData?.focus?.map((foc) => foc.id) || [],
-            focusSuggested: editedData?.focusSuggested || undefined,
-            title: userData?.title || "",
-            deferTitle: userData?.title ? undefined : "true",
-            yearsExperience: userData?.yearsExperience || "",
-          }}
-          onSubmit={handleSubmit}
-        />
+      <Heading>Requesting changes for {userData.name}</Heading>
+      <WorkExperience
+        initial={{
+          focuses: focuses || [],
+          focusesSelected: userData?.focus?.map((foc) => foc.id) || [],
+          focusSuggested: editedData?.focusSuggested || undefined,
+          title: userData?.title || "",
+          deferTitle: userData?.title ? undefined : "true",
+          yearsExperience: userData?.yearsExperience || "",
+        }}
+        onSubmit={handleSubmit}
+      />
+      <div style={{ margin: "1rem 0 4rem" }}>
+        <ProgressBar currentCount={2} totalCount={4} width="6.4rem" />
       </div>
     </>
   );

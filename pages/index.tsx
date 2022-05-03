@@ -28,7 +28,7 @@ export async function getStaticProps() {
   };
 }
 
-export default function Home({ allMembers, allFocuses }) {
+export default function HomePage({ allMembers, allFocuses }) {
   const [members, setMembers] = useState<DirectoryMember[]>(allMembers);
   const [focuses, setFocuses] = useState<FocusPickerFocus[]>(allFocuses);
 

@@ -114,6 +114,7 @@ export default function CompanyIndustry({
       <section
         style={{
           margin: "0 auto 1rem",
+          padding: "0 2rem",
           maxWidth: theme.layout.width.interior,
         }}
       >

@@ -3,6 +3,7 @@ import ErrorMessage, {
   ErrorMessageProps,
 } from "@/components/form/ErrorMessage";
 import Input from "@/components/form/Input";
+import ProgressBar from "@/components/form/ProgressBar";
 import { Heading, Subheading } from "@/components/Heading";
 import MetaTags from "@/components/Metatags.js";
 import Nav from "@/components/Nav";
@@ -96,58 +97,59 @@ export default function JoinStep4() {
         <MetaTags />
       </Head>
       <Nav backUrl="03-company" />
-      <div className="container">
-        <Heading>Requesting changes for {userData.name}</Heading>
-        {userData.emailAbbr && (
-          <Subheading centered>
-            We'll take a look, then confirm any changes with you at{" "}
-            <strong>{`${userData.emailAbbr[0]}...${userData.emailAbbr[1]}${userData.emailAbbr[2]}`}</strong>
-            . Mahalo for your patience!
-          </Subheading>
+      <Heading>Requesting changes for {userData.name}</Heading>
+      {userData.emailAbbr && (
+        <Subheading centered>
+          We'll take a look, then confirm any changes with you at{" "}
+          <strong>{`${userData.emailAbbr[0]}...${userData.emailAbbr[1]}${userData.emailAbbr[2]}`}</strong>
+          . Mahalo for your patience!
+        </Subheading>
+      )}
+      <section
+        style={{
+          margin: "2rem auto 0",
+          maxWidth: theme.layout.width.interior,
+        }}
+      >
+        {error && (
+          <div style={{ marginBottom: "1rem" }}>
+            <ErrorMessage headline={error.headline} body={error.body} />
+          </div>
         )}
-        <section
-          style={{
-            margin: "2rem auto 0",
-            maxWidth: theme.layout.width.interior,
-          }}
-        >
-          {error && (
-            <div style={{ marginBottom: "1rem" }}>
-              <ErrorMessage headline={error.headline} body={error.body} />
-            </div>
-          )}
-          <DiffTable userData={userData} editedData={editedData} />
+        <DiffTable userData={userData} editedData={editedData} />
 
-          <Formik
-            enableReinitialize
-            initialValues={{ other: other }}
-            onSubmit={(values) => {
-              handleSubmit(values);
-            }}
-            validationSchema={Yup.object().shape({
-              other: Yup.string(),
-            })}
-          >
-            {(props) => (
-              <form onSubmit={props.handleSubmit}>
-                <Input
-                  name="other"
-                  label="Any issues? Anything else?"
-                  labelTranslation="He aha nā mea a pau?"
-                  onBlur={props.handleBlur}
-                  value={other}
-                  onChange={(e) => setOther(e.target.value)}
-                  error={props.touched.other && props.errors.other}
-                />
-                <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
-                  <Button fullWidth loading={loading} type="submit">
-                    Submit
-                  </Button>
-                </div>
-              </form>
-            )}
-          </Formik>
-        </section>
+        <Formik
+          enableReinitialize
+          initialValues={{ other: other }}
+          onSubmit={(values) => {
+            handleSubmit(values);
+          }}
+          validationSchema={Yup.object().shape({
+            other: Yup.string(),
+          })}
+        >
+          {(props) => (
+            <form onSubmit={props.handleSubmit}>
+              <Input
+                name="other"
+                label="Any issues? Anything else?"
+                labelTranslation="He aha nā mea a pau?"
+                onBlur={props.handleBlur}
+                value={other}
+                onChange={(e) => setOther(e.target.value)}
+                error={props.touched.other && props.errors.other}
+              />
+              <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
+                <Button fullWidth loading={loading} type="submit">
+                  Submit
+                </Button>
+              </div>
+            </form>
+          )}
+        </Formik>
+      </section>
+      <div style={{ margin: "1rem 0 4rem" }}>
+        <ProgressBar currentCount={4} totalCount={4} width="6.4rem" />
       </div>
     </>
   );
