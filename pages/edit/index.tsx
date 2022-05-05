@@ -1,5 +1,5 @@
 import Button, { ButtonSize } from "@/components/Button";
-import { Heading } from "@/components/Heading";
+import { Heading, Subheading } from "@/components/Heading";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { MemberPublic } from "@/lib/api";
@@ -11,6 +11,41 @@ import { useEffect, useState } from "react";
 import theme from "styles/theme";
 
 export default function EditPage() {
+  return (
+    <>
+      <Head>
+        <title>Hawaiians in Technology | Request Changes</title>
+        <link rel="icon" href="/favicon.ico" />
+        <MetaTags />
+      </Head>
+      <Nav backUrl="/join/01-you" />
+      <Heading>Request Changes</Heading>
+      <Subheading centered>Welcome back, Hawaiian.</Subheading>
+      <RequestForm />
+      <NewFeatures />
+    </>
+  );
+}
+
+const features: { title: string; description: string }[] = [
+  {
+    title: "Field of Work",
+    description: "Core discipline and craft in the industry",
+  },
+  {
+    title: "Years of Experience",
+    description: "Level of expertise in your field",
+  },
+  {
+    title: "Industry",
+    description: "Broader domain / business you work within",
+  },
+  {
+    title: "Job title",
+    description: "The title that hangs from your name tag",
+  },
+];
+function RequestForm() {
   const router = useRouter();
   const { setItem, removeItem } = useStorage();
   const [members, setMembers] = useState<MemberPublic[]>([]);
@@ -37,47 +72,37 @@ export default function EditPage() {
       pathname: `/edit/${FORM_LINKS[0]}`,
     });
   };
-
   return (
-    <>
-      <Head>
-        <title>Hawaiians in Technology | Request Changes</title>
-        <link rel="icon" href="/favicon.ico" />
-        <MetaTags />
-      </Head>
-      <Nav backUrl="/join/01-you" />
-      <Heading>Request Changes</Heading>
-      <div className="request-form">
-        <label htmlFor="member-select">Request edit for:</label>
-        <div className="request-form__input">
-          <select
-            name="member-select"
-            id="member-select"
-            onChange={(e) => {
-              setMemberSelected(
-                members.find((member) => member.id === e.target.value)
-              );
-            }}
-          >
-            {members?.length > 0 ? (
-              <option value="">Please choose an option</option>
-            ) : (
-              <option value="">loading</option>
-            )}
-            {members?.map((member: MemberPublic) => (
-              <option value={member.id} key={`member-${member.id}`}>
-                {member.name}
-              </option>
-            ))}
-          </select>
-          {memberSelected && (
-            <Button size={ButtonSize.Small} onClick={handleSubmit}>
-              Continue
-            </Button>
+    <div className="request-form">
+      <label htmlFor="member-select">Request edit for:</label>
+      <div className="request-form__input">
+        <select
+          name="member-select"
+          id="member-select"
+          onChange={(e) => {
+            setMemberSelected(
+              members.find((member) => member.id === e.target.value)
+            );
+          }}
+        >
+          {members?.length > 0 ? (
+            <option value="">Please choose an option</option>
+          ) : (
+            <option value="">loading</option>
           )}
-        </div>
+          {members?.map((member: MemberPublic) => (
+            <option value={member.id} key={`member-${member.id}`}>
+              {member.name}
+            </option>
+          ))}
+        </select>
+        {memberSelected && (
+          <Button size={ButtonSize.Small} onClick={handleSubmit}>
+            Continue
+          </Button>
+        )}
       </div>
-      <NewFeatures />
+
       <style jsx>{`
         .request-form {
           display: flex;
@@ -85,7 +110,7 @@ export default function EditPage() {
           align-items: center;
           padding: 0 2rem;
           gap: 0.5rem;
-          margin: 0 auto 1rem;
+          margin: 1.5rem auto 1rem;
           max-width: ${theme.layout.width.interior};
           z-index: ${theme.layout.zIndex.above};
         }
@@ -102,17 +127,6 @@ export default function EditPage() {
           grid-row-gap: 0.5rem;
           margin-bottom: 1rem;
         }
-        h3 {
-          margin: 2rem 0 0.5rem;
-          font-size: 1.6rem;
-          font-weight: 400;
-          color: ${theme.color.text.alt};
-        }
-        h4 {
-          margin: 1rem 0 0.5rem;
-          font-size: 1.2rem;
-          font-weight: 400;
-        }
         label {
           margin: 0;
           white-space: nowrap;
@@ -124,34 +138,16 @@ export default function EditPage() {
           font-size: 1.25rem;
         }
       `}</style>
-    </>
+    </div>
   );
 }
 
-const features: { title: string; description: string }[] = [
-  {
-    title: "Field of Work",
-    description: "Core discipline and craft in the industry",
-  },
-  {
-    title: "Years of Experience",
-    description: "Level of expertise in your field",
-  },
-  {
-    title: "Industry",
-    description: "Broader domain / business you work within",
-  },
-  {
-    title: "Job title",
-    description: "The title that hangs from your name tag",
-  },
-];
 function NewFeatures() {
   return (
     <div className="new-features">
       <div className="new-features__container">
         <h4 className="new-features__headline">
-          A few <span>NEW</span> fields to add to your profile:
+          Hui, get <span>NEW</span> fields to add to your profile:
         </h4>
         <ul className="new-features__list">
           {features.map((feature, i) => {
