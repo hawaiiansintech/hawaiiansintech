@@ -109,7 +109,8 @@ export default function JoinStep4() {
       <Heading>Requesting changes for {userData.name}</Heading>
       {userData.emailAbbr ? (
         <Subheading centered>
-          We'll take a look, then confirm any changes with you at{" "}
+          We'll take a quick moderation pass, then confirm any changes with you
+          at{" "}
           <strong>{`${userData.emailAbbr[0]}...${userData.emailAbbr[1]}${userData.emailAbbr[2]}`}</strong>
           . Mahalo for your patience!
         </Subheading>
@@ -207,6 +208,7 @@ const DiffTable = ({
   editedData: MemberPublicEditing;
   userData: MemberPublic;
 }) => {
+  console.log(editedData, userData);
   return (
     <div className="diff-table">
       {editedData.name && (
@@ -245,28 +247,22 @@ const DiffTable = ({
       {editedData.focus && (
         <>
           <div>
-            <strong>Focus</strong>
+            <strong>Field of Work</strong>
           </div>
           <div>
             <span>
               {userData.focus?.length
-                ? `${userData.focus.length} focus`
+                ? `${userData.focus?.length} focus${
+                    (userData?.focus?.length > 1 ||
+                      userData?.focus?.length === 0) &&
+                    "es"
+                  }`
                 : "None"}
-              {(userData?.focus?.length > 1 || userData?.focus?.length === 0) &&
-                "es"}
             </span>
             <span>
-              {[...editedData.focus, editedData.focusSuggested].length
-                ? `${
-                    [...editedData.focus, editedData.focusSuggested].length
-                      ? "1"
-                      : "0"
-                  } focus${
-                    [...editedData.focus, editedData.focusSuggested].length > 1
-                      ? "es"
-                      : ""
-                  }`
-                : "New focus"}
+              {[...editedData.focus, editedData.focusSuggested].filter(
+                (foc) => !!!foc
+              ).length > 0 && <>Updated</>}
             </span>
           </div>
         </>
@@ -293,7 +289,9 @@ const DiffTable = ({
           </div>
           <div>
             <span>
-              {userData.industry?.length ? userData.industry.length : "None"}
+              {userData.industry?.length
+                ? `${userData.industry.length} industr`
+                : "None"}
               {userData.industry?.length > 1 || userData.industry?.length === 0
                 ? "ies"
                 : userData.industry?.length
@@ -301,14 +299,9 @@ const DiffTable = ({
                 : ""}
             </span>
             <span>
-              {[...editedData.industry, editedData.industrySuggested].length}{" "}
-              industr
-              {[...editedData.industry, editedData.industrySuggested].length >
-                1 ||
-              [...editedData.industry, editedData.industrySuggested].length ===
-                0
-                ? "ies"
-                : "y"}
+              {[...editedData.industry, editedData.industrySuggested].filter(
+                (foc) => !!!foc
+              ).length > 0 && <>Updated</>}
             </span>
           </div>
         </>
