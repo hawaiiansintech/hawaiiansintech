@@ -50,11 +50,6 @@ export default function CompanyIndustry({
   const [loading, setLoading] = useState<boolean>(false);
   const [columnCount, setColumnCount] = useState<2 | 3>(3);
 
-  console.log(
-    `🍒 initial.companySize ${showNew && initial.companySize === ""}`
-  );
-  console.log(showNew && initial.companySize === "");
-
   const totalIndustriesSelected =
     industriesSelected.length + (industrySuggested ? 1 : 0);
   const isMaxSelected = totalIndustriesSelected >= MAX_COUNT;

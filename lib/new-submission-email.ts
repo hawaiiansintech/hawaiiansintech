@@ -13,7 +13,30 @@ const emailTemplate = ({
   name,
   email,
   removeRequest,
-}: NewSubmissionEmailProps) => `
+}: NewSubmissionEmailProps) => {
+  const MESSAGE_BODY = `
+  <p>Get started by opening up the <a href="https://airtable.com/${
+    process.env.AIRTABLE_BASE_NEW
+  }/tblQkhLLpdJ7YYsx2">Airtable requests table</a>.</p>
+  <p><strong>1. Check the request for the "Anything else?" field first${
+    removeRequest ? ", beyond the request to remove." : "."
+  }</strong> Just in case there are special requests or instructions.</p>
+  <p><strong>2. ${
+    email
+      ? `Reach out to ${name} at ${email} about the ${
+          removeRequest
+            ? "removal.</strong>"
+            : "changes.</strong> This is a good way for us to connect with members. One day, we'll build a tokenized/automated approach for requests that don't change freeform fields. One day."
+        }`
+      : `This is the awkward step. So, we don't have their email.</strong> We advised them to follow <a href='http://hawaiiansintech.org/edit/thank-you?emailNull=true'>these instructions</a>. So, now, we wait until they reach out through one of those listed "channels". If we don't hear back for awhile, confirm there wasn't a note.`
+  }</p>
+  <p><strong>3. Once we hear back,${
+    removeRequest
+      ? " take a deep breath.</strong> Okay, now right-click and delete the record."
+      : " move the member's status to Pending.</strong> Make the requested changes.</p><ul><li>If there were any updates to Location, we'll need to manually look over and the relevant Region (which is an indexed/searchable field).</li><li>If any freeform fields (location/title/suggested/etc.) were changed, check for misspelling. Remember to try use proper diacriticals (wehewehe.org is your friend).</li><li>If their URL was updated, make sure it works.</li></ul><p>Then move Status to Approved!"
+  }</p>
+  `;
+  return `
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -187,25 +210,7 @@ const emailTemplate = ({
     <tbody>
       <tr>
         <td style="padding:4px 0px 12px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: left">
-        <p>Get started by opening up the <a href="https://airtable.com/${
-          process.env.AIRTABLE_BASE_NEW
-        }/">Airtable</a>.</p>
-        ${
-          removeRequest
-            ? `<p><strong>1. ${
-                email
-                  ? `Confirm with ${email}.</strong>`
-                  : "Well, we don't have their email.</strong> Either wait or just do it."
-              } Once we delete, there's no going back.</p><p><strong>2. Delete their data.</strong> That's that.</p>`
-            : `<p><strong>1. Check the location.</strong> Set the region to indexed "Region". Add one if it does not exist.</p>
-        <p><strong>2. Check link.</strong> Make sure it goes somewhere legit.</p>
-        <p><strong>3. Check for spelling mistakes.</strong> Check place names, suggested fields, etc.</p>
-        <p><strong>4. ${
-          email
-            ? `Reach out to ${name} at ${email}.</strong> Then move Status to Approved!`
-            : "Shoot, we don't have their email.</strong> We advised them to follow <a href='http://hawaiiansintech.org/edit/thank-you?emailNull=true'>these instructions</a>. Now, we wait."
-        }.</p>`
-        }
+        ${MESSAGE_BODY}
         </div><div></div></div></td>
       </tr>
     </tbody>
@@ -232,6 +237,7 @@ const emailTemplate = ({
     </body>
   </html>
 `;
+};
 
 export async function sendNewSubmissionEmail({
   airtableID,
@@ -246,7 +252,7 @@ export async function sendNewSubmissionEmail({
       email: "aloha@hawaiiansintech.org",
       name: "Hawaiians in Tech",
     },
-    subject: removeRequest ? "Removal Request" : `New Request`,
+    subject: `New Request`,
     html: emailTemplate({
       airtableID: airtableID,
       name: name,

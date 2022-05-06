@@ -223,7 +223,6 @@ const DiffTable = ({
   editedData: MemberPublicEditing;
   userData: MemberPublic;
 }) => {
-  console.log(editedData, userData);
   return (
     <div className="diff-table">
       {editedData.name && (

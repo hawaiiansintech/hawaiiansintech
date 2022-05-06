@@ -53,6 +53,8 @@ function RequestForm() {
   const [memberSelected, setMemberSelected] = useState<MemberPublic>();
 
   useEffect(() => {
+    removeItem("userData");
+    removeItem("editedData");
     fetch("/api/get-members")
       .then((res) => res.json())
       .then((data) => {
@@ -63,6 +65,7 @@ function RequestForm() {
   useEffect(() => {
     // reset selection
     removeItem("userData");
+    removeItem("editedData");
     // add all items in storage
     if (!memberSelected) return;
     if (memberSelected) setItem("userData", JSON.stringify(memberSelected));
