@@ -89,9 +89,15 @@ const sendSgEmail = async ({
   email,
   airtableID,
   name,
+  removeRequest,
 }: NewSubmissionEmailProps) => {
   return new Promise((resolve, reject) => {
-    sendNewSubmissionEmail({ email: email, airtableID: airtableID, name: name })
+    sendNewSubmissionEmail({
+      email: email,
+      airtableID: airtableID,
+      name: name,
+      removeRequest: removeRequest,
+    })
       .then((response) => {
         resolve(response);
       })
@@ -121,6 +127,7 @@ export default async function handler(req, res) {
       email: req.body.email,
       name: req.body.name,
       airtableID: req.body.recordID,
+      removeRequest: req.body.removeRequest,
     }).then(() => {
       console.log("✅ sent member email via sendgrid");
     });

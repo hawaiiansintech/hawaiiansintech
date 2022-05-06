@@ -5,12 +5,14 @@ export interface NewSubmissionEmailProps {
   airtableID: string;
   name: string;
   email: string;
+  removeRequest?: boolean;
 }
 
 const emailTemplate = ({
   airtableID,
   name,
   email,
+  removeRequest,
 }: NewSubmissionEmailProps) => `
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml">
@@ -163,7 +165,9 @@ const emailTemplate = ({
   </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="c1d45e49-e730-4fd9-b793-f7a2f302faa5" data-mc-module-version="2019-10-22">
     <tbody>
       <tr>
-        <td style="padding:17px 0px 4px 0px; line-height:28px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 24px"><strong>New Request from ${name}</strong></span></div><div></div></div></td>
+        <td style="padding:17px 0px 4px 0px; line-height:28px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 24px"><strong>${
+          removeRequest ? "Removal Request from" : "New Request from"
+        } ${name}</strong></span></div><div></div></div></td>
       </tr>
     </tbody>
   </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="80092f30-00f3-4bfe-9c91-43068e62e34d.1" data-mc-module-version="2019-10-22">
@@ -186,14 +190,22 @@ const emailTemplate = ({
         <p>Get started by opening up the <a href="https://airtable.com/${
           process.env.AIRTABLE_BASE_NEW
         }/">Airtable</a>.</p>
-        <p><strong>1. Check the location.</strong> Set the region to indexed "Region". Add one if it does not exist.</p>
+        ${
+          removeRequest
+            ? `<p><strong>1. ${
+                email
+                  ? `Confirm with ${email}.</strong>`
+                  : "Well, we don't have their email.</strong> Either wait or just do it."
+              } Once we delete, there's no going back.</p><p><strong>2. Delete their data.</strong> That's that.</p>`
+            : `<p><strong>1. Check the location.</strong> Set the region to indexed "Region". Add one if it does not exist.</p>
         <p><strong>2. Check link.</strong> Make sure it goes somewhere legit.</p>
         <p><strong>3. Check for spelling mistakes.</strong> Check place names, suggested fields, etc.</p>
         <p><strong>4. ${
           email
             ? `Reach out to ${name} at ${email}.</strong> Then move Status to Approved!`
             : "Shoot, we don't have their email.</strong> We advised them to follow <a href='http://hawaiiansintech.org/edit/thank-you?emailNull=true'>these instructions</a>. Now, we wait."
-        }.</p>
+        }.</p>`
+        }
         </div><div></div></div></td>
       </tr>
     </tbody>
@@ -225,19 +237,21 @@ export async function sendNewSubmissionEmail({
   airtableID,
   name,
   email,
+  removeRequest,
 }: NewSubmissionEmailProps) {
   SendGrid.sendMultiple({
-    to: ["hawaiiansintech@tellaho.com", "emmit.parubrub@gmail.com"],
-    // to: ["hawaiiansintech@tellaho.com"],
+    // to: ["hawaiiansintech@tellaho.com", "emmit.parubrub@gmail.com"],
+    to: ["hawaiiansintech@tellaho.com"],
     from: {
       email: "aloha@hawaiiansintech.org",
       name: "Hawaiians in Tech",
     },
-    subject: `New Request`,
+    subject: removeRequest ? "Removal Request" : `New Request`,
     html: emailTemplate({
       airtableID: airtableID,
       name: name,
       email: email,
+      removeRequest: removeRequest,
     }),
   });
 }

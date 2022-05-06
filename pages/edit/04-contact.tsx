@@ -19,6 +19,7 @@ import * as Yup from "yup";
 
 export default function JoinStep4() {
   const router = useRouter();
+  const { removeRequest } = router.query;
   const { getItem, setItem, removeItem } = useStorage();
   const [other, setOther] = useState<string>("");
   const [userData, setUserData] = useState<MemberPublicEditing>({});
@@ -43,6 +44,7 @@ export default function JoinStep4() {
             : undefined,
           name: editedData.name || userData.name,
           airtableID: userData.id || "",
+          removeRequest: removeRequest,
         }),
       }).then(
         (response: Response) => {
@@ -111,11 +113,15 @@ export default function JoinStep4() {
         <MetaTags />
       </Head>
       <Nav backUrl="03-company" />
-      <Heading>Requesting changes for {userData.name}</Heading>
+      <Heading>
+        {removeRequest ? "Removal Request" : "Requesting changes"} for{" "}
+        {userData.name}
+      </Heading>
       {userData.emailAbbr ? (
         <Subheading centered>
-          We'll take a quick moderation pass, then confirm any changes with you
-          at{" "}
+          {removeRequest
+            ? "No hard feelings. We'll reach out to you at "
+            : "We'll take a quick moderation pass, then confirm any changes with you at "}
           <strong>{`${userData.emailAbbr[0]}...${userData.emailAbbr[1]}${userData.emailAbbr[2]}`}</strong>
           . Mahalo for your patience!
         </Subheading>
@@ -199,9 +205,13 @@ export default function JoinStep4() {
           )}
         </Formik>
       </section>
-      <div style={{ margin: "1rem 0 4rem" }}>
-        <ProgressBar currentCount={4} totalCount={4} width="6.4rem" />
-      </div>
+      {removeRequest ? (
+        <></>
+      ) : (
+        <div style={{ margin: "1rem 0 4rem" }}>
+          <ProgressBar currentCount={4} totalCount={4} width="6.4rem" />
+        </div>
+      )}
     </>
   );
 }

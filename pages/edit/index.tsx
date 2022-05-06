@@ -103,6 +103,13 @@ function RequestForm() {
           </Button>
         )}
       </div>
+      {memberSelected && (
+        <div className="remove-link">
+          <a href="edit/04-contact?removeRequest=true">
+            Please remove me from the list
+          </a>
+        </div>
+      )}
 
       <style jsx>{`
         .request-form {
@@ -137,6 +144,11 @@ function RequestForm() {
         select {
           flex-grow: 1;
           font-size: 1.25rem;
+        }
+        .remove-link {
+          margin-top: 0.5rem;
+          text-align: center;
+          width: 100%;
         }
       `}</style>
     </div>
