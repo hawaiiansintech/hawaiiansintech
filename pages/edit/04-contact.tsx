@@ -131,8 +131,8 @@ export default function JoinStep4() {
             <Tag>Verification needed</Tag>
             <div className="email-alert__content">
               <h3>
-                More details on how we'll verify after you submit this form.
-                Will be easy.{" "}
+                <strong>Shoot, we don't have your email.</strong> More details
+                on how we'll verify after you submit this form. Should be easy.{" "}
                 <strong>Anything else, use the field below.</strong>
               </h3>
             </div>
