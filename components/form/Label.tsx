@@ -1,35 +1,56 @@
-import React, { useState } from "react";
+import { motion } from "framer-motion";
+import React from "react";
 import theme from "styles/theme";
-import { cssHelperButtonReset } from "../../styles/global";
+import Tag from "../Tag";
 
 interface LabelProps {
-  hint?: React.ReactNode;
   htmlFor?: string;
   label: string;
   labelTranslation?: string;
+  tagged?: string;
 }
 
+const asideTransition = {
+  hidden: { opacity: 0, transform: "translateY(25%)" },
+  show: {
+    opacity: 1,
+    transform: "translateY(0%)",
+    transition: { duration: 0.5, ease: "anticipate", delay: 0.125 },
+  },
+};
+
 export default function Label({
-  hint,
   htmlFor,
   label,
   labelTranslation,
+  tagged,
 }: LabelProps) {
   return (
     <label htmlFor={htmlFor}>
       <div>
+        {tagged ? (
+          <motion.aside
+            variants={asideTransition}
+            initial="hidden"
+            animate="show"
+            style={{
+              margin: "0 0 0.5rem",
+            }}
+          >
+            <aside>
+              <Tag>{tagged}</Tag>
+            </aside>
+          </motion.aside>
+        ) : null}
         <main>
           <h3>{label}</h3>
           {labelTranslation && <h4>{labelTranslation}</h4>}
         </main>
-        <aside>{hint && <LabelHint hint={hint} />}</aside>
       </div>
       <style jsx>{`
         label {
           position: relative;
-        }
-        div {
-          display: flex;
+          display: block;
         }
         main {
           flex-grow: 1;
@@ -46,10 +67,6 @@ export default function Label({
           font-size: 1.4rem;
           font-weight: 600;
         }
-        span {
-          display: inline-flex;
-          margin-left: 0.5rem;
-        }
         h4 {
           font-size: 0.9rem;
           line-height: 150%;
@@ -59,111 +76,5 @@ export default function Label({
         }
       `}</style>
     </label>
-  );
-}
-
-interface LabelHintProps {
-  hint: string | React.ReactNode;
-}
-
-function LabelHint({ hint }: LabelHintProps) {
-  const [showHint, setShowHint] = useState<boolean>(false);
-  return (
-    <button
-      onMouseOver={() => setShowHint(true)}
-      onMouseOut={() => setShowHint(false)}
-      onClick={() => setShowHint(!showHint)}
-      type="button"
-    >
-      <span>
-        <InfoSVG highlight={showHint} />
-      </span>
-
-      <main>{hint}</main>
-
-      <style jsx>{`
-        button {
-          ${cssHelperButtonReset}
-          text-align: left;
-          display: inline-block;
-          position: relative;
-          cursor: pointer;
-          border: 1px solid transparent;
-          margin-left: 0.75rem;
-          border-radius: ${theme.borderRadius.xs};
-        }
-        button:focus {
-          border-color: var(--color-brand-alpha);
-        }
-        button:before {
-          // gives it a bigger hover area
-          content: "";
-          display: ${showHint ? "block" : "none"};
-          width: 2rem;
-          height: 100%;
-          position: absolute;
-          left: -2rem;
-        }
-        main {
-          position: absolute;
-          right: 0;
-          z-index: 100;
-          width: max-content;
-          max-width: 24rem;
-          border: 0.1rem solid ${theme.color.border.base};
-          background: ${theme.color.background.float};
-          padding: 0.5rem;
-          border-radius: ${theme.borderRadius.sm};
-          line-height: 150%;
-          font-size: 0.8rem;
-          color: ${theme.color.text.alt2};
-          font-weight: 400;
-          user-select: none;
-          pointer-events: ${showHint ? "initial" : "none"};
-          transform: ${showHint ? "translateY(0)" : "translateY(-0.5rem)"};
-          opacity: ${showHint ? "1" : "0"};
-          transition: ${showHint
-            ? "all 150ms ease-out"
-            : "all 150ms ease-out 250ms"};
-        }
-        header h3 {
-          margin: 0;
-          line-height: 120%;
-        }
-      `}</style>
-    </button>
-  );
-}
-
-interface InfoSVGProps {
-  highlight?: boolean;
-}
-
-function InfoSVG({ highlight }: InfoSVGProps) {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect width="20" height="20" rx="5" />
-      <path d="M7 7.5C7 7.22386 7.22386 7 7.5 7H11.5C11.7761 7 12 7.22386 12 7.5V14H13.5C13.7761 14 14 14.2239 14 14.5V16H7V14.5C7 14.2239 7.22386 14 7.5 14H9V9H7V7.5Z" />
-      <path d="M9 3.5C9 3.22386 9.22386 3 9.5 3H11.5C11.7761 3 12 3.22386 12 3.5V5.5C12 5.77614 11.7761 6 11.5 6H9.5C9.22386 6 9 5.77614 9 5.5V3.5Z" />
-      <style jsx>{`
-        rect {
-          fill: ${highlight
-            ? theme.color.brand.base
-            : theme.color.background.alt2};
-          transition: ${highlight
-            ? "all 150ms ease-out"
-            : "all 150ms ease-out 250ms"};
-        }
-        path {
-          fill: ${theme.color.text.overlay.alt2};
-        }
-      `}</style>
-    </svg>
   );
 }

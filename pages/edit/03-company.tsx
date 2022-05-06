@@ -107,6 +107,7 @@ export default function JoinStep3({ industries }) {
           companySize: userData?.companySize || "",
         }}
         onSubmit={handleSubmit}
+        showNew
       />
       <div style={{ margin: "1rem 0 4rem" }}>
         <ProgressBar currentCount={3} totalCount={4} width="6.4rem" />

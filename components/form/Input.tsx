@@ -8,8 +8,8 @@ interface InputProps {
   disabled?: boolean;
   error?: string;
   label?: string;
+  labelTagged?: string;
   labelTranslation?: string;
-  labelHint?: string | React.ReactNode;
   name: string;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => any;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => any;
@@ -24,12 +24,12 @@ export default function Input({
   disabled,
   error,
   label,
+  labelTagged,
   labelTranslation,
   name,
   onBlur,
   onChange,
   onFocus,
-  labelHint,
   placeholder,
   tabIndex,
   value,
@@ -43,7 +43,7 @@ export default function Input({
             htmlFor={nameKebab}
             label={label}
             labelTranslation={labelTranslation}
-            hint={labelHint}
+            tagged={labelTagged}
           />
         </div>
       )}

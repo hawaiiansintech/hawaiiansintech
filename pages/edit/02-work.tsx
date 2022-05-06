@@ -110,6 +110,7 @@ export default function JoinStep2({ focuses }) {
           yearsExperience: userData?.yearsExperience || "",
         }}
         onSubmit={handleSubmit}
+        showNew
       />
       <div style={{ margin: "1rem 0 4rem" }}>
         <ProgressBar currentCount={2} totalCount={4} width="6.4rem" />

@@ -2,6 +2,7 @@ import Button, { ButtonSize } from "@/components/Button";
 import { Heading, Subheading } from "@/components/Heading";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
+import Tag from "@/components/Tag";
 import { MemberPublic } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
 import { FORM_LINKS } from "@/lib/utils";
@@ -147,7 +148,7 @@ function NewFeatures() {
     <div className="new-features">
       <div className="new-features__container">
         <h4 className="new-features__headline">
-          Hui, get <span>NEW</span> fields to add to your profile:
+          Hui, get <Tag>NEW</Tag> fields to add to your profile:
         </h4>
         <ul className="new-features__list">
           {features.map((feature, i) => {
@@ -209,15 +210,6 @@ function NewFeatures() {
           font-size: 0.875em;
           margin: 0;
           color: ${theme.color.text.alt3};
-        }
-        span {
-          display: inline-block;
-          background: ${theme.color.brand.base};
-          color: ${theme.color.text.overlay.base};
-          font-size: 0.8em;
-          padding: 0.33em 0.5em;
-          line-height: 1;
-          border-radius: ${theme.borderRadius.xs};
         }
       `}</style>
     </div>

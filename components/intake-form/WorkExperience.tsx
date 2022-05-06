@@ -30,11 +30,13 @@ export interface WorkExperienceInitialProps {
 interface WorkExperienceProps {
   initial: WorkExperienceInitialProps;
   onSubmit?: (WorkExperienceInitialProps) => void;
+  showNew?: boolean;
 }
 
 export default function WorkExperience({
   initial,
   onSubmit,
+  showNew,
 }: WorkExperienceProps) {
   const width = useWindowWidth();
   const [columnCount, setColumnCount] = useState<2 | 3>(3);
@@ -132,10 +134,15 @@ export default function WorkExperience({
         }}
       >
         {error && <ErrorMessage headline={error.headline} body={error.body} />}
-        <div style={{ margin: "2rem 0" }}>
+        <div style={{ margin: "2rem 0 1rem" }}>
           <Label
             label="Which of the following best describes your field of work?"
             labelTranslation="He aha kou (mau) hana ʻoi a pau?"
+            tagged={
+              showNew && initial.focusesSelected.length === 0
+                ? "NEW"
+                : undefined
+            }
           />
         </div>
         <div style={{ marginTop: "1rem" }}>
@@ -207,6 +214,9 @@ export default function WorkExperience({
           <Label
             label="How many years of experience do you have in your field?"
             labelTranslation="Ehia ka makahiki o kou hana ʻana ma kou ʻoi hana?"
+            tagged={
+              showNew && initial.yearsExperience === "" ? "NEW" : undefined
+            }
           />
           <div
             style={{
@@ -244,6 +254,7 @@ export default function WorkExperience({
             value={deferTitle === "true" ? " " : title}
             disabled={deferTitle === "true"}
             onChange={(e) => setTitle(e.target.value)}
+            labelTagged={showNew && initial.title === "" ? "NEW" : undefined}
           />
           <div style={{ marginTop: "1rem", display: "inline-block" }}>
             <CheckBox

@@ -29,11 +29,13 @@ export interface CompanyIndustryInitialProps {
 interface CompanyIndustryProps {
   initial: CompanyIndustryInitialProps;
   onSubmit?: (CompanyIndustryInitialProps) => void;
+  showNew?: boolean;
 }
 
 export default function CompanyIndustry({
   initial,
   onSubmit,
+  showNew,
 }: CompanyIndustryProps) {
   const width = useWindowWidth();
   let industries: Industry[] = initial.industries;
@@ -47,6 +49,11 @@ export default function CompanyIndustry({
   const [error, setError] = useState<ErrorMessageProps>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [columnCount, setColumnCount] = useState<2 | 3>(3);
+
+  console.log(
+    `🍒 initial.companySize ${showNew && initial.companySize === ""}`
+  );
+  console.log(showNew && initial.companySize === "");
 
   const totalIndustriesSelected =
     industriesSelected.length + (industrySuggested ? 1 : 0);
@@ -124,6 +131,11 @@ export default function CompanyIndustry({
           <Label
             label="Which of the following best describes the industrie(s) that you work within?"
             labelTranslation="Ehia ka poʻe e hana ma kou wahi hana?"
+            tagged={
+              showNew && initial.industriesSelected.length === 0
+                ? "NEW"
+                : undefined
+            }
           />
           <div style={{ margin: "1rem auto 2rem" }}>
             <SelectableGrid columns={columnCount}>
@@ -225,6 +237,7 @@ export default function CompanyIndustry({
           <Label
             label="How many employees work at your company?"
             labelTranslation="Ehia ka poʻe e hana ma kou wahi hana?"
+            tagged={showNew && initial.companySize === "" ? "NEW" : undefined}
           />
           <div
             style={{
