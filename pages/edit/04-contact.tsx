@@ -112,7 +112,8 @@ export default function JoinStep4() {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <Nav backUrl="03-company" />
+
+      <Nav backUrl={removeRequest ? "/edit" : "03-company"} />
       <Heading>
         {removeRequest ? "Removal Request" : "Requesting changes"} for{" "}
         {userData.name}
