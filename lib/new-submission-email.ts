@@ -17,7 +17,7 @@ const emailTemplate = ({
   const MESSAGE_BODY = `
   <p>Get started by opening up the <a href="https://airtable.com/${
     process.env.AIRTABLE_BASE_NEW
-  }/tblQkhLLpdJ7YYsx2">Airtable requests table</a>.</p>
+  }/tblQkhLLpdJ7YYsx2">Requests table</a> on Airtable.</p>
   <p><strong>1. Check the request for the "Anything else?" field first${
     removeRequest ? ", beyond the request to remove." : "."
   }</strong> Just in case there are special requests or instructions.</p>
@@ -28,7 +28,7 @@ const emailTemplate = ({
             ? "removal.</strong>"
             : "changes.</strong> This is a good way for us to connect with members. One day, we'll build a tokenized/automated approach for requests that don't change freeform fields. One day."
         }`
-      : `This is the awkward step. So, we don't have their email.</strong> We advised them to follow <a href='http://hawaiiansintech.org/edit/thank-you?emailNull=true'>these instructions</a>. So, now, we wait until they reach out through one of those listed "channels". If we don't hear back for awhile, confirm there wasn't a note.`
+      : `This is the awkward step. So, we don't have their email.</strong> We advised them to follow <a href='http://hawaiiansintech.org/edit/thank-you?emailNull=true'>these instructions</a>. So, now, we wait.`
   }</p>
   <p><strong>3. Once we hear back,${
     removeRequest
@@ -73,7 +73,7 @@ const emailTemplate = ({
       color: #fc7442;
       text-decoration: none;
     }
-    p { margin: 0; padding: 0; }
+    p { margin: 0 0 12px; padding: 0; }
     table.wrapper {
       width:100% !important;
       table-layout: fixed;
