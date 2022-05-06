@@ -1,4 +1,7 @@
-import { sendEmail, SendEmailProps } from "@/lib/confirmation-email";
+import {
+  sendConfirmationEmail,
+  SendConfirmationEmailProps,
+} from "@/lib/confirmation-email";
 import Client from "@sendgrid/client";
 import SendGrid from "@sendgrid/mail";
 import airtable from "airtable";
@@ -163,9 +166,13 @@ const addSgContact = async (fields: MemberFields) => {
   });
 };
 
-const sendSgEmail = async ({ email, airtableID, name }: SendEmailProps) => {
+const sendSgEmail = async ({
+  email,
+  airtableID,
+  name,
+}: SendConfirmationEmailProps) => {
   return new Promise((resolve, reject) => {
-    sendEmail({ email: email, airtableID: airtableID, name: name })
+    sendConfirmationEmail({ email: email, airtableID: airtableID, name: name })
       .then((response) => {
         resolve(response);
       })

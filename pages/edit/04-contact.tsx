@@ -38,6 +38,11 @@ export default function JoinStep4() {
           userData,
           editedData,
           message: other,
+          email: userData.emailAbbr
+            ? `${userData.emailAbbr[0]}...${userData.emailAbbr[1]}${userData.emailAbbr[2]}`
+            : undefined,
+          name: editedData.name || userData.name,
+          airtableID: userData.id || "",
         }),
       }).then(
         (response: Response) => {

@@ -1,4 +1,8 @@
 import { MemberPublicEditing } from "@/lib/api";
+import {
+  NewSubmissionEmailProps,
+  sendNewSubmissionEmail,
+} from "@/lib/new-submission-email";
 import airtable from "airtable";
 
 airtable.configure({
@@ -81,12 +85,28 @@ ${getSummary()}`,
   });
 };
 
+const sendSgEmail = async ({
+  email,
+  airtableID,
+  name,
+}: NewSubmissionEmailProps) => {
+  return new Promise((resolve, reject) => {
+    sendNewSubmissionEmail({ email: email, airtableID: airtableID, name: name })
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Only POST requests allowed" });
   }
   try {
-    const fdsa = await addToAirtable({ ...req.body })
+    await addToAirtable({ ...req.body })
       .then((body) => {
         console.log("✅ added request to airtable");
         return body;
@@ -97,6 +117,13 @@ export default async function handler(req, res) {
           body: "Please try again later. If it happens again, try reach out to let us know!",
         });
       });
+    await sendSgEmail({
+      email: req.body.email,
+      name: req.body.name,
+      airtableID: req.body.recordID,
+    }).then(() => {
+      console.log("✅ sent member email via sendgrid");
+    });
     return res.status(200).json({ message: "Successfully sent request." });
   } catch (error) {
     return res.status(error.statusCode || 500).json({

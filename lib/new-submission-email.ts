@@ -1,16 +1,17 @@
 import SendGrid from "@sendgrid/mail";
 SendGrid.setApiKey(process.env.SENDGRID_API_KEY);
 
-interface EmailTemplateProps {
+export interface NewSubmissionEmailProps {
   airtableID: string;
   name: string;
-}
-
-export interface SendConfirmationEmailProps extends EmailTemplateProps {
   email: string;
 }
 
-const emailTemplate = ({ airtableID, name }: EmailTemplateProps) => `
+const emailTemplate = ({
+  airtableID,
+  name,
+  email,
+}: NewSubmissionEmailProps) => `
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -150,7 +151,7 @@ const emailTemplate = ({ airtableID, name }: EmailTemplateProps) => `
                                         <td role="modules-container" style="padding:10px 20px 20px 20px; color:#000000; text-align:left;" bgcolor="#eee" width="100%" align="left"><table class="module preheader preheader-hide" role="module" data-type="preheader" border="0" cellpadding="0" cellspacing="0" width="100%" style="display: none !important; mso-hide: all; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0;">
     <tr>
       <td role="module-content">
-        <p>Our little hui grows by one (you)</p>
+        <p>${name}</p>
       </td>
     </tr>
   </table><table class="wrapper" role="module" data-type="image" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="0bd39e58-dc98-4e61-a26b-acbe84fe4b6a">
@@ -162,13 +163,13 @@ const emailTemplate = ({ airtableID, name }: EmailTemplateProps) => `
   </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="c1d45e49-e730-4fd9-b793-f7a2f302faa5" data-mc-module-version="2019-10-22">
     <tbody>
       <tr>
-        <td style="padding:17px 0px 4px 0px; line-height:28px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 24px"><strong>Submission confirmation</strong></span></div><div></div></div></td>
+        <td style="padding:17px 0px 4px 0px; line-height:28px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 24px"><strong>New Request from ${name}</strong></span></div><div></div></div></td>
       </tr>
     </tbody>
   </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="80092f30-00f3-4bfe-9c91-43068e62e34d.1" data-mc-module-version="2019-10-22">
     <tbody>
       <tr>
-        <td style="padding:2px 0px 6px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: center"><strong>We're reviewing your entry</strong></div><div></div></div></td>
+        <td style="padding:2px 0px 6px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: center"><strong>No forget, follow the checklist!</strong></div><div></div></div></td>
       </tr>
     </tbody>
   </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="086f81dc-ae1d-4d7c-80d1-6bb03ce3a889.2">
@@ -181,40 +182,19 @@ const emailTemplate = ({ airtableID, name }: EmailTemplateProps) => `
   </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="0f0986bc-650a-4911-a3fe-9469a69a309e.1" data-mc-module-version="2019-10-22">
     <tbody>
       <tr>
-        <td style="padding:4px 0px 12px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: left">Aloha kāua e ${name},</div><div></div></div></td>
-      </tr>
-    </tbody>
-  </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="80092f30-00f3-4bfe-9c91-43068e62e34d" data-mc-module-version="2019-10-22">
-    <tbody>
-      <tr>
-        <td style="padding:1px 0px 2px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: left">Thanks for signing up to join the <strong>Hawaiians in Tech</strong> list. We'll let you know once you're published on the list, or if we have any questions or adjustments.</div><div></div></div></td>
-      </tr>
-    </tbody>
-  </table>
-  <table class="module" role="module" data-type="divider" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="9ce5d274-c78b-4fdd-a292-d915211a9a33">
-    <tbody>
-      <tr>
-        <td style="padding:10px 0px 19px 0px;" role="module-content" height="100%" valign="top" bgcolor="">
-          <table border="0" cellpadding="0" cellspacing="0" align="center" width="100%" height="1px" style="line-height:1px; font-size:1px;">
-            <tbody>
-              <tr>
-                <td style="padding:0px 0px 1px 0px;" bgcolor="#aaa"></td>
-              </tr>
-            </tbody>
-          </table>
-        </td>
-      </tr>
-    </tbody>
-  </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="80092f30-00f3-4bfe-9c91-43068e62e34d.1.2.1" data-mc-module-version="2019-10-22">
-    <tbody>
-      <tr>
-        <td style="padding:2px 0px 6px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit">By the way, did you know we're just <a href="https://www.bizjournals.com/pacific/news/2021/08/30/website-hawaiians-in-technology.html">a small crew of kanaka</a> looking to serve our people? Have any ideas for the website or community? Any feedback for how we're running the show? <em>Ahhh, take a hike</em>. Nah, just kidding — <strong>we are always looking for member-led initiatives.</strong> Please reach out and we can talk story!</div><div></div></div></td>
-      </tr>
-    </tbody>
-  </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="80092f30-00f3-4bfe-9c91-43068e62e34d.1.1" data-mc-module-version="2019-10-22">
-    <tbody>
-      <tr>
-        <td style="padding:2px 0px 6px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit">Your friendly ʻohana at HIT</div><div></div></div></td>
+        <td style="padding:4px 0px 12px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: left">
+        <p>Get started by opening up the <a href="https://airtable.com/${
+          process.env.AIRTABLE_BASE_NEW
+        }/">Airtable</a>.</p>
+        <p><strong>1. Check the location.</strong> Set the region to indexed "Region". Add one if it does not exist.</p>
+        <p><strong>2. Check link.</strong> Make sure it goes somewhere legit.</p>
+        <p><strong>3. Check for spelling mistakes.</strong> Check place names, suggested fields, etc.</p>
+        <p><strong>4. ${
+          email
+            ? `Reach out to ${name} at ${email}.</strong> Then move Status to Approved!`
+            : "Shoot, we don't have their email.</strong> We advised them to follow <a href='http://hawaiiansintech.org/edit/thank-you?emailNull=true'>these instructions</a>. Now, we wait."
+        }.</p>
+        </div><div></div></div></td>
       </tr>
     </tbody>
   </table></td>
@@ -241,21 +221,23 @@ const emailTemplate = ({ airtableID, name }: EmailTemplateProps) => `
   </html>
 `;
 
-export async function sendConfirmationEmail({
-  email,
+export async function sendNewSubmissionEmail({
   airtableID,
   name,
-}: SendConfirmationEmailProps) {
-  SendGrid.send({
-    to: email,
+  email,
+}: NewSubmissionEmailProps) {
+  SendGrid.sendMultiple({
+    to: ["hawaiiansintech@tellaho.com", "emmit.parubrub@gmail.com"],
+    // to: ["hawaiiansintech@tellaho.com"],
     from: {
       email: "aloha@hawaiiansintech.org",
       name: "Hawaiians in Tech",
     },
-    subject: "Welcome to Hawaiians in Tech",
+    subject: `New Request`,
     html: emailTemplate({
       airtableID: airtableID,
       name: name,
+      email: email,
     }),
   });
 }
