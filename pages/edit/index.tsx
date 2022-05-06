@@ -148,7 +148,7 @@ function NewFeatures() {
     <div className="new-features">
       <div className="new-features__container">
         <h4 className="new-features__headline">
-          Hui, get <Tag>NEW</Tag> fields to add to your profile:
+          <em>Huuuui</em>, get <Tag>NEW</Tag> fields to add to your profile:
         </h4>
         <ul className="new-features__list">
           {features.map((feature, i) => {

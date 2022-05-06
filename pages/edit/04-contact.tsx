@@ -7,6 +7,7 @@ import ProgressBar from "@/components/form/ProgressBar";
 import { Heading, Subheading } from "@/components/Heading";
 import MetaTags from "@/components/Metatags.js";
 import Nav from "@/components/Nav";
+import Tag from "@/components/Tag";
 import { MemberPublic, MemberPublicEditing } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
 import { Formik } from "formik";
@@ -73,7 +74,15 @@ export default function JoinStep4() {
     if (res.ok) {
       removeItem("userData");
       removeItem("editData");
-      router.push({ pathname: "thank-you" });
+      const query = userData.emailAbbr
+        ? {}
+        : {
+            emailNull: "true",
+          };
+      router.push({
+        pathname: "thank-you",
+        query: query,
+      });
     } else if (res.status === 422) {
       setLoading(false);
       setError({
@@ -98,16 +107,52 @@ export default function JoinStep4() {
       </Head>
       <Nav backUrl="03-company" />
       <Heading>Requesting changes for {userData.name}</Heading>
-      {userData.emailAbbr && (
+      {userData.emailAbbr ? (
         <Subheading centered>
           We'll take a look, then confirm any changes with you at{" "}
           <strong>{`${userData.emailAbbr[0]}...${userData.emailAbbr[1]}${userData.emailAbbr[2]}`}</strong>
           . Mahalo for your patience!
         </Subheading>
+      ) : (
+        <div className="email-alert">
+          <div className="email-alert__container">
+            <Tag>Verification needed</Tag>
+            <div className="email-alert__content">
+              <h3>
+                More details on how we'll verify after you submit this form.
+                Will be easy.{" "}
+                <strong>Anything else, use the field below.</strong>
+              </h3>
+            </div>
+          </div>
+          <style jsx>{`
+            .email-alert {
+              margin: 0 auto;
+              max-width: ${theme.layout.width.interior};
+            }
+            .email-alert__container {
+              background: ${theme.color.background.alt};
+              margin: 0 2rem;
+              padding: 1.5rem;
+              border-radius: ${theme.borderRadius.sm};
+            }
+            h3 {
+              font-weight: 400;
+              font-size: 1rem;
+              margin: 0.5rem 0 0;
+            }
+            h4 {
+              font-weight: 400;
+              font-size: 0.875rem;
+              margin: 0;
+            }
+          `}</style>
+        </div>
       )}
       <section
         style={{
           margin: "2rem auto 0",
+          padding: "0 2rem",
           maxWidth: theme.layout.width.interior,
         }}
       >
@@ -132,7 +177,7 @@ export default function JoinStep4() {
             <form onSubmit={props.handleSubmit}>
               <Input
                 name="other"
-                label="Any issues? Anything else?"
+                label="Anything else?"
                 labelTranslation="He aha nā mea a pau?"
                 onBlur={props.handleBlur}
                 value={other}

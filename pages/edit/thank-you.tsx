@@ -1,11 +1,21 @@
+import Accordion, {
+  AccordionLink,
+  AccordionProps,
+} from "@/components/Accordion";
 import HitLogo from "@/components/HitLogo";
 import MetaTags from "@/components/Metatags";
+import Tag from "@/components/Tag";
 import { Subtitle } from "@/components/Title";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
 import theme from "styles/theme";
+import { DISCORD_URL } from "../about";
 
 export default function ThankYou() {
+  const router = useRouter();
+  const { emailNull } = router.query;
   return (
     <>
       <Head>
@@ -22,7 +32,12 @@ export default function ThankYou() {
         </header>
         <main>
           <div className="thank-you__heading">
-            <Subtitle text="Request&nbsp;sent&nbsp;successfully" />
+            {emailNull ? (
+              <Subtitle text="Shoot,&nbsp;almost&nbsp;there" />
+            ) : (
+              <Subtitle text="Request&nbsp;sent&nbsp;successfully" />
+            )}
+
             <span>
               {" "}
               <img
@@ -31,10 +46,14 @@ export default function ThankYou() {
               />
             </span>
           </div>
-          <h2>
-            Mahalo for keeping your profile up to date. We'll reach out once we
-            review your request.
-          </h2>
+          {emailNull ? (
+            <EmailNullMessage />
+          ) : (
+            <h2>
+              Mahalo for keeping your profile up to date. We'll reach out once
+              we review your request.
+            </h2>
+          )}
         </main>
       </div>
       <style jsx>{`
@@ -95,5 +114,149 @@ export default function ThankYou() {
         }
       `}</style>
     </>
+  );
+}
+
+function EmailNullMessage() {
+  const SUPPORT_FLOWS: AccordionProps[] = [
+    {
+      label: "Connect on LinkedIn",
+      body: (
+        <>
+          <p>
+            Who doesn't have a Linkedin, right? Connect and mention it in the
+            message!
+          </p>
+          <AccordionLink href="https://www.linkedin.com/in/emmit-parubrub/">
+            Emmit Parubrub
+          </AccordionLink>
+          <AccordionLink href="https://www.linkedin.com/in/taylorho/">
+            Taylor Ho
+          </AccordionLink>
+          <AccordionLink href="https://www.linkedin.com/in/andrewtaeoalii/">
+            Andrew Taeoalii
+          </AccordionLink>
+        </>
+      ),
+    },
+    {
+      label: "Shoot a DM on Twitter",
+      body: (
+        <>
+          <p>
+            This works better when your avatar isn't an anime character; but
+            we'll work it out.
+          </p>
+          <AccordionLink href="https://twitter.com/tellaho">
+            @tellaho
+          </AccordionLink>
+          <AccordionLink href="https://twitter.com/AndrewT808">
+            @AndrewT808
+          </AccordionLink>
+          {/* <AccordionLink href="https://twitter.com/HawaiiansInTech">
+            @HawaiiansInTech
+          </AccordionLink> */}
+        </>
+      ),
+    },
+    {
+      label: "Github Discussions",
+      body: (
+        <>
+          <p>
+            Drop a message in our <strong>Support and Requests</strong>{" "}
+            category:
+          </p>
+          <AccordionLink href="https://github.com/hawaiians/hawaiiansintech/discussions/categories/support-and-requests">
+            👀 Support and Requests
+          </AccordionLink>
+        </>
+      ),
+    },
+    {
+      label: "Connect to our Discord Server",
+      body: (
+        <>
+          <AccordionLink href={DISCORD_URL}>
+            Hawaiians In Tech Discord
+          </AccordionLink>
+        </>
+      ),
+    },
+    {
+      label: "Send us an email",
+      body: (
+        <>
+          <AccordionLink href="mailto:emmit.parubrub@gmail.com">
+            emmit.parubrub@gmail.com
+          </AccordionLink>
+          <AccordionLink href="mailto:howzit@tellaho.com">
+            howzit@tellaho.com
+          </AccordionLink>
+        </>
+      ),
+    },
+  ];
+  const [supportFlows, setSupportFlows] =
+    useState<AccordionProps[]>(SUPPORT_FLOWS);
+  const handleToggle = (i) => {
+    const newFlows = supportFlows.map((flow, newI) => {
+      if (i == newI) {
+        return { ...flow, open: !flow.open };
+      }
+      return flow;
+    });
+    setSupportFlows(newFlows);
+  };
+
+  return (
+    <div className="email-null-message">
+      <div className="email-null-message__headline">
+        <Tag>Verification needed</Tag>
+        <p>
+          <strong>Not quite pau yet!</strong> We want to make sure this is you.
+          Should be as easy as shooting us an email, DM, etc.
+        </p>
+        <p>
+          Be sure to include <strong>your email</strong> in the message. We'll
+          use that to confirm changes bumbai.
+        </p>
+        <h4>Ways to verify</h4>
+      </div>
+      <div className="email-null-message__accordions">
+        {supportFlows.map((flow, i) => (
+          <Accordion
+            label={flow.label}
+            body={flow.body}
+            open={flow.open}
+            onToggle={() => {
+              handleToggle(i);
+            }}
+            key={`flow-${i}`}
+          />
+        ))}
+      </div>
+      <style jsx>{`
+        .email-null-message {
+          margin: 2rem 0 0;
+          border-radius: ${theme.borderRadius.xs};
+          width: 100%;
+          max-width: 24rem;
+          border: 0.125rem solid ${theme.color.border.base};
+        }
+        .email-null-message__headline {
+          padding: 1.5rem 1rem 1rem;
+        }
+        .email-null-message__accordions {
+          margin: 0 0 1rem;
+        }
+
+        h4 {
+          margin: 1rem 0 0;
+          font-size: 0.875rem;
+          color: ${theme.color.text.alt};
+        }
+      `}</style>
+    </div>
   );
 }
