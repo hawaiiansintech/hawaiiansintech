@@ -1,17 +1,14 @@
-import Accordion, {
-  AccordionLink,
-  AccordionProps,
-} from "@/components/Accordion";
+import Accordion, { AccordionProps } from "@/components/Accordion";
 import HitLogo from "@/components/HitLogo";
 import MetaTags from "@/components/Metatags";
 import Tag from "@/components/Tag";
 import { Subtitle } from "@/components/Title";
+import { CONTACT_METHODS } from "@/lib/contact-methods";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import theme from "styles/theme";
-import { DISCORD_URL } from "../about";
 
 export default function ThankYou() {
   const router = useRouter();
@@ -118,95 +115,16 @@ export default function ThankYou() {
 }
 
 function EmailNullMessage() {
-  const SUPPORT_FLOWS: AccordionProps[] = [
-    {
-      label: "Connect on LinkedIn",
-      body: (
-        <>
-          <p>
-            Who doesn't have a Linkedin, right? Connect and mention it in the
-            message!
-          </p>
-          <AccordionLink href="https://www.linkedin.com/in/emmit-parubrub/">
-            Emmit Parubrub
-          </AccordionLink>
-          <AccordionLink href="https://www.linkedin.com/in/taylorho/">
-            Taylor Ho
-          </AccordionLink>
-          <AccordionLink href="https://www.linkedin.com/in/andrewtaeoalii/">
-            Andrew Taeoalii
-          </AccordionLink>
-        </>
-      ),
-    },
-    {
-      label: "Shoot a DM on Twitter",
-      body: (
-        <>
-          <p>
-            This works better when your avatar isn't an anime character; but
-            we'll work it out.
-          </p>
-          <AccordionLink href="https://twitter.com/tellaho">
-            @tellaho
-          </AccordionLink>
-          <AccordionLink href="https://twitter.com/AndrewT808">
-            @AndrewT808
-          </AccordionLink>
-          {/* <AccordionLink href="https://twitter.com/HawaiiansInTech">
-            @HawaiiansInTech
-          </AccordionLink> */}
-        </>
-      ),
-    },
-    {
-      label: "Github Discussions",
-      body: (
-        <>
-          <p>
-            Drop a message in our <strong>Support and Requests</strong>{" "}
-            category:
-          </p>
-          <AccordionLink href="https://github.com/hawaiians/hawaiiansintech/discussions/categories/support-and-requests">
-            👀 Support and Requests
-          </AccordionLink>
-        </>
-      ),
-    },
-    {
-      label: "Connect to our Discord Server",
-      body: (
-        <>
-          <AccordionLink href={DISCORD_URL}>
-            Hawaiians In Tech Discord
-          </AccordionLink>
-        </>
-      ),
-    },
-    {
-      label: "Send us an email",
-      body: (
-        <>
-          <AccordionLink href="mailto:emmit.parubrub@gmail.com">
-            emmit.parubrub@gmail.com
-          </AccordionLink>
-          <AccordionLink href="mailto:howzit@tellaho.com">
-            howzit@tellaho.com
-          </AccordionLink>
-        </>
-      ),
-    },
-  ];
-  const [supportFlows, setSupportFlows] =
-    useState<AccordionProps[]>(SUPPORT_FLOWS);
+  const [contactMethods, setContactMethods] =
+    useState<AccordionProps[]>(CONTACT_METHODS);
   const handleToggle = (i) => {
-    const newFlows = supportFlows.map((flow, newI) => {
+    const newFlows = contactMethods.map((flow, newI) => {
       if (i == newI) {
         return { ...flow, open: !flow.open };
       }
       return flow;
     });
-    setSupportFlows(newFlows);
+    setContactMethods(newFlows);
   };
 
   return (
@@ -224,7 +142,7 @@ function EmailNullMessage() {
         <h4>Ways to verify</h4>
       </div>
       <div className="email-null-message__accordions">
-        {supportFlows.map((flow, i) => (
+        {contactMethods.map((flow, i) => (
           <Accordion
             label={flow.label}
             body={flow.body}
