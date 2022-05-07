@@ -28,7 +28,7 @@ export default async function handler(req, res) {
   let getMemberStatus = (recordID: string) => {
     return new Promise((resolve, reject) => {
       airtable
-        .base(process.env.AIRTABLE_BASE_NEW)("Members")
+        .base(process.env.AIRTABLE_BASE)("Members")
         .select({
           view: "All",
           filterByFormula: `{RecordID} = "${recordID}"`,

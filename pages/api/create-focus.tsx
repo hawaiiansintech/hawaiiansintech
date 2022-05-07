@@ -10,7 +10,7 @@ const TABLE = "Focuses";
 const validateFocus = async (name: string): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     airtable
-      .base(process.env.AIRTABLE_BASE_NEW)(TABLE)
+      .base(process.env.AIRTABLE_BASE)(TABLE)
       .select({
         view: "All",
         filterByFormula: `{Name} = "${name}"`,
@@ -33,7 +33,7 @@ const addFocusToAirtable = async ({ name }: FocusFields): Promise<string> => {
   };
   return new Promise((resolve, reject) => {
     airtable
-      .base(process.env.AIRTABLE_BASE_NEW)(TABLE)
+      .base(process.env.AIRTABLE_BASE)(TABLE)
       .create(focus, (err, record) => {
         if (err) {
           reject(err);

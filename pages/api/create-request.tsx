@@ -77,7 +77,7 @@ ${getSummary()}`,
 
   return new Promise((resolve, reject) => {
     airtable
-      .base(process.env.AIRTABLE_BASE_NEW)("Requests")
+      .base(process.env.AIRTABLE_BASE)("Requests")
       .create(requestData, (err, record) => {
         if (err) reject(err);
         resolve(record?.getId());

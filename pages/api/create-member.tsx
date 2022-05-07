@@ -25,7 +25,7 @@ const findRecord = async ({
 }: RecordFields): Promise<string | boolean> => {
   return new Promise((resolve, reject) => {
     airtable
-      .base(process.env.AIRTABLE_BASE_NEW)(table)
+      .base(process.env.AIRTABLE_BASE)(table)
       .select({
         view: "All",
         filterByFormula: `{Name} = "${name}"`,
@@ -47,7 +47,7 @@ const addPendingRecord = async ({
   };
   return new Promise((resolve, reject) => {
     airtable
-      .base(process.env.AIRTABLE_BASE_NEW)(table)
+      .base(process.env.AIRTABLE_BASE)(table)
       .create(focus, (err, record) => {
         if (err) {
           reject(err);
@@ -125,7 +125,7 @@ const addToAirtable = async (fields: MemberFields): Promise<string> => {
 
   return new Promise((resolve, reject) => {
     airtable
-      .base(process.env.AIRTABLE_BASE_NEW)("Members")
+      .base(process.env.AIRTABLE_BASE)("Members")
       .create(member, (err, record) => {
         if (err) reject(err);
         resolve(record?.getId());
@@ -185,7 +185,7 @@ const sendSgEmail = async ({
 export const findEmail = async (email: string): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     airtable
-      .base(process.env.AIRTABLE_BASE_NEW)("Members")
+      .base(process.env.AIRTABLE_BASE)("Members")
       .select({
         view: "Approved",
         filterByFormula: `{Email} = "${email}"`,
