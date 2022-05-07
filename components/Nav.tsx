@@ -46,6 +46,10 @@ export default function Nav({
                   Join <span>/</span> Request Changes
                 </a>
               </Link>
+
+              <Link href="/hackathon">
+                <a>Hackathon</a>
+              </Link>
             </div>
           ) : null}
           {toggle?.show && (

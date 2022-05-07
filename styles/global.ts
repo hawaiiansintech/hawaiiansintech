@@ -36,6 +36,8 @@ export default css.global`
     --width-resp-small: ${theme.layout.breakPoints.small};
   }
 
+  @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
   html {
     box-sizing: border-box;
   }
