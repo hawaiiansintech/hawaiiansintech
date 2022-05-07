@@ -1,6 +1,7 @@
 import { DataList, DataListItem } from "@/components/DataList";
 import MetaTags from "@/components/Metatags.js";
 import Nav from "@/components/Nav";
+import SplitSection from "@/components/SplitSection";
 import { Title } from "@/components/Title.js";
 import { motion } from "framer-motion";
 import Head from "next/head";
@@ -62,6 +63,12 @@ export default function AboutPage() {
           Moʻokūʻauhau &amp; Moʻōlelo
         </DataListItem>
       </DataList>
+      <SplitSection title="Tech spec" hint="Subject to change">
+        {" "}
+      </SplitSection>
+      <SplitSection title="Cultural advisory" hint="Subject to change">
+        {" "}
+      </SplitSection>
       <style jsx>{`
         .hackathon-splash {
           margin: 0 1rem;
