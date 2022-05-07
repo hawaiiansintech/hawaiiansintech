@@ -33,7 +33,7 @@ export default function ThankYou() {
         <main>
           <div className="thank-you__heading">
             {emailNull ? (
-              <Subtitle text="Shoot,&nbsp;almost&nbsp;there" />
+              <Subtitle text="Almost&nbsp;there.&nbsp;We&nbsp;need&nbsp;your&nbsp;email." />
             ) : (
               <Subtitle text="Request&nbsp;sent&nbsp;successfully" />
             )}
