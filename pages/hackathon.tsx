@@ -1,9 +1,9 @@
+import DataList from "@/components/DataList";
 import MetaTags from "@/components/Metatags.js";
 import Nav from "@/components/Nav";
 import { Title } from "@/components/Title.js";
 import { motion } from "framer-motion";
 import Head from "next/head";
-import Link from "next/link";
 import theme from "styles/theme";
 
 const item = {
@@ -32,8 +32,7 @@ export default function AboutPage() {
         <MetaTags />
       </Head>
       <Nav backUrl="/" />
-
-      <div className="about-splash">
+      <div className="hackathon-splash">
         <Title
           className="m0 p0"
           text="Hawaiians*in&nbsp;Technology"
@@ -46,27 +45,34 @@ export default function AboutPage() {
           animate="show"
           exit="hidden"
         >
-          <p className="f1 extend">
-            <motion.span variants={item}>
-            & Purple Maiʻa
-            </motion.span>{" "}
-          </p>
+          <h1 className="f1 extend">
+            <motion.span variants={item}>& Purple Maiʻa</motion.span>
+          </h1>
           <p className="hackathon-title">
-            <motion.span variants={item}>
-            HACKATHON 2022
-            </motion.span>{" "}
+            <motion.span variants={item}>HACKATHON 2022</motion.span>
           </p>
         </motion.div>
       </div>
-
-
+      <div className="hackathon-data-list">
+        <DataList heading="ʻEhia ka lā?" translation="Day">
+          July 29 – 30, 2022
+        </DataList>
+        <DataList heading="Ma hea?" translation="Location">
+          Puʻuhonua o Waimanalo &amp; Virtual
+        </DataList>
+        <DataList heading="He aha ka poʻomanaʻo?" translation="Theme">
+          July 29 – 30, 2022
+        </DataList>
+      </div>
+      ``
       <style jsx>{`
-        .about-splash {
+        .hackathon-splash {
           margin: 0 1rem;
           padding-top: 26vh;
         }
+
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-          .about-splash {
+          .hackathon-splash {
             margin: 0 2rem;
           }
         }
@@ -78,70 +84,29 @@ export default function AboutPage() {
 
         .hackathon-title {
           font-family: "Permanent Marker";
-          font-size: 4rem;
-          margin: .5rem 0 0 0;
-          color: ${theme.color.brand.base}
+          font-size: 2.4rem;
+          margin: 0.5rem 0 0 0;
+          color: ${theme.color.brand.base};
         }
 
-        .moreabout {
-          font-weight: normal;
-          font-size: 1.5rem;
-          line-height: 140%;
-          letter-spacing: 0.01em;
+        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
+          .hackathon-title {
+            font-size: 4rem;
+          }
+        }
+
+        .hackathon-data-list {
           display: flex;
-          margin: 8rem 1rem 0;
+          flex-wrap: wrap;
+          grid-auto-flow: column;
+          grid-auto-rows: 1fr;
+          gap: 1rem 6rem;
+          margin: 3rem auto 0;
+          padding: 0 1rem;
         }
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-          .moreabout {
-            margin: 0 2rem;
-          }
-        }
-
-        .moreabout > div {
-          width: 50%;
-          max-width: 50ch;
-        }
-
-        .col-right {
-          padding-left: 3rem;
-        }
-        .col-left {
-          padding-right: 3rem;
-        }
-
-        .moreabout p {
-          margin: 0;
-          padding: 0;
-        }
-
-        .moreabout h3 {
-          padding: 0;
-          margin: 0;
-          font-size: 1.5rem;
-        }
-
-        .moreabout h3 {
-          margin: 4rem 0 0 0;
-        }
-
-        ul,
-        li {
-          padding: 0;
-          margin: 0;
-          list-style: none;
-          margin-top: 0.3rem;
-        }
-
-        @media (max-width: 480px) {
-          .moreabout {
-            display: block;
-          }
-
-          .moreabout > div {
-            width: 100%;
-            max-width: 100%;
-            display: block;
-            padding: 0;
+          .hackathon-data-list {
+            padding: 0 2rem;
           }
         }
       `}</style>
