@@ -1,4 +1,4 @@
-import DataList from "@/components/DataList";
+import { DataList, DataListItem } from "@/components/DataList";
 import MetaTags from "@/components/Metatags.js";
 import Nav from "@/components/Nav";
 import { Title } from "@/components/Title.js";
@@ -20,8 +20,6 @@ const container = {
     },
   },
 };
-
-export const DISCORD_URL = "https://discord.gg/p7338Z5MJQ";
 
 export default function AboutPage() {
   return (
@@ -53,18 +51,17 @@ export default function AboutPage() {
           </p>
         </motion.div>
       </div>
-      <div className="hackathon-data-list">
-        <DataList heading="ʻEhia ka lā?" translation="Day">
+      <DataList>
+        <DataListItem heading="ʻEhia ka lā?" translation="Day">
           July 29 – 30, 2022
-        </DataList>
-        <DataList heading="Ma hea?" translation="Location">
+        </DataListItem>
+        <DataListItem heading="Ma hea?" translation="Location">
           Puʻuhonua o Waimanalo &amp; Virtual
-        </DataList>
-        <DataList heading="He aha ka poʻomanaʻo?" translation="Theme">
+        </DataListItem>
+        <DataListItem heading="He aha ka poʻomanaʻo?" translation="Theme">
           July 29 – 30, 2022
-        </DataList>
-      </div>
-      ``
+        </DataListItem>
+      </DataList>
       <style jsx>{`
         .hackathon-splash {
           margin: 0 1rem;
@@ -92,21 +89,6 @@ export default function AboutPage() {
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
           .hackathon-title {
             font-size: 4rem;
-          }
-        }
-
-        .hackathon-data-list {
-          display: flex;
-          flex-wrap: wrap;
-          grid-auto-flow: column;
-          grid-auto-rows: 1fr;
-          gap: 1rem 6rem;
-          margin: 3rem auto 0;
-          padding: 0 1rem;
-        }
-        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-          .hackathon-data-list {
-            padding: 0 2rem;
           }
         }
       `}</style>

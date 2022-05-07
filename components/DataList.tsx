@@ -1,24 +1,48 @@
 import theme from "styles/theme";
 
-interface DataListProps {
+export function DataList({ children }) {
+  return (
+    <div className="data-list">
+      {children}
+      <style jsx>{`
+        .data-list {
+          display: flex;
+          flex-wrap: wrap;
+          grid-auto-flow: column;
+          grid-auto-rows: 1fr;
+          gap: 1rem 6rem;
+          margin: 3rem auto 0;
+          padding: 0 1rem;
+        }
+        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
+          .data-list {
+            padding: 0 2rem;
+          }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+interface DataListItemProps {
   children?: React.ReactNode;
   heading?: string;
   translation?: string;
 }
 
-export default function DataList({
+export function DataListItem({
   heading,
   children,
   translation,
-}: DataListProps) {
+}: DataListItemProps) {
   return (
-    <div className="data-list">
+    <div className="data-list-item">
       <h3>{heading}</h3>
       <h4>{translation}</h4>
 
       <p>{children}</p>
       <style jsx>{`
-        .data-list {
+        .data-list-item {
           max-width: 20rem;
         }
         h3,
