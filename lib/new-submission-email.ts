@@ -16,7 +16,7 @@ const emailTemplate = ({
 }: NewSubmissionEmailProps) => {
   const MESSAGE_BODY = `
   <p>Get started by opening up the <a href="https://airtable.com/${
-    process.env.AIRTABLE_BASE_NEW
+    process.env.AIRTABLE_BASE
   }/tblQkhLLpdJ7YYsx2">Requests table</a> on Airtable.</p>
   <p><strong>1. Check the request for the "Anything else?" field first${
     removeRequest ? ", beyond the request to remove." : "."

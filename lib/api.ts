@@ -13,7 +13,7 @@ interface BaseProps {
 
 const getBase = async ({ name, view }: BaseProps) => {
   return airtable
-    .base(process.env.AIRTABLE_BASE_NEW)(name)
+    .base(process.env.AIRTABLE_BASE)(name)
     .select({
       view: view || "All",
     })
