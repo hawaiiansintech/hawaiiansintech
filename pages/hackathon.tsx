@@ -53,13 +53,13 @@ export default function AboutPage() {
       </div>
       <DataList>
         <DataListItem heading="ʻEhia ka lā?" translation="Day">
-          July 29 – 30, 2022
+          July 29 – 31, 2022
         </DataListItem>
         <DataListItem heading="Ma hea?" translation="Location">
           Puʻuhonua o Waimanalo &amp; Virtual
         </DataListItem>
         <DataListItem heading="He aha ka poʻomanaʻo?" translation="Theme">
-          July 29 – 30, 2022
+          Moʻokūʻauhau &amp; Moʻōlelo
         </DataListItem>
       </DataList>
       <style jsx>{`
