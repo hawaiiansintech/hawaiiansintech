@@ -2,17 +2,11 @@ import theme from "styles/theme";
 
 interface DataListProps {
   children: React.ReactNode;
-  margin?: string;
   mainEventLogistics?: boolean;
   gap: string;
 }
 
-export function DataList({
-  children,
-  margin,
-  mainEventLogistics,
-  gap,
-}: DataListProps) {
+export function DataList({ children, mainEventLogistics, gap }: DataListProps) {
   return (
     <div className="data-list">
       {children}
@@ -39,7 +33,7 @@ export function DataList({
 
 interface DataListItemProps {
   heading?: string;
-  nameHeading?: string;
+  mainEventLogistics?: boolean;
   subHeading?: string;
   subHeadingLight?: boolean;
   children?: React.ReactNode;
@@ -48,7 +42,7 @@ interface DataListItemProps {
 
 export function DataListItem({
   heading,
-  nameHeading,
+  mainEventLogistics,
   children,
   subHeading,
   subHeadingLight,
@@ -57,13 +51,12 @@ export function DataListItem({
   return (
     <div className="data-list-item">
       <h3>{heading}</h3>
-      <h3>{nameHeading}</h3>
       <h4>{translation}</h4>
       <h5>{subHeading}</h5>
       <p>{children}</p>
       <style jsx>{`
         .data-list-item {
-          max-width: ${nameHeading ? "16rem": "20rem"}
+          max-width: ${mainEventLogistics ? "20rem" : "25rem"};
         }
         h3,
         h4,
@@ -83,18 +76,23 @@ export function DataListItem({
           margin-bottom: 0.25rem;
         }
         h5 {
-          font-size: .8rem;
+          font-size: 0.8rem;
           color: ${theme.color.text.alt2};
-          font-weight: ${subHeadingLight ? "400" : "600"}
+          font-weight: ${subHeadingLight ? "400" : "600"};
         }
         p {
-          color: ${theme.color.brand.base};
+          color: ${mainEventLogistics
+            ? theme.color.brand.base
+            : theme.color.text.alt2};
           font-weight: 500;
-          font-size: 1.25rem;
+          font-size: ${mainEventLogistics ? "1.25rem" : "1rem"};
         }
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
+          .data-list-item {
+            max-width: ${mainEventLogistics ? "20rem" : "16rem"};
+          }
           h3 {
-            font-size: ${nameHeading ? "1.25rem": "1.5rem"};
+            font-size: ${mainEventLogistics ? "1.5rem" : "1.25rem"};
           }
           h4 {
             font-size: 1.125rem;
@@ -103,7 +101,7 @@ export function DataListItem({
             font-size: 1rem;
           }
           p {
-            font-size: 2rem;
+            ${mainEventLogistics ? "2rem" : "1.25rem"}
           }
         }
       `}</style>
