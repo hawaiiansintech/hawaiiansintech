@@ -1,41 +1,12 @@
-import SendGrid from "@sendgrid/mail";
-SendGrid.setApiKey(process.env.SENDGRID_API_KEY);
-
-export interface NewSubmissionEmailProps {
-  airtableID: string;
-  name: string;
-  email: string;
-  removeRequest?: boolean;
-}
-
-const emailTemplate = ({
-  airtableID,
-  name,
-  email,
-  removeRequest,
-}: NewSubmissionEmailProps) => {
-  const MESSAGE_BODY = `
-  <p>Get started by opening up the <a href="https://airtable.com/${
-    process.env.AIRTABLE_BASE
-  }/tblQkhLLpdJ7YYsx2">Requests table</a> on Airtable.</p>
-  <p><strong>1. Check the request for the "Anything else?" field first${
-    removeRequest ? ", beyond the request to remove." : "."
-  }</strong> Just in case there are special requests or instructions.</p>
-  <p><strong>2. ${
-    email
-      ? `Reach out to ${name} at ${email} about the ${
-          removeRequest
-            ? "removal.</strong>"
-            : "changes.</strong> This is a good way for us to connect with members. One day, we'll build a tokenized/automated approach for requests that don't change freeform fields. One day."
-        }`
-      : `This is the awkward step. So, we don't have their email.</strong> We advised them to follow <a href='http://hawaiiansintech.org/edit/thank-you?emailNull=true'>these instructions</a>. So, now, we wait.`
-  }</p>
-  <p><strong>3. Once we hear back,${
-    removeRequest
-      ? " take a deep breath.</strong> Okay, now right-click and delete the record."
-      : " move the member's status to Pending.</strong> Make the requested changes.</p><ul><li>If there were any updates to Location, we'll need to manually look over and the relevant Region (which is an indexed/searchable field).</li><li>If any freeform fields (location/title/suggested/etc.) were changed, check for misspelling. Remember to try use proper diacriticals (wehewehe.org is your friend).</li><li>If their URL was updated, make sure it works.</li></ul><p>Then move Status to Approved!"
-  }</p>
-  `;
+export const getEmailTemplate = ({
+  body,
+  prependMessage,
+  title,
+}: {
+  body: React.ReactNode;
+  prependMessage?: string;
+  title: string;
+}) => {
   return `
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml">
@@ -176,7 +147,7 @@ const emailTemplate = ({
                                         <td role="modules-container" style="padding:10px 20px 20px 20px; color:#000000; text-align:left;" bgcolor="#eee" width="100%" align="left"><table class="module preheader preheader-hide" role="module" data-type="preheader" border="0" cellpadding="0" cellspacing="0" width="100%" style="display: none !important; mso-hide: all; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0;">
     <tr>
       <td role="module-content">
-        <p>${name}</p>
+        <p>${prependMessage}</p>
       </td>
     </tr>
   </table><table class="wrapper" role="module" data-type="image" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="0bd39e58-dc98-4e61-a26b-acbe84fe4b6a">
@@ -188,15 +159,12 @@ const emailTemplate = ({
   </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="c1d45e49-e730-4fd9-b793-f7a2f302faa5" data-mc-module-version="2019-10-22">
     <tbody>
       <tr>
-        <td style="padding:17px 0px 4px 0px; line-height:28px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 24px"><strong>${
-          removeRequest ? "Removal Request from" : "New Request from"
-        } ${name}</strong></span></div><div></div></div></td>
-      </tr>
-    </tbody>
-  </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="80092f30-00f3-4bfe-9c91-43068e62e34d.1" data-mc-module-version="2019-10-22">
-    <tbody>
-      <tr>
-        <td style="padding:2px 0px 6px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: center"><strong>No forget, follow the checklist!</strong></div><div></div></div></td>
+        <td style="padding:17px 0px 4px 0px; line-height:28px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div>
+        <div style="font-family: inherit; text-align: center">
+        <span style="font-size: 24px">
+          <strong>${title}</strong>
+        </span></div><div></div></div>
+        </td>
       </tr>
     </tbody>
   </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="086f81dc-ae1d-4d7c-80d1-6bb03ce3a889.2">
@@ -209,9 +177,13 @@ const emailTemplate = ({
   </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="0f0986bc-650a-4911-a3fe-9469a69a309e.1" data-mc-module-version="2019-10-22">
     <tbody>
       <tr>
-        <td style="padding:4px 0px 12px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: left">
-        ${MESSAGE_BODY}
-        </div><div></div></div></td>
+        <td style="padding:4px 0px 12px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content">
+          <div>
+            <div style="font-family: inherit; text-align: left">
+              ${body}
+            </div>
+          </div>
+        </td>
       </tr>
     </tbody>
   </table></td>
@@ -238,26 +210,3 @@ const emailTemplate = ({
   </html>
 `;
 };
-
-export async function sendNewSubmissionEmail({
-  airtableID,
-  name,
-  email,
-  removeRequest,
-}: NewSubmissionEmailProps) {
-  SendGrid.sendMultiple({
-    // to: ["hawaiiansintech@tellaho.com", "emmit.parubrub@gmail.com"],
-    to: ["hawaiiansintech@tellaho.com"],
-    from: {
-      email: "aloha@hawaiiansintech.org",
-      name: "Hawaiians in Tech",
-    },
-    subject: `New Request`,
-    html: emailTemplate({
-      airtableID: airtableID,
-      name: name,
-      email: email,
-      removeRequest: removeRequest,
-    }),
-  });
-}

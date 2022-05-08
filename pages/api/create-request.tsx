@@ -1,8 +1,8 @@
 import { MemberPublicEditing } from "@/lib/api";
 import {
-  NewSubmissionEmailProps,
-  sendNewSubmissionEmail,
-} from "@/lib/new-submission-email";
+  RequestUpdateEmailProps,
+  sendRequestUpdateEmail,
+} from "@/lib/email/request-update-email";
 import airtable from "airtable";
 
 airtable.configure({
@@ -66,7 +66,6 @@ const addToAirtable = async ({
     return summary;
   };
   const count = Object.keys(editedData).length;
-  console.log(Object.keys(editedData));
 
   let requestData = {
     Member: [userData.id],
@@ -90,9 +89,9 @@ const sendSgEmail = async ({
   airtableID,
   name,
   removeRequest,
-}: NewSubmissionEmailProps) => {
+}: RequestUpdateEmailProps) => {
   return new Promise((resolve, reject) => {
-    sendNewSubmissionEmail({
+    sendRequestUpdateEmail({
       email: email,
       airtableID: airtableID,
       name: name,
@@ -112,7 +111,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Only POST requests allowed" });
   }
   try {
-    await addToAirtable({ ...req.body })
+    const requestID = await addToAirtable({ ...req.body })
       .then((body) => {
         console.log("✅ added request to airtable");
         return body;
@@ -131,7 +130,9 @@ export default async function handler(req, res) {
     }).then(() => {
       console.log("✅ sent member email via sendgrid");
     });
-    return res.status(200).json({ message: "Successfully sent request." });
+    return res
+      .status(200)
+      .json({ message: "Successfully sent request.", id: requestID });
   } catch (error) {
     return res.status(error.statusCode || 500).json({
       error: "Gonfunnit, looks like something went wrong!",

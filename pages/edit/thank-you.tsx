@@ -12,7 +12,8 @@ import theme from "styles/theme";
 
 export default function ThankYou() {
   const router = useRouter();
-  const { emailNull } = router.query;
+  const { email, id, removeRequest } = router.query;
+  const emailNull = email === "null";
   return (
     <>
       <Head>
@@ -30,7 +31,9 @@ export default function ThankYou() {
         <main>
           <div className="thank-you__heading">
             {emailNull ? (
-              <Subtitle text="Almost&nbsp;there.&nbsp;We&nbsp;need&nbsp;your&nbsp;email." />
+              <>
+                <Subtitle text="We&nbsp;got&nbsp;the&nbsp;request" />
+              </>
             ) : (
               <Subtitle text="Request&nbsp;sent&nbsp;successfully" />
             )}
@@ -46,10 +49,31 @@ export default function ThankYou() {
           {emailNull ? (
             <EmailNullMessage />
           ) : (
-            <h2>
-              Mahalo for keeping your profile up to date. We'll reach out once
-              we review your request.
-            </h2>
+            <>
+              <h2>
+                <strong>
+                  Expect one of us to reach out about this{" "}
+                  {removeRequest ? "removal" : "change"}
+                </strong>{" "}
+                as soon as we can get to it. We review all changes manually
+                for... quality assurance. 😆
+              </h2>
+              <h2>
+                But <em>raj</em>, mahalo for{" "}
+                {removeRequest
+                  ? "letting us youʻd like to be removed; "
+                  : "keeping your profile up-to-date; "}
+                and now, for your patience.
+              </h2>
+            </>
+          )}
+
+          {id ? (
+            <h6>
+              <strong>Request ID</strong>: <code>{id}</code>
+            </h6>
+          ) : (
+            <></>
           )}
         </main>
       </div>
@@ -100,7 +124,7 @@ export default function ThankYou() {
         }
         main h2 {
           font-size: 1.2rem;
-          margin: 2rem 0 0;
+          margin: 1rem 0 0;
           font-weight: 400;
           line-height: 150%;
           max-width: 28rem;
@@ -108,6 +132,18 @@ export default function ThankYou() {
         main img {
           width: 4.8rem;
           margin-left: 1rem;
+        }
+        h6 {
+          margin: 1rem 0 0;
+          font-size: 0.875rem;
+          color: ${theme.color.text.alt};
+        }
+
+        code {
+          color: ${theme.color.text.alt3};
+          background: ${theme.color.background.alt};
+          padding: 0.125rem 0.25rem;
+          border-radius: ${theme.borderRadius.xs};
         }
       `}</style>
     </>
@@ -128,35 +164,39 @@ function EmailNullMessage() {
   };
 
   return (
-    <div className="email-null-message">
-      <div className="email-null-message__headline">
-        <Tag>Verification needed</Tag>
-        <p>
-          <strong>Not quite pau yet!</strong> We want to make sure this is you.
-          Should be as easy as shooting us an email, DM, etc.
-        </p>
-        <p>
-          Be sure to include <strong>your email</strong> in the message. We'll
-          use that to confirm changes bumbai.
-        </p>
-        <h4>Ways to verify</h4>
-      </div>
-      <div className="email-null-message__accordions">
-        {contactMethods.map((flow, i) => (
-          <Accordion
-            label={flow.label}
-            body={flow.body}
-            open={flow.open}
-            onToggle={() => {
-              handleToggle(i);
-            }}
-            key={`flow-${i}`}
-          />
-        ))}
+    <>
+      <h3>But we want to make sure this is you.</h3>
+      <div className="email-null-message">
+        <div className="email-null-message__headline">
+          <Tag>Verification needed</Tag>
+          <p>
+            We started using email to confirm changes are being made by the
+            actual person. We never got yours. Verifying your identity should be
+            as easy as shooting us a message, DM, etc.
+          </p>
+          <p>
+            Be sure to include <strong>your email</strong> in the message. We'll
+            use that to confirm changes bumbai.
+          </p>
+          <h4>Ways to verify</h4>
+        </div>
+        <div className="email-null-message__accordions">
+          {contactMethods.map((flow, i) => (
+            <Accordion
+              label={flow.label}
+              body={flow.body}
+              open={flow.open}
+              onToggle={() => {
+                handleToggle(i);
+              }}
+              key={`flow-${i}`}
+            />
+          ))}
+        </div>
       </div>
       <style jsx>{`
         .email-null-message {
-          margin: 2rem 0 0;
+          margin: 1rem 0 0;
           border-radius: ${theme.borderRadius.xs};
           width: 100%;
           max-width: 24rem;
@@ -174,7 +214,11 @@ function EmailNullMessage() {
           font-size: 0.875rem;
           color: ${theme.color.text.alt};
         }
+        h3 {
+          margin: 1rem 0 1rem;
+          color: ${theme.color.text.alt};
+        }
       `}</style>
-    </div>
+    </>
   );
 }

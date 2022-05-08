@@ -1,7 +1,7 @@
 import {
   sendConfirmationEmail,
   SendConfirmationEmailProps,
-} from "@/lib/confirmation-email";
+} from "@/lib/email/confirmation-email";
 import Client from "@sendgrid/client";
 import SendGrid from "@sendgrid/mail";
 import airtable from "airtable";
