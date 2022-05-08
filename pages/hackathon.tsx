@@ -55,7 +55,7 @@ export default function HackathonPage() {
           </p>
         </motion.div>
       </div>
-      <DataList margin="3rem auto 0" gap="1rem 6rem">
+      <DataList mainEventLogistics gap="1rem 6rem">
         <DataListItem heading="ʻEhia ka lā?" translation="Day">
           July 29 – 31, 2022
         </DataListItem>
@@ -96,7 +96,7 @@ export default function HackathonPage() {
         {" "}
       </SplitSection>
       <SplitSection title="Cultural advisory" hint="Subject to change">
-        <DataList margin="2rem auto 0" gap="1rem 6rem">
+        <DataList gap="1rem 6rem">
           <DataListItem 
             nameHeading="Dr. Lilikalā Kameʻeleihiwaala"
             subHeading="Professor, Hawaiian Culture & Genealogies"
@@ -122,7 +122,7 @@ export default function HackathonPage() {
         {" "}
       </SplitSection>
       <SplitSection title="Organized by">
-        <DataList margin="2rem auto 0" gap="1rem 4rem">
+        <DataList gap="1rem 4rem">
           <DataListItem 
             nameHeading="Andrew Taeoaliʻi"
             subHeading="Hawaiians in Tech"
@@ -146,7 +146,13 @@ export default function HackathonPage() {
         </DataList>
       </SplitSection>
       <SplitSection title="Special thanks to">
-        {" "}
+        <DataList gap="1rem 4rem">
+          <DataListItem 
+            nameHeading="Native Books Hawaiʻi"
+            subHeading="Auntie Maile Meyer"
+            subHeadingLight
+          /> 
+        </DataList>
       </SplitSection>
       <SplitSection title="Sponsored by">
         {" "}

@@ -2,13 +2,15 @@ import theme from "styles/theme";
 
 interface DataListProps {
   children: React.ReactNode;
-  margin: string;
+  margin?: string;
+  mainEventLogistics?: boolean;
   gap: string;
 }
 
 export function DataList({
   children,
   margin,
+  mainEventLogistics,
   gap,
 }: DataListProps) {
   return (
@@ -21,12 +23,13 @@ export function DataList({
           grid-auto-flow: column;
           grid-auto-rows: 1fr;
           gap: ${gap};
-          margin: ${margin};
+          margin: ${mainEventLogistics ? "3rem auto 0" : "1.5rem auto 0"};
           padding: 0 1rem;
         }
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
           .data-list {
             padding: 0 2rem;
+            margin: ${mainEventLogistics ? "3rem auto 0" : "0rem auto 0"};
           }
         }
       `}</style>
@@ -38,6 +41,7 @@ interface DataListItemProps {
   heading?: string;
   nameHeading?: string;
   subHeading?: string;
+  subHeadingLight?: boolean;
   children?: React.ReactNode;
   translation?: string;
 }
@@ -47,6 +51,7 @@ export function DataListItem({
   nameHeading,
   children,
   subHeading,
+  subHeadingLight,
   translation,
 }: DataListItemProps) {
   return (
@@ -80,6 +85,7 @@ export function DataListItem({
         h5 {
           font-size: .8rem;
           color: ${theme.color.text.alt2};
+          font-weight: ${subHeadingLight ? "400" : "600"}
         }
         p {
           color: ${theme.color.brand.base};
