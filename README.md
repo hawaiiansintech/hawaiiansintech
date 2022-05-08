@@ -37,7 +37,7 @@ If you are looking to access the Airtable data, please reach out to our Hawaiian
 ### Useful VS Code extensions
 
 The following are a few useful VS Code extensions that may help during development:
-- prettier
-- eslint
-- beautify
-- vscode-styled-components
+- `prettier`
+- `eslint`
+- `beautify`
+- `vscode-styled-components`
