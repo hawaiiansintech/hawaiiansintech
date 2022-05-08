@@ -55,7 +55,7 @@ export default function HackathonPage() {
           </p>
         </motion.div>
       </div>
-      <DataList>
+      <DataList margin="3rem auto 0" gap="1rem 6rem">
         <DataListItem heading="ʻEhia ka lā?" translation="Day">
           July 29 – 31, 2022
         </DataListItem>
@@ -96,7 +96,24 @@ export default function HackathonPage() {
         {" "}
       </SplitSection>
       <SplitSection title="Cultural advisory" hint="Subject to change">
-        {" "}
+        <DataList margin="2rem auto 0" gap="1rem 6rem">
+          <DataListItem 
+            nameHeading="Dr. Lilikalā Kameʻeleihiwaala"
+            subHeading="Professor, Hawaiian Culture & Genealogies"
+          />
+          <DataListItem 
+            nameHeading="Dr. Manulani Aluli Meyer"
+            subHeading="Indigenous Scholar and Cultural Practitioner"
+          />
+          <DataListItem 
+            nameHeading="Dr. Pualani Kanakaʻole Kanahele"
+            subHeading="Cultural Practitioner"
+          />
+          <DataListItem 
+            nameHeading="Kamaliʻikupono Hanohano"
+            subHeading="Kahuna, Pā ʻUhi"
+          />
+        </DataList>
       </SplitSection>
       <SplitSection title="Schedule & Events" hint="Subject to change">
         {" "}
@@ -105,7 +122,28 @@ export default function HackathonPage() {
         {" "}
       </SplitSection>
       <SplitSection title="Organized by">
-        {" "}
+        <DataList margin="2rem auto 0" gap="1rem 4rem">
+          <DataListItem 
+            nameHeading="Andrew Taeoaliʻi"
+            subHeading="Hawaiians in Tech"
+          />
+          <DataListItem 
+            nameHeading="Emmit Kamakani Parubrub"
+            subHeading="Hawaiians in Tech"
+          />
+          <DataListItem 
+            nameHeading="Keaʻa Davis"
+            subHeading="Purple Maiʻa"
+          />
+          <DataListItem 
+            nameHeading="Keoni DeFranco"
+            subHeading="Purple Maiʻa"
+          />
+          <DataListItem 
+            nameHeading="Taylor Kekai Ho"
+            subHeading="Hawaiians in Tech"
+          />
+        </DataList>
       </SplitSection>
       <SplitSection title="Special thanks to">
         {" "}
@@ -137,7 +175,7 @@ export default function HackathonPage() {
             margin: 0 2rem;
           }
           h3{
-            margin: 2rem 0 0 2rem;
+            margin: 3rem 0 0 2rem;
           }
         }
 
