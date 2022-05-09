@@ -46,35 +46,35 @@ export default function ThankYou() {
               />
             </span>
           </div>
-          {emailNull ? (
-            <EmailNullMessage />
-          ) : (
-            <>
-              <h2>
-                <strong>
-                  Expect one of us to reach out about this{" "}
-                  {removeRequest ? "removal" : "change"}
-                </strong>{" "}
-                as soon as we can get to it. We review all changes manually
-                for... quality assurance. 😆
-              </h2>
-              <h2>
-                But <em>raj</em>, mahalo for{" "}
-                {removeRequest
-                  ? "letting us youʻd like to be removed; "
-                  : "keeping your profile up-to-date; "}
-                and now, for your patience.
-              </h2>
-            </>
-          )}
+          <div className="thank-you__body">
+            {emailNull ? (
+              <EmailNullMessage />
+            ) : (
+              <>
+                <h2>
+                  <strong>
+                    Expect one of us to reach out about this{" "}
+                    {removeRequest ? "removal" : "change"}
+                  </strong>{" "}
+                  as soon as we can get to it. We review all changes manually
+                  for... quality assurance. 😆
+                </h2>
+                <h2>
+                  But <em>raj</em>, mahalo for{" "}
+                  {removeRequest
+                    ? "letting us youʻd like to be removed; "
+                    : "keeping your profile up-to-date; "}
+                  and now, for your patience.
+                </h2>
+              </>
+            )}
 
-          {id ? (
-            <h6>
-              <strong>Request ID</strong>: <code>{id}</code>
-            </h6>
-          ) : (
-            <></>
-          )}
+            {id ? (
+              <h6>
+                <strong>Request ID</strong>: <code>{id}</code>
+              </h6>
+            ) : null}
+          </div>
         </main>
       </div>
       <style jsx>{`
@@ -86,6 +86,9 @@ export default function ThankYou() {
         .thank-you__heading {
           display: inline-flex;
           align-items: center;
+        }
+        .thank-you__body {
+          max-width: 32rem;
         }
         header,
         main {
@@ -121,13 +124,13 @@ export default function ThankYou() {
           text-align: left;
           flex-grow: 1;
           flex-shrink: 0;
+          width: 100%;
         }
         main h2 {
           font-size: 1.2rem;
           margin: 1rem 0 0;
           font-weight: 400;
           line-height: 150%;
-          max-width: 28rem;
         }
         main img {
           width: 4.8rem;
@@ -138,9 +141,8 @@ export default function ThankYou() {
           font-size: 0.875rem;
           color: ${theme.color.text.alt};
         }
-
         code {
-          color: ${theme.color.text.alt3};
+          color: ${theme.color.text.alt};
           background: ${theme.color.background.alt};
           padding: 0.125rem 0.25rem;
           border-radius: ${theme.borderRadius.xs};
