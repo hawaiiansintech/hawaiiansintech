@@ -171,13 +171,11 @@ export interface Focus {
   count?: number;
 }
 
-export async function getFocuses(): Promise<Focus[]> {
+export async function getFocuses(limit?: boolean): Promise<Focus[]> {
   const focuses = await getBase({ name: "Focuses", view: "Approved" });
-
   return focuses
-    .filter(
-      (role) => role.fields["Name"] && role.fields["Has Approved Members"]
-    )
+    .filter((role) => role.fields["Name"])
+    .filter((role) => (limit ? role.fields["Has Approved Members"] : true))
     .map((role) => {
       return {
         name:
@@ -190,7 +188,8 @@ export async function getFocuses(): Promise<Focus[]> {
           ? role.fields["Members"].length
           : 0,
       };
-    });
+    })
+    .sort((a, b) => b.count - a.count);
 }
 
 export interface Industry {

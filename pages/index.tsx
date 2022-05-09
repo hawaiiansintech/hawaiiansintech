@@ -10,7 +10,7 @@ import theme from "styles/theme";
 
 export async function getStaticProps() {
   const members: MemberPublic[] = await getMembers();
-  const focuses: Focus[] = await getFocuses();
+  const focuses: Focus[] = await getFocuses(true);
   return {
     props: {
       allMembers: members.map((mem) => ({
