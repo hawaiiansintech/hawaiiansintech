@@ -2,9 +2,11 @@ export const getEmailTemplate = ({
   body,
   prependMessage,
   title,
+  subtitle,
 }: {
   body: React.ReactNode;
   prependMessage?: string;
+  subtitle?: string;
   title: string;
 }) => {
   return `
@@ -157,17 +159,34 @@ export const getEmailTemplate = ({
       </tr>
     </tbody>
   </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="c1d45e49-e730-4fd9-b793-f7a2f302faa5" data-mc-module-version="2019-10-22">
-    <tbody>
-      <tr>
-        <td style="padding:17px 0px 4px 0px; line-height:28px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div>
-        <div style="font-family: inherit; text-align: center">
-        <span style="font-size: 24px">
-          <strong>${title}</strong>
-        </span></div><div></div></div>
-        </td>
-      </tr>
-    </tbody>
-  </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="086f81dc-ae1d-4d7c-80d1-6bb03ce3a889.2">
+  <tbody>
+    <tr>
+      <td style="padding:17px 0px 4px 0px; line-height:28px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div>
+      <div style="font-family: inherit; text-align: center">
+      <span style="font-size: 24px">
+        <strong>${title}</strong>
+      </span></div><div></div></div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+${
+  subtitle
+    ? `<table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="c1d45e49-e730-4fd9-b793-f7a2f302faa5" data-mc-module-version="2019-10-22">
+<tbody>
+  <tr>
+    <td style="padding:4px 0px; line-height:28px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div>
+    <div style="font-family: inherit; text-align: center">
+    <span style="font-size: 18px">
+      <strong>${subtitle}</strong>
+    </span></div><div></div></div>
+    </td>
+  </tr>
+</tbody>
+</table>`
+    : ""
+}
+<table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="086f81dc-ae1d-4d7c-80d1-6bb03ce3a889.2">
     <tbody>
       <tr>
         <td style="padding:0px 0px 10px 0px;" role="module-content" bgcolor="">
