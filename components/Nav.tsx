@@ -38,13 +38,13 @@ export default function Nav({
           {primaryNav?.show ? (
             <div className="primary-nav">
               <Link href="/about">
-                <a>About</a>
+                <a className="nav-link">About</a>
               </Link>
-
+              <Link href="/edit">
+                <a className="nav-link">Request Changes</a>
+              </Link>
               <Link href="/join/01-you">
-                <a>
-                  Join <span>/</span> Request Changes
-                </a>
+                <a className="nav-link nav-link--primary">Join the list</a>
               </Link>
             </div>
           ) : null}
@@ -75,18 +75,35 @@ export default function Nav({
             padding-left: 2rem;
           }
         }
-        .primary-nav a {
+        .nav-link {
           margin-right: 2rem;
           padding: 0.25rem;
           color: ${theme.color.text.base};
         }
-        .primary-nav a:hover {
+        .nav-link:hover {
           color: ${theme.color.brand.base};
         }
-        .primary-nav a span {
+        .nav-link span {
           color: ${theme.color.brand.base};
           opacity: 0.5;
           padding: 0 0.125rem;
+        }
+        .nav-link--primary {
+          background: ${theme.color.background.alt};
+          padding: 0.5rem 0.75rem;
+          border-radius: ${theme.borderRadius.xs};
+          border: 0.25rem solid transparent;
+          transition: all 70ms ease-out;
+        }
+        .nav-link--primary:hover,
+        .nav-link--primary:active {
+          transform: scale(1.05);
+          color: ${theme.color.text.overlay.base};
+          background: ${theme.color.brand.base};
+          border-color: ${theme.color.brand.alt};
+        }
+        .nav-link--primary:active {
+          transform: scale(1);
         }
         .back-link {
           display: block;

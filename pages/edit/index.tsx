@@ -19,7 +19,7 @@ export default function EditPage() {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <Nav backUrl="/join/01-you" />
+      <Nav backUrl="/" />
       <Heading>Request Changes</Heading>
       <Subheading centered>Welcome back, Hawaiian.</Subheading>
       <RequestForm />
