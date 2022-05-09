@@ -36,7 +36,7 @@ export default function Nav({
             </Link>
           ) : null}
           {primaryNav?.show ? (
-            <div className="primary-nav">
+            <div className="nav__links">
               <Link href="/about">
                 <a className="nav-link">About</a>
               </Link>
@@ -75,8 +75,18 @@ export default function Nav({
             padding-left: 2rem;
           }
         }
+        .nav__links {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 0.5rem 2rem;
+        }
+        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
+          .nav__links {
+            gap: 0 2rem;
+          }
+        }
         .nav-link {
-          margin-right: 2rem;
           padding: 0.25rem;
           color: ${theme.color.text.base};
         }

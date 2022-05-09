@@ -89,9 +89,7 @@ export default function HomePage({ allMembers, allFocuses }) {
               onFilterClick={handleFilterByFocuses}
             />
           )}
-          <h5>
-            <strong>{members.length}</strong> kanaka
-          </h5>
+          {/* <strong>{members.length}</strong> kanaka */}
         </aside>
         <main>{members && <MemberDirectory members={members} />}</main>
       </div>

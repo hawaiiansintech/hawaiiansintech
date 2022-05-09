@@ -108,7 +108,7 @@ export default function FocusPicker({
           size={ButtonSize.Small}
           onClick={() => setMenuExpanded(!menuExpanded)}
         >
-          {menuExpanded ? "Show Less" : "Show More"}
+          {menuExpanded ? "Less" : "More"}
         </Button>
       )}
     </>
