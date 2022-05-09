@@ -1,5 +1,5 @@
 import SendGrid from "@sendgrid/mail";
-import { getEmailTemplate, REPLY_EMAIL } from "./utils";
+import { ADMIN_EMAILS, getEmailTemplate, REPLY_EMAIL } from "./utils";
 SendGrid.setApiKey(process.env.SENDGRID_API_KEY);
 
 interface EmailTemplateProps {
@@ -11,7 +11,7 @@ export interface SendConfirmationEmailProps extends EmailTemplateProps {
   email: string;
 }
 
-export async function sendConfirmationEmail({
+export async function sendConfirmationEmails({
   email,
   airtableID,
   name,
@@ -39,5 +39,34 @@ export async function sendConfirmationEmail({
     },
     subject: "Welcome to Hawaiians in Tech",
     html: emailTemplate,
+  });
+  const airtableUrl = `https://airtable.com/${process.env.AIRTABLE_BASE}/tblEvo2F3MecUanJu/viwJ4z01vDJ1BaUlo/${airtableID}`;
+
+  const MESSAGE_BODY_2 = `
+    <p>Get started by opening up the pending <a href="${airtableUrl}">Submission</a> on Airtable.</p>
+    <p><strong>1. Review the submission.</strong></p><ul><li>For Location, we'll need to manually look over and connect the relevant Region (which is a separate, indexed/searchable field).</li><li>If any freeform fields (location/title/suggested/etc.) were used, check for misspelling and/or appropriateness. Remember to try use proper diacriticals (wehewehe.org is your friend).</li><li>Check that their URL works.</li></ul>
+    <p><strong>2. Reach out to ${name} at ${email} about their new submission.</strong> Be concise/clear about intention of suggestions.</p>
+    <p><strong>3. If all goes well,</strong> double-check all fields and move their Status to Approved!</p>
+    ${
+      airtableID
+        ? `<p><em><strong>Member ID:</strong> ${airtableID}</em></p>`
+        : ""
+    }
+  `;
+
+  const emailTemplate2 = getEmailTemplate({
+    body: MESSAGE_BODY_2,
+    prependMessage: name,
+    title: `New Member Submission from ${name}`,
+  });
+
+  await SendGrid.sendMultiple({
+    to: ADMIN_EMAILS,
+    from: {
+      email: REPLY_EMAIL,
+      name: "Hawaiians in Tech",
+    },
+    subject: `New Submission`,
+    html: emailTemplate2,
   });
 }
