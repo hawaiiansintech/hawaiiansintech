@@ -69,14 +69,17 @@ export default function AboutPage() {
         <div className="col-left">
           <h3>How can I nominate someone?</h3>
           <p>
-            If you or someone you know is a Native Hawaiian who works in the
-            technology industry, and wants to be part of this directory and
-            community, please{" "}
-            <Link href="/nominate">
-              <a className="link">fill out this form</a>
-            </Link>{" "}
-            with your/their information and a link to your/their social profile.
-            The link can be to a Github, a Linkedin, a website, etc...
+            If you are a Native Hawaiian who works in the field / industry of
+            technology, and wants to be part of this directory and community,
+            simply complete{" "}
+            <Link href="/join/01-you">
+              <a className="link">this form</a>
+            </Link>
+            .
+          </p>
+          <p>
+            Most could just stop there. But reach out to the community! Meet
+            your fellow kanaka.
           </p>
 
           <h3>How did you come up with this idea?</h3>
@@ -165,15 +168,13 @@ export default function AboutPage() {
             to connect with our community, get information on events, find new
             project opportunities, and more.
           </p>
-          <h3>How can I remove my name?</h3>
+          <p>You should feel encouraged to come forward with new ideas.</p>
+          <h3>How can I update my profile? Or remove myself altogether?</h3>
           <p>
-            If you’ve been added to the directory and would like to opt-out or
-            make an edit to your profile, please send an email to either
-            emmit.parubrub@gmail.com or howzit@tellaho.com, or send us a message
-            in our{" "}
-            <a className="link" href={`${DISCORD_URL}`} target="_blank">
-              Discord
-            </a>
+            Changes, including removal from the list, can be{" "}
+            <Link href="/edit">
+              <a className="link">requested here</a>
+            </Link>
             .
           </p>
         </div>
@@ -224,6 +225,10 @@ export default function AboutPage() {
         .moreabout p {
           margin: 0;
           padding: 0;
+        }
+
+        .moreabout p ~ p {
+          margin-top: 1rem;
         }
 
         .moreabout h3 {
