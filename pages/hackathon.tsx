@@ -1,3 +1,4 @@
+import Button, { ButtonVariant } from "@/components/Button";
 import { DataList, DataListItem } from "@/components/DataList";
 import MetaTags from "@/components/Metatags.js";
 import Nav from "@/components/Nav";
@@ -6,6 +7,7 @@ import { Title } from "@/components/Title.js";
 import { motion } from "framer-motion";
 import Head from "next/head";
 import theme from "styles/theme";
+import { DISCORD_URL } from "./about";
 
 const item = {
   hidden: { opacity: 0, y: "15%" },
@@ -37,7 +39,6 @@ export default function HackathonPage() {
           text="Hawaiians*in&nbsp;Technology"
           noAnimation
         />
-
         <motion.div
           variants={container}
           initial="hidden"
@@ -75,15 +76,11 @@ export default function HackathonPage() {
           Moʻokūʻauhau &amp; Moʻōlelo
         </DataListItem>
       </DataList>
-      {/* <Button fullWidth type="submit">
-          RSVP
-      </Button>
-      <Button linkTo={DISCORD_URL} type="submit">
-          Join the Discord
-      </Button>
-      <Button type="submit">
-          ...
-      </Button> */}
+      <DataList mainEventLogistics gap="1rem 6rem">
+        <Button fullWidth>RSVP</Button>
+        <Button linkTo={DISCORD_URL}>Join the Discord</Button>
+        <Button>...</Button>
+      </DataList>
       <h3>
         A <span className="bold">non-traditional hackathon;</span> expanding on{" "}
         <span className="bold">traditional kanaka concepts</span> including{" "}
@@ -115,7 +112,7 @@ export default function HackathonPage() {
         has realized, you should know we exist and are <i>tʻriving</i>.
       </h3>
       <SplitSection title="Tech spec" hint="Subject to change">
-        {" "}
+        <div className="empty-placeholder"></div>
       </SplitSection>
       <SplitSection title="Cultural advisory" hint="Subject to change">
         <DataList gap="1rem 6rem">
@@ -138,7 +135,7 @@ export default function HackathonPage() {
         </DataList>
       </SplitSection>
       <SplitSection title="Schedule & Events" hint="Subject to change">
-        {" "}
+        <div className="empty-placeholder"></div>
       </SplitSection>
       <SplitSection title="Frequently Asked Questions">
         <DataList gap="1rem 4rem">
@@ -206,7 +203,14 @@ export default function HackathonPage() {
           />
         </DataList>
       </SplitSection>
-      <SplitSection title="Sponsored by"> </SplitSection>
+      <SplitSection title="Sponsored by">
+        <h4 style={{ padding: "0 2rem" }}>
+          In progress. Things are moving fast. Still interested?
+        </h4>
+        <Button variant={ButtonVariant.Secondary} type="submit">
+          Contact Us
+        </Button>
+      </SplitSection>
       <style jsx>{`
         .hackathon-splash {
           margin: 0 1rem;
@@ -224,6 +228,12 @@ export default function HackathonPage() {
         .bold {
           color: ${theme.color.text.alt};
           font-weight: 600;
+        }
+
+        .empty-placeholder {
+          height: 400px;
+          background-color: ${theme.color.background.alt3};
+          border-radius: 1rem;
         }
 
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {

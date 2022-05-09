@@ -56,7 +56,7 @@ export function DataListItem({
       <p>{children}</p>
       <style jsx>{`
         .data-list-item {
-          max-width: ${mainEventLogistics ? "20rem" : "25rem"};
+          max-width: ${mainEventLogistics ? "20rem" : "15rem"};
         }
         h3,
         h4,
