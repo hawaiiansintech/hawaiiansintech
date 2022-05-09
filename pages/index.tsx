@@ -3,7 +3,14 @@ import MemberDirectory, { DirectoryMember } from "@/components/MemberDirectory";
 import MetaTags from "@/components/Metatags.js";
 import Nav from "@/components/Nav";
 import { Title } from "@/components/Title.js";
-import { Focus, getFocuses, getMembers, MemberPublic } from "@/lib/api";
+import {
+  Focus,
+  getFocuses,
+  getIndustries,
+  getMembers,
+  Industry,
+  MemberPublic,
+} from "@/lib/api";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import theme from "styles/theme";
@@ -11,18 +18,23 @@ import theme from "styles/theme";
 export async function getStaticProps() {
   const members: MemberPublic[] = await getMembers();
   const focuses: Focus[] = await getFocuses(true);
+  const industries: Industry[] = await getIndustries();
   return {
     props: {
       fetchedMembers: members,
       fetchedFocuses: focuses,
+      fetchedIndustries: industries,
     },
     revalidate: 60,
   };
 }
 
-export default function HomePage({ fetchedMembers, fetchedFocuses }) {
+export default function HomePage({
+  fetchedMembers,
+  fetchedFocuses,
+  fetchedIndustries,
+}) {
   const initialState = {
-    focuses: fetchedFocuses.sort((a, b) => b.count - a.count),
     members: fetchedMembers.map((mem) => ({
       ...mem,
       // mutate & add active prop
@@ -30,6 +42,8 @@ export default function HomePage({ fetchedMembers, fetchedFocuses }) {
         ? mem.focus.map((foc) => ({ ...foc, active: false }))
         : [],
     })),
+    focuses: fetchedFocuses.filter((focus) => focus.count > 0),
+    industries: fetchedIndustries.filter((industry) => industry.count > 0),
   };
   const [members, setMembers] = useState<DirectoryMember[]>(
     initialState.members
@@ -37,6 +51,7 @@ export default function HomePage({ fetchedMembers, fetchedFocuses }) {
   const [focuses, setFocuses] = useState<FocusPickerFocus[]>(
     initialState.focuses
   );
+  const [industries, setIndustries] = useState<[]>(initialState.industries);
 
   useEffect(() => {
     const activeFocuses = focuses.filter((foc) => foc.active);
@@ -123,13 +138,13 @@ export default function HomePage({ fetchedMembers, fetchedFocuses }) {
           justify-content: space-between;
           align-items: flex-end;
           margin: 8rem 0 1rem;
-          padding: 0.25rem 1rem 0.25rem;
+          padding: 0.5rem 1rem;
           background: ${theme.color.background.base};
           border-bottom: 0.125rem solid ${theme.color.border.base};
         }
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
           aside {
-            padding: 0.5rem 2rem 0.25rem;
+            padding: 0.5rem 2rem;
           }
         }
         h5 {
