@@ -175,7 +175,9 @@ export async function getFocuses(): Promise<Focus[]> {
   const focuses = await getBase({ name: "Focuses", view: "Approved" });
 
   return focuses
-    .filter((role) => role.fields["Name"])
+    .filter(
+      (role) => role.fields["Name"] && role.fields["Has Approved Members"]
+    )
     .map((role) => {
       return {
         name:
