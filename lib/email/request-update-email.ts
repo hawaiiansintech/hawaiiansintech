@@ -1,5 +1,5 @@
 import SendGrid from "@sendgrid/mail";
-import { getEmailTemplate } from "./utils";
+import { ADMIN_EMAILS, getEmailTemplate, REPLY_EMAIL } from "./utils";
 SendGrid.setApiKey(process.env.SENDGRID_API_KEY);
 
 export interface RequestUpdateEmailProps {
@@ -28,13 +28,18 @@ export async function sendRequestUpdateEmail({
             ? "removal.</strong>"
             : "changes.</strong> This is a good way for us to connect with members. One day, we'll build a tokenized/automated approach for requests that don't change freeform fields. One day."
         }`
-      : `This is the awkward step. So, we don't have their email.</strong> We advised them to follow <a href='http://hawaiiansintech.org/edit/thank-you?emailNull=true'>these instructions</a>. So, now, we wait.`
+      : `This is the awkward step. So, we don't have their email.</strong> We advised them to follow <a href='http://hawaiiansintech.org/edit/thank-you?email=null'>these instructions</a>. So, now, we wait.`
   }</p>
   <p><strong>3. Once we hear back,${
     removeRequest
       ? " take a deep breath.</strong> Okay, now right-click and delete the record."
       : " move the member's status to Pending.</strong> Make the requested changes.</p><ul><li>If there were any updates to Location, we'll need to manually look over and the relevant Region (which is an indexed/searchable field).</li><li>If any freeform fields (location/title/suggested/etc.) were changed, check for misspelling. Remember to try use proper diacriticals (wehewehe.org is your friend).</li><li>If their URL was updated, make sure it works.</li></ul><p>Then move Status to Approved!"
   }</p>
+  ${
+    airtableID
+      ? `<p><em><strong>Request ID:</strong> ${airtableID}</em></p>`
+      : ""
+  }
   `;
   const emailTemplate = getEmailTemplate({
     body: MESSAGE_BODY,
@@ -45,10 +50,9 @@ export async function sendRequestUpdateEmail({
   });
 
   SendGrid.sendMultiple({
-    // to: ["hawaiiansintech@tellaho.com", "emmit.parubrub@gmail.com"],
-    to: ["hawaiiansintech@tellaho.com"],
+    to: ADMIN_EMAILS,
     from: {
-      email: "aloha@hawaiiansintech.org",
+      email: REPLY_EMAIL,
       name: "Hawaiians in Tech",
     },
     subject: `New Request`,

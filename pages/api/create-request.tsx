@@ -11,16 +11,24 @@ airtable.configure({
 });
 
 const addToAirtable = async ({
-  userData,
   editedData,
+  userData,
   message,
+  removeRequest,
 }: {
-  userData: MemberPublicEditing;
   editedData: MemberPublicEditing;
+  userData: MemberPublicEditing;
   message: string;
+  removeRequest?: boolean;
 }): Promise<string> => {
   const getSummary = () => {
     let summary = "";
+    if (removeRequest) {
+      summary = summary + `REMOVAL REQUEST\n`;
+    }
+    if (message) {
+      summary = summary + `• Message: ${message}`;
+    }
     if (editedData.name) {
       summary = summary + `• Name: ${editedData.name}\n`;
     }
@@ -59,9 +67,6 @@ const addToAirtable = async ({
     }
     if (editedData.companySize) {
       summary = summary + `• Company Size: ${editedData.companySize}\n`;
-    }
-    if (message) {
-      summary = summary + `• Message: ${message}`;
     }
     return summary;
   };
@@ -125,7 +130,7 @@ export default async function handler(req, res) {
     await sendSgEmail({
       email: req.body.email,
       name: req.body.name,
-      airtableID: req.body.recordID,
+      airtableID: requestID,
       removeRequest: req.body.removeRequest,
     }).then(() => {
       console.log("✅ sent member email via sendgrid");

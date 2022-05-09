@@ -1,5 +1,5 @@
 import SendGrid from "@sendgrid/mail";
-import { getEmailTemplate } from "./utils";
+import { getEmailTemplate, REPLY_EMAIL } from "./utils";
 SendGrid.setApiKey(process.env.SENDGRID_API_KEY);
 
 interface EmailTemplateProps {
@@ -34,7 +34,7 @@ export async function sendConfirmationEmail({
   await SendGrid.send({
     to: email,
     from: {
-      email: "aloha@hawaiiansintech.org",
+      email: REPLY_EMAIL,
       name: "Hawaiians in Tech",
     },
     subject: "Welcome to Hawaiians in Tech",

@@ -20,7 +20,7 @@ import * as Yup from "yup";
 export default function JoinStep4() {
   const router = useRouter();
   const { removeRequest } = router.query;
-  const { getItem, setItem, removeItem } = useStorage();
+  const { getItem, removeItem } = useStorage();
   const [other, setOther] = useState<string>("");
   const [userData, setUserData] = useState<MemberPublicEditing>({});
   const [editedData, setEditedData] = useState<MemberPublicEditing>({});
