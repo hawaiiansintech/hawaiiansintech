@@ -12,11 +12,13 @@ export interface FocusPickerFocus extends Focus {
 interface FocusPickerProps {
   focuses: FocusPickerFocus[];
   onFilterClick: (id?: string) => any;
+  memberCount?: number;
 }
 
 export default function FocusPicker({
   focuses,
   onFilterClick,
+  memberCount,
 }: FocusPickerProps) {
   const [showButton, setShowButton] = useState<boolean>(false);
   const [maxHeightContainer, setMaxHeightContainer] = useState<number>(0);
@@ -51,7 +53,7 @@ export default function FocusPicker({
         <li ref={allRef}>
           <Selectable
             fullWidth
-            headline={"All"}
+            headline={`All ${memberCount ? `(${memberCount})` : ""}`}
             onClick={() => (!isSelected ? onFilterClick() : null)}
             selected={isSelected}
             size={SelectableSize.Large}
@@ -103,13 +105,15 @@ export default function FocusPicker({
         `}</style>
       </ul>
       {showButton && (
-        <Button
-          variant={ButtonVariant.Secondary}
-          size={ButtonSize.Small}
-          onClick={() => setMenuExpanded(!menuExpanded)}
-        >
-          {menuExpanded ? "Less" : "More"}
-        </Button>
+        <div style={{ marginBottom: "0.75rem" }}>
+          <Button
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Small}
+            onClick={() => setMenuExpanded(!menuExpanded)}
+          >
+            {menuExpanded ? "Less" : "More"}
+          </Button>
+        </div>
       )}
     </>
   );

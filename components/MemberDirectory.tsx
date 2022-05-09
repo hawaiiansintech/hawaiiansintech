@@ -13,13 +13,14 @@ interface MemberDirectoryProps {
 
 export default function MemberDirectory({ members }: MemberDirectoryProps) {
   const isFiltered =
-    members.filter((mem) => mem.focus.filter((foc) => foc.active).length > 0)
+    members.filter((mem) => mem.focus?.filter((foc) => foc.active).length > 0)
       .length > 0;
   return (
     <section>
       {members.map((member, i) => {
         const isDisabled =
-          member.focus.filter((foc) => foc.active).length === 0;
+          member.focus?.filter((foc) => foc.active).length === 0;
+
         return (
           <motion.div layout="position" key={`member-${member.id}`}>
             <a
@@ -48,9 +49,6 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
       })}
 
       <style jsx>{`
-        section {
-          border-top: 0.1rem solid ${theme.color.border.alt};
-        }
         .member {
           display: block;
           padding: 1rem 0;

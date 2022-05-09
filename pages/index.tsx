@@ -13,24 +13,59 @@ export async function getStaticProps() {
   const focuses: Focus[] = await getFocuses(true);
   return {
     props: {
-      allMembers: members.map((mem) => ({
-        ...mem,
-        // mutate & add active prop
-        focus: mem.focus
-          ? mem.focus.map((foc) => ({ ...foc, active: false }))
-          : [],
-      })),
-      allFocuses: focuses
-        .filter((focus) => focus.count > 0)
-        .sort((a, b) => b.count - a.count),
+      fetchedMembers: members,
+      fetchedFocuses: focuses,
     },
     revalidate: 60,
   };
 }
 
-export default function HomePage({ allMembers, allFocuses }) {
-  const [members, setMembers] = useState<DirectoryMember[]>(allMembers);
-  const [focuses, setFocuses] = useState<FocusPickerFocus[]>(allFocuses);
+export default function HomePage({ fetchedMembers, fetchedFocuses }) {
+  const initialState = {
+    focuses: fetchedFocuses.sort((a, b) => b.count - a.count),
+    members: fetchedMembers.map((mem) => ({
+      ...mem,
+      // mutate & add active prop
+      focus: mem.focus
+        ? mem.focus.map((foc) => ({ ...foc, active: false }))
+        : [],
+    })),
+  };
+  const [members, setMembers] = useState<DirectoryMember[]>(
+    initialState.members
+  );
+  const [focuses, setFocuses] = useState<FocusPickerFocus[]>(
+    initialState.focuses
+  );
+
+  useEffect(() => {
+    const activeFocuses = focuses.filter((foc) => foc.active);
+    const membersWithFocuses = members
+      .map((mem) => ({
+        ...mem,
+        focus: mem.focus?.map((foc) => ({
+          ...foc,
+          // update member focuses if filtered
+          active: activeFocuses.map((foc) => foc.id).includes(foc.id),
+        })),
+      }))
+      // sort by number of focuses set
+      .sort((a, b) => {
+        if (a.focus === undefined || b.focus === undefined) return;
+        const firstActive = a.focus
+          .map((foc) => foc?.active)
+          .filter((foc) => foc).length;
+        const nextActive = b?.focus
+          .map((foc) => foc?.active)
+          .filter((foc) => foc).length;
+        // if same count, randomize
+        if (nextActive === firstActive) return 0.5 - Math.random();
+        // or sort by
+        return nextActive > firstActive ? 1 : -1;
+      });
+
+    setMembers(membersWithFocuses);
+  }, [focuses]);
 
   const handleFilterByFocuses = (id?: string) => {
     setFocuses(
@@ -41,34 +76,6 @@ export default function HomePage({ allMembers, allFocuses }) {
       }))
     );
   };
-
-  useEffect(() => {
-    const activeFocuses = focuses.filter((foc) => foc.active);
-    const membersWithFocuses = members
-      .map((mem) => ({
-        ...mem,
-        focus: mem.focus.map((foc) => ({
-          ...foc,
-          // update member focuses if filtered
-          active: activeFocuses.map((foc) => foc.id).includes(foc.id),
-        })),
-      }))
-      // sort by number of focuses set
-      .sort((a, b) => {
-        const firstActive = a.focus
-          .map((foc) => foc.active)
-          .filter((foc) => foc).length;
-        const nextActive = b.focus
-          .map((foc) => foc.active)
-          .filter((foc) => foc).length;
-        // if same count, randomize
-        if (nextActive === firstActive) return 0.5 - Math.random();
-        // or sort by
-        return nextActive > firstActive ? 1 : -1;
-      });
-
-    setMembers(membersWithFocuses);
-  }, [focuses]);
 
   return (
     <>
@@ -87,9 +94,9 @@ export default function HomePage({ allMembers, allFocuses }) {
             <FocusPicker
               focuses={focuses}
               onFilterClick={handleFilterByFocuses}
+              memberCount={members.length}
             />
           )}
-          {/* <strong>{members.length}</strong> kanaka */}
         </aside>
         <main>{members && <MemberDirectory members={members} />}</main>
       </div>
@@ -115,8 +122,15 @@ export default function HomePage({ allMembers, allFocuses }) {
           display: flex;
           justify-content: space-between;
           align-items: flex-end;
-          margin: 8rem 0 2rem;
-          padding: 0 1rem;
+          margin: 8rem 0 1rem;
+          padding: 0.25rem 1rem 0.25rem;
+          background: ${theme.color.background.base};
+          border-bottom: 0.125rem solid ${theme.color.border.base};
+        }
+        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
+          aside {
+            padding: 0.5rem 2rem 0.25rem;
+          }
         }
         h5 {
           margin: 0;
@@ -128,11 +142,6 @@ export default function HomePage({ allMembers, allFocuses }) {
         h5 strong {
           color: ${theme.color.text.alt};
           font-weight: 500;
-        }
-        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-          aside {
-            padding: 0 2rem;
-          }
         }
       `}</style>
     </>
