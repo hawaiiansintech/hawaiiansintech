@@ -18,12 +18,13 @@ export function DataList({ children, mainEventLogistics, gap }: DataListProps) {
           grid-auto-rows: 1fr;
           gap: ${gap};
           margin: ${mainEventLogistics ? "3rem auto 0" : "1.5rem auto 0"};
-          padding: 0 1rem;
+          padding: ${mainEventLogistics ? "0 1rem;" : 0};
+          max-width: 60rem;
         }
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
           .data-list {
-            padding: 0 2rem;
-            margin: ${mainEventLogistics ? "3rem auto 0" : "0rem auto 0"};
+            padding: ${mainEventLogistics ? "0 2rem;" : 0};
+            margin: ${mainEventLogistics ? "3rem 0 0 0" : "0rem 0 0 0"};
           }
         }
       `}</style>
@@ -33,6 +34,7 @@ export function DataList({ children, mainEventLogistics, gap }: DataListProps) {
 
 interface DataListItemProps {
   heading?: string;
+  extendedHeading?: boolean;
   mainEventLogistics?: boolean;
   subHeading?: string;
   subHeadingLight?: boolean;
@@ -42,6 +44,7 @@ interface DataListItemProps {
 
 export function DataListItem({
   heading,
+  extendedHeading,
   mainEventLogistics,
   children,
   subHeading,
@@ -56,7 +59,11 @@ export function DataListItem({
       <p>{children}</p>
       <style jsx>{`
         .data-list-item {
-          max-width: ${mainEventLogistics ? "20rem" : "15rem"};
+          width: ${mainEventLogistics
+            ? "20rem"
+            : extendedHeading
+            ? "30rem"
+            : "12rem"};
         }
         h3,
         h4,

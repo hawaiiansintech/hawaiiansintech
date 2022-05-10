@@ -53,7 +53,7 @@ export default function HackathonPage() {
           </p>
         </motion.div>
       </div>
-      <DataList mainEventLogistics gap="1rem 6rem">
+      <DataList mainEventLogistics gap="1.5rem 4rem">
         <DataListItem
           mainEventLogistics
           heading="ʻEhia ka lā?"
@@ -76,10 +76,18 @@ export default function HackathonPage() {
           Moʻokūʻauhau &amp; Moʻōlelo
         </DataListItem>
       </DataList>
-      <DataList mainEventLogistics gap="1rem 6rem">
-        <Button fullWidth>RSVP</Button>
-        <Button linkTo={DISCORD_URL}>Join the Discord</Button>
-        <Button>...</Button>
+      <DataList mainEventLogistics gap="1rem 1rem">
+        <Button customWidth="26rem">RSVP</Button>
+        <Button
+          customWidth="19rem"
+          variant={ButtonVariant.Secondary}
+          linkTo={DISCORD_URL}
+        >
+          Join the Discord
+        </Button>
+        <Button customWidth="6rem" variant={ButtonVariant.Secondary}>
+          ...
+        </Button>
       </DataList>
       <h3>
         A <span className="bold">non-traditional hackathon;</span> expanding on{" "}
@@ -118,18 +126,22 @@ export default function HackathonPage() {
         <DataList gap="1rem 6rem">
           <DataListItem
             heading="Dr. Lilikalā Kameʻeleihiwaala"
+            extendedHeading
             subHeading="Professor, Hawaiian Culture & Genealogies"
           />
           <DataListItem
             heading="Dr. Manulani Aluli Meyer"
+            extendedHeading
             subHeading="Indigenous Scholar and Cultural Practitioner"
           />
           <DataListItem
             heading="Dr. Pualani Kanakaʻole Kanahele"
+            extendedHeading
             subHeading="Cultural Practitioner"
           />
           <DataListItem
             heading="Kamaliʻikupono Hanohano"
+            extendedHeading
             subHeading="Kahuna, Pā ʻUhi"
           />
         </DataList>
@@ -138,7 +150,7 @@ export default function HackathonPage() {
         <div className="empty-placeholder"></div>
       </SplitSection>
       <SplitSection title="Frequently Asked Questions">
-        <DataList gap="1rem 4rem">
+        <DataList gap="2rem 4rem">
           <DataListItem heading="Do I need to work in tech to participate? Or be Native Hawaiian?">
             <span className="bold">No, you don’t</span>. We are simply looking
             for passionate folks who can contribute to the aforementioned goals.
@@ -182,14 +194,14 @@ export default function HackathonPage() {
             heading="Andrew Taeoaliʻi"
             subHeading="Hawaiians in Tech"
           />
-          <DataListItem
-            heading="Emmit Kamakani Parubrub"
-            subHeading="Hawaiians in Tech"
-          />
           <DataListItem heading="Keaʻa Davis" subHeading="Purple Maiʻa" />
           <DataListItem heading="Keoni DeFranco" subHeading="Purple Maiʻa" />
           <DataListItem
             heading="Taylor Kekai Ho"
+            subHeading="Hawaiians in Tech"
+          />
+          <DataListItem
+            heading="Emmit Kamakani Parubrub"
             subHeading="Hawaiians in Tech"
           />
         </DataList>
@@ -204,12 +216,12 @@ export default function HackathonPage() {
         </DataList>
       </SplitSection>
       <SplitSection title="Sponsored by">
-        <h4 style={{ padding: "0 2rem" }}>
-          In progress. Things are moving fast. Still interested?
-        </h4>
-        <Button variant={ButtonVariant.Secondary} type="submit">
-          Contact Us
-        </Button>
+        <div>
+          <h4>In progress. Things are moving fast. Still interested?</h4>
+          <Button customWidth="15rem" variant={ButtonVariant.Secondary}>
+            Contact Us
+          </Button>
+        </div>
       </SplitSection>
       <style jsx>{`
         .hackathon-splash {

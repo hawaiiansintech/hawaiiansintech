@@ -24,7 +24,7 @@ export default function SplitSection({
           margin: 2rem 0;
         }
         .split-section__aside {
-          max-width: 16rem;
+          max-width: 25rem;
           width: 100%;
           margin-bottom: 1rem;
         }
@@ -42,6 +42,7 @@ export default function SplitSection({
           }
           .split-section__aside {
             margin-bottom: 0;
+            max-width: 16rem;
           }
         }
 

@@ -16,6 +16,7 @@ interface ButtonProps {
   children?: React.ReactNode;
   disabled?: boolean;
   fullWidth?: boolean;
+  customWidth?: string;
   linkTo?: string;
   loading?: boolean;
   onClick?: (e: React.MouseEvent) => any;
@@ -28,6 +29,7 @@ export default function Button({
   children,
   disabled,
   fullWidth,
+  customWidth,
   linkTo,
   loading,
   onClick,
@@ -55,7 +57,7 @@ export default function Button({
           ${cssHelperButtonReset}
           position: relative;
           padding: ${size === ButtonSize.Default ? "1.2rem" : "0.4rem 0.8rem"};
-          width: ${fullWidth ? "100%" : "initial"};
+          width: ${fullWidth ? "100%" : customWidth ? customWidth : "initial"};
           color: ${disabled
             ? theme.color.text.alt2
             : loading
