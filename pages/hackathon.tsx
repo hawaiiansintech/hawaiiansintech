@@ -149,6 +149,49 @@ export default function HackathonPage() {
       <SplitSection title="Schedule & Events" hint="Subject to change">
         <div className="empty-placeholder"></div>
       </SplitSection>
+      <SplitSection title="Who We Need">
+        <DataList gap="2rem 4rem">
+          <DataListItem customWidth="100%" heading="Technical help 🛠">
+            Looking for individuals who can help us:
+            <ul>
+              <li>parse, store, or manage data</li>
+              <li>shape data infrastructural / system design </li>
+              <li>
+                visualize hierarchical & interconnected data in a compelling way
+              </li>
+              <li>
+                a degree of technical acumen or a strong will to pick one up
+                fast
+              </li>
+            </ul>
+            Common technical roles we’re looking for (but not limited to):
+            <ul>
+              <li>Software engineers</li>
+              <li>Testing engineers</li>
+              <li>Data infra / science / analysis</li>
+              <li>Privacy & safety</li>
+              <li>User-generated content & moderation</li>
+              <li>UX / Product / UI designers</li>
+              <li>Smart, open-minded folks with a good attitude</li>
+            </ul>
+          </DataListItem>
+          <DataListItem customWidth="100%" heading="User feedback help 💡">
+            Looking for individuals who can help:
+            <ul>
+              <li>
+                test out and provide thoughtful feedback on existing
+                functionalities
+              </li>
+              <li>
+                provide thoughts and ideas on future development of the project
+              </li>
+              <li>
+                give opinions on the best visualizations for the genealogy data
+              </li>
+            </ul>
+          </DataListItem>
+        </DataList>
+      </SplitSection>
       <SplitSection title="Frequently Asked Questions">
         <DataList gap="2rem 4rem">
           <DataListItem heading="Do I need to work in tech to participate? Or be Native Hawaiian?">

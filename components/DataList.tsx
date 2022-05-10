@@ -35,6 +35,7 @@ export function DataList({ children, mainEventLogistics, gap }: DataListProps) {
 interface DataListItemProps {
   heading?: string;
   extendedHeading?: boolean;
+  customWidth?: string;
   mainEventLogistics?: boolean;
   subHeading?: string;
   subHeadingLight?: boolean;
@@ -45,6 +46,7 @@ interface DataListItemProps {
 export function DataListItem({
   heading,
   extendedHeading,
+  customWidth,
   mainEventLogistics,
   children,
   subHeading,
@@ -63,6 +65,8 @@ export function DataListItem({
             ? "20rem"
             : extendedHeading
             ? "30rem"
+            : customWidth
+            ? customWidth
             : "12rem"};
         }
         h3,
@@ -96,7 +100,11 @@ export function DataListItem({
         }
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
           .data-list-item {
-            max-width: ${mainEventLogistics ? "20rem" : "16rem"};
+            max-width: ${mainEventLogistics
+              ? "20rem"
+              : customWidth
+              ? customWidth
+              : "16rem"};
           }
           h3 {
             font-size: ${mainEventLogistics ? "1.5rem" : "1.25rem"};
