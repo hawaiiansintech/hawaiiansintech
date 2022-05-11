@@ -27,6 +27,7 @@ const container = {
 export default function HackathonPage() {
   return (
     <>
+      <div className="background"></div>
       <Head>
         <title>Hawaiians in Technology | About</title>
         <link rel="icon" href="/favicon.ico" />
@@ -272,6 +273,17 @@ export default function HackathonPage() {
           padding-top: 26vh;
         }
 
+        .background {
+          background-image: url("/images/triangles.svg");
+          background-repeat: no-repeat;
+          background-position: 50% 50%;
+          background-size: contain;
+          width: 100%;
+          height: 65rem;
+          position: absolute;
+          z-index: -100;
+        }
+
         h3 {
           margin: 2rem 1rem 0 1rem;
           max-width: 45rem;
@@ -297,6 +309,11 @@ export default function HackathonPage() {
           }
           h3 {
             margin: 3rem 0 0 2rem;
+          }
+          .background {
+            background-position: top right;
+            height: 90rem;
+            top: 10rem;
           }
         }
 
