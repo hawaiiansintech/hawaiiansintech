@@ -1,4 +1,4 @@
-import Button, { ButtonVariant } from "@/components/Button";
+import Button, { ButtonSize, ButtonVariant } from "@/components/Button";
 import { DataList, DataListItem } from "@/components/DataList";
 import MetaTags from "@/components/Metatags.js";
 import Nav from "@/components/Nav";
@@ -78,13 +78,29 @@ export default function HackathonPage() {
         </DataListItem>
       </DataList>
       <DataList mainEventLogistics gap="1rem 1rem">
-        <Button customWidth="26rem">RSVP</Button>
+        <Button
+          size={ButtonSize.Small}
+          customWidth="18rem"
+          customFontSize="1.5rem"
+        >
+          RSVP
+        </Button>
         <a href={DISCORD_URL}>
-          <Button customWidth="19rem" variant={ButtonVariant.Secondary}>
+          <Button
+            customWidth="18rem"
+            customFontSize="1.5rem"
+            size={ButtonSize.Small}
+            variant={ButtonVariant.Secondary}
+          >
             Join the Discord
           </Button>
         </a>
-        <Button customWidth="6rem" variant={ButtonVariant.Secondary}>
+        <Button
+          customWidth="5rem"
+          customFontSize="1.5rem"
+          size={ButtonSize.Small}
+          variant={ButtonVariant.Secondary}
+        >
           ...
         </Button>
       </DataList>
@@ -280,7 +296,12 @@ export default function HackathonPage() {
         <div>
           <h4>In progress. Things are moving fast. Still interested?</h4>
           <a href="mailto:kekai@hawaiiansintech.org,kamakani@hawaiiansintech.org,andrewtaylor@hawaiiansintech.org">
-            <Button customWidth="15rem" variant={ButtonVariant.Secondary}>
+            <Button
+              customWidth="13rem"
+              customFontSize="1.5rem"
+              size={ButtonSize.Small}
+              variant={ButtonVariant.Secondary}
+            >
               Contact Us
             </Button>
           </a>
@@ -305,9 +326,9 @@ export default function HackathonPage() {
 
         h3 {
           margin: 2rem 1rem 0 1rem;
-          max-width: 45rem;
+          max-width: 40rem;
           font-weight: 400;
-          font-size: 1.25rem;
+          font-size: 1.7rem;
           color: ${theme.color.text.alt2};
         }
 

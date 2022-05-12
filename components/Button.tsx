@@ -17,7 +17,7 @@ interface ButtonProps {
   disabled?: boolean;
   fullWidth?: boolean;
   customWidth?: string;
-  linkTo?: string;
+  customFontSize?: string;
   loading?: boolean;
   onClick?: (e: React.MouseEvent) => any;
   size?: ButtonSize;
@@ -30,7 +30,7 @@ export default function Button({
   disabled,
   fullWidth,
   customWidth,
-  linkTo,
+  customFontSize,
   loading,
   onClick,
   size = ButtonSize.Default,
@@ -74,7 +74,11 @@ export default function Button({
           border-radius: ${size === ButtonSize.Default
             ? theme.borderRadius.md
             : theme.borderRadius.sm};
-          font-size: ${size === ButtonSize.Default ? "1rem" : "0.875rem"};
+          font-size: ${size === ButtonSize.Default
+            ? "1rem"
+            : customFontSize
+            ? customFontSize
+            : "0.875rem"};
           font-weight: 600;
           background: ${variant === ButtonVariant.Secondary
             ? theme.color.background.alt

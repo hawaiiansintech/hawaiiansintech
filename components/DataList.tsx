@@ -19,12 +19,12 @@ export function DataList({ children, mainEventLogistics, gap }: DataListProps) {
           gap: ${gap};
           margin: ${mainEventLogistics ? "3rem auto 0" : "1.5rem auto 0"};
           padding: ${mainEventLogistics ? "0 1rem;" : 0};
-          max-width: 60rem;
+          max-width: 90rem;
         }
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
           .data-list {
             padding: ${mainEventLogistics ? "0 2rem;" : 0};
-            margin: ${mainEventLogistics ? "3rem 0 0 0" : "0rem 0 0 0"};
+            margin: ${mainEventLogistics ? "3rem 0 0 0" : "0"};
           }
         }
       `}</style>
@@ -95,8 +95,8 @@ export function DataListItem({
           color: ${mainEventLogistics
             ? theme.color.brand.base
             : theme.color.text.alt2};
-          font-weight: 500;
-          font-size: ${mainEventLogistics ? "1.25rem" : "1rem"};
+          font-weight: ${mainEventLogistics ? 700 : 500};
+          font-size: ${mainEventLogistics ? "1.8rem" : "1rem"};
         }
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
           .data-list-item {
