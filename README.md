@@ -2,6 +2,8 @@
 
 The website is built using Google Spreedsheet, [Next.js](https://nextjs.org/) and deployed at [Vercel](https://vercel.com/).
 
+> **NOTE: The instructions below are slightly out of date. Will update soon** 🙏
+
 ## Forking this project
 
 The code was forked from another open source project and will remain open source. These instructions should help you running on your local machine to get started.
@@ -31,6 +33,17 @@ yarn dev
 ```
 
 In your browser, open `localhost:3000`.
+
+#### TIP
+
+If the airtable API key is missing, you can simulate it by changing this line in `index.js`
+```javascript
+import { fetchTechnologists } from "../lib/api";
+```
+to
+```javascript
+import { fetchTechnologists } from "../lib/stubApi";
+```
 
 ### Deploy at vercel
 
