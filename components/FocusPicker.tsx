@@ -1,9 +1,10 @@
 import { Focus } from "@/lib/api";
 import { useEffect, useRef, useState } from "react";
 import theme from "styles/theme";
+import BannerAlert from "./BannerAlert";
 import Button, { ButtonSize, ButtonVariant } from "./Button";
+import Input from "./form/Input";
 import Selectable, { SelectableSize } from "./form/Selectable";
-import Tag from "./Tag";
 
 export interface FocusPickerFocus extends Focus {
   active?: boolean;
@@ -68,55 +69,25 @@ export default function FocusPicker({
           )}
         </div>
         {menuExpanded ? (
-          <div className="more-options">
-            <div className="more-options__container">
-              <h6>
-                Location <Tag>In-Progress</Tag>
-              </h6>
-              <div className="more-options__example">
-                {["Hawaiʻi", "California", "Washington"].map((item) => (
-                  <Selectable
-                    headline={item}
-                    disabled
-                    size={SelectableSize.Large}
-                  />
-                ))}
-              </div>
-            </div>
-            <div className="more-options__container">
-              <h6>
-                Industry <Tag>In-Progress</Tag>
-              </h6>
-              <div className="more-options__example">
-                {[`Internet / Technology`, `Education`, `Entertainment`].map(
-                  (item) => (
-                    <Selectable
-                      headline={item}
-                      disabled
-                      size={SelectableSize.Large}
-                    />
-                  )
-                )}
-              </div>
-            </div>
-            <div className="more-options__container">
-              <h6>
-                Years of Experience <Tag>In-Progress</Tag>
-              </h6>
-              <div className="more-options__example">
-                {[`Less than a year`, `1 – 2 years`, `3 – 4 years`].map(
-                  (item) => (
-                    <Selectable
-                      headline={item}
-                      disabled
-                      size={SelectableSize.Large}
-                    />
-                  )
-                )}
-              </div>
+          <div
+            style={{
+              border: `0.25rem solid ${theme.color.brand.alpha}`,
+              padding: "0.5rem",
+              marginTop: "0.5rem",
+              borderRadius: `${theme.borderRadius.md}`,
+            }}
+          >
+            <BannerAlert tag="ALMOST PAU">
+              <strong>New filter functionality coming soon!</strong> Recently
+              added new features for prospective and existing members to add to
+              their profile.{" "}
+            </BannerAlert>
+            <div style={{ marginTop: "1rem" }}>
+              <MoreOptions />
             </div>
           </div>
         ) : null}
+
         <style jsx>{`
           .picker {
             width: 100%;
@@ -153,28 +124,82 @@ export default function FocusPicker({
               overflow: initial;
             }
           }
-          .more-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem 1rem;
-            margin-top: 1.25rem;
-          }
-          .more-options h6 {
-            margin: 0.25rem 0 0.5rem;
-            font-size: 1rem;
-            color: ${theme.color.text.alt};
-          }
-          .more-options__container {
-            margin-bottom: 1rem;
-          }
-          .more-options__example {
-            display: inline-flex;
-            flex-wrap: nowrap;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-          }
         `}</style>
       </div>
     </>
+  );
+}
+
+function MoreOptions() {
+  return (
+    <div className="more-options">
+      <div className="more-options__option more-options__option--search">
+        <h6>Search</h6>
+        <div className="more-options__example">
+          <Input name={"search"} disabled fullWidth />
+        </div>
+      </div>
+      <div className="more-options__option">
+        <h6>Location</h6>
+        <div className="more-options__example">
+          {["Hawaiʻi", "California", "Washington"].map((item) => (
+            <Selectable headline={item} disabled size={SelectableSize.Large} />
+          ))}
+        </div>
+      </div>
+      <div className="more-options__option">
+        <h6>Industry</h6>
+        <div className="more-options__example">
+          {[`Internet / Technology`, `Education`, `Entertainment`].map(
+            (item) => (
+              <Selectable
+                headline={item}
+                disabled
+                size={SelectableSize.Large}
+              />
+            )
+          )}
+        </div>
+      </div>
+      <div className="more-options__option">
+        <h6>Years of Experience</h6>
+        <div className="more-options__example">
+          {[`Less than a year`, `1 – 2 years`, `3 – 4 years`].map((item) => (
+            <Selectable headline={item} disabled size={SelectableSize.Large} />
+          ))}
+        </div>
+      </div>
+      <style jsx>{`
+        .more-options {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 1rem 2rem;
+          padding: 0 1rem 0.5rem;
+        }
+        .more-options h6 {
+          margin: 0.25rem 0 0.5rem;
+          font-size: 1rem;
+          color: ${theme.color.text.alt};
+        }
+        .more-options__option--search {
+          flex-grow: 1;
+          width: 100%;
+        }
+        .more-options__option--search > * {
+          width: 100%;
+        }
+        .more-options__example {
+          display: inline-flex;
+          flex-wrap: nowrap;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
+        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
+          .more-options {
+            padding: 0 2rem 1rem;
+          }
+        }
+      `}</style>
+    </div>
   );
 }

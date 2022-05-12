@@ -1,6 +1,7 @@
 import { MemberPublic } from "@/lib/api";
 import { motion } from "framer-motion";
 import theme from "styles/theme";
+import { Icon, IconAsset, IconColor, IconSize } from "./icon/icon";
 import Pill from "./Pill";
 
 export interface DirectoryMember extends MemberPublic {
@@ -18,31 +19,40 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
   return (
     <section>
       {members.map((member, i) => {
-        const isDisabled =
-          member.focus?.filter((foc) => foc.active).length === 0;
-
+        const isSelected = member.focus?.filter((foc) => foc.active).length > 0;
         return (
           <motion.div layout="position" key={`member-${member.id}`}>
             <a
               href={member.link}
               target="_blank"
               className={`member ${
-                isFiltered && isDisabled && "member--disabled"
-              } ${i === members.length - 1 && "member--last"}`}
+                isFiltered && !isSelected && "member--disabled"
+              } ${i === members.length - 1 && "member--last"} ${
+                isSelected && "member--selected"
+              }`}
             >
               <h2 className="member__name">{member.name}</h2>
               <div className="member__location">
                 <h3>{member.location}</h3>
                 <h4>{member.region}</h4>
               </div>
-              <h3 className="member__title">{member.title}</h3>
-              <dl className="member__meta">
-                {member.focus?.map((foc) => (
-                  <dt key={`member-meta-${foc.id}`}>
-                    <Pill active={foc.active}>{foc.name}</Pill>
-                  </dt>
-                ))}
-              </dl>
+              <div>
+                <h3 className="member__title">{member.title}</h3>
+                <dl className="member__meta">
+                  {member.focus?.map((foc) => (
+                    <dt key={`member-meta-${foc.id}`}>
+                      <Pill active={foc.active}>{foc.name}</Pill>
+                    </dt>
+                  ))}
+                </dl>
+              </div>
+              <div className="member__link">
+                <Icon
+                  asset={IconAsset.CaretRight}
+                  color={IconColor.Inherit}
+                  size={IconSize.Small}
+                />
+              </div>
             </a>
           </motion.div>
         );
@@ -50,13 +60,12 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
 
       <style jsx>{`
         .member {
+          position: relative;
           display: block;
-          padding: 1rem 0;
+          padding: 1rem 3rem 1rem 0;
+          margin-bottom: 0.5rem;
           color: ${theme.color.text.base};
-          border-bottom: 0.1rem solid ${theme.color.border.alt};
-        }
-        .member:hover {
-          color: ${theme.color.text.alt2};
+          border-radius: ${theme.borderRadius.md};
         }
         .member--disabled {
           opacity: 0.5;
@@ -72,14 +81,26 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
           display: inline-block;
         }
         .member__title {
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.25rem;
         }
         .member__location:after {
           content: "·";
           margin: 0 0.5rem;
           color: ${theme.color.text.alt3};
         }
-        .member__meta {
+        .member__link {
+          position: absolute;
+          right: 1rem;
+          top: 50%;
+          transform: translateX(-0.5rem) translateY(-50%);
+          transform-origin: center right;
+          padding: 0.5rem;
+          color: ${theme.color.brand.base};
+          transition: transform ease-in 150ms;
+        }
+        .member:hover .member__link {
+          transform: translateX(0) translateY(-50%);
+          opacity: 1;
         }
         dl,
         dt {
@@ -115,27 +136,35 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
           .member {
             display: grid;
-            grid-template-areas: "name location title meta";
-            grid-template-columns: 1.5fr 1fr 1fr 0.75fr;
-            grid-column-gap: 1rem;
-            padding: 1rem;
+            grid-template-columns: 2fr 1fr 1fr;
+            grid-column-gap: 2rem;
+            padding: 0.5rem 4rem 0.5rem 0.5rem;
+            border: 0.25rem solid transparent;
+            background: transparent;
+          }
+          .member:hover {
+            color: ${theme.color.brand.base};
+            background: ${theme.color.brand.alpha};
+            transition: background 150ms ease-out;
+          }
+          .member--selected {
+            background: ${theme.color.brand.alpha};
+            border-color: ${theme.color.brand.alpha};
           }
           .member__name {
-            grid-area: name;
             font-size: 2rem;
           }
           .member__location {
-            grid-area: location;
           }
           .member__title {
-            grid-area: title;
-            margin-bottom: 0;
+            margin-bottom: 0.25rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
           }
           .member__location:after {
             display: none;
-          }
-          .member__meta {
-            grid-area: meta;
           }
           h3,
           h4 {
@@ -152,12 +181,12 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
             font-size: 1.25rem;
             color: ${theme.color.text.alt2};
           }
-          .member:hover h3 {
-            color: inherit;
+          .member:hover {
+            border-color: ${theme.color.brand.alpha};
           }
-
+          .member:hover h3,
           .member:hover h4 {
-            color: ${theme.color.text.alt3};
+            color: inherit;
           }
         }
       `}</style>

@@ -7,6 +7,7 @@ interface InputProps {
   defaultValue?: string;
   disabled?: boolean;
   error?: string;
+  fullWidth?: boolean;
   label?: string;
   labelTagged?: string;
   labelTranslation?: string;
@@ -23,6 +24,7 @@ export default function Input({
   defaultValue,
   disabled,
   error,
+  fullWidth,
   label,
   labelTagged,
   labelTranslation,
@@ -36,7 +38,7 @@ export default function Input({
 }: InputProps) {
   const nameKebab = toKebab(name);
   return (
-    <div className="input">
+    <div className={`input ${fullWidth ? "input--full-width" : ""}`}>
       {label && labelTranslation && (
         <div className="input__label">
           <Label
@@ -78,8 +80,8 @@ export default function Input({
         }
         input:disabled {
           border-color: ${theme.color.border.alt};
-          pointer-events: none;
           background: none;
+          cursor: not-allowed;
         }
         input:focus {
           border-color: ${theme.color.brand.base};
@@ -88,6 +90,9 @@ export default function Input({
         }
         input:focus::placeholder {
           color: ${theme.color.text.alt3};
+        }
+        .input--full-width {
+          width: 100%;
         }
         .input__label {
           display: inline-block;
