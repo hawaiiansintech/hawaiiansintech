@@ -3,6 +3,7 @@ import MemberDirectory, { DirectoryMember } from "@/components/MemberDirectory";
 import MetaTags from "@/components/Metatags.js";
 import Nav from "@/components/Nav";
 import { Title } from "@/components/Title.js";
+// Change to "@/lib/stubApi" if no access to airtable vars!
 import {
   Focus,
   getFocuses,
@@ -43,7 +44,7 @@ export default function HomePage({
         : [],
     })),
     focuses: fetchedFocuses.filter((focus) => focus.count > 0),
-    industries: fetchedIndustries.filter((industry) => industry.count > 0),
+    industries: fetchedIndustries,
   };
   const [members, setMembers] = useState<DirectoryMember[]>(
     initialState.members
