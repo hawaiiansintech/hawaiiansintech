@@ -79,13 +79,11 @@ export default function HackathonPage() {
       </DataList>
       <DataList mainEventLogistics gap="1rem 1rem">
         <Button customWidth="26rem">RSVP</Button>
-        <Button
-          customWidth="19rem"
-          variant={ButtonVariant.Secondary}
-          linkTo={DISCORD_URL}
-        >
-          Join the Discord
-        </Button>
+        <a href={DISCORD_URL}>
+          <Button customWidth="19rem" variant={ButtonVariant.Secondary}>
+            Join the Discord
+          </Button>
+        </a>
         <Button customWidth="6rem" variant={ButtonVariant.Secondary}>
           ...
         </Button>
@@ -281,9 +279,11 @@ export default function HackathonPage() {
       <SplitSection title="Sponsored by">
         <div>
           <h4>In progress. Things are moving fast. Still interested?</h4>
-          <Button customWidth="15rem" variant={ButtonVariant.Secondary}>
-            Contact Us
-          </Button>
+          <a href="mailto:kekai@hawaiiansintech.org,kamakani@hawaiiansintech.org,andrewtaylor@hawaiiansintech.org">
+            <Button customWidth="15rem" variant={ButtonVariant.Secondary}>
+              Contact Us
+            </Button>
+          </a>
         </div>
       </SplitSection>
       <style jsx>{`
