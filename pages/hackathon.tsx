@@ -200,39 +200,54 @@ export default function HackathonPage() {
       <SplitSection title="Frequently Asked Questions">
         <DataList gap="2rem 4rem">
           <DataListItem heading="Do I need to work in tech to participate? Or be Native Hawaiian?">
-            <span className="bold">No, you don’t</span>. We are simply looking
-            for passionate folks who can contribute to the aforementioned goals.
-            <br />
-            <br />
-            <span className="bold">Allies are welcome</span>. As well as kanaka
-            still learning their way around technical spaces.
+            <p>
+              <span className="bold">No, you don’t</span>. We are simply looking
+              for passionate folks who can contribute to the aforementioned
+              goals.
+            </p>
+            <p>
+              <span className="bold">Allies are welcome</span>. As well as
+              kanaka still learning their way around technical spaces.
+            </p>
           </DataListItem>
           <DataListItem heading="I cannot make the event! Will there be future events?">
-            <span className="bold">We sure hope so.</span> If this event goes
-            well, this should probably be the first of many.
-            <br />
-            <br />
-            If you cannot make it, please reach out and we’ll give you head’s up
-            for the next! Even if you have ideas for future events, let us know!
+            <p>
+              {" "}
+              <span className="bold">We sure hope so.</span> If this event goes
+              well, this should probably be the first of many.
+            </p>
+            <p>
+              If you cannot make it, please reach out and we’ll give you head’s
+              up for the next! Even if you have ideas for future events, let us
+              know!
+            </p>
           </DataListItem>
           <DataListItem heading="Will I be able to participate virtually?">
-            <span className="bold">Absolutely.</span> The more, the better we’re
-            able to facilitate a more thorough experience for those attending
-            virtually. Please RSVP!
+            <p>
+              <span className="bold">Absolutely.</span> The more, the better
+              we’re able to facilitate a more thorough experience for those
+              attending virtually. Please RSVP!
+            </p>
           </DataListItem>
           <DataListItem heading="Can I bring my own hackathon project ideas?">
-            <span className="bold">Can.</span> If you can intuit interesting,
-            adjacent projects then, of course, you are more than welcome to
-            build with us.
+            <p>
+              <span className="bold">Can.</span> If you can intuit interesting,
+              adjacent projects then, of course, you are more than welcome to
+              build with us.
+            </p>
           </DataListItem>
           <DataListItem heading="Can I come just to hang & talk story?">
-            <span className="bold">Yessah.</span> The more minds we have
-            discussing and exploring these concepts, the better. It takes a
-            village.
+            <p>
+              <span className="bold">Yessah.</span> The more minds we have
+              discussing and exploring these concepts, the better. It takes a
+              village.
+            </p>
           </DataListItem>
           <DataListItem heading="Will there be transportation?">
-            <span className="bold">We going try.</span> Come join the Discord;
-            there should be plenty others looking to help!
+            <p>
+              <span className="bold">We going try.</span> Come join the Discord;
+              there should be plenty others looking to help!
+            </p>
           </DataListItem>
         </DataList>
       </SplitSection>
