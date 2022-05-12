@@ -139,13 +139,13 @@ export default function HomePage({
           justify-content: space-between;
           align-items: flex-end;
           margin: 8rem 0 1rem;
-          padding: 0.5rem 1rem;
+          padding: 0 1rem 0.5rem;
           background: ${theme.color.background.base};
           border-bottom: 0.125rem solid ${theme.color.border.base};
         }
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
           aside {
-            padding: 0.5rem 2rem;
+            padding: 0 2rem 1rem;
           }
         }
         h5 {
