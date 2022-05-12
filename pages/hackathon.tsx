@@ -91,34 +91,38 @@ export default function HackathonPage() {
         </Button>
       </DataList>
       <h3>
-        A <span className="bold">non-traditional hackathon;</span> expanding on{" "}
-        <span className="bold">traditional kanaka concepts</span> including{" "}
-        <span className="bold">moʻokūʻauhau</span>, our{" "}
-        <span className="bold">collective identity</span>, and{" "}
-        <span className="bold">honoring our ancestors</span>; using{" "}
-        <span className="bold">modern technologies</span>; bringing a foundation
-        of <span className="bold">kanaka digital tooling</span> to the world.
-        <br />
-        <br />
-        Come join us as we collectively explore our kanaka
-        identity/heritage—with moʻokūʻauhau as our project’s foundation—using
-        modern technology & tooling. Pretty cool, yeah?
-        <br />
-        <br />
-        We are starting with an idea around coming together to build a{" "}
-        <span className="bold">genealogy tool</span>. One that is rooted in
-        kanaka concepts mai ka hiko (da’ olden times) and through a present-day
-        lens.
-        <br />
-        <br />
-        So you! Yeah, you! <span className="bold">We need you!</span> Both those
-        with technical and cultural expertise. Kanaka—and technical allies
-        interested in participating—should come with a good attitude, a learning
-        mentality, and, most likely, extra extension cords.
-        <br />
-        <br />
-        Bump shoulders with others like you. As our Hawaiians in Tech community
-        has realized, you should know we exist and are <i>tʻriving</i>.
+        <p>
+          A <span className="bold">non-traditional hackathon;</span> expanding
+          on <span className="bold">traditional kanaka concepts</span> including{" "}
+          <span className="bold">moʻokūʻauhau</span>, our{" "}
+          <span className="bold">collective identity</span>, and{" "}
+          <span className="bold">honoring our ancestors</span>; using{" "}
+          <span className="bold">modern technologies</span>; bringing a
+          foundation of <span className="bold">kanaka digital tooling</span> to
+          the world.
+        </p>
+        <p>
+          Come join us as we collectively explore our kanaka
+          identity/heritage—with moʻokūʻauhau as our project’s foundation—using
+          modern technology & tooling. Pretty cool, yeah?
+        </p>
+        <p>
+          We are starting with an idea around coming together to build a{" "}
+          <span className="bold">genealogy tool</span>. One that is rooted in
+          kanaka concepts mai ka hiko (da’ olden times) and through a
+          present-day lens.
+        </p>
+        <p>
+          So you! Yeah, you! <span className="bold">We need you!</span> Both
+          those with technical and cultural expertise. Kanaka—and technical
+          allies interested in participating—should come with a good attitude, a
+          learning mentality, and, most likely, extra extension cords.
+        </p>
+        <p>
+          Bump shoulders with others like you. As our Hawaiians in Tech
+          community has realized, you should know we exist and are{" "}
+          <i>tʻriving</i>.
+        </p>
       </h3>
       <SplitSection title="Tech spec" hint="Subject to change">
         <div className="empty-placeholder"></div>
