@@ -125,11 +125,6 @@ export default function Nav({
           font-family: ${theme.fontFamily.hackathon};
           font-size: 1.5rem;
         }
-        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-          .hackathon-link {
-            /* font-size: 2rem; */
-          }
-        }
         .back-link {
           display: block;
           border-radius: ${theme.borderRadius.sm};
