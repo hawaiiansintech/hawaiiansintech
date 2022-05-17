@@ -1,7 +1,7 @@
 import {
-  sendConfirmationEmail,
   SendConfirmationEmailProps,
-} from "@/lib/confirmation-email";
+  sendConfirmationEmails,
+} from "@/lib/email/confirmation-email";
 import Client from "@sendgrid/client";
 import SendGrid from "@sendgrid/mail";
 import airtable from "airtable";
@@ -133,46 +133,13 @@ const addToAirtable = async (fields: MemberFields): Promise<string> => {
   });
 };
 
-const addSgContact = async (fields: MemberFields) => {
-  /*
-    SendGrid's Marketing API is broken and requires custom field *IDs*
-    more here: https://github.com/sendgrid/sendgrid-nodejs/issues/953#issuecomment-511227621
-  */
-  const fullName = "e1_T";
-  const airtableID = "w2_T";
-  return new Promise((resolve, reject) => {
-    Client.request({
-      method: "PUT",
-      url: "/v3/marketing/contacts",
-      body: {
-        list_ids: [process.env.SENDGRID_LIST_MEMBERS],
-        contacts: [
-          {
-            email: fields.email,
-            custom_fields: {
-              [fullName]: fields.name,
-              [airtableID]: fields.recordID,
-            },
-          },
-        ],
-      },
-    })
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-};
-
 const sendSgEmail = async ({
   email,
   airtableID,
   name,
 }: SendConfirmationEmailProps) => {
   return new Promise((resolve, reject) => {
-    sendConfirmationEmail({ email: email, airtableID: airtableID, name: name })
+    sendConfirmationEmails({ email: email, airtableID: airtableID, name: name })
       .then((response) => {
         resolve(response);
       })
@@ -211,12 +178,6 @@ export default async function handler(req, res) {
           return body;
         }
       );
-      await addSgContact({
-        ...req.body,
-        recordID: recordID,
-      }).then(() => {
-        console.log("✅ added member to sendgrid");
-      });
       await sendSgEmail({
         email: req.body.email,
         name: req.body.name,

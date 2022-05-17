@@ -26,6 +26,7 @@ export default function LoadingSpinner({
           display: inline-block;
           width: ${size};
           height: ${size};
+          margin: 0;
           border: calc(${size} / 8) solid rgba(255, 255, 255, 0.5);
           border-radius: 50%;
           border-top-color: ${color};

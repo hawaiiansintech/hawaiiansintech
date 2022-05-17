@@ -20,7 +20,7 @@ import * as Yup from "yup";
 export default function JoinStep4() {
   const router = useRouter();
   const { removeRequest } = router.query;
-  const { getItem, setItem, removeItem } = useStorage();
+  const { getItem, removeItem } = useStorage();
   const [other, setOther] = useState<string>("");
   const [userData, setUserData] = useState<MemberPublicEditing>({});
   const [editedData, setEditedData] = useState<MemberPublicEditing>({});
@@ -81,11 +81,11 @@ export default function JoinStep4() {
     if (res.ok) {
       removeItem("userData");
       removeItem("editData");
-      const query = userData.emailAbbr
-        ? {}
-        : {
-            emailNull: "true",
-          };
+      const query = {
+        email: userData.emailAbbr ? "true" : "null",
+        id: resJSON.id ? resJSON.id : "null",
+        removeRequest: removeRequest,
+      };
       router.push({
         pathname: "thank-you",
         query: query,
@@ -122,7 +122,7 @@ export default function JoinStep4() {
         <Subheading centered>
           {removeRequest
             ? "No hard feelings. We'll reach out to you at "
-            : "We'll take a quick moderation pass, then confirm any changes with you at "}
+            : "Once you submit, expect one of us to review and confirm these changes with you at "}
           <strong>{`${userData.emailAbbr[0]}...${userData.emailAbbr[1]}${userData.emailAbbr[2]}`}</strong>
           . Mahalo for your patience!
         </Subheading>

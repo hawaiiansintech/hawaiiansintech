@@ -6,6 +6,12 @@ export enum IconColor {
   Inherit = "inherit",
 }
 
+export enum IconSize {
+  Small = "small",
+  Default = "default",
+  Large = "large",
+}
+
 export enum IconAsset {
   Cap = "cap",
   CaretLeft = "caret-left",
@@ -18,10 +24,16 @@ export enum IconAsset {
 interface IconProps {
   asset: IconAsset;
   color?: IconColor;
+  size?: IconSize;
   alpha?: boolean;
 }
 
-export function Icon({ alpha, asset, color = IconColor.Black }: IconProps) {
+export function Icon({
+  alpha,
+  asset,
+  color = IconColor.Black,
+  size = IconSize.Default,
+}: IconProps) {
   const getAsset = (): JSX.Element => {
     switch (asset) {
       case IconAsset.CaretLeft:
@@ -91,6 +103,18 @@ export function Icon({ alpha, asset, color = IconColor.Black }: IconProps) {
         );
     }
   };
+
+  const getSize = (): "30" | "40" | "50" => {
+    switch (size) {
+      case IconSize.Large:
+        return "50";
+      case IconSize.Small:
+        return "30";
+      case IconSize.Default:
+      default:
+        return "40";
+    }
+  };
   const getStyles = () => (
     <style jsx>{`
       .icon__base,
@@ -112,8 +136,9 @@ export function Icon({ alpha, asset, color = IconColor.Black }: IconProps) {
   return (
     <svg
       className="icon"
-      width="40"
-      height="40"
+      width={getSize()}
+      height={getSize()}
+      viewBox="0 0 40 40"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >

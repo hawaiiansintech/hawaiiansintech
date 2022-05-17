@@ -36,15 +36,15 @@ export default function Nav({
             </Link>
           ) : null}
           {primaryNav?.show ? (
-            <div className="primary-nav">
+            <div className="nav__links">
               <Link href="/about">
-                <a>About</a>
+                <a className="nav-link">About</a>
               </Link>
-
+              <Link href="/edit">
+                <a className="nav-link">Request Changes</a>
+              </Link>
               <Link href="/join/01-you">
-                <a>
-                  Join <span>/</span> Request Changes
-                </a>
+                <a className="nav-link nav-link--primary">Join the list</a>
               </Link>
 
               <Link href="/hackathon">
@@ -79,18 +79,45 @@ export default function Nav({
             padding-left: 2rem;
           }
         }
-        .primary-nav a {
-          margin-right: 2rem;
+        .nav__links {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 0.5rem 2rem;
+        }
+        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
+          .nav__links {
+            gap: 0 2rem;
+          }
+        }
+        .nav-link {
           padding: 0.25rem;
           color: ${theme.color.text.base};
         }
-        .primary-nav a:hover {
+        .nav-link:hover {
           color: ${theme.color.brand.base};
         }
-        .primary-nav a span {
+        .nav-link span {
           color: ${theme.color.brand.base};
           opacity: 0.5;
           padding: 0 0.125rem;
+        }
+        .nav-link--primary {
+          background: ${theme.color.background.alt};
+          padding: 0.5rem 0.75rem;
+          border-radius: ${theme.borderRadius.xs};
+          border: 0.25rem solid transparent;
+          transition: all 70ms ease-out;
+        }
+        .nav-link--primary:hover,
+        .nav-link--primary:active {
+          transform: scale(1.05);
+          color: ${theme.color.text.overlay.base};
+          background: ${theme.color.brand.base};
+          border-color: ${theme.color.brand.alt};
+        }
+        .nav-link--primary:active {
+          transform: scale(1);
         }
         .back-link {
           display: block;

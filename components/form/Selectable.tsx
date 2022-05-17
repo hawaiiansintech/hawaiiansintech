@@ -54,6 +54,7 @@ export default function Selectable({
       tabIndex={disabled ? -1 : undefined}
       type="button"
       style={gridSpan ? { gridColumn: `span ${gridSpan}` } : {}}
+      disabled={disabled}
     >
       <h4>{headline}</h4>
       {byline ? <h6>{byline}</h6> : null}
@@ -94,7 +95,7 @@ export default function Selectable({
             : "transparent"};
           width: ${fullWidth ? "100%" : "initial"};
           opacity: ${disabled ? "0.5" : "initial"};
-          pointer-events: ${disabled ? "none" : "inherit"};
+          cursor: ${disabled ? "not-allowed" : "pointer"};
         }
         button:after {
           content: "";
@@ -114,7 +115,7 @@ export default function Selectable({
             ? "#fff"
             : "transparent"};
         }
-        button:hover {
+        button:hover:not(:disabled) {
           border-color: ${selected
             ? variant === SelectableVariant.Alt
               ? theme.color.border.alt3

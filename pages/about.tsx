@@ -67,113 +67,131 @@ export default function AboutPage() {
 
       <div className="moreabout">
         <div className="col-left">
-          <h3>How can I nominate someone?</h3>
+          <h3>How can I add myself?</h3>
           <p>
-            If you or someone you know is a Native Hawaiian who works in the
-            technology industry, and wants to be part of this directory and
-            community, please{" "}
-            <Link href="/nominate">
-              <a className="link">fill out this form</a>
-            </Link>{" "}
-            with your/their information and a link to your/their social profile.
-            The link can be to a Github, a Linkedin, a website, etc...
-          </p>
-
-          <h3>How did you come up with this idea?</h3>
-          <p>
-            We didn’t. This website is a fork of
-            <a className="link" href="https://brazilianswho.design/">
-              Brazillians Who Design
-            </a>
-            {", "}
-            who have also credited inspiration from their sibling sites:
+            If you are <strong>Native Hawaiian</strong>, work in{" "}
+            <strong>the field / industry of technology</strong>, and want to be
+            part of this directory and community, simply complete this{" "}
+            <Link href="/join/01-you">
+              <a>Join form</a>
+            </Link>
+            .
           </p>
           <p>
-            <a className="link" href="https://womenwho.design/">
-              Women Who Design
-            </a>
-            <br></br>
-            <a className="link" href="https://www.womenwhodraw.com/">
-              Women Who Draw
-            </a>
-            <br></br>
-            <a className="link" href="http://www.28blacks.com/">
-              28 Black Designers
-            </a>
-            <br></br>
-            <a className="link" href="https://www.latinxswhodesign.com/">
-              Latinx Who Design
-            </a>
-            <br></br>
-            <a className="link" href="https://queerdesign.club/">
-              Queer Design Club
-            </a>
-            <br></br>
-            <a className="link" href="https://filipinos-who-design.webflow.io/">
-              Filipinos Who Design
-            </a>
-            <br></br>
-            <a className="link" href="https://filipinos-who-design.webflow.io/">
-              People Of Craft
-            </a>
-            <br></br>
-            <a className="link" href="https://indianswhodesign.in/">
-              Indians Who Design
-            </a>
-            <br></br>
-            <a className="link" href="https://www.apiwho.design/">
-              Asian & Pacific Islanders Who Design
-            </a>
+            Most could just stop there. But reach out to the community! Meet
+            your fellow kanaka. No shame!
           </p>
           <h3>How did you build this?</h3>
           <p>
-            The site is a fork off of Brazilians Who Design, which is{" "}
+            You can learn more about how this project was built on our
+            open-source{" "}
             <a
-              className="link"
               target="_blank"
-              href="https://github.com/zehfernandes/brazilianswhodesign"
+              href="https://github.com/hawaiians/hawaiiansintech"
             >
-              open source
-            </a>
-            . Please visit the{" "}
-            <a className="link" href="https://brazilianswho.design/about">
-              Brazillians Who Design
+              Github
             </a>{" "}
-            site for more information.
+            repo.
+          </p>
+          <h3>How did you come up with this idea?</h3>
+          <p>This project is one of many like it with similar motivations.</p>
+          <p>
+            This website was originally a fork of{" "}
+            <a href="https://brazilianswho.design/">Brazillians Who Design</a>'s
+            repo. There are many more that continue to inspire us, including:
+          </p>
+          <p>
+            <ul className="link-list">
+              <li className="link-list__item">
+                <a href="https://nativesintech.org/">Natives in Tech</a>
+              </li>
+              <li className="link-list__item">
+                <a href="https://womenwho.design/">Women Who Design</a>
+              </li>
+              <li className="link-list__item">
+                <a target="_blank" href="https://www.womenwhodraw.com/">
+                  Women Who Draw
+                </a>
+              </li>
+              <li className="link-list__item">
+                <a target="_blank" href="http://www.28blacks.com/">
+                  28 Black Designers
+                </a>
+              </li>
+              <li className="link-list__item">
+                <a target="_blank" href="https://www.latinxswhodesign.com/">
+                  Latinx Who Design
+                </a>
+              </li>
+              <li className="link-list__item">
+                <a target="_blank" href="https://queerdesign.club/">
+                  Queer Design Club
+                </a>
+              </li>
+              <li className="link-list__item">
+                <a
+                  target="_blank"
+                  href="https://filipinos-who-design.webflow.io/"
+                >
+                  Filipinos Who Design
+                </a>
+              </li>
+              <li className="link-list__item">
+                <a target="_blank" href="https://www.apiwho.design/">
+                  Asian & Pacific Islanders Who Design
+                </a>
+              </li>
+              <li className="link-list__item">
+                <a
+                  target="_blank"
+                  href="https://filipinos-who-design.webflow.io/"
+                >
+                  People Of Craft
+                </a>
+              </li>
+              <li className="link-list__item">
+                <a target="_blank" href="https://indianswhodesign.in/">
+                  Indians Who Design
+                </a>
+              </li>
+            </ul>
           </p>
           <h3>Who’s behind this?</h3>
           <p>
-            <a
-              className="link"
-              href="https://www.linkedin.com/in/emmit-parubrub/"
-            >
+            <a href="https://www.linkedin.com/in/emmit-parubrub/">
               Emmit Parubrub
             </a>
             <br></br>
-            <a className="link" href="https://twitter.com/tellaho">
-              Taylor Ho
-            </a>
+            <a href="https://twitter.com/tellaho">Taylor Ho</a>
           </p>
         </div>
         <div className="col-right">
           <h3>How can I get more involved with the community?</h3>
           <p>
-            Currently, you can join our{" "}
-            <a className="link" href={`${DISCORD_URL}`} target="_blank">
-              Hawaiians in Tech Discord
-            </a>
+            You can join our{" "}
+            <a href={`${DISCORD_URL}`} target="_blank">
+              Discord
+            </a>{" "}
             to connect with our community, get information on events, find new
             project opportunities, and more.
           </p>
-          <h3>How can I remove my name?</h3>
           <p>
-            If you’ve been added to the directory and would like to opt-out or
-            make an edit to your profile, please send an email to either
-            emmit.parubrub@gmail.com or howzit@tellaho.com, or send us a message
-            in our{" "}
-            <a className="link" href={`${DISCORD_URL}`} target="_blank">
-              Discord
+            You also can post new and discuss other's ideas on this board on{" "}
+            <a
+              href={`https://github.com/hawaiians/hawaiiansintech/discussions/categories/ideas`}
+              target="_blank"
+            >
+              Github Discussions
             </a>
+            , if that's more your speed.
+          </p>
+          <p>You should feel encouraged to come forward with new ideas.</p>
+          <h3>How can I update my profile? Or remove myself altogether?</h3>
+          <p>
+            Changes, including removal from the list, can be{" "}
+            <Link href="/edit">
+              <a>requested here</a>
+            </Link>
             .
           </p>
         </div>
@@ -213,6 +231,10 @@ export default function AboutPage() {
           width: 50%;
           max-width: 50ch;
         }
+        .moreabout strong {
+          font-weight: 600;
+          color: ${theme.color.text.alt};
+        }
 
         .col-right {
           padding-left: 3rem;
@@ -226,6 +248,10 @@ export default function AboutPage() {
           padding: 0;
         }
 
+        .moreabout p ~ p {
+          margin-top: 1rem;
+        }
+
         .moreabout h3 {
           padding: 0;
           margin: 0;
@@ -233,15 +259,36 @@ export default function AboutPage() {
         }
 
         .moreabout h3 {
-          margin: 4rem 0 0 0;
+          margin: 4rem 0 0.5rem 0;
+        }
+        a {
+          font-weight: 600;
+          text-decoration: underline;
+        }
+        a:hover {
+          text-decoration: none;
         }
 
-        ul,
-        li {
+        .link-list,
+        .link-list__item {
           padding: 0;
           margin: 0;
           list-style: none;
-          margin-top: 0.3rem;
+        }
+        .link-list {
+          display: grid;
+          grid-auto-flow: row;
+          grid-template-columns: 1fr 1fr 1fr;
+          gap: 0.5rem;
+        }
+        .link-list__item {
+          text-align: center;
+        }
+        .link-list__item a {
+          display: inline-block;
+          padding: 0.5rem;
+          line-height: 1.2;
+          font-size: 1.125rem;
         }
 
         @media (max-width: 480px) {

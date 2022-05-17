@@ -19,7 +19,7 @@ export default function EditPage() {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <Nav backUrl="/join/01-you" />
+      <Nav backUrl="/" />
       <Heading>Request Changes</Heading>
       <Subheading centered>Welcome back, Hawaiian.</Subheading>
       <RequestForm />
@@ -107,11 +107,9 @@ function RequestForm() {
         )}
       </div>
       {memberSelected && (
-        <div className="remove-link">
-          <a href="edit/04-contact?removeRequest=true">
-            Please remove me from the list
-          </a>
-        </div>
+        <a href="edit/04-contact?removeRequest=true" className="remove-link">
+          Request removal from the list
+        </a>
       )}
 
       <style jsx>{`
@@ -149,9 +147,12 @@ function RequestForm() {
           font-size: 1.25rem;
         }
         .remove-link {
-          margin-top: 0.5rem;
+          margin: 0.5rem auto 0;
           text-align: center;
-          width: 100%;
+          padding: 0.5rem 1rem;
+          border-radius: ${theme.borderRadius.sm};
+          background: ${theme.color.background.error};
+          color: ${theme.color.text.error};
         }
       `}</style>
     </div>
