@@ -383,7 +383,7 @@ export default function HackathonPage() {
         }
 
         .hackathon-title {
-          font-family: "Permanent Marker";
+          font-family: ${theme.fontFamily.hackathon};
           font-size: 2.4rem;
           margin: 0.5rem 0 0 0;
           color: ${theme.color.brand.base};

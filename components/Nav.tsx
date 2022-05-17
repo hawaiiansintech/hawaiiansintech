@@ -44,11 +44,11 @@ export default function Nav({
                 <a className="nav-link">Request Changes</a>
               </Link>
               <Link href="/join/01-you">
-                <a className="nav-link nav-link--primary">Join the list</a>
+                <a className="primary-link">Join the list</a>
               </Link>
 
               <Link href="/hackathon">
-                <a>Hackathon</a>
+                <a className="hackathon-link">Hackathon</a>
               </Link>
             </div>
           ) : null}
@@ -83,7 +83,8 @@ export default function Nav({
           display: flex;
           align-items: center;
           flex-wrap: wrap;
-          gap: 0.5rem 2rem;
+          gap: 0.25rem 2rem;
+          padding: 0 0.5rem;
         }
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
           .nav__links {
@@ -102,22 +103,32 @@ export default function Nav({
           opacity: 0.5;
           padding: 0 0.125rem;
         }
-        .nav-link--primary {
+        .primary-link {
           background: ${theme.color.background.alt};
+          color: ${theme.color.text.base};
           padding: 0.5rem 0.75rem;
           border-radius: ${theme.borderRadius.xs};
           border: 0.25rem solid transparent;
           transition: all 70ms ease-out;
         }
-        .nav-link--primary:hover,
-        .nav-link--primary:active {
+        .primary-link:hover,
+        .primary-link:active {
           transform: scale(1.05);
           color: ${theme.color.text.overlay.base};
           background: ${theme.color.brand.base};
           border-color: ${theme.color.brand.alt};
         }
-        .nav-link--primary:active {
+        .primary-link:active {
           transform: scale(1);
+        }
+        .hackathon-link {
+          font-family: ${theme.fontFamily.hackathon};
+          font-size: 1.5rem;
+        }
+        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
+          .hackathon-link {
+            /* font-size: 2rem; */
+          }
         }
         .back-link {
           display: block;
