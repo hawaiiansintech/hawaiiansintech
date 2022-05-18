@@ -1,5 +1,6 @@
 import { Focus } from "@/lib/api";
 import { useWindowWidth } from "@/lib/hooks";
+import Link from "next/link";
 import { useLayoutEffect, useRef, useState } from "react";
 import theme from "styles/theme";
 import BannerAlert from "./BannerAlert";
@@ -102,9 +103,10 @@ export default function FocusPicker({
             }}
           >
             <BannerAlert tag="ALMOST PAU">
-              <strong>New filter functionality coming soon!</strong> Recently
-              added new features for prospective and existing members to add to
-              their profile.{" "}
+              <strong>More filter functionality coming soon!</strong> New
+              features were recently added for prospective and existing members
+              to add to their profile. If you're on the list,{" "}
+              <Link href="/edit">add them now</Link>!
             </BannerAlert>
             <div style={{ marginTop: "1rem" }}>
               <MoreOptions />
