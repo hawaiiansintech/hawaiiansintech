@@ -1,10 +1,13 @@
 import { Focus } from "@/lib/api";
-import { useEffect, useRef, useState } from "react";
+import { useWindowWidth } from "@/lib/hooks";
+import { useLayoutEffect, useRef, useState } from "react";
 import theme from "styles/theme";
 import BannerAlert from "./BannerAlert";
 import Button, { ButtonSize, ButtonVariant } from "./Button";
 import Input from "./form/Input";
 import Selectable, { SelectableSize } from "./form/Selectable";
+
+const SHOW_UP_TO_FILTERS_ROW = 2;
 
 export interface FocusPickerFocus extends Focus {
   active?: boolean;
@@ -21,32 +24,51 @@ export default function FocusPicker({
   onFilterClick,
   memberCount,
 }: FocusPickerProps) {
-  const [showButton, setShowButton] = useState<boolean>(false);
+  const width = useWindowWidth();
   const [menuExpanded, setMenuExpanded] = useState<boolean>(false);
-  const isSelected = focuses.filter((foc) => foc.active).length === 0;
+  const [containerHeight, setContainerHeight] = useState<number>();
   const listRef = useRef<HTMLUListElement>();
   const listItemRef = useRef<HTMLLIElement>();
+  const listItemsRef = useRef<HTMLLIElement[]>([]);
+  const filterIsSelected = focuses.filter((foc) => foc.active).length === 0;
 
-  useEffect(() => {
-    setShowButton(true);
-  }, []);
+  useLayoutEffect(() => {
+    const yAll = listItemsRef.current.map(
+      (item) => item?.getBoundingClientRect().y
+    );
+    const yDedup = yAll.filter((c, index) => yAll.indexOf(c) === index);
+    const lastItem = yAll.indexOf(yDedup[SHOW_UP_TO_FILTERS_ROW]) - 1;
+    const end = listItemsRef.current[lastItem].getBoundingClientRect().bottom;
+    const start = listRef.current.getBoundingClientRect().top;
+    setContainerHeight(end - start);
+  }, [width]);
 
   return (
     <>
       <div className="picker">
         <div className="picker__container">
-          <ul className="picker__list" ref={listRef}>
+          <ul
+            className="picker__list"
+            ref={listRef}
+            style={{
+              maxHeight: menuExpanded ? "initial" : containerHeight,
+              overflow: "hidden",
+            }}
+          >
             <li className="picker__item" ref={listItemRef}>
               <Selectable
                 fullWidth
                 headline={`All ${memberCount ? `(${memberCount})` : ""}`}
-                onClick={() => (!isSelected ? onFilterClick() : null)}
-                selected={isSelected}
+                onClick={() => (!filterIsSelected ? onFilterClick() : null)}
+                selected={filterIsSelected}
                 size={SelectableSize.Large}
               />
             </li>
             {focuses.map((focus, i) => (
-              <li key={`focus-filter-${i}`}>
+              <li
+                key={`focus-filter-${i}`}
+                ref={(el) => (listItemsRef.current[i] = el)}
+              >
                 <Selectable
                   fullWidth
                   headline={focus.name}
@@ -58,15 +80,13 @@ export default function FocusPicker({
               </li>
             ))}
           </ul>
-          {showButton && (
-            <Button
-              variant={ButtonVariant.Secondary}
-              size={ButtonSize.Small}
-              onClick={() => setMenuExpanded(!menuExpanded)}
-            >
-              {menuExpanded ? "Less" : "More Filters"}
-            </Button>
-          )}
+          <Button
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Small}
+            onClick={() => setMenuExpanded(!menuExpanded)}
+          >
+            {menuExpanded ? "Hide" : "..."}
+          </Button>
         </div>
         {menuExpanded ? (
           <div
