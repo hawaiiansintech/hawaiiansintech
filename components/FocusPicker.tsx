@@ -121,7 +121,6 @@ export default function FocusPicker({
             .picker__list {
               margin-bottom: 0;
               max-height: initial;
-              overflow: initial;
             }
           }
         `}</style>
