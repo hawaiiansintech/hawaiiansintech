@@ -57,7 +57,6 @@ export default function FocusPicker({
             ref={listRef}
             style={{
               maxHeight: menuExpanded ? defaultHeight : minimizedHeight,
-              overflow: "hidden",
             }}
           >
             <li className="picker__item" ref={listItemRef}>
@@ -133,6 +132,7 @@ export default function FocusPicker({
             gap: 0.5rem;
             flex-wrap: wrap;
             transition: 150ms ease-out max-height;
+            overflow: hidden;
           }
           .picker__item {
             margin: 0;
