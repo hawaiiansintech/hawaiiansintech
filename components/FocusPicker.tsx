@@ -3,7 +3,6 @@ import { useWindowWidth } from "@/lib/hooks";
 import { useLayoutEffect, useRef, useState } from "react";
 import theme from "styles/theme";
 import BannerAlert from "./BannerAlert";
-import Button, { ButtonSize, ButtonVariant } from "./Button";
 import Input from "./form/Input";
 import Selectable, { SelectableSize } from "./form/Selectable";
 
@@ -26,21 +25,26 @@ export default function FocusPicker({
 }: FocusPickerProps) {
   const width = useWindowWidth();
   const [menuExpanded, setMenuExpanded] = useState<boolean>(false);
-  const [containerHeight, setContainerHeight] = useState<number>();
+  const [defaultHeight, setDefaultHeight] = useState<number>();
+  const [minimizedHeight, setMinimizedHeight] = useState<number>();
   const listRef = useRef<HTMLUListElement>();
   const listItemRef = useRef<HTMLLIElement>();
   const listItemsRef = useRef<HTMLLIElement[]>([]);
   const filterIsSelected = focuses.filter((foc) => foc.active).length === 0;
 
   useLayoutEffect(() => {
-    const yAll = listItemsRef.current.map(
+    if (!listItemsRef) return;
+    const all = listItemsRef?.current.map(
       (item) => item?.getBoundingClientRect().y
     );
-    const yDedup = yAll.filter((c, index) => yAll.indexOf(c) === index);
-    const lastItem = yAll.indexOf(yDedup[SHOW_UP_TO_FILTERS_ROW]) - 1;
-    const end = listItemsRef.current[lastItem].getBoundingClientRect().bottom;
+    const dedup = all.filter((y, i) => all.indexOf(y) === i);
+    const lastItem = all.indexOf(dedup[SHOW_UP_TO_FILTERS_ROW]) - 1;
+    const end = listItemsRef?.current[lastItem]?.getBoundingClientRect().bottom;
     const start = listRef.current.getBoundingClientRect().top;
-    setContainerHeight(end - start);
+    setDefaultHeight(listRef.current.scrollHeight);
+    setMinimizedHeight(
+      end && start ? end - start : listRef.current.scrollHeight
+    );
   }, [width]);
 
   return (
@@ -51,7 +55,7 @@ export default function FocusPicker({
             className="picker__list"
             ref={listRef}
             style={{
-              maxHeight: menuExpanded ? "initial" : containerHeight,
+              maxHeight: menuExpanded ? defaultHeight : minimizedHeight,
               overflow: "hidden",
             }}
           >
@@ -80,13 +84,13 @@ export default function FocusPicker({
               </li>
             ))}
           </ul>
-          <Button
-            variant={ButtonVariant.Secondary}
-            size={ButtonSize.Small}
+          <a
+            href="#"
             onClick={() => setMenuExpanded(!menuExpanded)}
+            style={{ whiteSpace: "nowrap" }}
           >
-            {menuExpanded ? "Hide" : "..."}
-          </Button>
+            {menuExpanded ? "Hide" : "View All"}
+          </a>
         </div>
         {menuExpanded ? (
           <div
@@ -126,16 +130,12 @@ export default function FocusPicker({
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
+            transition: 150ms ease-out max-height;
           }
           .picker__item {
             margin: 0;
             white-space: initial;
             flex-shrink: 0;
-          }
-          @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-            .picker__list {
-              margin-bottom: 0.75rem;
-            }
           }
           @media screen and (min-width: ${theme.layout.breakPoints.medium}) {
             .picker__list {
