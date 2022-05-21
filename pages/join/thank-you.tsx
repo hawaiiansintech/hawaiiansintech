@@ -31,10 +31,22 @@ export default function ThankYou() {
               />
             </span>
           </div>
-          <h2>
-            Mahalo for your interest! We'll follow up with the provided email
-            address once we review your profile.
-          </h2>
+          <div className="thank-you__body">
+            <h2>
+              <strong>
+                Expect one of us to reach out about your submission
+              </strong>{" "}
+              as soon as we can get to it. We review all changes manually for...
+              quality assurance. 😆
+            </h2>
+            <div className="thank-you__note">
+              <h3>
+                You should have <em>just</em> received a confirmation email from
+                us. If you didn't, you may need to add{" "}
+                <code>no-reply@hawaiiansintech.org</code> to your address book.
+              </h3>
+            </div>
+          </div>
         </main>
       </div>
       <style jsx>{`
@@ -46,6 +58,12 @@ export default function ThankYou() {
         .thank-you__heading {
           display: inline-flex;
           align-items: center;
+        }
+        .thank-you__body {
+          max-width: 32rem;
+        }
+        .thank-you__note {
+          margin: 1rem 0 0;
         }
         header,
         main {
@@ -84,14 +102,28 @@ export default function ThankYou() {
         }
         main h2 {
           font-size: 1.2rem;
-          margin: 2rem 0 0;
+          margin: 1rem 0 0;
           font-weight: 400;
           line-height: 150%;
-          max-width: 28rem;
+        }
+        main h3 {
+          color: ${theme.color.text.alt2};
+          font-size: 1rem;
+          margin: 0;
+          font-weight: 400;
+          line-height: 150%;
         }
         main img {
           width: 4.8rem;
           margin-left: 1rem;
+        }
+        code {
+          white-space: nowrap;
+          color: ${theme.color.text.alt};
+          background: ${theme.color.background.alt};
+          padding: 0.125rem 0.25rem;
+          border-radius: ${theme.borderRadius.xs};
+          font-size: 0.875rem;
         }
       `}</style>
     </>

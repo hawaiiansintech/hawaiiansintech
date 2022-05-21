@@ -17,7 +17,7 @@ export async function getStaticProps() {
   let focuses = (await getFocuses()) ?? [];
   return {
     props: {
-      focuses: focuses.sort((a, b) => b.count - a.count),
+      focuses: focuses,
     },
     revalidate: 60,
   };

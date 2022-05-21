@@ -47,6 +47,10 @@ const theme = {
     md: "1rem",
     lg: "1.25rem",
   },
+  fontFamily: {
+    base: `"Helvetica Now Display", "Helvetica Neue", "Helvetica"`,
+    hackathon: "Permanent Marker",
+  },
   layout: {
     width: {
       interior: "46rem",

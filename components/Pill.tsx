@@ -15,22 +15,23 @@ export default function Pill({ active, children }: PillProps) {
           font-size: 0.9rem;
           width: 100%;
           font-weight: 500;
-          padding: 0.125rem 0.25rem;
+          padding: 0.0625rem 0.25rem;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          border-radius: ${theme.borderRadius.sm};
+          border-radius: ${theme.borderRadius.md};
           border: 0.2rem solid transparent;
           background: ${active ? theme.color.brand.alpha : "transparent"};
-          color: ${active ? theme.color.brand.base : theme.color.text.alt};
-          border-color: ${active
+          color: ${active ? theme.color.brand.base : theme.color.text.alt2};
+          background-color: ${active
             ? theme.color.brand.alpha
             : theme.color.border.base};
         }
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
           span {
-            font-size: 1rem;
-            padding: 0.25rem 0.5rem;
+            font-size: 0.7rem;
+            letter-spacing: 0.02rem;
+            padding: 0 0.25rem;
           }
         }
       `}</style>

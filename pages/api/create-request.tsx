@@ -1,8 +1,8 @@
 import { MemberPublicEditing } from "@/lib/api";
 import {
-  NewSubmissionEmailProps,
-  sendNewSubmissionEmail,
-} from "@/lib/new-submission-email";
+  RequestUpdateEmailProps,
+  sendRequestUpdateEmail,
+} from "@/lib/email/request-update-email";
 import airtable from "airtable";
 
 airtable.configure({
@@ -11,16 +11,24 @@ airtable.configure({
 });
 
 const addToAirtable = async ({
-  userData,
   editedData,
+  userData,
   message,
+  removeRequest,
 }: {
-  userData: MemberPublicEditing;
   editedData: MemberPublicEditing;
+  userData: MemberPublicEditing;
   message: string;
+  removeRequest?: boolean;
 }): Promise<string> => {
   const getSummary = () => {
     let summary = "";
+    if (removeRequest) {
+      summary = summary + `REMOVAL REQUEST\n`;
+    }
+    if (message) {
+      summary = summary + `• Message: ${message}`;
+    }
     if (editedData.name) {
       summary = summary + `• Name: ${editedData.name}\n`;
     }
@@ -60,13 +68,9 @@ const addToAirtable = async ({
     if (editedData.companySize) {
       summary = summary + `• Company Size: ${editedData.companySize}\n`;
     }
-    if (message) {
-      summary = summary + `• Message: ${message}`;
-    }
     return summary;
   };
   const count = Object.keys(editedData).length;
-  console.log(Object.keys(editedData));
 
   let requestData = {
     Member: [userData.id],
@@ -90,9 +94,9 @@ const sendSgEmail = async ({
   airtableID,
   name,
   removeRequest,
-}: NewSubmissionEmailProps) => {
+}: RequestUpdateEmailProps) => {
   return new Promise((resolve, reject) => {
-    sendNewSubmissionEmail({
+    sendRequestUpdateEmail({
       email: email,
       airtableID: airtableID,
       name: name,
@@ -112,7 +116,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Only POST requests allowed" });
   }
   try {
-    await addToAirtable({ ...req.body })
+    const requestID = await addToAirtable({ ...req.body })
       .then((body) => {
         console.log("✅ added request to airtable");
         return body;
@@ -126,12 +130,14 @@ export default async function handler(req, res) {
     await sendSgEmail({
       email: req.body.email,
       name: req.body.name,
-      airtableID: req.body.recordID,
+      airtableID: requestID,
       removeRequest: req.body.removeRequest,
     }).then(() => {
       console.log("✅ sent member email via sendgrid");
     });
-    return res.status(200).json({ message: "Successfully sent request." });
+    return res
+      .status(200)
+      .json({ message: "Successfully sent request.", id: requestID });
   } catch (error) {
     return res.status(error.statusCode || 500).json({
       error: "Gonfunnit, looks like something went wrong!",

@@ -63,7 +63,7 @@ export default function JoinStep1(props) {
         <link rel="icon" href="/favicon.ico" />
         <MetaTags />
       </Head>
-      <Nav backUrl="/" toggle={{ onClick: handleToggle, show: true }} />
+      <Nav backUrl="/" />
 
       <Heading>Welcome to our little hui.</Heading>
       <Subheading centered>
