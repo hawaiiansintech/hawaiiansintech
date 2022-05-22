@@ -171,7 +171,7 @@ export default function HackathonPage() {
           </DataList>
         </SplitSection>
         <SplitSection title="Schedule & Events" hint="Subject to change">
-          <div className="empty-placeholder"></div>
+          <img src="/images/comingSoon.png" style={{ maxWidth: "100%" }}></img>
         </SplitSection>
         <SplitSection title="Who We Need">
           <DataList gap="2rem 4rem">
@@ -289,6 +289,24 @@ export default function HackathonPage() {
                 Discord; there should be plenty others looking to help!
               </p>
             </DataListItem>
+          </DataList>
+        </SplitSection>
+        <SplitSection title="Partnered with">
+          <DataList gap="1rem 4rem">
+            <a href={"https://purplemaia.org/"}>
+              <img
+                src="/images/purpleMaia.png"
+                style={{ maxHeight: "7.5rem" }}
+              />
+            </a>
+            <a href={"https://wvv.bne.mybluehost.me/"}>
+              <img
+                src="/images/hawaiianAncestryLogo.png"
+                style={{
+                  maxHeight: "7.5rem",
+                }}
+              />
+            </a>
           </DataList>
         </SplitSection>
         <SplitSection title="Organized by">
