@@ -147,25 +147,25 @@ export default function HackathonPage() {
           <div className="empty-placeholder"></div>
         </SplitSection>
         <SplitSection title="Cultural advisory" hint="Subject to change">
-          <DataList gap="1rem 6rem">
+          <DataList gap="1rem 6rem" grid>
             <DataListItem
               heading="Dr. Lilikalā Kameʻeleihiwaala"
-              extendedHeading
+              customWidth="100%"
               subHeading="Professor, Hawaiian Culture & Genealogies"
             />
             <DataListItem
               heading="Dr. Manulani Aluli Meyer"
-              extendedHeading
+              customWidth="100%"
               subHeading="Indigenous Scholar and Cultural Practitioner"
             />
             <DataListItem
               heading="Dr. Pualani Kanakaʻole Kanahele"
-              extendedHeading
+              customWidth="100%"
               subHeading="Cultural Practitioner"
             />
             <DataListItem
               heading="Kamaliʻikupono Hanohano"
-              extendedHeading
+              customWidth="100%"
               subHeading="Kahuna, Pā ʻUhi"
             />
           </DataList>
@@ -220,8 +220,11 @@ export default function HackathonPage() {
           </DataList>
         </SplitSection>
         <SplitSection title="Frequently Asked Questions">
-          <DataList gap="2rem 4rem">
-            <DataListItem heading="Do I need to work in tech to participate? Or be Native Hawaiian?">
+          <DataList gap="2rem 4rem" grid>
+            <DataListItem
+              customWidth="100%"
+              heading="Do I need to work in tech to participate? Or be Native Hawaiian?"
+            >
               <p>
                 <span className="bold">No, you don’t</span>. We are simply
                 looking for passionate folks who can contribute to the
@@ -232,7 +235,10 @@ export default function HackathonPage() {
                 kanaka still learning their way around technical spaces.
               </p>
             </DataListItem>
-            <DataListItem heading="I cannot make the event! Will there be future events?">
+            <DataListItem
+              customWidth="100%"
+              heading="I cannot make the event! Will there be future events?"
+            >
               <p>
                 {" "}
                 <span className="bold">We sure hope so.</span> If this event
@@ -244,28 +250,40 @@ export default function HackathonPage() {
                 events, let us know!
               </p>
             </DataListItem>
-            <DataListItem heading="Will I be able to participate virtually?">
+            <DataListItem
+              customWidth="100%"
+              heading="Will I be able to participate virtually?"
+            >
               <p>
                 <span className="bold">Absolutely.</span> The more, the better
                 we’re able to facilitate a more thorough experience for those
                 attending virtually. Please RSVP!
               </p>
             </DataListItem>
-            <DataListItem heading="Can I bring my own hackathon project ideas?">
+            <DataListItem
+              customWidth="100%"
+              heading="Can I bring my own hackathon project ideas?"
+            >
               <p>
                 <span className="bold">Can.</span> If you can intuit
                 interesting, adjacent projects then, of course, you are more
                 than welcome to build with us.
               </p>
             </DataListItem>
-            <DataListItem heading="Can I come just to hang & talk story?">
+            <DataListItem
+              customWidth="100%"
+              heading="Can I come just to hang & talk story?"
+            >
               <p>
                 <span className="bold">Yessah.</span> The more minds we have
                 discussing and exploring these concepts, the better. It takes a
                 village.
               </p>
             </DataListItem>
-            <DataListItem heading="Will there be transportation?">
+            <DataListItem
+              customWidth="100%"
+              heading="Will there be transportation?"
+            >
               <p>
                 <span className="bold">We going try.</span> Come join the
                 Discord; there should be plenty others looking to help!

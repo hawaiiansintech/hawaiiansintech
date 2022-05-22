@@ -4,11 +4,17 @@ interface DataListProps {
   children: React.ReactNode;
   mainEventLogistics?: boolean;
   gap: string;
+  grid?: boolean;
 }
 
-export function DataList({ children, mainEventLogistics, gap }: DataListProps) {
+export function DataList({
+  children,
+  mainEventLogistics,
+  gap,
+  grid,
+}: DataListProps) {
   return (
-    <div className="data-list">
+    <div className={grid ? "grid" : "data-list"}>
       {children}
       <style jsx>{`
         .data-list {
@@ -21,10 +27,22 @@ export function DataList({ children, mainEventLogistics, gap }: DataListProps) {
           padding: ${mainEventLogistics ? "0 1rem;" : 0};
           max-width: 90rem;
         }
+        .grid {
+          --n: 2; /* number of columns */
+          display: grid;
+          grid-gap: 1rem;
+          grid-template-columns: repeat(
+            auto-fit,
+            minmax(calc(100% / var(--n) - 20px), 1fr)
+          );
+        }
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
           .data-list {
             padding: ${mainEventLogistics ? "0 2rem;" : 0};
             margin: ${mainEventLogistics ? "3rem 0 0 0" : "0"};
+          }
+          .grid {
+            grid-gap: 1.5rem;
           }
         }
       `}</style>
@@ -45,7 +63,6 @@ interface DataListItemProps {
 
 export function DataListItem({
   heading,
-  extendedHeading,
   customWidth,
   mainEventLogistics,
   children,
@@ -63,8 +80,6 @@ export function DataListItem({
         .data-list-item {
           width: ${mainEventLogistics
             ? "20rem"
-            : extendedHeading
-            ? "30rem"
             : customWidth
             ? customWidth
             : "12rem"};
