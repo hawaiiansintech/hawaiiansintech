@@ -144,7 +144,7 @@ export default function HackathonPage() {
         </h3>
 
         <SplitSection title="Tech spec" hint="Subject to change">
-          <div className="empty-placeholder"></div>
+          <img src="/images/techSpec.png" style={{ maxWidth: "100%" }}></img>
         </SplitSection>
         <SplitSection title="Cultural advisory" hint="Subject to change">
           <DataList gap="1rem 6rem" grid>
