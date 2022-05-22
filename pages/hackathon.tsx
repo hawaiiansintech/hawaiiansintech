@@ -144,7 +144,10 @@ export default function HackathonPage() {
         </h3>
 
         <SplitSection title="Tech spec" hint="Subject to change">
-          <img src="/images/techSpec.png" style={{ maxWidth: "100%" }}></img>
+          <img
+            src="/images/techSpec.png"
+            style={{ maxWidth: "100%", maxHeight: "30rem" }}
+          ></img>
         </SplitSection>
         <SplitSection title="Cultural advisory" hint="Subject to change">
           <DataList gap="1rem 6rem" grid>
@@ -171,7 +174,10 @@ export default function HackathonPage() {
           </DataList>
         </SplitSection>
         <SplitSection title="Schedule & Events" hint="Subject to change">
-          <img src="/images/comingSoon.png" style={{ maxWidth: "100%" }}></img>
+          <img
+            src="/images/comingSoon.png"
+            style={{ maxWidth: "100%", maxHeight: "30rem" }}
+          ></img>
         </SplitSection>
         <SplitSection title="Who We Need">
           <DataList gap="2rem 4rem">
