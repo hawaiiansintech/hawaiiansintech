@@ -58,11 +58,7 @@ export default function HackathonPage() {
       </div>
       <div className="foreground">
         <DataList mainEventLogistics gap="1.5rem 4rem">
-          <DataListItem
-            mainEventLogistics
-            heading="ʻEhia ka lā?"
-            translation="Day"
-          >
+          <DataListItem mainEventLogistics heading="ʻĀhea?" translation="When">
             July 29 – 31, 2022
           </DataListItem>
           <DataListItem
@@ -148,7 +144,7 @@ export default function HackathonPage() {
             style={{ maxWidth: "100%", maxHeight: "30rem" }}
           ></img>
         </SplitSection>
-        <SplitSection title="Cultural advisory" hint="Subject to change">
+        {/* <SplitSection title="Cultural advisory" hint="Subject to change">
           <DataList gap="1rem 6rem" grid>
             <DataListItem
               heading="Dr. Lilikalā Kameʻeleihiwaala"
@@ -171,7 +167,7 @@ export default function HackathonPage() {
               subHeading="Kahuna, Pā ʻUhi"
             />
           </DataList>
-        </SplitSection>
+        </SplitSection> */}
         <SplitSection title="Schedule & Events" hint="Subject to change">
           <img
             src="/images/comingSoon.png"
