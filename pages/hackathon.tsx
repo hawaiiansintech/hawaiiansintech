@@ -8,7 +8,6 @@ import { Title } from "@/components/Title.js";
 import { motion } from "framer-motion";
 import Head from "next/head";
 import theme from "styles/theme";
-import { DISCORD_URL } from "./about";
 
 const item = {
   hidden: { opacity: 0, y: "15%" },
@@ -81,7 +80,7 @@ export default function HackathonPage() {
             Moʻokūʻauhau &amp; Moʻōlelo
           </DataListItem>
         </DataList>
-        <DataList mainEventLogistics gap="1rem 1rem">
+        {/* <DataList mainEventLogistics gap="1rem 1rem">
           <Button
             size={ButtonSize.Small}
             customWidth="18rem"
@@ -107,7 +106,7 @@ export default function HackathonPage() {
           >
             ...
           </Button>
-        </DataList>
+        </DataList> */}
         <h3>
           <p>
             A <span className="bold">non-traditional hackathon;</span> expanding
@@ -263,7 +262,7 @@ export default function HackathonPage() {
               <p>
                 <span className="bold">Absolutely.</span> The more, the better
                 we’re able to facilitate a more thorough experience for those
-                attending virtually. Please RSVP!
+                attending virtually. Please RSVP when it's available!
               </p>
             </DataListItem>
             <DataListItem
