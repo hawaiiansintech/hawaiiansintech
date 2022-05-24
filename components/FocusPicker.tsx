@@ -1,10 +1,13 @@
 import { Focus } from "@/lib/api";
-import { useEffect, useRef, useState } from "react";
+import { useWindowWidth } from "@/lib/hooks";
+import Link from "next/link";
+import { useLayoutEffect, useRef, useState } from "react";
 import theme from "styles/theme";
 import BannerAlert from "./BannerAlert";
-import Button, { ButtonSize, ButtonVariant } from "./Button";
 import Input from "./form/Input";
 import Selectable, { SelectableSize } from "./form/Selectable";
+
+const SHOW_UP_TO_FILTERS_ROW = 2;
 
 export interface FocusPickerFocus extends Focus {
   active?: boolean;
@@ -21,32 +24,55 @@ export default function FocusPicker({
   onFilterClick,
   memberCount,
 }: FocusPickerProps) {
-  const [showButton, setShowButton] = useState<boolean>(false);
+  const width = useWindowWidth();
   const [menuExpanded, setMenuExpanded] = useState<boolean>(false);
-  const isSelected = focuses.filter((foc) => foc.active).length === 0;
+  const [defaultHeight, setDefaultHeight] = useState<number>();
+  const [minimizedHeight, setMinimizedHeight] = useState<number>();
   const listRef = useRef<HTMLUListElement>();
   const listItemRef = useRef<HTMLLIElement>();
+  const listItemsRef = useRef<HTMLLIElement[]>([]);
+  const filterIsSelected = focuses.filter((foc) => foc.active).length === 0;
 
-  useEffect(() => {
-    setShowButton(true);
-  }, []);
+  useLayoutEffect(() => {
+    if (!listItemsRef) return;
+    const all = listItemsRef?.current.map(
+      (item) => item?.getBoundingClientRect().y
+    );
+    const dedup = all.filter((y, i) => all.indexOf(y) === i);
+    const lastItem = all.indexOf(dedup[SHOW_UP_TO_FILTERS_ROW]) - 1;
+    const end = listItemsRef?.current[lastItem]?.getBoundingClientRect().bottom;
+    const start = listRef.current.getBoundingClientRect().top;
+    setDefaultHeight(listRef.current.scrollHeight);
+    setMinimizedHeight(
+      end && start ? end - start : listRef.current.scrollHeight
+    );
+  }, [width]);
 
   return (
     <>
       <div className="picker">
         <div className="picker__container">
-          <ul className="picker__list" ref={listRef}>
+          <ul
+            className="picker__list"
+            ref={listRef}
+            style={{
+              maxHeight: menuExpanded ? defaultHeight : minimizedHeight,
+            }}
+          >
             <li className="picker__item" ref={listItemRef}>
               <Selectable
                 fullWidth
                 headline={`All ${memberCount ? `(${memberCount})` : ""}`}
-                onClick={() => (!isSelected ? onFilterClick() : null)}
-                selected={isSelected}
+                onClick={() => (!filterIsSelected ? onFilterClick() : null)}
+                selected={filterIsSelected}
                 size={SelectableSize.Large}
               />
             </li>
             {focuses.map((focus, i) => (
-              <li key={`focus-filter-${i}`}>
+              <li
+                key={`focus-filter-${i}`}
+                ref={(el) => (listItemsRef.current[i] = el)}
+              >
                 <Selectable
                   fullWidth
                   headline={focus.name}
@@ -58,15 +84,13 @@ export default function FocusPicker({
               </li>
             ))}
           </ul>
-          {showButton && (
-            <Button
-              variant={ButtonVariant.Secondary}
-              size={ButtonSize.Small}
-              onClick={() => setMenuExpanded(!menuExpanded)}
-            >
-              {menuExpanded ? "Less" : "More Filters"}
-            </Button>
-          )}
+          <a
+            href="#"
+            onClick={() => setMenuExpanded(!menuExpanded)}
+            style={{ whiteSpace: "nowrap" }}
+          >
+            {menuExpanded ? "Hide" : "View All"}
+          </a>
         </div>
         {menuExpanded ? (
           <div
@@ -78,9 +102,10 @@ export default function FocusPicker({
             }}
           >
             <BannerAlert tag="ALMOST PAU">
-              <strong>New filter functionality coming soon!</strong> Recently
-              added new features for prospective and existing members to add to
-              their profile.{" "}
+              <strong>More filter functionality coming soon!</strong> New
+              features were recently added for prospective and existing members
+              to add to their profile. If you're on the list,{" "}
+              <Link href="/edit">add them now</Link>!
             </BannerAlert>
             <div style={{ marginTop: "1rem" }}>
               <MoreOptions />
@@ -106,22 +131,18 @@ export default function FocusPicker({
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
+            transition: 150ms ease-out max-height;
+            overflow: hidden;
           }
           .picker__item {
             margin: 0;
             white-space: initial;
             flex-shrink: 0;
           }
-          @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-            .picker__list {
-              margin-bottom: 0.75rem;
-            }
-          }
           @media screen and (min-width: ${theme.layout.breakPoints.medium}) {
             .picker__list {
               margin-bottom: 0;
               max-height: initial;
-              overflow: initial;
             }
           }
         `}</style>

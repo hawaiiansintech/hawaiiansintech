@@ -12,7 +12,6 @@ interface BannerAlertProps {
 
 export default function BannerAlert({
   children,
-  link,
   onClose,
   tag,
 }: BannerAlertProps) {
@@ -42,17 +41,7 @@ export default function BannerAlert({
           border-radius: ${theme.borderRadius.sm};
           padding: 1rem ${onClose ? "3rem" : "1rem"} 1rem 1rem;
           color: ${theme.color.brand.base};
-          font-weight: 500;
-        }
-        .banner-alert__links {
-          display: flex;
-        }
-        .banner-alert__link {
-          font-weight: 600;
-          font-size: 0.875rem;
-          margin-top: 0.5rem;
-          color: ${theme.color.brand.alt};
-          cursor: pointer;
+          font-weight: 400;
         }
         .banner-alert__close {
           ${cssHelperButtonReset}
