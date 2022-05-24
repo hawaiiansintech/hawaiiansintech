@@ -148,8 +148,8 @@ export default function HackathonPage() {
           <DataList gap="1rem 6rem" grid>
             <DataListItem
               heading="Dr. Lilikalā Kameʻeleihiwaala"
-              customWidth="100%"
-              subHeading="Professor, Hawaiian Culture & Genealogies"
+              customWidth="50%"
+              subHeading="Senior Professor, UH Kamakakuokalani Center for Hawaiian Studies; Founder, Mauliauhonua, Hawaiian Genealogies"
             />
             {/* <DataListItem
               heading="Dr. Manulani Aluli Meyer"
