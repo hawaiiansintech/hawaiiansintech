@@ -36,6 +36,8 @@ export default css.global`
     --width-resp-small: ${theme.layout.breakPoints.small};
   }
 
+  @import url("https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap");
+
   html {
     box-sizing: border-box;
   }
@@ -47,7 +49,7 @@ export default css.global`
   }
 
   body {
-    font-family: "Helvetica Now Display", "Helvetica Neue", "Helvetica";
+    font-family: ${theme.fontFamily.base};
     background: ${theme.color.background.base};
     color: ${theme.color.text.base};
     font-weight: 500;

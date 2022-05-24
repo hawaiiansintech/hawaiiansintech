@@ -36,7 +36,7 @@ export default function AboutPage() {
       <div className="about-splash">
         <Title
           className="m0 p0"
-          text="Hawaiians*in&nbsp;Technology&nbsp;is&nbsp;a"
+          text="Hawaiians*in&nbsp;Technology"
           noAnimation
         />
 
@@ -48,7 +48,7 @@ export default function AboutPage() {
         >
           <p className="f1 extend">
             <motion.span variants={item}>
-              directory and community of <strong>Native Hawaiians</strong> in
+              is a directory and community of <strong>Native Hawaiians</strong> in
               the
             </motion.span>{" "}
             <motion.span variants={item}>
