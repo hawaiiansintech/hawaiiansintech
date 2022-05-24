@@ -66,7 +66,7 @@ export default function HackathonPage() {
             heading="Ma hea?"
             translation="Location"
           >
-            Puʻuhonua o Waimanalo &amp; Virtual
+            Oahu locations &amp; Virtual
           </DataListItem>
           <DataListItem
             mainEventLogistics
@@ -201,9 +201,18 @@ export default function HackathonPage() {
                 <li>Smart, open-minded folks with a good attitude</li>
               </ul>
             </DataListItem>
-            <DataListItem customWidth="100%" heading="User feedback help 💡">
+            <DataListItem customWidth="100%" heading="Non Technical help 💡">
               Looking for individuals who can help:
               <ul>
+                <li>
+                  have interest in engaging in thoughtful discussions exploring
+                  our modern relationship to mo'oku'auhau and connecting with
+                  like minded individuals
+                </li>
+                <li>
+                  are interested in co-developing a framework to digitize,
+                  organize, and share genealogy with the rest of their 'ohana
+                </li>
                 <li>
                   test out and provide thoughtful feedback on existing
                   functionalities
@@ -216,6 +225,13 @@ export default function HackathonPage() {
                   give opinions on the best visualizations for the genealogy
                   data
                 </li>
+              </ul>
+              The weekend will include:
+              <ul>
+                <li>keynote speakers</li>
+                <li>mo'olelo talk stories</li>
+                <li>art workshops</li>
+                <li>lo'i kalo</li>
               </ul>
             </DataListItem>
           </DataList>
