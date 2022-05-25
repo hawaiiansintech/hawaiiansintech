@@ -176,62 +176,62 @@ export default function HackathonPage() {
         </SplitSection>
         <SplitSection title="Who We Need">
           <DataList gap="2rem 4rem">
-            <DataListItem customWidth="100%" heading="Technical help 🛠">
+            <DataListItem customWidth="100%" heading="Technical Help 🛠">
               Looking for individuals who can help us:
               <ul>
-                <li>parse, store, or manage data</li>
-                <li>shape data infrastructural / system design </li>
+                <li>Parse, store, or manage data</li>
+                <li>Shape data infrastructural / system design </li>
                 <li>
-                  visualize hierarchical & interconnected data in a compelling
+                  Visualize hierarchical & interconnected data in a compelling
                   way
                 </li>
                 <li>
-                  a degree of technical acumen or a strong will to pick one up
+                  A degree of technical acumen or a strong will to pick one up
                   fast
                 </li>
+                <li>Smart, open-minded folks with a good attitude</li>
               </ul>
               Common technical roles we’re looking for (but not limited to):
               <ul>
                 <li>Software engineers</li>
                 <li>Testing engineers</li>
-                <li>Data infra / science / analysis</li>
+                <li>Data infrastructure / science / analysis</li>
                 <li>Privacy & safety</li>
                 <li>User-generated content & moderation</li>
                 <li>UX / Product / UI designers</li>
-                <li>Smart, open-minded folks with a good attitude</li>
               </ul>
             </DataListItem>
-            <DataListItem customWidth="100%" heading="Non Technical help 💡">
+            <DataListItem customWidth="100%" heading="Non Technical Help 💡">
               Looking for individuals who can help:
               <ul>
                 <li>
-                  have interest in engaging in thoughtful discussions exploring
-                  our modern relationship to mo'oku'auhau and connecting with
-                  like minded individuals
+                  Engage in thoughtful discussions exploring our modern
+                  relationship to mo'oku'auhau and connect with like minded
+                  individuals
                 </li>
                 <li>
-                  are interested in co-developing a framework to digitize,
-                  organize, and share genealogy with the rest of their 'ohana
+                  Co-develop a framework to digitize, organize, and share
+                  genealogy with the rest of their 'ohana
                 </li>
                 <li>
-                  test out and provide thoughtful feedback on existing
+                  Test out and provide thoughtful feedback on existing
                   functionalities
                 </li>
                 <li>
-                  provide thoughts and ideas on future development of the
+                  Provide thoughts and ideas on future development of the
                   project
                 </li>
                 <li>
-                  give opinions on the best visualizations for the genealogy
+                  Give opinions on the best visualizations for the genealogy
                   data
                 </li>
               </ul>
               The weekend will include:
               <ul>
-                <li>keynote speakers</li>
-                <li>mo'olelo talk stories</li>
-                <li>art workshops</li>
-                <li>lo'i kalo</li>
+                <li>Keynote speakers</li>
+                <li>Mo'olelo talk stories</li>
+                <li>Art workshops</li>
+                <li>Lo'i kalo</li>
               </ul>
             </DataListItem>
           </DataList>
@@ -345,6 +345,14 @@ export default function HackathonPage() {
           </DataList>
         </SplitSection>
         <SplitSection title="Special thanks to">
+          <a href={"hhttps://www.nativebookshawaii.org/"}>
+            <img
+              src="/images/nativeBooks.png"
+              style={{
+                maxHeight: "7.5rem",
+              }}
+            />
+          </a>
           <DataList gap="1rem 4rem">
             <DataListItem
               heading="Native Books Hawaiʻi"
