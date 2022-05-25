@@ -55,7 +55,9 @@ export async function sendRequestUpdateEmail({
       email: REPLY_EMAIL,
       name: "Hawaiians in Tech",
     },
-    subject: `New Request`,
+    subject: `${
+      removeRequest ? "💔 Removal requested from" : "✨ Change requested from"
+    } ${name}`,
     html: emailTemplate,
   });
 }

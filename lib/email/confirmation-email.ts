@@ -66,7 +66,7 @@ export async function sendConfirmationEmails({
       email: REPLY_EMAIL,
       name: "Hawaiians in Tech",
     },
-    subject: `New Submission`,
+    subject: `New Submission: ${name}`,
     html: emailTemplate2,
   });
 }
