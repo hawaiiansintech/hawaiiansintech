@@ -13,8 +13,6 @@ export default function MetaTags({
   pathname = "https://hawaiiansintech.org",
   title = "Hawaiians in Technology",
 }: MetaTagsProps) {
-  console.log("title");
-  console.log(title);
   return (
     <>
       <link rel="icon" href="/favicon.ico" />
