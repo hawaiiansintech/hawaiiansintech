@@ -144,14 +144,14 @@ export default function HackathonPage() {
             style={{ maxWidth: "100%", maxHeight: "30rem" }}
           ></img>
         </SplitSection>
-        {/* <SplitSection title="Cultural advisory" hint="Subject to change">
+        <SplitSection title="Keynote Speakers" hint="Subject to change">
           <DataList gap="1rem 6rem" grid>
             <DataListItem
               heading="Dr. Lilikalā Kameʻeleihiwaala"
-              customWidth="100%"
-              subHeading="Professor, Hawaiian Culture & Genealogies"
+              customWidth="50%"
+              subHeading="Senior Professor, UH Kamakakuokalani Center for Hawaiian Studies; Founder, Mauliauhonua, Hawaiian Genealogies"
             />
-            <DataListItem
+            {/* <DataListItem
               heading="Dr. Manulani Aluli Meyer"
               customWidth="100%"
               subHeading="Indigenous Scholar and Cultural Practitioner"
@@ -165,9 +165,9 @@ export default function HackathonPage() {
               heading="Kamaliʻikupono Hanohano"
               customWidth="100%"
               subHeading="Kahuna, Pā ʻUhi"
-            />
+            /> */}
           </DataList>
-        </SplitSection> */}
+        </SplitSection>
         <SplitSection title="Schedule & Events" hint="Subject to change">
           <img
             src="/images/comingSoon.png"
