@@ -1,7 +1,7 @@
 import ProgressBar from "@/components/form/ProgressBar";
 import { Heading, Subheading } from "@/components/Heading";
 import BasicInformationForm from "@/components/intake-form/BasicInformation";
-import MetaTags from "@/components/Metatags.js";
+import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { useStorage } from "@/lib/hooks";
 import { clearAllStoredFields } from "@/lib/utils";
@@ -9,7 +9,15 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-export default function JoinStep1(props) {
+export async function getStaticProps() {
+  return {
+    props: {
+      pageTitle: "Join · Hawaiians in Technology",
+    },
+  };
+}
+
+export default function JoinStep1({ pageTitle }) {
   const router = useRouter();
   const { r, edit } = router.query;
   const { getItem, setItem } = useStorage();
@@ -59,9 +67,8 @@ export default function JoinStep1(props) {
   return (
     <>
       <Head>
-        <title>Hawaiians in Technology | Join</title>
-        <link rel="icon" href="/favicon.ico" />
-        <MetaTags />
+        <MetaTags title={pageTitle} />
+        <title>{pageTitle}</title>
       </Head>
       <Nav backUrl="/" />
 

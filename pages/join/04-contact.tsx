@@ -5,7 +5,7 @@ import ErrorMessage, {
 import Input from "@/components/form/Input";
 import ProgressBar from "@/components/form/ProgressBar";
 import { Heading, Subheading } from "@/components/Heading";
-import MetaTags from "@/components/Metatags.js";
+import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { useStorage } from "@/lib/hooks";
 import { clearAllStoredFields, useInvalid } from "@/lib/utils";
@@ -16,7 +16,15 @@ import { useEffect, useState } from "react";
 import theme from "styles/theme";
 import * as Yup from "yup";
 
-export default function JoinStep4() {
+export async function getStaticProps() {
+  return {
+    props: {
+      pageTitle: "Join · Hawaiians in Technology",
+    },
+  };
+}
+
+export default function JoinStep4({ pageTitle }) {
   const router = useRouter();
   const { getItem, setItem, removeItem } = useStorage();
   const [email, setEmail] = useState<string>("");
@@ -121,9 +129,8 @@ export default function JoinStep4() {
   return (
     <>
       <Head>
-        <title>Hawaiians in Technology | Join</title>
-        <link rel="icon" href="/favicon.ico" />
-        <MetaTags />
+        <MetaTags title={pageTitle} />
+        <title>{pageTitle}</title>
       </Head>
       <Nav backUrl="03-company" />
 

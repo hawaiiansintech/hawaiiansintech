@@ -11,7 +11,7 @@ import Selectable, {
   SelectableVariant,
 } from "@/components/form/Selectable";
 import { Heading } from "@/components/Heading";
-import MetaTags from "@/components/Metatags.js";
+import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { getIndustries } from "@/lib/api";
 import { useStorage, useWindowWidth } from "@/lib/hooks";
@@ -29,6 +29,7 @@ export async function getStaticProps() {
   return {
     props: {
       industries: industries,
+      pageTitle: "Join · Hawaiians in Technology",
     },
     revalidate: 60,
   };
@@ -37,7 +38,7 @@ export async function getStaticProps() {
 const MAX_COUNT = 3;
 const TECHNOLOGY_LABEL = "Internet / Technology";
 
-export default function JoinStep3({ industries }) {
+export default function JoinStep3({ industries, pageTitle }) {
   const { getItem, setItem, removeItem } = useStorage();
   const router = useRouter();
   const width = useWindowWidth();
@@ -150,9 +151,8 @@ export default function JoinStep3({ industries }) {
   return (
     <>
       <Head>
-        <title>Hawaiians in Technology | Join</title>
-        <link rel="icon" href="/favicon.ico" />
-        <MetaTags />
+        <MetaTags title={pageTitle} />
+        <title>{pageTitle}</title>
       </Head>
       <Nav backUrl="02-work" />
 

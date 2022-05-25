@@ -1,6 +1,6 @@
 import Button, { ButtonSize, ButtonVariant } from "@/components/Button";
 import { DataList, DataListItem } from "@/components/DataList";
-import MetaTags from "@/components/Metatags.js";
+import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import NihoShimmer from "@/components/NihoShimmer";
 import SplitSection from "@/components/SplitSection";
@@ -24,13 +24,24 @@ const container = {
   },
 };
 
-export default function HackathonPage() {
+export async function getStaticProps() {
+  return {
+    props: {
+      pageTitle: "Hackathon 2022 · Hawaiians in Technology",
+    },
+  };
+}
+
+export default function HackathonPage({ pageTitle }) {
   return (
     <>
       <Head>
-        <title>Hawaiians in Technology | About</title>
-        <link rel="icon" href="/favicon.ico" />
-        <MetaTags />
+        <MetaTags
+          image="https://hawaiiansintech.org/images/ogimage-hackathon.png"
+          description="Our inaugural Hackathon event, in partnership with Purple Maiʻa. Hosted by Native Hawaiians in the technology industry."
+          title={pageTitle}
+        />
+        <title>{pageTitle}</title>
       </Head>
       <Nav backUrl="/" />
       <div className="background">

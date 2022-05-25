@@ -1,4 +1,4 @@
-import MetaTags from "@/components/Metatags.js";
+import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { Title } from "@/components/Title.js";
 import { motion } from "framer-motion";
@@ -23,13 +23,20 @@ const container = {
 
 export const DISCORD_URL = "https://discord.gg/p7338Z5MJQ";
 
-export default function AboutPage() {
+export async function getStaticProps() {
+  return {
+    props: {
+      pageTitle: "About · Hawaiians in Technology",
+    },
+  };
+}
+
+export default function AboutPage({ pageTitle }) {
   return (
     <>
       <Head>
-        <title>Hawaiians in Technology | About</title>
-        <link rel="icon" href="/favicon.ico" />
-        <MetaTags />
+        <MetaTags title={pageTitle} />
+        <title>{pageTitle}</title>
       </Head>
       <Nav backUrl="/" />
 
@@ -48,8 +55,8 @@ export default function AboutPage() {
         >
           <p className="f1 extend">
             <motion.span variants={item}>
-              is a directory and community of <strong>Native Hawaiians</strong> in
-              the
+              is a directory and community of <strong>Native Hawaiians</strong>{" "}
+              in the
             </motion.span>{" "}
             <motion.span variants={item}>
               <strong>technology industry</strong>. The goal is to connect,

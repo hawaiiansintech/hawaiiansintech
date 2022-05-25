@@ -5,13 +5,20 @@ import Head from "next/head";
 import Link from "next/link";
 import theme from "styles/theme";
 
-export default function ThankYou() {
+export async function getStaticProps() {
+  return {
+    props: {
+      pageTitle: "Thank You · Hawaiians in Technology",
+    },
+  };
+}
+
+export default function ThankYou({ pageTitle }) {
   return (
     <>
       <Head>
-        <title>Hawaiians in Technology | Join</title>
-        <link rel="icon" href="/favicon.ico" />
-        <MetaTags />
+        <MetaTags title={pageTitle} />
+        <title>{pageTitle}</title>
       </Head>
       <div className="thank-you">
         <header>

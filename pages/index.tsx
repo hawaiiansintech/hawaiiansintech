@@ -1,6 +1,6 @@
 import FocusPicker, { FocusPickerFocus } from "@/components/FocusPicker";
 import MemberDirectory, { DirectoryMember } from "@/components/MemberDirectory";
-import MetaTags from "@/components/Metatags.js";
+import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { Title } from "@/components/Title.js";
 // Change to "@/lib/stubApi" if no access to airtable vars!
@@ -25,6 +25,7 @@ export async function getStaticProps() {
       fetchedMembers: members,
       fetchedFocuses: focuses,
       fetchedIndustries: industries,
+      pageTitle: "Hawaiians in Tech",
     },
     revalidate: 60,
   };
@@ -34,6 +35,7 @@ export default function HomePage({
   fetchedMembers,
   fetchedFocuses,
   fetchedIndustries,
+  pageTitle,
 }) {
   const initialState = {
     members: fetchedMembers.map((mem) => ({
@@ -96,9 +98,8 @@ export default function HomePage({
   return (
     <>
       <Head>
-        <title>Hawaiians in Technology</title>
-        <link id="favicon" rel="alternate icon" href="/favicon.ico" />
-        <MetaTags />
+        <MetaTags title={pageTitle} />
+        <title>{pageTitle}</title>
       </Head>
       <Nav primaryNav={{ show: true }} />
       <div className="home-splash">

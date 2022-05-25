@@ -5,7 +5,7 @@ import ErrorMessage, {
 import Input from "@/components/form/Input";
 import ProgressBar from "@/components/form/ProgressBar";
 import { Heading, Subheading } from "@/components/Heading";
-import MetaTags from "@/components/Metatags.js";
+import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import Tag from "@/components/Tag";
 import { MemberPublic, MemberPublicEditing } from "@/lib/api";
@@ -17,7 +17,14 @@ import { useEffect, useState } from "react";
 import theme from "styles/theme";
 import * as Yup from "yup";
 
-export default function JoinStep4() {
+export async function getStaticProps() {
+  return {
+    props: {
+      pageTitle: "Request Changes · Hawaiians in Technology",
+    },
+  };
+}
+export default function JoinStep4({ pageTitle }) {
   const router = useRouter();
   const { removeRequest } = router.query;
   const { getItem, removeItem } = useStorage();
@@ -108,9 +115,8 @@ export default function JoinStep4() {
   return (
     <>
       <Head>
-        <title>Hawaiians in Technology | Request Changes</title>
-        <link rel="icon" href="/favicon.ico" />
-        <MetaTags />
+        <MetaTags title={pageTitle} />
+        <title>{pageTitle}</title>
       </Head>
 
       <Nav backUrl={removeRequest ? "/edit" : "03-company"} />

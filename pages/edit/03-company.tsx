@@ -3,7 +3,7 @@ import { Heading } from "@/components/Heading";
 import CompanyIndustry, {
   CompanyIndustryInitialProps,
 } from "@/components/intake-form/CompanyIndustry";
-import MetaTags from "@/components/Metatags.js";
+import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { getIndustries, MemberPublicEditing } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
@@ -20,12 +20,13 @@ export async function getStaticProps() {
   return {
     props: {
       industries: industries,
+      pageTitle: "Request Changes · Hawaiians in Technology",
     },
     revalidate: 60,
   };
 }
 
-export default function JoinStep3({ industries }) {
+export default function JoinStep3({ industries, pageTitle }) {
   const { getItem, setItem } = useStorage();
   const router = useRouter();
   const [userData, setUserData] = useState<MemberPublicEditing>({});
@@ -91,9 +92,8 @@ export default function JoinStep3({ industries }) {
   return (
     <>
       <Head>
-        <title>Hawaiians in Technology | Request Changes</title>
-        <link rel="icon" href="/favicon.ico" />
-        <MetaTags />
+        <MetaTags title={pageTitle} />
+        <title>{pageTitle}</title>
       </Head>
       <Nav backUrl="02-work" />
       <Heading>Requesting changes for {userData?.name}</Heading>

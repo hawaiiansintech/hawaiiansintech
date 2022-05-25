@@ -10,16 +10,23 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import theme from "styles/theme";
 
-export default function ThankYou() {
+export async function getStaticProps() {
+  return {
+    props: {
+      pageTitle: "Request Changes · Hawaiians in Technology",
+    },
+  };
+}
+
+export default function ThankYou({ pageTitle }) {
   const router = useRouter();
   const { email, id, removeRequest } = router.query;
   const emailNull = email === "null";
   return (
     <>
       <Head>
-        <title>Hawaiians in Technology | Request Changes</title>
-        <link rel="icon" href="/favicon.ico" />
-        <MetaTags />
+        <MetaTags title={pageTitle} />
+        <title>{pageTitle}</title>
       </Head>
       <div className="thank-you">
         <header>
