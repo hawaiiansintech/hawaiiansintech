@@ -3,7 +3,7 @@ import { Heading } from "@/components/Heading";
 import WorkExperience, {
   WorkExperienceInitialProps,
 } from "@/components/intake-form/WorkExperience";
-import MetaTags from "@/components/Metatags.js";
+import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { getFocuses } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
@@ -17,12 +17,13 @@ export async function getStaticProps() {
   return {
     props: {
       focuses: focuses.sort((a, b) => b.count - a.count),
+      pageTitle: "Join · Hawaiians in Technology",
     },
     revalidate: 60,
   };
 }
 
-export default function JoinStep2({ focuses }) {
+export default function JoinStep2({ focuses, pageTitle }) {
   const router = useRouter();
   const { getItem, setItem, removeItem } = useStorage();
 
@@ -81,9 +82,8 @@ export default function JoinStep2({ focuses }) {
   return (
     <>
       <Head>
-        <title>Hawaiians in Technology | Join</title>
-        <link rel="icon" href="/favicon.ico" />
-        <MetaTags />
+        <MetaTags title={pageTitle} />
+        <title>{pageTitle}</title>
       </Head>
       <Nav backUrl="01-you" />
 

@@ -2,7 +2,7 @@ import ProgressBar from "@/components/form/ProgressBar";
 import { Heading } from "@/components/Heading";
 import BasicInformationForm from "@/components/intake-form/BasicInformation";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import MetaTags from "@/components/Metatags.js";
+import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { MemberPublicEditing } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
@@ -11,7 +11,15 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-export default function JoinStep1(props) {
+export async function getStaticProps() {
+  return {
+    props: {
+      pageTitle: "Request Changes · Hawaiians in Technology",
+    },
+  };
+}
+
+export default function JoinStep1({ pageTitle }) {
   const router = useRouter();
   const { r } = router.query;
   const { getItem, setItem, removeItem } = useStorage();
@@ -52,9 +60,8 @@ export default function JoinStep1(props) {
   return (
     <>
       <Head>
-        <title>Hawaiians in Technology | Request Changes</title>
-        <link rel="icon" href="/favicon.ico" />
-        <MetaTags />
+        <MetaTags title={pageTitle} />
+        <title>{pageTitle}</title>
       </Head>
       <Nav backUrl="/edit" />
       <Heading>Requesting changes for {data.name}</Heading>

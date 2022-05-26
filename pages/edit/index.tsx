@@ -11,13 +11,20 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import theme from "styles/theme";
 
-export default function EditPage() {
+export async function getStaticProps() {
+  return {
+    props: {
+      pageTitle: "Request Changes · Hawaiians in Technology",
+    },
+  };
+}
+
+export default function EditPage({ pageTitle }) {
   return (
     <>
       <Head>
-        <title>Hawaiians in Technology | Request Changes</title>
-        <link rel="icon" href="/favicon.ico" />
-        <MetaTags />
+        <MetaTags title={pageTitle} />
+        <title>{pageTitle}</title>
       </Head>
       <Nav backUrl="/" />
       <Heading>Request Changes</Heading>

@@ -3,7 +3,7 @@ import { Heading } from "@/components/Heading";
 import WorkExperience, {
   WorkExperienceInitialProps,
 } from "@/components/intake-form/WorkExperience";
-import MetaTags from "@/components/Metatags.js";
+import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { getFocuses, MemberPublicEditing } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
@@ -18,12 +18,13 @@ export async function getStaticProps() {
   return {
     props: {
       focuses: focuses,
+      pageTitle: "Request Changes · Hawaiians in Technology",
     },
     revalidate: 60,
   };
 }
 
-export default function JoinStep2({ focuses }) {
+export default function JoinStep2({ focuses, pageTitle }) {
   const router = useRouter();
   const { getItem, setItem } = useStorage();
   const [userData, setUserData] = useState<MemberPublicEditing>({});
@@ -94,9 +95,8 @@ export default function JoinStep2({ focuses }) {
   return (
     <>
       <Head>
-        <title>Hawaiians in Technology | Request Changes</title>
-        <link rel="icon" href="/favicon.ico" />
-        <MetaTags />
+        <MetaTags title={pageTitle} />
+        <title>{pageTitle}</title>
       </Head>
       <Nav backUrl="01-you" />
       <Heading>Requesting changes for {userData.name}</Heading>
