@@ -20,7 +20,6 @@ import Selectable, {
 
 export interface WorkExperienceInitialProps {
   focuses?: Focus[];
-  deferTitle?: "true" | undefined;
   focusesSelected?: string[];
   focusSuggested?: string;
   title?: string;
@@ -45,17 +44,11 @@ export default function WorkExperience({
   const [isValid, setIsValid] = useState<boolean>(false);
   const [showSuggestButton, setShowSuggestButton] = useState(true);
 
-  const [focusesSelected, setFocusesSelected] = useState<string[]>(
-    initial.focusesSelected
-  );
-  const [focusSuggested, setFocusSuggested] = useState<string>(
-    initial.focusSuggested
-  );
-  const [title, setTitle] = useState<string>(initial.title);
-  const [deferTitle, setDeferTitle] = useState<"true">(initial.deferTitle);
-  const [yearsExperience, setYearsExperience] = useState<string>(
-    initial.yearsExperience
-  );
+  const [focusesSelected, setFocusesSelected] = useState<string[]>();
+  const [focusSuggested, setFocusSuggested] = useState<string>();
+  const [title, setTitle] = useState<string>();
+  const [deferTitle, setDeferTitle] = useState<boolean>(false);
+  const [yearsExperience, setYearsExperience] = useState<string>();
   const totalFocusesSelected =
     focusesSelected?.length + (focusSuggested ? 1 : 0);
   const isMaxSelected = totalFocusesSelected >= MAX_FOCUS_COUNT;
@@ -85,24 +78,25 @@ export default function WorkExperience({
     setFocusesSelected(initial.focusesSelected);
     setYearsExperience(initial.yearsExperience);
     setTitle(initial.title);
-    setDeferTitle(initial.deferTitle);
+    setFocusSuggested(initial.focusSuggested);
   }, [
     initial.focusesSelected,
     initial.yearsExperience,
     initial.title,
-    initial.deferTitle,
+    initial.focusSuggested,
   ]);
 
   const handleSelect = (focusID: string) => {
-    let newFocusesSelected = [...focusesSelected];
+    let selected = focusesSelected ? [...focusesSelected] : [];
     const isSelected = focusesSelected?.includes(focusID);
+
     if (isSelected) {
-      const index = focusesSelected?.indexOf(focusID);
-      newFocusesSelected.splice(index, 1);
-    } else if (focusesSelected?.length < MAX_FOCUS_COUNT) {
-      newFocusesSelected.push(focusID);
+      const index = selected?.indexOf(focusID);
+      selected.splice(index, 1);
+    } else if (selected?.length < MAX_FOCUS_COUNT) {
+      selected.push(focusID);
     }
-    setFocusesSelected(newFocusesSelected);
+    setFocusesSelected(selected);
   };
 
   const handleSubmit = () => {
@@ -113,13 +107,12 @@ export default function WorkExperience({
       });
       return;
     }
-    if (!title) setDeferTitle("true");
+    if (!title) setDeferTitle(true);
     setLoading(true);
     onSubmit({
       focusesSelected: focusesSelected,
       focusSuggested: focusSuggested,
       title: title,
-      deferTitle: deferTitle,
       yearsExperience: yearsExperience,
     });
   };
@@ -250,20 +243,18 @@ export default function WorkExperience({
             name="title"
             label="What’s your current title?"
             labelTranslation="ʻO wai kou kūlana i hana?"
-            placeholder="e.g. Software Engineer"
-            value={deferTitle === "true" ? " " : title}
-            disabled={deferTitle === "true"}
+            placeholder={deferTitle ? "" : "e.g. Software Engineer"}
+            value={deferTitle ? "" : title}
+            disabled={deferTitle}
             onChange={(e) => setTitle(e.target.value)}
             labelTagged={showNew && initial.title === "" ? "NEW" : undefined}
           />
           <div style={{ marginTop: "1rem", display: "inline-block" }}>
             <CheckBox
-              checked={deferTitle === "true"}
+              checked={deferTitle}
               label={"N/A, or Prefer not to answer"}
               id="defer-title"
-              onClick={() =>
-                setDeferTitle(deferTitle === "true" ? undefined : "true")
-              }
+              onClick={() => setDeferTitle(!deferTitle)}
             />
           </div>
         </div>

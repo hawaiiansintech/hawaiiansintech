@@ -1,4 +1,5 @@
 import { useStorage } from "@/lib/hooks";
+import { Member } from "@/pages/api/create-member";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
@@ -33,35 +34,37 @@ interface useInvalidProps {
 export const useInvalid = ({ currentPage }: useInvalidProps) => {
   const { getItem } = useStorage();
   const router = useRouter();
-  let invalid =
-    !getItem("jfName") || !getItem("jfLocation") || !getItem("jfWebsite");
+
+  let joinData: string | Member = getItem("joinData");
+  joinData = joinData ? JSON.parse(joinData) : undefined;
+  if (!joinData || typeof joinData === "string") return;
+
+  let invalid = !joinData.name || !joinData.location || !joinData.website;
   switch (currentPage) {
     case `02-work`:
       return useEffect(() => {
-        if (invalid) router.push({ pathname: "01-you", query: { r: "02" } });
+        if (invalid) {
+          router.push({ pathname: "01-you", query: { r: "02" } });
+        }
       }, []);
     case `03-company`:
       invalid =
         invalid ||
-        !getItem("jfYearsExperience") ||
-        ([...JSON.parse(getItem("jfFocuses") || "[]")].length < 1 &&
-          !getItem("jfFocusSuggested")) ||
-        (!getItem("jfTitle") && !getItem("jfDeferTitle"));
+        !joinData.yearsExperience ||
+        (joinData.focusesSelected.length < 1 && !joinData.focusSuggested);
       return useEffect(() => {
         if (invalid) router.push({ pathname: "01-you", query: { r: "03" } });
       }, []);
     case `04-contact`:
+      invalid =
+        invalid ||
+        !joinData.yearsExperience ||
+        (joinData.focusesSelected.length < 1 && !joinData.focusSuggested) ||
+        (joinData.industriesSelected.length < 1 &&
+          !joinData.industrySuggested) ||
+        !joinData.companySize;
       return useEffect(() => {
-        invalid =
-          invalid ||
-          !getItem("jfYearsExperience") ||
-          ([...JSON.parse(getItem("jfFocuses") || "[]")].length < 1 &&
-            !getItem("jfFocusSuggested")) ||
-          (!getItem("jfTitle") && !getItem("jfDeferTitle")) ||
-          ([...JSON.parse(getItem("jfIndustries") || "[]")].length < 1 &&
-            !getItem("jfDeferIndustry") &&
-            !getItem("jfIndustrySuggested")) ||
-          (!getItem("jfCompanySize") && getItem("jfCompanySize") !== "N/A");
+        // (!getItem("jfCompanySize") && getItem("jfCompanySize") !== "N/A");
         if (invalid) router.push({ pathname: "01-you", query: { r: "04" } });
       }, []);
   }

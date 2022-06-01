@@ -11,6 +11,7 @@ import { FORM_LINKS, useInvalid } from "@/lib/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { Member } from "../api/create-member";
 
 export async function getStaticProps() {
   let focuses = (await getFocuses()) ?? [];
@@ -27,55 +28,34 @@ export default function JoinStep2({ focuses, pageTitle }) {
   const router = useRouter();
   const { getItem, setItem, removeItem } = useStorage();
 
-  const [focusesSelected, setFocusesSelected] = useState<string[]>([]);
-  const [focusSuggested, setFocusSuggested] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
-  const [deferTitle, setDeferTitle] = useState<"true">();
-  const [yearsExperience, setYearsExperience] = useState<string>();
+  const [data, setData] = useState<Member>();
 
   // check invalid situation via previous required entries
   useInvalid({ currentPage: "02-work" });
 
   // check localStorage and set pre-defined fields
   useEffect(() => {
-    let storedFocuses = getItem("jfFocuses");
-    let storedFocusSuggested = getItem("jfFocusSuggested");
-    let storedTitle = getItem("jfTitle");
-    let storedDeferTitle = getItem("jfDeferTitle");
-    let storedYearsExperience = getItem("jfYearsExperience");
-    if (storedFocuses) {
-      let match = focuses
-        .filter((foc) => JSON.parse(storedFocuses).includes(foc.id))
-        .map((foc) => foc.id);
-      setFocusesSelected(match);
-    }
-    if (storedFocusSuggested) setFocusSuggested(storedFocusSuggested);
-    if (storedDeferTitle) {
-      setTitle("");
-      setDeferTitle("true");
-    }
-    if (storedDeferTitle !== "true" && storedTitle) setTitle(storedTitle);
-    if (storedYearsExperience) setYearsExperience(storedYearsExperience);
+    let joinData = getItem("joinData");
+    joinData = joinData ? JSON.parse(joinData) : undefined;
+    if (!joinData || typeof joinData === "string") return;
+    setData(joinData);
   }, []);
 
   const handleSubmit = (values: WorkExperienceInitialProps) => {
-    // Clear pre-existing data
-    removeItem("jfFocuses");
-    removeItem("jfFocusSuggested");
-    removeItem("jfTitle");
-    removeItem("jfDeferTitle");
-    removeItem("jfYearsExperience");
-    // Set as stringified array
-    if (values.focusesSelected)
-      setItem("jfFocuses", JSON.stringify(values.focusesSelected));
-    if (values.focusSuggested)
-      setItem("jfFocusSuggested", values.focusSuggested);
-    if (values.deferTitle || !values.title) {
-      setItem("jfDeferTitle", "true");
+    let newData = data;
+    if (values.title) {
+      newData.title = values.title;
     }
-    if (values.title) setItem("jfTitle", values.title);
-    if (values.yearsExperience)
-      setItem("jfYearsExperience", values.yearsExperience);
+    if (values.focusesSelected) {
+      newData.focusesSelected = values.focusesSelected;
+    }
+    if (values.focusSuggested) {
+      newData.focusSuggested = values.focusSuggested;
+    }
+    if (values.yearsExperience) {
+      newData.yearsExperience = values.yearsExperience;
+    }
+    setItem("joinData", JSON.stringify(newData));
     router.push({ pathname: FORM_LINKS[2] });
   };
 
@@ -92,11 +72,10 @@ export default function JoinStep2({ focuses, pageTitle }) {
       <WorkExperience
         initial={{
           focuses: focuses,
-          focusesSelected: focusesSelected,
-          focusSuggested: focusSuggested,
-          title: title,
-          deferTitle: deferTitle,
-          yearsExperience: yearsExperience,
+          focusesSelected: data?.focusesSelected || [],
+          focusSuggested: data?.focusSuggested || "",
+          title: data?.title || "",
+          yearsExperience: data?.yearsExperience || "",
         }}
         onSubmit={handleSubmit}
       />

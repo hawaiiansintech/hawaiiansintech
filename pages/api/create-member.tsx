@@ -57,12 +57,12 @@ const addPendingRecord = async ({
   });
 };
 
-interface MemberFields {
+export interface Member {
   name: string;
-  email: string;
+  email?: string;
   location: string;
   website: string;
-  focusesSelected?: string | string[];
+  focusesSelected?: string[];
   focusSuggested?: string;
   title?: string;
   yearsExperience?: string;
@@ -72,7 +72,7 @@ interface MemberFields {
   recordID?: string;
 }
 
-const addToAirtable = async (fields: MemberFields): Promise<string> => {
+const addToAirtable = async (fields: Member): Promise<string> => {
   let member = {
     Name: fields.name,
     Email: fields.email,
@@ -80,6 +80,7 @@ const addToAirtable = async (fields: MemberFields): Promise<string> => {
     Link: fields.website,
     "Company Size": fields.companySize,
     "Years of Experience": fields.yearsExperience,
+    Title: fields.title,
     Status: "Pending",
   };
 
@@ -120,8 +121,6 @@ const addToAirtable = async (fields: MemberFields): Promise<string> => {
     }
   }
   if (industries) member["Industry"] = industries;
-
-  if (fields.title) member["Title"] = fields.title;
 
   return new Promise((resolve, reject) => {
     airtable

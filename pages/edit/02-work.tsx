@@ -84,7 +84,6 @@ export default function JoinStep2({ focuses, pageTitle }) {
     if (values.focusSuggested && values.focusSuggested !== "") {
       modified.focusSuggested = values.focusSuggested;
     }
-    if (values.deferTitle) modified.title = "";
 
     if (modified && modified !== {}) updateEdited(modified);
     router.push({ pathname: FORM_LINKS[2], query: router.query });
@@ -106,7 +105,6 @@ export default function JoinStep2({ focuses, pageTitle }) {
           focusesSelected: userData?.focus?.map((foc) => foc.id) || [],
           focusSuggested: editedData?.focusSuggested || undefined,
           title: userData?.title || "",
-          deferTitle: userData?.title ? undefined : "true",
           yearsExperience: userData?.yearsExperience || "",
         }}
         onSubmit={handleSubmit}

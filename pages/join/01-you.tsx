@@ -4,10 +4,10 @@ import BasicInformationForm from "@/components/intake-form/BasicInformation";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { useStorage } from "@/lib/hooks";
-import { clearAllStoredFields } from "@/lib/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { Member } from "../api/create-member";
 
 export async function getStaticProps() {
   return {
@@ -20,48 +20,46 @@ export async function getStaticProps() {
 export default function JoinStep1({ pageTitle }) {
   const router = useRouter();
   const { r, edit } = router.query;
-  const { getItem, setItem } = useStorage();
-  const [name, setName] = useState<string>("");
-  const [location, setLocation] = useState<string>("");
-  const [website, setWebsite] = useState<string>("");
+  const { getItem, setItem, removeItem } = useStorage();
+  const [data, setData] = useState<Member>();
+
+  useEffect(() => {
+    let joinData = getItem("joinData");
+    joinData = joinData ? JSON.parse(joinData) : undefined;
+    if (!joinData || typeof joinData === "string") return;
+    setData(joinData);
+  }, []);
 
   // clear fields if param `r` is present
   useEffect(() => {
     if (!r) return;
-
-    clearAllStoredFields("jf");
-    setName("");
-    setLocation("");
-    setWebsite("");
+    setData(undefined);
+    removeItem("joinData");
     if (typeof window !== "undefined")
       window.history.replaceState(null, "", "/join/01-you");
   }, [r]);
 
-  useEffect(() => {
-    let storedName = getItem("jfName");
-    let storedLocation = getItem("jfLocation");
-    let storedWebsite = getItem("jfWebsite");
-    if (storedName) setName(storedName);
-    if (storedLocation) setLocation(storedLocation);
-    if (storedWebsite) setWebsite(storedWebsite);
-  }, []);
+  const handleSubmit = (values: {
+    name: string;
+    location: string;
+    website: string;
+  }) => {
+    setItem(
+      "joinData",
+      JSON.stringify({
+        ...data,
+        name: values.name,
+        location: values.location,
+        website: values.website,
+      })
+    );
 
-  const handleToggle = () => {
-    router.push({ pathname: `/edit` });
-  };
-
-  const handleSubmit = (values) => {
-    setItem("jfName", values.name);
-    setItem("jfLocation", values.location);
-    setItem("jfWebsite", values.website);
     router.push({ pathname: `02-work` });
   };
 
   const handleReset = () => {
-    setName("");
-    setLocation("");
-    setWebsite("");
-    clearAllStoredFields("jf");
+    setData(undefined);
+    removeItem("joinData");
   };
 
   return (
@@ -79,7 +77,11 @@ export default function JoinStep1({ pageTitle }) {
         <strong>field / industry of technology</strong>.
       </Subheading>
       <BasicInformationForm
-        initial={{ name: name, location: location, website: website }}
+        initial={{
+          name: data?.name || "",
+          location: data?.location || "",
+          website: data?.website || "",
+        }}
         onSubmit={handleSubmit}
         onReset={handleReset}
       />
