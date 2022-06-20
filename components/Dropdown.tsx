@@ -30,24 +30,24 @@ export default function Dropdown({ links, button }: DropdownProps) {
       ) : null}
       <style jsx>{`
         .BubbleBox {
-          margin-top: 15px;
+          margin-top: 1rem;
           position: absolute;
           left: 0;
           background: ${theme.color.background.base};
-          border-radius: 3px;
+          border-radius: 0.5rem;
           box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.2);
         }
 
         .BubbleBox:before {
           content: "";
           position: absolute;
-          top: -10px;
-          width: 0px;
-          height: 0px;
-          left: 15px;
-          border-left: 10px solid transparent;
-          border-right: 10px solid transparent;
-          border-bottom: 10px solid ${theme.color.background.base};
+          top: -0.6rem;
+          width: 0;
+          height: 0;
+          left: 1rem;
+          border-left: 1rem solid transparent;
+          border-right: 1rem solid transparent;
+          border-bottom: 1rem solid ${theme.color.background.base};
         }
 
         .wrapper {
@@ -67,7 +67,7 @@ export default function Dropdown({ links, button }: DropdownProps) {
           font-weight: 400;
           padding: 1rem 2.2rem;
           // TODO: Figure out why the css below is not showing
-          /* border-bottom: 10px solid ${theme.color.background.alt}; */
+          /* border-bottom: 1rem solid ${theme.color.background.alt}; */
         }
 
         /* .list-item:nth-last-child(1) {
