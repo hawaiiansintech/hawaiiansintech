@@ -17,6 +17,7 @@ interface ButtonProps {
   disabled?: boolean;
   fullWidth?: boolean;
   customWidth?: string;
+  customWidthSmall?: string;
   customFontSize?: string;
   loading?: boolean;
   onClick?: (e: React.MouseEvent) => any;
@@ -30,6 +31,7 @@ export default function Button({
   disabled,
   fullWidth,
   customWidth,
+  customWidthSmall,
   customFontSize,
   loading,
   onClick,
@@ -133,6 +135,11 @@ export default function Button({
           left: 50%;
           top: 50%;
           transform: translate(-50%, -50%);
+        }
+        @media screen and (max-width: ${theme.layout.breakPoints.small}) {
+          .button {
+            width: ${customWidthSmall ? customWidthSmall : null};
+          }
         }
       `}</style>
     </button>

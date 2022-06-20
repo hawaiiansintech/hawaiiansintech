@@ -96,7 +96,8 @@ export default function HackathonPage({ pageTitle }) {
           <a href={EVENTBRITE_LINK}>
             <Button
               size={ButtonSize.Small}
-              customWidth="18rem"
+              customWidth="16rem"
+              customWidthSmall="28rem"
               customFontSize="1.5rem"
             >
               Buy Tickets
@@ -104,7 +105,8 @@ export default function HackathonPage({ pageTitle }) {
           </a>
           <a href={DISCORD_URL}>
             <Button
-              customWidth="18rem"
+              customWidth="16rem"
+              customWidthSmall="20rem"
               customFontSize="1.5rem"
               size={ButtonSize.Small}
               variant={ButtonVariant.Secondary}
@@ -123,6 +125,7 @@ export default function HackathonPage({ pageTitle }) {
             button={
               <Button
                 customWidth="5rem"
+                customWidthSmall="7rem"
                 customFontSize="1.5rem"
                 size={ButtonSize.Small}
                 variant={ButtonVariant.Secondary}
