@@ -1,5 +1,6 @@
 import Button, { ButtonSize, ButtonVariant } from "@/components/Button";
 import { DataList, DataListItem } from "@/components/DataList";
+import Dropdown from "@/components/Dropdown";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import NihoShimmer from "@/components/NihoShimmer";
@@ -8,6 +9,7 @@ import { Title } from "@/components/Title.js";
 import { motion } from "framer-motion";
 import Head from "next/head";
 import theme from "styles/theme";
+import { DISCORD_URL } from "./about";
 
 const item = {
   hidden: { opacity: 0, y: "15%" },
@@ -23,6 +25,9 @@ const container = {
     },
   },
 };
+
+export const EVENTBRITE_LINK =
+  "https://www.eventbrite.com/e/mookuauhau-moolelo-hackathon-tickets-363299948927";
 
 export async function getStaticProps() {
   return {
@@ -87,17 +92,21 @@ export default function HackathonPage({ pageTitle }) {
             Moʻokūʻauhau &amp; Moʻōlelo
           </DataListItem>
         </DataList>
-        {/* <DataList mainEventLogistics gap="1rem 1rem">
-          <Button
-            size={ButtonSize.Small}
-            customWidth="18rem"
-            customFontSize="1.5rem"
-          >
-            RSVP
-          </Button>
+        <DataList mainEventLogistics gap="1rem 1rem">
+          <a href={EVENTBRITE_LINK}>
+            <Button
+              size={ButtonSize.Small}
+              customWidth="16rem"
+              customWidthSmall="28rem"
+              customFontSize="1.5rem"
+            >
+              Buy Tickets
+            </Button>
+          </a>
           <a href={DISCORD_URL}>
             <Button
-              customWidth="18rem"
+              customWidth="16rem"
+              customWidthSmall="20rem"
               customFontSize="1.5rem"
               size={ButtonSize.Small}
               variant={ButtonVariant.Secondary}
@@ -105,15 +114,27 @@ export default function HackathonPage({ pageTitle }) {
               Join the Discord
             </Button>
           </a>
-          <Button
-            customWidth="5rem"
-            customFontSize="1.5rem"
-            size={ButtonSize.Small}
-            variant={ButtonVariant.Secondary}
-          >
-            ...
-          </Button>
-        </DataList> */}
+          <Dropdown
+            links={{
+              "purplemaia.org": "https://purplemaia.org/",
+              "@purple_maia": "https://twitter.com/purple_maia/",
+              purple_maia: "https://www.instagram.com/purple_maia/",
+              "@hawaiiansintech": "https://twitter.com/hawaiiansintech/",
+              hawaiiansintech: "https://www.instagram.com/hawaiiansintech/",
+            }}
+            button={
+              <Button
+                customWidth="5rem"
+                customWidthSmall="7rem"
+                customFontSize="1.5rem"
+                size={ButtonSize.Small}
+                variant={ButtonVariant.Secondary}
+              >
+                ...
+              </Button>
+            }
+          ></Dropdown>
+        </DataList>
         <h3>
           <p>
             A <span className="bold">non-traditional hackathon;</span> expanding
