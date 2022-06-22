@@ -59,7 +59,6 @@ export default function Dropdown({ links, button }: DropdownProps) {
         .BubbleBox {
           margin-top: 1rem;
           position: absolute;
-          right: 0rem;
           background: ${theme.color.background.base};
           border-radius: 0.5rem;
           box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.2);
@@ -70,7 +69,7 @@ export default function Dropdown({ links, button }: DropdownProps) {
           top: -1rem;
           width: 0;
           height: 0;
-          right: 1rem;
+          left: 1rem;
           border-left: 1rem solid transparent;
           border-right: 1rem solid transparent;
           border-bottom: 1rem solid ${theme.color.background.base};
@@ -91,6 +90,15 @@ export default function Dropdown({ links, button }: DropdownProps) {
         }
         .instagram {
           margin-bottom: 0.2rem;
+        }
+        @media screen and (max-width: ${theme.layout.breakPoints.small}) {
+          .BubbleBox {
+            right: 0rem;
+          }
+          .BubbleBox:before {
+            left: auto;
+            right: 1rem;
+          }
         }
       `}</style>
     </div>
