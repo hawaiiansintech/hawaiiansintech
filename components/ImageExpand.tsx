@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import theme from "styles/theme";
 
 interface ImageExpandProps {
   imagePath: string;
@@ -21,6 +22,11 @@ export default function ImageExpand({ imagePath }: ImageExpandProps) {
         }
         .image:hover {
           box-shadow: 0.15rem 0.15rem 0.15rem 0.2rem;
+        }
+        @media screen and (max-width: ${theme.layout.breakPoints.small}) {
+          .image {
+            max-height: ${expandImage ? "35rem" : "25rem"};
+          }
         }
       `}</style>
     </>
