@@ -1,6 +1,7 @@
 import Button, { ButtonSize, ButtonVariant } from "@/components/Button";
 import { DataList, DataListItem } from "@/components/DataList";
 import Dropdown from "@/components/Dropdown";
+import ImageExpand from "@/components/ImageExpand";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import NihoShimmer from "@/components/NihoShimmer";
@@ -201,10 +202,9 @@ export default function HackathonPage({ pageTitle }) {
           </DataList>
         </SplitSection>
         <SplitSection title="Schedule & Events" hint="Subject to change">
-          <img
-            src="/images/comingSoon.png"
-            style={{ maxWidth: "100%", maxHeight: "30rem" }}
-          ></img>
+          <ImageExpand
+            imagePath={"/images/hackathonSchedule.png"}
+          ></ImageExpand>
         </SplitSection>
         <SplitSection title="Who We Need">
           <DataList gap="2rem 4rem">
