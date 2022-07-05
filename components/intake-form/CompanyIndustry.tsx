@@ -19,46 +19,43 @@ const MAX_COUNT = 3;
 const TECHNOLOGY_LABEL = "Internet / Technology";
 
 export interface CompanyIndustryInitialProps {
-  industries?: Industry[];
-  industriesSelected?: string[];
+  industry?: string[];
   industrySuggested?: string;
-  deferIndustry?: "true" | undefined;
+  industryDeferred?: boolean;
   companySize?: string;
 }
 
 interface CompanyIndustryProps {
+  industryIndex?: Industry[];
   initial: CompanyIndustryInitialProps;
   onSubmit?: (CompanyIndustryInitialProps) => void;
   showNew?: boolean;
 }
 
 export default function CompanyIndustry({
+  industryIndex,
   initial,
   onSubmit,
   showNew,
 }: CompanyIndustryProps) {
   const width = useWindowWidth();
-  let industries: Industry[] = initial.industries;
-  const [industriesSelected, setIndustriesSelected] = useState<string[]>(
-    initial.industriesSelected
-  );
+  const [industry, setIndustry] = useState<string[]>(initial.industry);
   const [industrySuggested, setIndustrySuggested] = useState<string>();
-  const [deferIndustry, setDeferIndustry] = useState<"true">();
+  const [industryDeferred, setDeferIndustry] = useState<boolean>();
   const [companySize, setCompanySize] = useState<string>(initial.companySize);
   const [showSuggestButton, setShowSuggestButton] = useState(true);
   const [error, setError] = useState<ErrorMessageProps>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [columnCount, setColumnCount] = useState<2 | 3>(3);
 
-  const totalIndustriesSelected =
-    industriesSelected.length + (industrySuggested ? 1 : 0);
+  const totalIndustriesSelected = industry.length + (industrySuggested ? 1 : 0);
   const isMaxSelected = totalIndustriesSelected >= MAX_COUNT;
 
   let technologyInd =
-    industries.find((item) => item.name === TECHNOLOGY_LABEL) || null;
+    industryIndex.find((ind) => ind.name === TECHNOLOGY_LABEL) || null;
   if (technologyInd) {
-    industries = [
-      ...industries.filter((item) => item.name !== TECHNOLOGY_LABEL),
+    industryIndex = [
+      ...industryIndex.filter((ind) => ind.name !== TECHNOLOGY_LABEL),
     ];
   }
 
@@ -79,36 +76,44 @@ export default function CompanyIndustry({
 
   useEffect(() => {
     setCompanySize(initial.companySize);
-    setIndustriesSelected(initial.industriesSelected);
-    setDeferIndustry(initial?.industries?.length === 0 ? "true" : undefined);
-  }, [initial.companySize, initial.industriesSelected]);
+    setIndustry(initial.industry);
+    setDeferIndustry(industry?.length === 0);
+  }, [initial.companySize, initial.industry]);
 
   const handleSelect = (industry) => {
-    let nextIndustriesSelected = [...industriesSelected];
-    const isSelected = industriesSelected.includes(industry);
+    let nextIndustriesSelected = [...industry];
+    const isSelected = industry.includes(industry);
 
     if (isSelected) {
-      const index = industriesSelected.indexOf(industry);
+      const index = industry.indexOf(industry);
       nextIndustriesSelected.splice(index, 1);
-    } else if (industriesSelected.length < MAX_COUNT) {
+    } else if (industry.length < MAX_COUNT) {
       nextIndustriesSelected.push(industry);
     }
-    setIndustriesSelected(nextIndustriesSelected);
+    setIndustry(nextIndustriesSelected);
   };
 
   const handleSubmit = () => {
     setLoading(true);
+    const shouldDelay =
+      companySize === "" || (industry.length === 0 && !industrySuggested);
     if (companySize === "") {
       setCompanySize("N/A");
     }
-    if (industriesSelected.length === 0 && !industrySuggested) {
-      setDeferIndustry("true");
+    if (industry.length === 0 && !industrySuggested) {
+      setDeferIndustry(true);
     }
-    onSubmit({
-      industriesSelected: industriesSelected,
-      industrySuggested: industrySuggested,
-      companySize: companySize,
-    });
+    setTimeout(
+      () => {
+        onSubmit({
+          industry: industry,
+          industryDeferred: industryDeferred,
+          industrySuggested: industrySuggested,
+          companySize: companySize,
+        });
+      },
+      shouldDelay ? 500 : 0
+    );
   };
 
   return (
@@ -127,9 +132,7 @@ export default function CompanyIndustry({
             label="Which of the following best describes the industrie(s) that you work within?"
             labelTranslation="Ehia ka poʻe e hana ma kou wahi hana?"
             tagged={
-              showNew && initial.industriesSelected.length === 0
-                ? "NEW"
-                : undefined
+              showNew && initial.industry.length === 0 ? "NEW" : undefined
             }
           />
           <div style={{ margin: "1rem auto 2rem" }}>
@@ -139,29 +142,26 @@ export default function CompanyIndustry({
                   headline={technologyInd.name}
                   gridSpan={columnCount}
                   disabled={
-                    (isMaxSelected &&
-                      !industriesSelected.includes(technologyInd.id)) ||
-                    deferIndustry === "true"
+                    (isMaxSelected && !industry.includes(technologyInd.id)) ||
+                    industryDeferred
                   }
                   selected={
-                    industriesSelected.includes(technologyInd.id) &&
-                    !deferIndustry
+                    industry.includes(technologyInd.id) && !industryDeferred
                   }
                   onClick={() => handleSelect(technologyInd.id)}
                   fullWidth
                 />
               )}
-              {industries.map((industry, i: number) => {
-                const isDisabled =
-                  isMaxSelected && !industriesSelected.includes(industry.id);
-                const isSelected = industriesSelected.includes(industry.id);
+              {industryIndex.map((ind, i: number) => {
+                const isDisabled = isMaxSelected && !industry.includes(ind.id);
+                const isSelected = industry.includes(ind.id);
 
                 return (
                   <Selectable
-                    headline={industry.name}
-                    disabled={isDisabled || deferIndustry === "true"}
-                    selected={isSelected && !deferIndustry}
-                    onClick={(e) => handleSelect(industry.id)}
+                    headline={ind.name}
+                    disabled={isDisabled || industryDeferred}
+                    selected={isSelected && !industryDeferred}
+                    onClick={(e) => handleSelect(ind.id)}
                     key={`ind-${i}`}
                   />
                 );
@@ -180,13 +180,9 @@ export default function CompanyIndustry({
                 <Selectable
                   headline={"N/A, or Prefer Not to Answer"}
                   fullWidth
-                  disabled={isMaxSelected && !deferIndustry}
-                  selected={deferIndustry === "true"}
-                  onClick={() =>
-                    setDeferIndustry(
-                      deferIndustry === "true" ? undefined : "true"
-                    )
-                  }
+                  disabled={isMaxSelected && !industryDeferred}
+                  selected={industryDeferred}
+                  onClick={() => setDeferIndustry(!industryDeferred)}
                 />
                 {showSuggestButton ? (
                   <Selectable
@@ -196,16 +192,16 @@ export default function CompanyIndustry({
                         : "+ Add industry"
                     }
                     onClick={() => setShowSuggestButton(false)}
-                    selected={!!industrySuggested && !deferIndustry}
+                    selected={!!industrySuggested && !industryDeferred}
                     disabled={
                       (isMaxSelected && !!!industrySuggested) ||
-                      deferIndustry === "true"
+                      industryDeferred
                     }
                     fullWidth
                     centered
                     variant={SelectableVariant.Alt}
                     onClear={
-                      industrySuggested && !deferIndustry
+                      industrySuggested && !industryDeferred
                         ? () =>
                             window.confirm(
                               "Are you sure you want to clear this field?"

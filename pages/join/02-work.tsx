@@ -46,8 +46,8 @@ export default function JoinStep2({ focuses, pageTitle }) {
     if (values.title) {
       newData.title = values.title;
     }
-    if (values.focusesSelected) {
-      newData.focusesSelected = values.focusesSelected;
+    if (values.focus) {
+      newData.focus = values.focus;
     }
     if (values.focusSuggested) {
       newData.focusSuggested = values.focusSuggested;
@@ -72,7 +72,7 @@ export default function JoinStep2({ focuses, pageTitle }) {
       <WorkExperience
         initial={{
           focuses: focuses,
-          focusesSelected: data?.focusesSelected || [],
+          focus: data?.focus || [],
           focusSuggested: data?.focusSuggested || "",
           title: data?.title || "",
           yearsExperience: data?.yearsExperience || "",

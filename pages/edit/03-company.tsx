@@ -5,7 +5,7 @@ import CompanyIndustry, {
 } from "@/components/intake-form/CompanyIndustry";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
-import { getIndustries, MemberPublicEditing } from "@/lib/api";
+import { getIndustries, MemberPublic } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
 import { FORM_LINKS } from "@/lib/utils";
 import lodash from "lodash";
@@ -16,30 +16,30 @@ import { useEffect, useState } from "react";
 const NEXT_PAGE = "04-contact";
 
 export async function getStaticProps() {
-  let industries = (await getIndustries()) ?? [];
+  let industryIndex = (await getIndustries()) ?? [];
   return {
     props: {
-      industries: industries,
+      industryIndex: industryIndex,
       pageTitle: "Request Changes · Hawaiians in Technology",
     },
     revalidate: 60,
   };
 }
 
-export default function JoinStep3({ industries, pageTitle }) {
+export default function JoinStep3({ industryIndex, pageTitle }) {
   const { getItem, setItem } = useStorage();
   const router = useRouter();
-  const [userData, setUserData] = useState<MemberPublicEditing>({});
-  const [editedData, setEditedData] = useState<MemberPublicEditing>({});
+  const [userData, setUserData] = useState<MemberPublic>({});
+  const [editedData, setEditedData] = useState<MemberPublic>({});
 
-  const removeModifiedFrom = (modified: MemberPublicEditing) => {
+  const removeModifiedFrom = (modified: MemberPublic) => {
     if (modified.industry) delete modified.industry;
     if (modified.companySize) delete modified.companySize;
     if (modified.industrySuggested || modified.industrySuggested === "")
       delete modified.industrySuggested;
   };
 
-  const updateEdited = (data: MemberPublicEditing) => {
+  const updateEdited = (data: MemberPublic) => {
     setItem(`editedData`, JSON.stringify(data));
     setEditedData(data);
   };
@@ -53,7 +53,7 @@ export default function JoinStep3({ industries, pageTitle }) {
       router.push("/edit");
     }
 
-    let modified: string | MemberPublicEditing = getItem("editedData");
+    let modified: string | MemberPublic = getItem("editedData");
     modified = modified ? JSON.parse(modified) : {};
     if (modified && typeof modified !== "string") {
       removeModifiedFrom(modified);
@@ -62,16 +62,16 @@ export default function JoinStep3({ industries, pageTitle }) {
   }, []);
 
   const handleSubmit = (values: CompanyIndustryInitialProps) => {
-    let modified: MemberPublicEditing = editedData || {};
+    let modified: MemberPublic = editedData || {};
     removeModifiedFrom(modified);
 
     if (
       !lodash.isEqual(
-        values.industriesSelected,
+        values.industry,
         userData?.industry?.map((foc) => foc.id)
       )
     ) {
-      modified.industry = values.industriesSelected;
+      modified.industry = values.industry;
     }
     if (values.companySize !== userData.companySize) {
       modified.companySize = values.companySize;
@@ -99,13 +99,13 @@ export default function JoinStep3({ industries, pageTitle }) {
       <Heading>Requesting changes for {userData?.name}</Heading>
       <CompanyIndustry
         initial={{
-          industries: industries,
-          deferIndustry: userData?.industry?.length === 0 ? undefined : "true",
-          industriesSelected: userData?.industry
+          industryDeferred: userData?.industryDeferred,
+          industry: userData?.industry
             ? userData?.industry.map((ind) => ind.id)
             : [],
           companySize: userData?.companySize || "",
         }}
+        industryIndex={industryIndex}
         onSubmit={handleSubmit}
         showNew
       />

@@ -20,7 +20,7 @@ import Selectable, {
 
 export interface WorkExperienceInitialProps {
   focuses?: Focus[];
-  focusesSelected?: string[];
+  focus?: string[];
   focusSuggested?: string;
   title?: string;
   yearsExperience?: string;
@@ -75,12 +75,12 @@ export default function WorkExperience({
   }, [yearsExperience, focusSuggested, focusesSelected]);
 
   useEffect(() => {
-    setFocusesSelected(initial.focusesSelected);
+    setFocusesSelected(initial.focus);
     setYearsExperience(initial.yearsExperience);
     setTitle(initial.title);
     setFocusSuggested(initial.focusSuggested);
   }, [
-    initial.focusesSelected,
+    initial.focus,
     initial.yearsExperience,
     initial.title,
     initial.focusSuggested,
@@ -131,11 +131,7 @@ export default function WorkExperience({
           <Label
             label="Which of the following best describes your field of work?"
             labelTranslation="He aha kou (mau) hana ʻoi a pau?"
-            tagged={
-              showNew && initial.focusesSelected.length === 0
-                ? "NEW"
-                : undefined
-            }
+            tagged={showNew && initial.focus.length === 0 ? "NEW" : undefined}
           />
         </div>
         <div style={{ marginTop: "1rem" }}>

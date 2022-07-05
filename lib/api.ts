@@ -40,6 +40,11 @@ export interface MemberPublicEditing extends MemberPublic {
   editing?: { field: string; changeTo: string | string[] }[];
 }
 
+export interface MemberJoin extends MemberPublic {
+  industryDeferred?: boolean;
+  editing?: { field: string; changeTo: string | string[] }[];
+}
+
 export async function getMembers(): Promise<MemberPublic[]> {
   return Promise.all([
     getBase({ name: "Members", view: "Approved" }),

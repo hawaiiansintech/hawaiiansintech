@@ -37,7 +37,12 @@ export const useInvalid = ({ currentPage }: useInvalidProps) => {
 
   let joinData: string | Member = getItem("joinData");
   joinData = joinData ? JSON.parse(joinData) : undefined;
-  if (!joinData || typeof joinData === "string") return;
+  if (!joinData || typeof joinData === "string")
+    return useEffect(() => {
+      router.push({ pathname: "01-you", query: { r: "null" } });
+    }, []);
+
+  console.log(joinData);
 
   let invalid = !joinData.name || !joinData.location || !joinData.website;
   switch (currentPage) {
@@ -51,7 +56,7 @@ export const useInvalid = ({ currentPage }: useInvalidProps) => {
       invalid =
         invalid ||
         !joinData.yearsExperience ||
-        (joinData.focusesSelected.length < 1 && !joinData.focusSuggested);
+        (joinData.focus.length < 1 && !joinData.focusSuggested);
       return useEffect(() => {
         if (invalid) router.push({ pathname: "01-you", query: { r: "03" } });
       }, []);
@@ -59,9 +64,8 @@ export const useInvalid = ({ currentPage }: useInvalidProps) => {
       invalid =
         invalid ||
         !joinData.yearsExperience ||
-        (joinData.focusesSelected.length < 1 && !joinData.focusSuggested) ||
-        (joinData.industriesSelected.length < 1 &&
-          !joinData.industrySuggested) ||
+        (joinData.focus.length < 1 && !joinData.focusSuggested) ||
+        (joinData.industry.length < 1 && !joinData.industrySuggested) ||
         !joinData.companySize;
       return useEffect(() => {
         // (!getItem("jfCompanySize") && getItem("jfCompanySize") !== "N/A");

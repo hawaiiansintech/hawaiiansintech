@@ -62,11 +62,11 @@ export interface Member {
   email?: string;
   location: string;
   website: string;
-  focusesSelected?: string[];
+  focus?: string[];
   focusSuggested?: string;
   title?: string;
   yearsExperience?: string;
-  industriesSelected?: string | string[];
+  industry?: string | string[];
   industrySuggested?: string;
   companySize?: string;
   recordID?: string;
@@ -84,27 +84,27 @@ const addToAirtable = async (fields: Member): Promise<string> => {
     Status: "Pending",
   };
 
-  let focuses;
-  if (fields.focusesSelected) focuses = fields.focusesSelected;
+  let focus;
+  if (fields.focus) focus = fields.focus;
   if (fields.focusSuggested) {
     const focusID = await findRecord({
       name: fields.focusSuggested,
       table: "Focuses",
     });
     if (focusID) {
-      focuses = [...focuses, focusID];
+      focus = [...focus, focusID];
     } else {
       const newFocusID = await addPendingRecord({
         name: fields.focusSuggested,
         table: "Focuses",
       });
-      focuses = [...focuses, newFocusID];
+      focus = [...focus, newFocusID];
     }
   }
-  if (focuses) member["Focus"] = focuses;
+  if (focus) member["Focus"] = focus;
 
   let industries;
-  if (fields.industriesSelected) industries = fields.industriesSelected;
+  if (fields.industry) industries = fields.industry;
   if (fields.industrySuggested) {
     const industryID = await findRecord({
       name: fields.industrySuggested,
