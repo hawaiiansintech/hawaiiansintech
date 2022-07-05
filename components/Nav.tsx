@@ -40,13 +40,12 @@ export default function Nav({
               <Link href="/about">
                 <a className="nav-link">About</a>
               </Link>
-              <Link href="/edit">
-                <a className="nav-link">Request Changes</a>
-              </Link>
               <Link href="/join/01-you">
                 <a className="primary-link">Join the list</a>
               </Link>
-
+              <Link href="/edit">
+                <a className="nav-link">Request Changes</a>
+              </Link>
               <Link href="/hackathon">
                 <a className="hackathon-link">Hackathon</a>
               </Link>
