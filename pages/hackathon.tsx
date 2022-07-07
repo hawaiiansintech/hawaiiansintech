@@ -396,7 +396,7 @@ export default function HackathonPage({ pageTitle }) {
         <SplitSection title="Sponsored by">
           <div>
             <h4>In progress. Things are moving fast. Still interested?</h4>
-            <a href="mailto:kekai@hawaiiansintech.org,kamakani@hawaiiansintech.org,andrewtaylor@hawaiiansintech.org">
+            <a href="mailto:kekai@hawaiiansintech.org,kamakani@hawaiiansintech.org,andrew@hawaiiansintech.org">
               <Button
                 customWidth="13rem"
                 customFontSize="1.5rem"
