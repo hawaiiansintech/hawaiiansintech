@@ -374,24 +374,6 @@ export default function HackathonPage({ pageTitle }) {
             </DataListItem>
           </DataList>
         </SplitSection>
-        <SplitSection title="Organized by">
-          <DataList gap="1rem 4rem">
-            <DataListItem
-              heading="Andrew Taeoaliʻi"
-              subHeading="Hawaiians in Tech"
-            />
-            <DataListItem heading="Keaʻa Davis" subHeading="Purple Maiʻa" />
-            <DataListItem heading="Keoni DeFranco" subHeading="Purple Maiʻa" />
-            <DataListItem
-              heading="Taylor Kekai Ho"
-              subHeading="Hawaiians in Tech"
-            />
-            <DataListItem
-              heading="Emmit Kamakani Parubrub"
-              subHeading="Hawaiians in Tech"
-            />
-          </DataList>
-        </SplitSection>
         <SplitSection title="Sponsored By">
           <DataList gap="1rem 4rem">
             <DataListItem
@@ -448,6 +430,24 @@ export default function HackathonPage({ pageTitle }) {
                 <img src="/images/htdc.png" className="imgLink" />
               </a>
             </DataListItem>
+          </DataList>
+        </SplitSection>
+        <SplitSection title="Organized by">
+          <DataList gap="1rem 4rem">
+            <DataListItem
+              heading="Andrew Taeoaliʻi"
+              subHeading="Hawaiians in Tech"
+            />
+            <DataListItem heading="Keaʻa Davis" subHeading="Purple Maiʻa" />
+            <DataListItem heading="Keoni DeFranco" subHeading="Purple Maiʻa" />
+            <DataListItem
+              heading="Taylor Kekai Ho"
+              subHeading="Hawaiians in Tech"
+            />
+            <DataListItem
+              heading="Emmit Kamakani Parubrub"
+              subHeading="Hawaiians in Tech"
+            />
           </DataList>
         </SplitSection>
         <SplitSection title="Contact">
