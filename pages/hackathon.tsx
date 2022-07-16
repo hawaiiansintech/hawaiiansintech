@@ -342,20 +342,36 @@ export default function HackathonPage({ pageTitle }) {
         </SplitSection>
         <SplitSection title="Partnered with">
           <DataList gap="1rem 4rem">
-            <a href={"https://purplemaia.org/"}>
-              <img
-                src="/images/purpleMaia.png"
-                style={{ maxHeight: "7.5rem" }}
-              />
-            </a>
-            <a href={"https://wvv.bne.mybluehost.me/"}>
-              <img
-                src="/images/hawaiianAncestryLogo.png"
-                style={{
-                  maxHeight: "7.5rem",
-                }}
-              />
-            </a>
+            <DataListItem
+              subHeading="Purple Maiʻa"
+              subHeadingLight
+              imageWithLink
+            >
+              <a href={"https://purplemaia.org/"}>
+                <img src="/images/purpleMaia.png" className="imgLink" />
+              </a>
+            </DataListItem>
+            <DataListItem
+              subHeading="Hawaiian Ancestry Kūkāmoʻo"
+              subHeadingLight
+              imageWithLink
+            >
+              <a href={"https://wvv.bne.mybluehost.me/"}>
+                <img
+                  src="/images/hawaiianAncestryLogo.png"
+                  className="imgLink"
+                />
+              </a>
+            </DataListItem>
+            <DataListItem
+              subHeading="Native Books"
+              subHeadingLight
+              imageWithLink
+            >
+              <a href={"https://www.nativebookshawaii.org/"}>
+                <img src="/images/nativeBooks.png" className="imgLink" />
+              </a>
+            </DataListItem>
           </DataList>
         </SplitSection>
         <SplitSection title="Organized by">
@@ -376,26 +392,67 @@ export default function HackathonPage({ pageTitle }) {
             />
           </DataList>
         </SplitSection>
-        <SplitSection title="Special thanks to">
-          <a href={"hhttps://www.nativebookshawaii.org/"}>
-            <img
-              src="/images/nativeBooks.png"
-              style={{
-                maxHeight: "7.5rem",
-              }}
-            />
-          </a>
+        <SplitSection title="Sponsored By">
           <DataList gap="1rem 4rem">
             <DataListItem
-              heading="Native Books Hawaiʻi"
-              subHeading="Auntie Maile Meyer"
+              subHeading="Kamehameha Schools"
               subHeadingLight
-            />
+              imageWithLink
+            >
+              <a href={"https://www.ksbe.edu/"}>
+                <img src="/images/kamehameha.jpeg" className="imgLink" />
+              </a>
+            </DataListItem>
+            <DataListItem
+              subHeading="Waiākea Volcanic Water"
+              subHeadingLight
+              imageWithLink
+            >
+              <a href={"https://waiakea.com/"}>
+                <img src="/images/waiakea.png" className="imgLink" />
+              </a>
+            </DataListItem>
+            <DataListItem
+              subHeading="Shaka Tea Hawaiʻi"
+              subHeadingLight
+              imageWithLink
+            >
+              <a href={"https://www.shakatea.com/"}>
+                <img src="/images/shakatea.png" className="imgLink" />
+              </a>
+            </DataListItem>
           </DataList>
         </SplitSection>
-        <SplitSection title="Sponsored by">
+        <SplitSection title="Special thanks to">
+          <DataList gap="1rem 4rem">
+            <DataListItem
+              subHeading="Uncle Dean Keko'olani"
+              subHeadingLight
+              imageWithLink
+            >
+              <a href={"https://kekoolani.org/"}>
+                <img src="/images/kekoolani.png" className="imgLink" />
+              </a>
+            </DataListItem>
+            <DataListItem
+              subHeading="Wai Wai Collective"
+              subHeadingLight
+              imageWithLink
+            >
+              <a href={"https://waiwaicollective.com/"}>
+                <img src="/images/waiwai.png" className="imgLink" />
+              </a>
+            </DataListItem>
+            <DataListItem subHeading="HTDC" subHeadingLight imageWithLink>
+              <a href={"https://www.htdc.org/"}>
+                <img src="/images/htdc.png" className="imgLink" />
+              </a>
+            </DataListItem>
+          </DataList>
+        </SplitSection>
+        <SplitSection title="Contact">
           <div>
-            <h4>In progress. Things are moving fast. Still interested?</h4>
+            <h4>Interested in sponsoring? Have other ways to support us?</h4>
             <a href="mailto:kekai@hawaiiansintech.org,kamakani@hawaiiansintech.org,andrew@hawaiiansintech.org">
               <Button
                 customWidth="13rem"
@@ -410,6 +467,11 @@ export default function HackathonPage({ pageTitle }) {
         </SplitSection>
       </div>
       <style jsx>{`
+        .imgLink {
+          max-height: 7.5rem;
+          max-width: 100%;
+        }
+
         .hackathon-splash {
           margin: 0 1rem;
           padding-top: 26vh;
