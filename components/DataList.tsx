@@ -58,6 +58,7 @@ interface DataListItemProps {
   subHeading?: string;
   subHeadingLight?: boolean;
   children?: React.ReactNode;
+  imageWithLink?: boolean;
   translation?: string;
 }
 
@@ -68,14 +69,16 @@ export function DataListItem({
   children,
   subHeading,
   subHeadingLight,
+  imageWithLink,
   translation,
 }: DataListItemProps) {
   return (
     <div className="data-list-item">
+      <>{imageWithLink ? children : null}</>
       <h3>{heading}</h3>
       <h4>{translation}</h4>
       <h5>{subHeading}</h5>
-      <p>{children}</p>
+      <p>{imageWithLink ? null : children}</p>
       <style jsx>{`
         .data-list-item {
           width: ${mainEventLogistics
