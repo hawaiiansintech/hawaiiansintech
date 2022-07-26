@@ -13,7 +13,7 @@ module.exports = {
       },
       {
         source: "/discord",
-        destination: "https://discord.gg/p7338Z5MJQ",
+        destination: "https://discord.gg/WHpCrPqeqx",
         permanent: true,
       },
     ];
