@@ -21,7 +21,7 @@ const container = {
   },
 };
 
-export const DISCORD_URL = "https://discord.gg/p7338Z5MJQ";
+export const DISCORD_URL = "https://hawaiiansintech.org/discord";
 
 export async function getStaticProps() {
   return {
