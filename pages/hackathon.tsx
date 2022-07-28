@@ -170,13 +170,6 @@ export default function HackathonPage({ pageTitle }) {
             <i>tʻriving</i>.
           </p>
         </h3>
-
-        <SplitSection title="Tech spec" hint="Subject to change">
-          <img
-            src="/images/techSpec.png"
-            style={{ maxWidth: "100%", maxHeight: "30rem" }}
-          ></img>
-        </SplitSection>
         <SplitSection title="Keynote Speakers" hint="Subject to change">
           <DataList gap="1rem 6rem" grid>
             <DataListItem
