@@ -379,6 +379,15 @@ export default function HackathonPage({ pageTitle }) {
               </a>
             </DataListItem>
             <DataListItem
+              subHeading="Google Empathy Lab"
+              subHeadingLight
+              imageWithLink
+            >
+              <a href={"https://medium.com/google-empathy-lab"}>
+                <img src="/images/googleEmpathyLab.png" className="imgLink" />
+              </a>
+            </DataListItem>
+            <DataListItem
               subHeading="Waiākea Volcanic Water"
               subHeadingLight
               imageWithLink
