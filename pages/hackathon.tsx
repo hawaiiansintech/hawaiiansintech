@@ -170,13 +170,6 @@ export default function HackathonPage({ pageTitle }) {
             <i>tʻriving</i>.
           </p>
         </h3>
-
-        <SplitSection title="Tech spec" hint="Subject to change">
-          <img
-            src="/images/techSpec.png"
-            style={{ maxWidth: "100%", maxHeight: "30rem" }}
-          ></img>
-        </SplitSection>
         <SplitSection title="Keynote Speakers" hint="Subject to change">
           <DataList gap="1rem 6rem" grid>
             <DataListItem
@@ -356,7 +349,7 @@ export default function HackathonPage({ pageTitle }) {
               subHeadingLight
               imageWithLink
             >
-              <a href={"https://wvv.bne.mybluehost.me/"}>
+              <a href={"https://hawaiianancestry.org/"}>
                 <img
                   src="/images/hawaiianAncestryLogo.png"
                   className="imgLink"
@@ -383,6 +376,15 @@ export default function HackathonPage({ pageTitle }) {
             >
               <a href={"https://www.ksbe.edu/"}>
                 <img src="/images/kamehameha.jpeg" className="imgLink" />
+              </a>
+            </DataListItem>
+            <DataListItem
+              subHeading="Google Empathy Lab"
+              subHeadingLight
+              imageWithLink
+            >
+              <a href={"https://medium.com/google-empathy-lab"}>
+                <img src="/images/googleEmpathyLab.png" className="imgLink" />
               </a>
             </DataListItem>
             <DataListItem
