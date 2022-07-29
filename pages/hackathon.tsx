@@ -349,7 +349,7 @@ export default function HackathonPage({ pageTitle }) {
               subHeadingLight
               imageWithLink
             >
-              <a href={"https://wvv.bne.mybluehost.me/"}>
+              <a href={"https://hawaiianancestry.org/"}>
                 <img
                   src="/images/hawaiianAncestryLogo.png"
                   className="imgLink"
