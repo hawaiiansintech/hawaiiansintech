@@ -144,8 +144,6 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
           }
           .member:hover {
             color: ${theme.color.brand.base};
-            background: ${theme.color.brand.alpha};
-            transition: background 150ms ease-out;
           }
           .member--selected {
             background: ${theme.color.brand.alpha};

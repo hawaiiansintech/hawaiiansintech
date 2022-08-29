@@ -1,4 +1,4 @@
-import FocusPicker, { FocusPickerFocus } from "@/components/FocusPicker";
+import FocusPicker, { FocusPickerFocus } from "@/components/FocusPickerNew";
 import MemberDirectory, { DirectoryMember } from "@/components/MemberDirectory";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";

@@ -126,6 +126,7 @@ function FilterItem({ label, active, onClick, count }) {
 
         .filterItem:hover {
           color: ${theme.color.link.base};
+          cursor: pointer;
         }
         .filterItem__count {
           font-size: 0.75em;
