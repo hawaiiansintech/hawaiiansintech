@@ -18,6 +18,12 @@ import Selectable, {
   SelectableVariant,
 } from "../form/Selectable";
 
+export const labelNote =
+  "NOTE: We manually review all submissions. Suggesting a new label \
+  increases the time it takes for our admins to approve your submission. \
+  Please be mindful of this and see if any existing labels fit under the \
+  label you'd like to suggest.";
+
 export interface WorkExperienceInitialProps {
   focuses?: Focus[];
   deferTitle?: "true" | undefined;
@@ -210,6 +216,9 @@ export default function WorkExperience({
             </div>
           </SelectableGrid>
         </div>
+        {showSuggestButton ? null : (
+          <div style={{ margin: "1rem", color: "#DC143C" }}>{labelNote}</div>
+        )}
         <div style={{ margin: "2rem 0" }}>
           <Label
             label="How many years of experience do you have in your field?"

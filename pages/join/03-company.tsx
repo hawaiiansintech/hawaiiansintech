@@ -11,6 +11,7 @@ import Selectable, {
   SelectableVariant,
 } from "@/components/form/Selectable";
 import { Heading } from "@/components/Heading";
+import { labelNote } from "@/components/intake-form/WorkExperience";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { getIndustries } from "@/lib/api";
@@ -267,7 +268,9 @@ export default function JoinStep3({ industries, pageTitle }) {
               </div>
             </SelectableGrid>
           </div>
-
+          {showSuggestButton ? null : (
+            <div style={{ margin: "1rem", color: "#DC143C" }}>{labelNote}</div>
+          )}
           <Label
             label="How many employees work at your company?"
             labelTranslation="Ehia ka poʻe e hana ma kou wahi hana?"
