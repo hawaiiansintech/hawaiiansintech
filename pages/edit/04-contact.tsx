@@ -197,7 +197,7 @@ export default function JoinStep4({ pageTitle }) {
               <Input
                 name="other"
                 label="Anything else?"
-                labelTranslation="He aha nā mea a pau?"
+                labelTranslation="He mau manaʻo hou aku kou?"
                 onBlur={props.handleBlur}
                 value={other}
                 onChange={(e) => setOther(e.target.value)}
