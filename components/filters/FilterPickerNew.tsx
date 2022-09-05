@@ -1,32 +1,32 @@
+import { DataList } from "@/components/DataList";
 import { Focus } from "@/lib/api";
 import { useWindowWidth } from "@/lib/hooks";
 import { useLayoutEffect, useRef, useState } from "react";
 import theme from "styles/theme";
-import { DataList } from "./DataList";
-import FocusPickerCategory from "./FocusPickerCategory";
-import Selectable, { SelectableSize } from "./form/Selectable";
+import Selectable, { SelectableSize } from "../form/Selectable";
+import FilterPickerCategory from "./FilterPickerCategory";
 
-export interface FocusPickerFocus extends Focus {
+export interface PickerFocus extends Focus {
   active?: boolean;
 }
 
-interface FocusPickerProps {
-  focuses: FocusPickerFocus[];
+interface FilterPickerProps {
+  focuses: PickerFocus[];
   onFilterClick: (id?: string) => any;
   memberCount?: number;
 }
 
-export default function FocusPicker({
+export default function FilterPicker({
   focuses,
   onFilterClick,
   memberCount,
-}: FocusPickerProps) {
+}: FilterPickerProps) {
   const width = useWindowWidth();
   const [defaultHeight, setDefaultHeight] = useState<number>();
   const [focusActive, setFocusActive] = useState<boolean>();
-  const [focusIndustry, setFocusIndustry] = useState<boolean>();
-  const [focusLocation, setFocusLocation] = useState<boolean>();
-  const [focusExperience, setFocusExperience] = useState<boolean>();
+  const [industryActive, setIndustryActive] = useState<boolean>();
+  const [locationActive, setLocationActive] = useState<boolean>();
+  const [experienceActive, setExperienceActive] = useState<boolean>();
   const listRef = useRef<HTMLUListElement>();
   const listItemRef = useRef<HTMLLIElement>();
   const listItemsRef = useRef<HTMLLIElement[]>([]);
@@ -42,37 +42,50 @@ export default function FocusPicker({
       <div className="picker">
         <div className="picker__selection">
           <DataList gap="0rem 3rem">
-            <FocusPickerCategory
+            <FilterPickerCategory
               category="Focus"
               active={focusActive}
               onClick={() =>
                 focusActive ? setFocusActive(false) : setFocusActive(true)
               }
             />
-            <FocusPickerCategory
+            <FilterPickerCategory
               category="Industry"
-              active={focusIndustry}
+              active={industryActive}
               onClick={() =>
-                focusIndustry ? setFocusIndustry(false) : setFocusIndustry(true)
+                industryActive
+                  ? setIndustryActive(false)
+                  : setIndustryActive(true)
               }
             />
-            <FocusPickerCategory
+            <FilterPickerCategory
               category="Location"
-              active={focusLocation}
+              active={locationActive}
               onClick={() =>
-                focusLocation ? setFocusLocation(false) : setFocusLocation(true)
+                locationActive
+                  ? setLocationActive(false)
+                  : setLocationActive(true)
               }
             />
-            <FocusPickerCategory
+            <FilterPickerCategory
               category="Experience"
-              active={focusExperience}
+              active={experienceActive}
               onClick={() =>
-                focusExperience
-                  ? setFocusExperience(false)
-                  : setFocusExperience(true)
+                experienceActive
+                  ? setExperienceActive(false)
+                  : setExperienceActive(true)
               }
             />
           </DataList>
+        </div>
+        <div className="picker__container">
+          <ul
+            className="picker__list"
+            ref={listRef}
+            style={{
+              maxHeight: defaultHeight,
+            }}
+          ></ul>
         </div>
         <div className="picker__container">
           <ul
@@ -117,19 +130,6 @@ export default function FocusPicker({
             margin-bottom: 2rem;
             font-size: 1.4rem;
             margin-left: 0.2rem;
-            /* color: ${theme.color.text.alt};
-            font-weight: 600; */
-          }
-          .picker__category {
-            font-size: 1.4rem;
-            color: ${theme.color.brand.faded};
-          }
-          .picker__category:hover {
-            /* border-radius: ${theme.borderRadius.md}; */
-            /* background: ${theme.color.brand.alpha}; */
-            /* transition: background 150ms ease-out; */
-            color: ${theme.color.brand.base};
-            cursor: pointer;
           }
           .picker__container {
             display: flex;

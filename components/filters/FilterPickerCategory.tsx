@@ -1,16 +1,16 @@
 import theme from "styles/theme";
 
-interface FocusPickerCategoryProps {
+interface FilterPickerCategoryProps {
   category: string;
   active: boolean;
   onClick?: (e: React.MouseEvent) => any;
 }
 
-export default function FocusPickerCategory({
+export default function FilterPickerCategory({
   category,
   active,
   onClick,
-}: FocusPickerCategoryProps) {
+}: FilterPickerCategoryProps) {
   const handleOnClick = (e) => {
     if (onClick) onClick(e);
   };
