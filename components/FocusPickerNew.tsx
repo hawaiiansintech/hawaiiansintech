@@ -37,7 +37,12 @@ export default function FocusPicker({
       <div className="picker">
         <div className="picker__selection">
           <DataList gap="0rem 3rem">
-            <div className="picker__category">Focus</div>
+            <div className="picker__category">
+              Focus{" "}
+              <svg className="picker__circle" height="15" width="15">
+                <circle cx="7" cy="7" r="7" fill={theme.color.brand.faded} />
+              </svg>
+            </div>
             <div className="picker__category">Industry</div>
             <div className="picker__category">Location</div>
             <div className="picker__category">Experience</div>
@@ -94,9 +99,9 @@ export default function FocusPicker({
             color: ${theme.color.brand.faded};
           }
           .picker__category:hover {
-            border-radius: ${theme.borderRadius.md};
-            background: ${theme.color.brand.alpha};
-            transition: background 150ms ease-out;
+            /* border-radius: ${theme.borderRadius.md}; */
+            /* background: ${theme.color.brand.alpha}; */
+            /* transition: background 150ms ease-out; */
             color: ${theme.color.brand.base};
             cursor: pointer;
           }
@@ -106,6 +111,10 @@ export default function FocusPicker({
             justify-content: space-between;
             align-items: flex-end;
             width: 100%;
+          }
+          .picker__circle {
+            display: inline-block;
+            vertical-align: middle;
           }
           .picker__list {
             list-style: none;
