@@ -3,6 +3,7 @@ import { useWindowWidth } from "@/lib/hooks";
 import { useLayoutEffect, useRef, useState } from "react";
 import theme from "styles/theme";
 import { DataList } from "./DataList";
+import FocusPickerCategory from "./FocusPickerCategory";
 import Selectable, { SelectableSize } from "./form/Selectable";
 
 export interface FocusPickerFocus extends Focus {
@@ -22,6 +23,10 @@ export default function FocusPicker({
 }: FocusPickerProps) {
   const width = useWindowWidth();
   const [defaultHeight, setDefaultHeight] = useState<number>();
+  const [focusActive, setFocusActive] = useState<boolean>();
+  const [focusIndustry, setFocusIndustry] = useState<boolean>();
+  const [focusLocation, setFocusLocation] = useState<boolean>();
+  const [focusExperience, setFocusExperience] = useState<boolean>();
   const listRef = useRef<HTMLUListElement>();
   const listItemRef = useRef<HTMLLIElement>();
   const listItemsRef = useRef<HTMLLIElement[]>([]);
@@ -37,15 +42,36 @@ export default function FocusPicker({
       <div className="picker">
         <div className="picker__selection">
           <DataList gap="0rem 3rem">
-            <div className="picker__category">
-              Focus{" "}
-              <svg className="picker__circle" height="15" width="15">
-                <circle cx="7" cy="7" r="7" fill={theme.color.brand.faded} />
-              </svg>
-            </div>
-            <div className="picker__category">Industry</div>
-            <div className="picker__category">Location</div>
-            <div className="picker__category">Experience</div>
+            <FocusPickerCategory
+              category="Focus"
+              active={focusActive}
+              onClick={() =>
+                focusActive ? setFocusActive(false) : setFocusActive(true)
+              }
+            />
+            <FocusPickerCategory
+              category="Industry"
+              active={focusIndustry}
+              onClick={() =>
+                focusIndustry ? setFocusIndustry(false) : setFocusIndustry(true)
+              }
+            />
+            <FocusPickerCategory
+              category="Location"
+              active={focusLocation}
+              onClick={() =>
+                focusLocation ? setFocusLocation(false) : setFocusLocation(true)
+              }
+            />
+            <FocusPickerCategory
+              category="Experience"
+              active={focusExperience}
+              onClick={() =>
+                focusExperience
+                  ? setFocusExperience(false)
+                  : setFocusExperience(true)
+              }
+            />
           </DataList>
         </div>
         <div className="picker__container">
@@ -111,10 +137,6 @@ export default function FocusPicker({
             justify-content: space-between;
             align-items: flex-end;
             width: 100%;
-          }
-          .picker__circle {
-            display: inline-block;
-            vertical-align: middle;
           }
           .picker__list {
             list-style: none;
