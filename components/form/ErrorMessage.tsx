@@ -4,9 +4,14 @@ import ErrorNotifSVG from "../icon/ErrorNotifSVG";
 export interface ErrorMessageProps {
   headline: string;
   body: string;
+  textColor?: string;
 }
 
-export default function ErrorMessage({ headline, body }: ErrorMessageProps) {
+export default function ErrorMessage({
+  headline,
+  body,
+  textColor,
+}: ErrorMessageProps) {
   return (
     <div className="error-message">
       <aside>
@@ -32,6 +37,7 @@ export default function ErrorMessage({ headline, body }: ErrorMessageProps) {
         h3,
         h4 {
           margin: 0;
+          color: ${textColor ? textColor : null};
         }
         h3 {
           font-size: 0.875rem;
