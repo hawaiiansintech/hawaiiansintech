@@ -12,12 +12,14 @@ export interface PickerFocus extends Focus {
 
 interface FilterPickerProps {
   focuses: PickerFocus[];
+  activeFilters: PickerFocus[];
   onFilterClick: (id?: string) => any;
   memberCount?: number;
 }
 
 export default function FilterPicker({
   focuses,
+  activeFilters,
   onFilterClick,
   memberCount,
 }: FilterPickerProps) {
@@ -78,14 +80,29 @@ export default function FilterPicker({
             />
           </DataList>
         </div>
-        <div className="picker__container">
+        <div className="picker__container top">
           <ul
             className="picker__list"
             ref={listRef}
             style={{
               maxHeight: defaultHeight,
             }}
-          ></ul>
+          >
+            {activeFilters.map((focus, i) => (
+              <li
+                key={`focus-filter-${i}`}
+                ref={(el) => (listItemsRef.current[i] = el)}
+              >
+                <Selectable
+                  fullWidth
+                  headline={focus.name}
+                  onClick={() => onFilterClick(focus.id)}
+                  selected={true}
+                  size={SelectableSize.Large}
+                />
+              </li>
+            ))}
+          </ul>
         </div>
         <div className="picker__container">
           <ul
@@ -137,6 +154,9 @@ export default function FilterPicker({
             justify-content: space-between;
             align-items: flex-end;
             width: 100%;
+          }
+          .top {
+            margin-bottom: 1.5rem;
           }
           .picker__list {
             list-style: none;

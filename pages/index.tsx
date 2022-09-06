@@ -1,6 +1,4 @@
-import FilterPicker, {
-  PickerFocus,
-} from "@/components/filters/FilterPickerNew";
+import FilterPicker, { PickerFocus } from "@/components/filters/FilterPicker";
 import MemberDirectory, { DirectoryMember } from "@/components/MemberDirectory";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
@@ -53,6 +51,7 @@ export default function HomePage({
   const [members, setMembers] = useState<DirectoryMember[]>(
     initialState.members
   );
+  const [activeFilters, setActiveFilters] = useState<PickerFocus[]>([]);
   const [focuses, setFocuses] = useState<PickerFocus[]>(initialState.focuses);
   const [industries, setIndustries] = useState<[]>(initialState.industries);
 
@@ -86,6 +85,12 @@ export default function HomePage({
   }, [focuses]);
 
   const handleFilterByFocuses = (id?: string) => {
+    const filter = focuses.filter((foc) => id === foc.id)[0];
+    if (filter.active) {
+      setActiveFilters(activeFilters.filter((item) => item.id !== id));
+    } else {
+      setActiveFilters([...activeFilters, filter]);
+    }
     setFocuses(
       focuses.map((foc) => ({
         ...foc,
@@ -110,6 +115,7 @@ export default function HomePage({
           {focuses && (
             <FilterPicker
               focuses={focuses}
+              activeFilters={activeFilters}
               onFilterClick={handleFilterByFocuses}
               memberCount={members.length}
             />
