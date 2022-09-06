@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import theme from "styles/theme";
-import CheckSVG from "./icon/CheckSVG.js";
-import CloseSVG from "./icon/CloseSVG.js";
+import CheckSVG from "../icon/CheckSVG.js";
+import CloseSVG from "../icon/CloseSVG.js";
 
 const sidebarAnimation = {
   hidden: { x: "120%" },

@@ -1,4 +1,6 @@
-import FocusPicker, { FocusPickerFocus } from "@/components/FocusPickerNew";
+import FilterPicker, {
+  PickerFocus,
+} from "@/components/filters/FilterPickerNew";
 import MemberDirectory, { DirectoryMember } from "@/components/MemberDirectory";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
@@ -51,20 +53,18 @@ export default function HomePage({
   const [members, setMembers] = useState<DirectoryMember[]>(
     initialState.members
   );
-  const [focuses, setFocuses] = useState<FocusPickerFocus[]>(
-    initialState.focuses
-  );
+  const [focuses, setFocuses] = useState<PickerFocus[]>(initialState.focuses);
   const [industries, setIndustries] = useState<[]>(initialState.industries);
 
   useEffect(() => {
-    const activeFocuses = focuses.filter((foc) => foc.active);
+    const activeFilters = focuses.filter((foc) => foc.active);
     const membersWithFocuses = members
       .map((mem) => ({
         ...mem,
         focus: mem.focus?.map((foc) => ({
           ...foc,
           // update member focuses if filtered
-          active: activeFocuses.map((foc) => foc.id).includes(foc.id),
+          active: activeFilters.map((foc) => foc.id).includes(foc.id),
         })),
       }))
       // sort by number of focuses set
@@ -108,7 +108,7 @@ export default function HomePage({
       <div>
         <aside>
           {focuses && (
-            <FocusPicker
+            <FilterPicker
               focuses={focuses}
               onFilterClick={handleFilterByFocuses}
               memberCount={members.length}
