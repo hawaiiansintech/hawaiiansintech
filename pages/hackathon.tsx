@@ -74,26 +74,52 @@ export default function HackathonPage({ pageTitle }) {
         </motion.div>
       </div>
       <div className="foreground">
-        <DataList mainEventLogistics gap="1.5rem 4rem">
-          <DataListItem mainEventLogistics heading="ʻĀhea?" translation="When">
-            July 29 – 31, 2022
+        <DataList
+          marginSmall="3rem auto 0"
+          marginLarge="3rem 0 0 0"
+          paddingSmall="0 1rem"
+          paddingLarge="0 2rem"
+          gap="1.5rem 4rem"
+        >
+          <DataListItem
+            customWidth="20rem"
+            heading="ʻĀhea?"
+            headingSizeLarge="1.5rem"
+            translation="When"
+            textItem
+          >
+            <p className="eventLogisticsParagraph">July 29 – 31, 2022</p>
           </DataListItem>
           <DataListItem
-            mainEventLogistics
+            customWidth="20rem"
             heading="Ma hea?"
+            headingSizeLarge="1.5rem"
             translation="Location"
+            textItem
           >
-            Oahu locations &amp; Virtual
+            <p className="eventLogisticsParagraph">
+              Oahu locations &amp; Virtual
+            </p>
           </DataListItem>
           <DataListItem
-            mainEventLogistics
+            customWidth="20rem"
             heading="He aha ka poʻomanaʻo?"
+            headingSizeLarge="1.5rem"
             translation="Theme"
+            textItem
           >
-            Moʻokūʻauhau &amp; Moʻōlelo
+            <p className="eventLogisticsParagraph">
+              Moʻokūʻauhau &amp; Moʻōlelo
+            </p>
           </DataListItem>
         </DataList>
-        <DataList mainEventLogistics gap="1rem 1rem">
+        <DataList
+          marginSmall="3rem auto 0"
+          marginLarge="3rem 0 0 0"
+          paddingSmall="0 1rem"
+          paddingLarge="0 2rem"
+          gap="1rem 1rem"
+        >
           <a href={EVENTBRITE_LINK}>
             <Button
               size={ButtonSize.Small}
@@ -177,21 +203,6 @@ export default function HackathonPage({ pageTitle }) {
               customWidth="50%"
               subHeading="Senior Professor, UH Kamakakuokalani Center for Hawaiian Studies; Founder, Mauliauhonua, Hawaiian Genealogies"
             />
-            {/* <DataListItem
-              heading="Dr. Manulani Aluli Meyer"
-              customWidth="100%"
-              subHeading="Indigenous Scholar and Cultural Practitioner"
-            />
-            <DataListItem
-              heading="Dr. Pualani Kanakaʻole Kanahele"
-              customWidth="100%"
-              subHeading="Cultural Practitioner"
-            />
-            <DataListItem
-              heading="Kamaliʻikupono Hanohano"
-              customWidth="100%"
-              subHeading="Kahuna, Pā ʻUhi"
-            /> */}
           </DataList>
         </SplitSection>
         <SplitSection title="Schedule & Events" hint="Subject to change">
@@ -201,7 +212,11 @@ export default function HackathonPage({ pageTitle }) {
         </SplitSection>
         <SplitSection title="Who We Need">
           <DataList gap="2rem 4rem">
-            <DataListItem customWidth="100%" heading="Technical Help 🛠">
+            <DataListItem
+              customWidth="100%"
+              heading="Technical Help 🛠"
+              textItem
+            >
               Looking for individuals who can help us:
               <ul>
                 <li>Parse, store, or manage data</li>
@@ -226,7 +241,11 @@ export default function HackathonPage({ pageTitle }) {
                 <li>UX / Product / UI designers</li>
               </ul>
             </DataListItem>
-            <DataListItem customWidth="100%" heading="Non Technical Help 💡">
+            <DataListItem
+              customWidth="100%"
+              heading="Non Technical Help 💡"
+              textItem
+            >
               Looking for individuals who can help:
               <ul>
                 <li>
@@ -266,6 +285,7 @@ export default function HackathonPage({ pageTitle }) {
             <DataListItem
               customWidth="100%"
               heading="Do I need to work in tech to participate? Or be Native Hawaiian?"
+              textItem
             >
               <p>
                 <span className="bold">No, you don’t</span>. We are simply
@@ -280,6 +300,7 @@ export default function HackathonPage({ pageTitle }) {
             <DataListItem
               customWidth="100%"
               heading="I cannot make the event! Will there be future events?"
+              textItem
             >
               <p>
                 {" "}
@@ -295,6 +316,7 @@ export default function HackathonPage({ pageTitle }) {
             <DataListItem
               customWidth="100%"
               heading="Will I be able to participate virtually?"
+              textItem
             >
               <p>
                 <span className="bold">Absolutely.</span> The more, the better
@@ -305,6 +327,7 @@ export default function HackathonPage({ pageTitle }) {
             <DataListItem
               customWidth="100%"
               heading="Can I bring my own hackathon project ideas?"
+              textItem
             >
               <p>
                 <span className="bold">Can.</span> If you can intuit
@@ -315,6 +338,7 @@ export default function HackathonPage({ pageTitle }) {
             <DataListItem
               customWidth="100%"
               heading="Can I come just to hang & talk story?"
+              textItem
             >
               <p>
                 <span className="bold">Yessah.</span> The more minds we have
@@ -325,6 +349,7 @@ export default function HackathonPage({ pageTitle }) {
             <DataListItem
               customWidth="100%"
               heading="Will there be transportation?"
+              textItem
             >
               <p>
                 <span className="bold">We going try.</span> Come join the
@@ -335,11 +360,7 @@ export default function HackathonPage({ pageTitle }) {
         </SplitSection>
         <SplitSection title="Partnered with">
           <DataList gap="1rem 4rem">
-            <DataListItem
-              subHeading="Purple Maiʻa"
-              subHeadingLight
-              imageWithLink
-            >
+            <DataListItem subHeading="Purple Maiʻa" subHeadingLight>
               <a href={"https://purplemaia.org/"}>
                 <img src="/images/purpleMaia.png" className="imgLink" />
               </a>
@@ -347,7 +368,6 @@ export default function HackathonPage({ pageTitle }) {
             <DataListItem
               subHeading="Hawaiian Ancestry Kūkāmoʻo"
               subHeadingLight
-              imageWithLink
             >
               <a href={"https://hawaiianancestry.org/"}>
                 <img
@@ -356,11 +376,7 @@ export default function HackathonPage({ pageTitle }) {
                 />
               </a>
             </DataListItem>
-            <DataListItem
-              subHeading="Native Books"
-              subHeadingLight
-              imageWithLink
-            >
+            <DataListItem subHeading="Native Books" subHeadingLight>
               <a href={"https://www.nativebookshawaii.org/"}>
                 <img src="/images/nativeBooks.png" className="imgLink" />
               </a>
@@ -369,38 +385,22 @@ export default function HackathonPage({ pageTitle }) {
         </SplitSection>
         <SplitSection title="Sponsored By">
           <DataList gap="1rem 4rem">
-            <DataListItem
-              subHeading="Kamehameha Schools"
-              subHeadingLight
-              imageWithLink
-            >
+            <DataListItem subHeading="Kamehameha Schools" subHeadingLight>
               <a href={"https://www.ksbe.edu/"}>
                 <img src="/images/kamehameha.jpeg" className="imgLink" />
               </a>
             </DataListItem>
-            <DataListItem
-              subHeading="Google Empathy Lab"
-              subHeadingLight
-              imageWithLink
-            >
+            <DataListItem subHeading="Google Empathy Lab" subHeadingLight>
               <a href={"https://medium.com/google-empathy-lab"}>
                 <img src="/images/googleEmpathyLab.png" className="imgLink" />
               </a>
             </DataListItem>
-            <DataListItem
-              subHeading="Waiākea Volcanic Water"
-              subHeadingLight
-              imageWithLink
-            >
+            <DataListItem subHeading="Waiākea Volcanic Water" subHeadingLight>
               <a href={"https://waiakea.com/"}>
                 <img src="/images/waiakea.png" className="imgLink" />
               </a>
             </DataListItem>
-            <DataListItem
-              subHeading="Shaka Tea Hawaiʻi"
-              subHeadingLight
-              imageWithLink
-            >
+            <DataListItem subHeading="Shaka Tea Hawaiʻi" subHeadingLight>
               <a href={"https://www.shakatea.com/"}>
                 <img src="/images/shakatea.png" className="imgLink" />
               </a>
@@ -409,25 +409,17 @@ export default function HackathonPage({ pageTitle }) {
         </SplitSection>
         <SplitSection title="Special thanks to">
           <DataList gap="1rem 4rem">
-            <DataListItem
-              subHeading="Uncle Dean Keko'olani"
-              subHeadingLight
-              imageWithLink
-            >
+            <DataListItem subHeading="Uncle Dean Keko'olani" subHeadingLight>
               <a href={"https://kekoolani.org/"}>
                 <img src="/images/kekoolani.png" className="imgLink" />
               </a>
             </DataListItem>
-            <DataListItem
-              subHeading="Wai Wai Collective"
-              subHeadingLight
-              imageWithLink
-            >
+            <DataListItem subHeading="Wai Wai Collective" subHeadingLight>
               <a href={"https://waiwaicollective.com/"}>
                 <img src="/images/waiwai.png" className="imgLink" />
               </a>
             </DataListItem>
-            <DataListItem subHeading="HTDC" subHeadingLight imageWithLink>
+            <DataListItem subHeading="HTDC" subHeadingLight>
               <a href={"https://www.htdc.org/"}>
                 <img src="/images/htdc.png" className="imgLink" />
               </a>
@@ -493,19 +485,6 @@ export default function HackathonPage({ pageTitle }) {
           z-index: ${theme.layout.zIndex.below};
         }
 
-        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-          .background {
-            padding: 0 2rem;
-          }
-        }
-
-        @media screen and (min-width: ${theme.layout.breakPoints.medium}) {
-          .background {
-            opacity: 1;
-            top: 14rem;
-          }
-        }
-
         h3 {
           margin: 2rem 1rem 0 1rem;
           max-width: 40rem;
@@ -525,15 +504,6 @@ export default function HackathonPage({ pageTitle }) {
           border-radius: 1rem;
         }
 
-        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-          .hackathon-splash {
-            margin: 0 2rem;
-          }
-          h3 {
-            margin: 3rem 0 0 2rem;
-          }
-        }
-
         .extend {
           margin: 0;
           max-width: 24ch;
@@ -546,7 +516,33 @@ export default function HackathonPage({ pageTitle }) {
           color: ${theme.color.brand.base};
         }
 
+        .eventLogisticsParagraph {
+          margin: 0;
+          color: ${theme.color.brand.base};
+          font-weight: 700;
+          font-size: 1.8rem;
+        }
+
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
+          h3 {
+            margin: 3rem 0 0 2rem;
+          }
+          .background {
+            padding: 0 2rem;
+          }
+          .hackathon-splash {
+            margin: 0 2rem;
+          }
+          .hackathon-title {
+            font-size: 4rem;
+          }
+        }
+
+        @media screen and (min-width: ${theme.layout.breakPoints.medium}) {
+          .background {
+            opacity: 1;
+            top: 14rem;
+          }
           .hackathon-title {
             font-size: 4rem;
           }
