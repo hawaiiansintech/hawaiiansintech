@@ -81,13 +81,7 @@ export default function FilterPicker({
           </DataList>
         </div>
         <div className="picker__container top">
-          <ul
-            className="picker__list"
-            ref={listRef}
-            style={{
-              maxHeight: defaultHeight,
-            }}
-          >
+          <ul className="picker__list" ref={listRef}>
             {activeFilters.map((focus, i) => (
               <li
                 key={`focus-filter-${i}`}
@@ -105,13 +99,7 @@ export default function FilterPicker({
           </ul>
         </div>
         <div className="picker__container">
-          <ul
-            className="picker__list"
-            ref={listRef}
-            style={{
-              maxHeight: defaultHeight,
-            }}
-          >
+          <ul className="picker__list" ref={listRef}>
             <li className="picker__item" ref={listItemRef}>
               <Selectable
                 fullWidth

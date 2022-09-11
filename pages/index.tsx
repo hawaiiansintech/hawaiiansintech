@@ -86,17 +86,22 @@ export default function HomePage({
 
   const handleFilterByFocuses = (id?: string) => {
     const filter = focuses.filter((foc) => id === foc.id)[0];
+    let filter_copy = JSON.parse(JSON.stringify(filter));
+    filter_copy.name = "testing" + Math.floor(Math.random() * 100);
+    console.log(filter_copy);
     if (filter.active) {
       setActiveFilters(activeFilters.filter((item) => item.id !== id));
     } else {
       setActiveFilters([...activeFilters, filter]);
     }
     setFocuses(
-      focuses.map((foc) => ({
-        ...foc,
-        // add false active prop
-        active: id ? (id === foc.id ? !foc.active : foc.active) : false,
-      }))
+      focuses
+        .map((foc) => ({
+          ...foc,
+          // add false active prop
+          active: id ? (id === foc.id ? !foc.active : foc.active) : false,
+        }))
+        .concat(filter_copy)
     );
   };
 

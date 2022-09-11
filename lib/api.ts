@@ -167,6 +167,7 @@ export async function getMembers(): Promise<MemberPublic[]> {
 export interface Focus {
   name: string;
   id: string;
+  filterType: string;
   members?: string[];
   count?: number;
   hasApprovedMembers?: boolean;
@@ -184,6 +185,7 @@ export async function getFocuses(limitByMembers?: boolean): Promise<Focus[]> {
         name:
           typeof role.fields["Name"] === "string" ? role.fields["Name"] : null,
         id: typeof role.fields["ID"] === "string" ? role.fields["ID"] : null,
+        filterType: "focus",
         members: Array.isArray(role.fields["Members"])
           ? role.fields["Members"]
           : null,
