@@ -78,7 +78,6 @@ export default function FilterPicker({
                   : setExperienceActive(true)
               }
             />
-            <div>{`All ${memberCount ? `(${memberCount})` : ""}`}</div>
           </DataList>
         </div>
         <div className="picker__container top">
@@ -113,7 +112,7 @@ export default function FilterPicker({
               maxHeight: defaultHeight,
             }}
           >
-            {/* <li className="picker__item" ref={listItemRef}>
+            <li className="picker__item" ref={listItemRef}>
               <Selectable
                 fullWidth
                 headline={`All ${memberCount ? `(${memberCount})` : ""}`}
@@ -121,22 +120,20 @@ export default function FilterPicker({
                 selected={filterIsSelected}
                 size={SelectableSize.Large}
               />
-            </li> */}
+            </li>
             {focuses.map((focus, i) => (
               <li
                 key={`focus-filter-${i}`}
                 ref={(el) => (listItemsRef.current[i] = el)}
               >
-                {focusActive ? (
-                  <Selectable
-                    fullWidth
-                    headline={focus.name}
-                    onClick={() => onFilterClick(focus.id)}
-                    selected={focus.active}
-                    disabled={focus.count === 0}
-                    size={SelectableSize.Large}
-                  />
-                ) : null}
+                <Selectable
+                  fullWidth
+                  headline={focus.name}
+                  onClick={() => onFilterClick(focus.id)}
+                  selected={focus.active}
+                  disabled={focus.count === 0}
+                  size={SelectableSize.Large}
+                />
               </li>
             ))}
           </ul>
