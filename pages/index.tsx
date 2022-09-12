@@ -52,6 +52,7 @@ export default function HomePage({
     initialState.members
   );
   const [activeFilters, setActiveFilters] = useState<PickerFocus[]>([]);
+  const [filtersList, setFiltersList] = useState<PickerFocus[]>([]);
   const [focuses, setFocuses] = useState<PickerFocus[]>(initialState.focuses);
   const [industries, setIndustries] = useState<[]>(initialState.industries);
 
@@ -84,25 +85,38 @@ export default function HomePage({
     setMembers(membersWithFocuses);
   }, [focuses]);
 
-  const handleFilterByFocuses = (id?: string) => {
-    const filter = focuses.filter((foc) => id === foc.id)[0];
-    let filter_copy = JSON.parse(JSON.stringify(filter));
-    filter_copy.name = "testing" + Math.floor(Math.random() * 100);
-    console.log(filter_copy);
+  const setListItemActive = (
+    list?: PickerFocus[],
+    setList?: Function,
+    id?: string
+  ) => {
+    setList(
+      list.map((foc) => ({
+        ...foc,
+        active: id ? (id === foc.id ? !foc.active : foc.active) : false,
+      }))
+    );
+  };
+
+  const handleFilterByFocuses = (id?: string, active?: boolean) => {
+    let filter = filtersList.filter((foc) => id === foc.id)[0];
+    setListItemActive(filtersList, setFiltersList, id);
+    setListItemActive(focuses, setFocuses, id);
     if (filter.active) {
       setActiveFilters(activeFilters.filter((item) => item.id !== id));
     } else {
       setActiveFilters([...activeFilters, filter]);
     }
-    setFocuses(
-      focuses
-        .map((foc) => ({
-          ...foc,
-          // add false active prop
-          active: id ? (id === foc.id ? !foc.active : foc.active) : false,
-        }))
-        .concat(filter_copy)
-    );
+  };
+
+  const filterSeclect = (filterSelect?: string, enable?: boolean) => {
+    if (filterSelect == "focus") {
+      enable
+        ? setFiltersList(filtersList.concat(focuses))
+        : setFiltersList(
+            filtersList.filter((item) => item.filterType != "focus")
+          );
+    }
   };
 
   return (
@@ -120,8 +134,10 @@ export default function HomePage({
           {focuses && (
             <FilterPicker
               focuses={focuses}
+              filtersList={filtersList}
               activeFilters={activeFilters}
               onFilterClick={handleFilterByFocuses}
+              onFilterSeclect={filterSeclect}
               memberCount={members.length}
             />
           )}

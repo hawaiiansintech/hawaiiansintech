@@ -12,15 +12,19 @@ export interface PickerFocus extends Focus {
 
 interface FilterPickerProps {
   focuses: PickerFocus[];
+  filtersList: PickerFocus[];
   activeFilters: PickerFocus[];
   onFilterClick: (id?: string) => any;
+  onFilterSeclect: (filterSelect?: string, enable?: boolean) => any;
   memberCount?: number;
 }
 
 export default function FilterPicker({
   focuses,
+  filtersList,
   activeFilters,
   onFilterClick,
+  onFilterSeclect,
   memberCount,
 }: FilterPickerProps) {
   const width = useWindowWidth();
@@ -39,6 +43,16 @@ export default function FilterPicker({
     setDefaultHeight(listRef.current.scrollHeight);
   }, [width]);
 
+  function activateFilter(
+    filterActive: boolean,
+    setFilter: Function,
+    filtertype: string
+  ) {
+    let enable = filterActive ? false : true;
+    setFilter(enable);
+    onFilterSeclect(filtertype, enable);
+  }
+
   return (
     <>
       <div className="picker">
@@ -48,7 +62,7 @@ export default function FilterPicker({
               category="Focus"
               active={focusActive}
               onClick={() =>
-                focusActive ? setFocusActive(false) : setFocusActive(true)
+                activateFilter(focusActive, setFocusActive, "focus")
               }
             />
             <FilterPickerCategory
@@ -78,6 +92,7 @@ export default function FilterPicker({
                   : setExperienceActive(true)
               }
             />
+            <div>{`All ${memberCount ? `(${memberCount})` : ""}`}</div>
           </DataList>
         </div>
         <div className="picker__container top">
@@ -100,7 +115,7 @@ export default function FilterPicker({
         </div>
         <div className="picker__container">
           <ul className="picker__list" ref={listRef}>
-            <li className="picker__item" ref={listItemRef}>
+            {/* <li className="picker__item" ref={listItemRef}>
               <Selectable
                 fullWidth
                 headline={`All ${memberCount ? `(${memberCount})` : ""}`}
@@ -108,18 +123,18 @@ export default function FilterPicker({
                 selected={filterIsSelected}
                 size={SelectableSize.Large}
               />
-            </li>
-            {focuses.map((focus, i) => (
+            </li> */}
+            {filtersList.map((filter, i) => (
               <li
                 key={`focus-filter-${i}`}
                 ref={(el) => (listItemsRef.current[i] = el)}
               >
                 <Selectable
                   fullWidth
-                  headline={focus.name}
-                  onClick={() => onFilterClick(focus.id)}
-                  selected={focus.active}
-                  disabled={focus.count === 0}
+                  headline={filter.name}
+                  onClick={() => onFilterClick(filter.id)}
+                  selected={filter.active}
+                  disabled={filter.count === 0}
                   size={SelectableSize.Large}
                 />
               </li>
