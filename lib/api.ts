@@ -164,6 +164,16 @@ export async function getMembers(): Promise<MemberPublic[]> {
   });
 }
 
+function hasApprovedMembers(approvedMemberIds: string[], memberList) {
+  // TODO: add type to memberList
+  for (const member in memberList) {
+    if (approvedMemberIds.includes(memberList[member])) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export interface Filter {
   name: string;
   id: string;
@@ -207,16 +217,58 @@ export async function getFocuses(limitByMembers?: boolean): Promise<Filter[]> {
 //   count?: number;
 // }
 
-export async function getIndustries(): Promise<Filter[]> {
+export async function getIndustries(
+  limitByMembers?: boolean,
+  approvedMemberIds?: string[]
+): Promise<Filter[]> {
   const industries = await getBase({ name: "Industries", view: "Approved" });
   return industries
-    .filter((role) => role.fields["Name"])
+    .filter(
+      (role) =>
+        role.fields["Name"] &&
+        (limitByMembers
+          ? hasApprovedMembers(approvedMemberIds, role.fields["Members"])
+          : true)
+    )
     .map((role) => {
       return {
         name:
           typeof role.fields["Name"] === "string" ? role.fields["Name"] : null,
         id: typeof role.fields["ID"] === "string" ? role.fields["ID"] : null,
         filterType: "industry",
+        members: Array.isArray(role.fields["Members"])
+          ? role.fields["Members"]
+          : null,
+        count: Array.isArray(role.fields["Members"])
+          ? role.fields["Members"].length
+          : 0,
+      };
+    });
+}
+
+export async function getFilters(
+  filterType: string,
+  limitByMembers?: boolean,
+  approvedMemberIds?: string[]
+): Promise<Filter[]> {
+  const filters = await getBase({
+    name: filterType == "focus" ? "Focuses" : "Industries",
+    view: "Approved",
+  });
+  return filters
+    .filter(
+      (role) =>
+        role.fields["Name"] &&
+        (limitByMembers
+          ? hasApprovedMembers(approvedMemberIds, role.fields["Members"])
+          : true)
+    )
+    .map((role) => {
+      return {
+        name:
+          typeof role.fields["Name"] === "string" ? role.fields["Name"] : null,
+        id: typeof role.fields["ID"] === "string" ? role.fields["ID"] : null,
+        filterType: filterType,
         members: Array.isArray(role.fields["Members"])
           ? role.fields["Members"]
           : null,

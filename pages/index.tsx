@@ -4,21 +4,23 @@ import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { Title } from "@/components/Title.js";
 // Change to "@/lib/stubApi" if no access to airtable vars!
-import {
-  Filter,
-  getFocuses,
-  getIndustries,
-  getMembers,
-  MemberPublic,
-} from "@/lib/api";
+import { Filter, getFilters, getMembers, MemberPublic } from "@/lib/api";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import theme from "styles/theme";
 
 export async function getStaticProps() {
   const members: MemberPublic[] = await getMembers();
-  const focuses: Filter[] = await getFocuses(true);
-  const industries: Filter[] = await getIndustries();
+  const focuses: Filter[] = await getFilters(
+    "focus",
+    true,
+    members.map((member) => member.id)
+  );
+  const industries: Filter[] = await getFilters(
+    "industry",
+    true,
+    members.map((member) => member.id)
+  );
   return {
     props: {
       fetchedMembers: members,
