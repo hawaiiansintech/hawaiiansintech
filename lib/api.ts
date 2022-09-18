@@ -164,7 +164,7 @@ export async function getMembers(): Promise<MemberPublic[]> {
   });
 }
 
-export interface Focus {
+export interface Filter {
   name: string;
   id: string;
   filterType: string;
@@ -173,7 +173,7 @@ export interface Focus {
   hasApprovedMembers?: boolean;
 }
 
-export async function getFocuses(limitByMembers?: boolean): Promise<Focus[]> {
+export async function getFocuses(limitByMembers?: boolean): Promise<Filter[]> {
   const focuses = await getBase({ name: "Focuses", view: "Approved" });
   return focuses
     .filter((role) => role.fields["Name"])

@@ -1,20 +1,20 @@
 import { DataList } from "@/components/DataList";
-import { Focus } from "@/lib/api";
+import { Filter } from "@/lib/api";
 import { useWindowWidth } from "@/lib/hooks";
 import { useLayoutEffect, useRef, useState } from "react";
 import theme from "styles/theme";
 import Selectable, { SelectableSize } from "../form/Selectable";
 import FilterPickerCategory from "./FilterPickerCategory";
 
-export interface PickerFocus extends Focus {
+export interface PickerFilter extends Filter {
   active?: boolean;
 }
 
 interface FilterPickerProps {
-  focuses: PickerFocus[];
-  filtersList: PickerFocus[];
-  activeFilters: PickerFocus[];
-  onFilterClick: (id?: string) => any;
+  focuses: PickerFilter[];
+  filtersList: PickerFilter[];
+  activeFilters: PickerFilter[];
+  onFilterClick: (id?: string, filterType?: string) => any;
   onFilterSeclect: (filterSelect?: string, enable?: boolean) => any;
   memberCount?: number;
 }

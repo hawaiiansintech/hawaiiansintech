@@ -1,11 +1,11 @@
-import FilterPicker, { PickerFocus } from "@/components/filters/FilterPicker";
+import FilterPicker, { PickerFilter } from "@/components/filters/FilterPicker";
 import MemberDirectory, { DirectoryMember } from "@/components/MemberDirectory";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { Title } from "@/components/Title.js";
 // Change to "@/lib/stubApi" if no access to airtable vars!
 import {
-  Focus,
+  Filter,
   getFocuses,
   getIndustries,
   getMembers,
@@ -18,7 +18,7 @@ import theme from "styles/theme";
 
 export async function getStaticProps() {
   const members: MemberPublic[] = await getMembers();
-  const focuses: Focus[] = await getFocuses(true);
+  const focuses: Filter[] = await getFocuses(true);
   const industries: Industry[] = await getIndustries();
   return {
     props: {
@@ -51,9 +51,9 @@ export default function HomePage({
   const [members, setMembers] = useState<DirectoryMember[]>(
     initialState.members
   );
-  const [activeFilters, setActiveFilters] = useState<PickerFocus[]>([]);
-  const [filtersList, setFiltersList] = useState<PickerFocus[]>([]);
-  const [focuses, setFocuses] = useState<PickerFocus[]>(initialState.focuses);
+  const [activeFilters, setActiveFilters] = useState<PickerFilter[]>([]);
+  const [filtersList, setFiltersList] = useState<PickerFilter[]>([]);
+  const [focuses, setFocuses] = useState<PickerFilter[]>(initialState.focuses);
   const [industries, setIndustries] = useState<[]>(initialState.industries);
 
   useEffect(() => {
@@ -86,7 +86,7 @@ export default function HomePage({
   }, [focuses]);
 
   const setListItemActive = (
-    list?: PickerFocus[],
+    list?: PickerFilter[],
     setList?: Function,
     id?: string
   ) => {
@@ -98,7 +98,7 @@ export default function HomePage({
     );
   };
 
-  const handleFilterByFocuses = (id?: string, filterType?: string) => {
+  const handleFilter = (id?: string, filterType?: string) => {
     let listToUpdate = filterType == "focus" ? focuses : filtersList;
     let filter = listToUpdate.filter((foc) => id === foc.id)[0];
     setListItemActive(filtersList, setFiltersList, id);
@@ -137,7 +137,7 @@ export default function HomePage({
               focuses={focuses}
               filtersList={filtersList}
               activeFilters={activeFilters}
-              onFilterClick={handleFilterByFocuses}
+              onFilterClick={handleFilter}
               onFilterSeclect={filterSeclect}
               memberCount={members.length}
             />
