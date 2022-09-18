@@ -200,16 +200,15 @@ export async function getFocuses(limitByMembers?: boolean): Promise<Filter[]> {
     .sort((a, b) => b.count - a.count);
 }
 
-export interface Industry {
-  name: string;
-  id: string;
-  members?: string[];
-  count?: number;
-}
+// export interface Industry {
+//   name: string;
+//   id: string;
+//   members?: string[];
+//   count?: number;
+// }
 
-export async function getIndustries(): Promise<Industry[]> {
+export async function getIndustries(): Promise<Filter[]> {
   const industries = await getBase({ name: "Industries", view: "Approved" });
-
   return industries
     .filter((role) => role.fields["Name"])
     .map((role) => {
@@ -217,6 +216,7 @@ export async function getIndustries(): Promise<Industry[]> {
         name:
           typeof role.fields["Name"] === "string" ? role.fields["Name"] : null,
         id: typeof role.fields["ID"] === "string" ? role.fields["ID"] : null,
+        filterType: "industry",
         members: Array.isArray(role.fields["Members"])
           ? role.fields["Members"]
           : null,

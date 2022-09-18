@@ -69,9 +69,7 @@ export default function FilterPicker({
               category="Industry"
               active={industryActive}
               onClick={() =>
-                industryActive
-                  ? setIndustryActive(false)
-                  : setIndustryActive(true)
+                activateFilter(industryActive, setIndustryActive, "industry")
               }
             />
             <FilterPickerCategory

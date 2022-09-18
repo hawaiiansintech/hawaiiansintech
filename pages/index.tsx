@@ -9,7 +9,6 @@ import {
   getFocuses,
   getIndustries,
   getMembers,
-  Industry,
   MemberPublic,
 } from "@/lib/api";
 import Head from "next/head";
@@ -19,7 +18,7 @@ import theme from "styles/theme";
 export async function getStaticProps() {
   const members: MemberPublic[] = await getMembers();
   const focuses: Filter[] = await getFocuses(true);
-  const industries: Industry[] = await getIndustries();
+  const industries: Filter[] = await getIndustries();
   return {
     props: {
       fetchedMembers: members,
@@ -99,10 +98,16 @@ export default function HomePage({
   };
 
   const handleFilter = (id?: string, filterType?: string) => {
-    let listToUpdate = filterType == "focus" ? focuses : filtersList;
+    let listToUpdate =
+      filterType == "focus"
+        ? focuses
+        : filterType == "industry"
+        ? industries
+        : filtersList;
     let filter = listToUpdate.filter((foc) => id === foc.id)[0];
     setListItemActive(filtersList, setFiltersList, id);
     setListItemActive(focuses, setFocuses, id);
+    setListItemActive(industries, setIndustries, id);
     if (filter.active) {
       setActiveFilters(activeFilters.filter((item) => item.id !== id));
     } else {
@@ -116,6 +121,12 @@ export default function HomePage({
         ? setFiltersList(filtersList.concat(focuses))
         : setFiltersList(
             filtersList.filter((item) => item.filterType != "focus")
+          );
+    } else if (filterSelect == "industry") {
+      enable
+        ? setFiltersList(filtersList.concat(industries))
+        : setFiltersList(
+            filtersList.filter((item) => item.filterType != "industry")
           );
     }
   };
