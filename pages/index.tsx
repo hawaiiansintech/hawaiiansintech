@@ -98,8 +98,9 @@ export default function HomePage({
     );
   };
 
-  const handleFilterByFocuses = (id?: string, active?: boolean) => {
-    let filter = filtersList.filter((foc) => id === foc.id)[0];
+  const handleFilterByFocuses = (id?: string, filterType?: string) => {
+    let listToUpdate = filterType == "focus" ? focuses : filtersList;
+    let filter = listToUpdate.filter((foc) => id === foc.id)[0];
     setListItemActive(filtersList, setFiltersList, id);
     setListItemActive(focuses, setFocuses, id);
     if (filter.active) {

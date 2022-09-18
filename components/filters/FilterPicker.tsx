@@ -92,7 +92,7 @@ export default function FilterPicker({
                   : setExperienceActive(true)
               }
             />
-            <div>{`All ${memberCount ? `(${memberCount})` : ""}`}</div>
+            {/* <div>{`All ${memberCount ? `(${memberCount})` : ""}`}</div> */}
           </DataList>
         </div>
         <div className="picker__container top">
@@ -105,7 +105,7 @@ export default function FilterPicker({
                 <Selectable
                   fullWidth
                   headline={focus.name}
-                  onClick={() => onFilterClick(focus.id)}
+                  onClick={() => onFilterClick(focus.id, focus.filterType)}
                   selected={true}
                   size={SelectableSize.Large}
                 />
