@@ -45,9 +45,12 @@ export default function HomePage({
       focus: mem.focus
         ? mem.focus.map((foc) => ({ ...foc, active: false }))
         : [],
+      industry: mem.industry
+        ? mem.industry.map((ind) => ({ ...ind, active: false }))
+        : [],
     })),
     focuses: fetchedFocuses.filter((focus) => focus.count > 0),
-    industries: fetchedIndustries,
+    industries: fetchedIndustries.filter((industry) => industry.count > 0),
   };
   const [members, setMembers] = useState<DirectoryMember[]>(
     initialState.members
@@ -58,7 +61,9 @@ export default function HomePage({
   const [industries, setIndustries] = useState<[]>(initialState.industries);
 
   useEffect(() => {
-    const activeFilters = focuses.filter((foc) => foc.active);
+    const activeFilters = focuses
+      .concat(industries)
+      .filter((foc) => foc.active);
     const membersWithFocuses = members
       .map((mem) => ({
         ...mem,
@@ -67,16 +72,27 @@ export default function HomePage({
           // update member focuses if filtered
           active: activeFilters.map((foc) => foc.id).includes(foc.id),
         })),
+        industry: mem.industry?.map((ind) => ({
+          ...ind,
+          active: activeFilters.map((ind) => ind.id).includes(ind.id),
+        })),
       }))
       // sort by number of focuses set
       .sort((a, b) => {
-        if (a.focus === undefined || b.focus === undefined) return;
+        if (
+          a.focus.concat(a.industry) === undefined ||
+          b.focus.concat(b.industry) === undefined
+        )
+          return;
+        // console.log(b?.focus.concat(b?.industry));
         const firstActive = a.focus
-          .map((foc) => foc?.active)
-          .filter((foc) => foc).length;
+          .concat(a.industry)
+          .map((fil) => fil?.active)
+          .filter((fil) => fil).length;
         const nextActive = b?.focus
-          .map((foc) => foc?.active)
-          .filter((foc) => foc).length;
+          .concat(b?.industry)
+          .map((fil) => fil?.active)
+          .filter((fil) => fil).length;
         // if same count, randomize
         if (nextActive === firstActive) return 0.5 - Math.random();
         // or sort by
@@ -84,7 +100,7 @@ export default function HomePage({
       });
 
     setMembers(membersWithFocuses);
-  }, [focuses]);
+  }, [focuses, industries]);
 
   const setListItemActive = (
     list?: PickerFilter[],
@@ -92,9 +108,9 @@ export default function HomePage({
     id?: string
   ) => {
     setList(
-      list.map((foc) => ({
-        ...foc,
-        active: id ? (id === foc.id ? !foc.active : foc.active) : false,
+      list.map((fil) => ({
+        ...fil,
+        active: id ? (id === fil.id ? !fil.active : fil.active) : false,
       }))
     );
   };
