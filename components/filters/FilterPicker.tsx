@@ -16,7 +16,7 @@ interface FilterPickerProps {
   activeFilters: PickerFilter[];
   onFilterClick: (id?: string, filterType?: string) => any;
   onFilterSeclect: (filterSelect?: string, enable?: boolean) => any;
-  memberCount?: number;
+  selectedMemberCount?: number;
 }
 
 export default function FilterPicker({
@@ -25,7 +25,7 @@ export default function FilterPicker({
   activeFilters,
   onFilterClick,
   onFilterSeclect,
-  memberCount,
+  selectedMemberCount,
 }: FilterPickerProps) {
   const width = useWindowWidth();
   const [defaultHeight, setDefaultHeight] = useState<number>();
@@ -36,7 +36,7 @@ export default function FilterPicker({
   const listRef = useRef<HTMLUListElement>();
   const listItemRef = useRef<HTMLLIElement>();
   const listItemsRef = useRef<HTMLLIElement[]>([]);
-  const filterIsSelected = focuses.filter((foc) => foc.active).length === 0;
+  const filterIsSelected = activeFilters.length !== 0;
 
   useLayoutEffect(() => {
     if (!listItemsRef) return;
@@ -72,7 +72,7 @@ export default function FilterPicker({
                 activateFilter(industryActive, setIndustryActive, "industry")
               }
             />
-            <FilterPickerCategory
+            {/* <FilterPickerCategory
               category="Location"
               active={locationActive}
               onClick={() =>
@@ -89,8 +89,12 @@ export default function FilterPicker({
                   ? setExperienceActive(false)
                   : setExperienceActive(true)
               }
-            />
-            {/* <div>{`All ${memberCount ? `(${memberCount})` : ""}`}</div> */}
+            /> */}
+            <div className="selected-member-count">{`${
+              filterIsSelected
+                ? `Selected (${selectedMemberCount})`
+                : `All (${selectedMemberCount})`
+            }`}</div>
           </DataList>
         </div>
         <div className="picker__container top">
@@ -173,6 +177,14 @@ export default function FilterPicker({
             margin: 0;
             white-space: initial;
             flex-shrink: 0;
+          }
+          .selected-member-count {
+            color: ${filterIsSelected
+              ? theme.color.brand.alt
+              : theme.color.text.alt2};
+            position: absolute;
+            right: 2rem;
+            transition: color 0.5s ease;
           }
           @media screen and (min-width: ${theme.layout.breakPoints.medium}) {
             .picker__list {

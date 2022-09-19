@@ -59,6 +59,9 @@ export default function HomePage({
   const [filtersList, setFiltersList] = useState<PickerFilter[]>([]);
   const [focuses, setFocuses] = useState<PickerFilter[]>(initialState.focuses);
   const [industries, setIndustries] = useState<[]>(initialState.industries);
+  const [membersCount, setMembersCount] = useState<number>(
+    initialState.members.length
+  );
 
   useEffect(() => {
     const activeFilters = focuses
@@ -77,14 +80,13 @@ export default function HomePage({
           active: activeFilters.map((ind) => ind.id).includes(ind.id),
         })),
       }))
-      // sort by number of focuses set
+      // sort by number of filters set
       .sort((a, b) => {
         if (
           a.focus.concat(a.industry) === undefined ||
           b.focus.concat(b.industry) === undefined
         )
           return;
-        // console.log(b?.focus.concat(b?.industry));
         const firstActive = a.focus
           .concat(a.industry)
           .map((fil) => fil?.active)
@@ -98,7 +100,12 @@ export default function HomePage({
         // or sort by
         return nextActive > firstActive ? 1 : -1;
       });
-
+    const selectedMemberCount = membersWithFocuses.filter(
+      (mem) =>
+        mem.focus.filter((fil) => fil.active).length > 0 ||
+        mem.industry.filter((fil) => fil.active).length > 0
+    ).length;
+    setMembersCount(selectedMemberCount ? selectedMemberCount : members.length);
     setMembers(membersWithFocuses);
   }, [focuses, industries]);
 
@@ -168,7 +175,7 @@ export default function HomePage({
               activeFilters={activeFilters}
               onFilterClick={handleFilter}
               onFilterSeclect={filterSeclect}
-              memberCount={members.length}
+              selectedMemberCount={membersCount}
             />
           )}
         </aside>
