@@ -183,69 +183,6 @@ export interface Filter {
   hasApprovedMembers?: boolean;
 }
 
-export async function getFocuses(limitByMembers?: boolean): Promise<Filter[]> {
-  const focuses = await getBase({ name: "Focuses", view: "Approved" });
-  return focuses
-    .filter((role) => role.fields["Name"])
-    .filter((role) =>
-      limitByMembers ? role.fields["Has Approved Members"] : true
-    )
-    .map((role) => {
-      return {
-        name:
-          typeof role.fields["Name"] === "string" ? role.fields["Name"] : null,
-        id: typeof role.fields["ID"] === "string" ? role.fields["ID"] : null,
-        filterType: "focus",
-        members: Array.isArray(role.fields["Members"])
-          ? role.fields["Members"]
-          : null,
-        count: Array.isArray(role.fields["Members"])
-          ? role.fields["Members"].length
-          : 0,
-        hasApprovedMembers:
-          typeof role.fields["Has Approved Members"] === "string" &&
-          role.fields["Has Approved Members"] !== "",
-      };
-    })
-    .sort((a, b) => b.count - a.count);
-}
-
-// export interface Industry {
-//   name: string;
-//   id: string;
-//   members?: string[];
-//   count?: number;
-// }
-
-export async function getIndustries(
-  limitByMembers?: boolean,
-  approvedMemberIds?: string[]
-): Promise<Filter[]> {
-  const industries = await getBase({ name: "Industries", view: "Approved" });
-  return industries
-    .filter(
-      (role) =>
-        role.fields["Name"] &&
-        (limitByMembers
-          ? hasApprovedMembers(approvedMemberIds, role.fields["Members"])
-          : true)
-    )
-    .map((role) => {
-      return {
-        name:
-          typeof role.fields["Name"] === "string" ? role.fields["Name"] : null,
-        id: typeof role.fields["ID"] === "string" ? role.fields["ID"] : null,
-        filterType: "industry",
-        members: Array.isArray(role.fields["Members"])
-          ? role.fields["Members"]
-          : null,
-        count: Array.isArray(role.fields["Members"])
-          ? role.fields["Members"].length
-          : 0,
-      };
-    });
-}
-
 export async function getFilters(
   filterType: string,
   limitByMembers?: boolean,
@@ -275,6 +212,10 @@ export async function getFilters(
         count: Array.isArray(role.fields["Members"])
           ? role.fields["Members"].length
           : 0,
+        hasApprovedMembers: limitByMembers
+          ? hasApprovedMembers(approvedMemberIds, role.fields["Members"])
+          : null,
       };
-    });
+    })
+    .sort((a, b) => b.count - a.count);
 }

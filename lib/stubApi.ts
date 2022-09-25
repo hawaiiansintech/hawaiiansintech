@@ -1,4 +1,4 @@
-import { Focus, Industry, MemberPublic } from "./api";
+import { Filter, Focus, Industry, MemberPublic } from "./api";
 export type { Focus, Industry, MemberPublic };
 
 /**
@@ -77,11 +77,16 @@ export function getMembers(): MemberPublic[] {
  * @returns stubbed roles
  */
 
-export function getFocuses(limitByMembers?: boolean): Focus[] {
+export function getFilters(
+  filterType: string,
+  limitByMembers?: boolean,
+  approvedMemberIds?: string[]
+): Filter[] {
   return [
     {
       count: 3,
       hasApprovedMembers: true,
+      filterType: "focus",
       id: "fakeFocusID01",
       members: ["fakeMemberID01", "fakeMemberID02", "fakeMemberID03"],
       name: "Engineering",
@@ -89,30 +94,22 @@ export function getFocuses(limitByMembers?: boolean): Focus[] {
     {
       count: 1,
       hasApprovedMembers: true,
+      filterType: "focus",
       id: "fakeFocusID02",
       members: ["fakeMemberID03"],
       name: "Design",
     },
-  ];
-}
-
-/**
- * Stubbed function to fetch roles without connecting to airtable.
- *
- * @returns stubbed roles
- */
-
-export function getIndustries(): Industry[] {
-  return [
     {
       count: 2,
       id: "fakeIndustryID01",
+      filterType: "industry",
       members: ["fakeMemberID02", "fakeMemberID03"],
       name: "Internet / Technology",
     },
     {
       count: 1,
       id: "fakeIndustryID02",
+      filterType: "industry",
       members: ["fakeMemberID01"],
       name: "Healthcare",
     },

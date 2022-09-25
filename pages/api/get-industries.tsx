@@ -1,4 +1,4 @@
-import { getIndustries } from "@/lib/api";
+import { getFilters } from "@/lib/api";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const industries = await getIndustries();
+    const industries = await getFilters("industry");
     return res.status(200).json({
       message: "Successfully fetched industries.",
       industries: industries,

@@ -5,7 +5,7 @@ import WorkExperience, {
 } from "@/components/intake-form/WorkExperience";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
-import { getFocuses, MemberPublicEditing } from "@/lib/api";
+import { getFilters, MemberPublicEditing } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
 import { FORM_LINKS } from "@/lib/utils";
 import lodash from "lodash";
@@ -14,7 +14,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export async function getStaticProps() {
-  let focuses = (await getFocuses()) ?? [];
+  let focuses = (await getFilters("focus")) ?? [];
   return {
     props: {
       focuses: focuses,

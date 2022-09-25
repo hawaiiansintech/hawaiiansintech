@@ -1,4 +1,4 @@
-import { getFocuses } from "@/lib/api";
+import { getFilters } from "@/lib/api";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   console.log(req);
 
   try {
-    const focuses = await getFocuses();
+    const focuses = await getFilters("focus");
     return res.status(200).json({
       message: "Successfully fetched focuses.",
       focuses: focuses,
