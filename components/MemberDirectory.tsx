@@ -7,6 +7,7 @@ import Pill from "./Pill";
 export interface DirectoryMember extends MemberPublic {
   focus: { active?: boolean; id: string; name: string }[];
   industry: { active?: boolean; id: string; name: string }[];
+  experience: { active?: boolean; id: string; name: string }[];
 }
 
 interface MemberDirectoryProps {
@@ -17,14 +18,19 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
   const isFiltered =
     members.filter(
       (mem) =>
-        mem.focus.concat(mem.industry)?.filter((foc) => foc.active).length > 0
+        mem.focus
+          .concat(mem.industry)
+          .concat(mem.experience)
+          ?.filter((foc) => foc.active).length > 0
     ).length > 0;
   return (
     <section>
       {members.map((member, i) => {
         const isSelected =
-          member.focus.concat(member.industry)?.filter((foc) => foc.active)
-            .length > 0;
+          member.focus
+            .concat(member.industry)
+            .concat(member.experience)
+            ?.filter((foc) => foc.active).length > 0;
         return (
           <motion.div layout="position" key={`member-${member.id}`}>
             <a
@@ -50,6 +56,11 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
                     </dt>
                   ))}
                   {member.industry?.map((fil) => (
+                    <dt key={`member-meta-${fil.id}`}>
+                      <Pill active={fil.active}>{fil.name}</Pill>
+                    </dt>
+                  ))}
+                  {member.experience?.map((fil) => (
                     <dt key={`member-meta-${fil.id}`}>
                       <Pill active={fil.active}>{fil.name}</Pill>
                     </dt>

@@ -7,7 +7,7 @@ import Input from "@/components/form/Input";
 import InputBox from "@/components/form/InputBox";
 import Label from "@/components/form/Label";
 import RadioBox from "@/components/form/RadioBox";
-import { Focus } from "@/lib/api";
+import { Filter } from "@/lib/api";
 import { useWindowWidth } from "@/lib/hooks";
 import { MAX_FOCUS_COUNT } from "@/lib/utils";
 import { scrollToTop } from "helpers";
@@ -19,7 +19,7 @@ import Selectable, {
 } from "../form/Selectable";
 
 export interface WorkExperienceInitialProps {
-  focuses?: Focus[];
+  focuses?: Filter[];
   deferTitle?: "true" | undefined;
   focusesSelected?: string[];
   focusSuggested?: string;
@@ -32,6 +32,15 @@ interface WorkExperienceProps {
   onSubmit?: (WorkExperienceInitialProps) => void;
   showNew?: boolean;
 }
+
+export const experienceOptions = [
+  { name: "Less than a year", id: "rec0aQdcyJHMfg10o" },
+  { name: "1 – 2 years", id: "recp2FzFwOwqT6noP" },
+  { name: "3 – 4 years", id: "recay7vfVoOfcdK2i" },
+  { name: "5 – 9 years", id: "rec8BFAf7scbbfVXi" },
+  { name: "10 – 19 years", id: "recAVikV10fUdSC9Z" },
+  { name: "More than 20 years", id: "rechuOmWY9o2gbO03" },
+];
 
 export default function WorkExperience({
   initial,
@@ -226,23 +235,18 @@ export default function WorkExperience({
               margin: "1rem auto 2rem",
             }}
           >
-            {[
-              "Less than a year",
-              "1 – 2 years",
-              "3 – 4 years",
-              "5 – 9 years",
-              "10 – 19 years",
-              "More than 20 years",
-            ].map((dur) => (
-              <div style={{ margin: "0 0.5rem 0.5rem 0" }} key={`dur-${dur}`}>
-                <RadioBox
-                  seriesOf="years-experience"
-                  checked={dur === yearsExperience}
-                  label={dur}
-                  onChange={() => setYearsExperience(dur)}
-                />
-              </div>
-            ))}
+            {experienceOptions
+              .map((a) => a.name)
+              .map((dur) => (
+                <div style={{ margin: "0 0.5rem 0.5rem 0" }} key={`dur-${dur}`}>
+                  <RadioBox
+                    seriesOf="years-experience"
+                    checked={dur === yearsExperience}
+                    label={dur}
+                    onChange={() => setYearsExperience(dur)}
+                  />
+                </div>
+              ))}
           </div>
         </div>
 

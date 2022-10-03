@@ -1,4 +1,6 @@
+import { getExperience } from "@/components/filters/FilterFromUser";
 import FilterPicker, { PickerFilter } from "@/components/filters/FilterPicker";
+import { experienceOptions } from "@/components/intake-form/WorkExperience";
 import MemberDirectory, { DirectoryMember } from "@/components/MemberDirectory";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
@@ -21,11 +23,13 @@ export async function getStaticProps() {
     true,
     members.map((member) => member.id)
   );
+  const experience: Filter[] = await getExperience(members);
   return {
     props: {
       fetchedMembers: members,
       fetchedFocuses: focuses,
       fetchedIndustries: industries,
+      fetchedExperiences: experience,
       pageTitle: "Hawaiians in Tech",
     },
     revalidate: 60,
@@ -36,6 +40,7 @@ export default function HomePage({
   fetchedMembers,
   fetchedFocuses,
   fetchedIndustries,
+  fetchedExperiences,
   pageTitle,
 }) {
   const initialState = {
@@ -48,9 +53,15 @@ export default function HomePage({
       industry: mem.industry
         ? mem.industry.map((ind) => ({ ...ind, active: false }))
         : [],
+      experience: mem.experience
+        ? mem.experience.map((exp) => ({ ...exp, active: false }))
+        : [],
     })),
     focuses: fetchedFocuses.filter((focus) => focus.count > 0),
     industries: fetchedIndustries.filter((industry) => industry.count > 0),
+    experiences: fetchedExperiences.filter(
+      (experience) => experience.count > 0
+    ),
   };
   const [members, setMembers] = useState<DirectoryMember[]>(
     initialState.members
@@ -59,6 +70,7 @@ export default function HomePage({
   const [filtersList, setFiltersList] = useState<PickerFilter[]>([]);
   const [focuses, setFocuses] = useState<PickerFilter[]>(initialState.focuses);
   const [industries, setIndustries] = useState<[]>(initialState.industries);
+  const [experiences, setExperiences] = useState<[]>(initialState.experiences);
   const [membersCount, setMembersCount] = useState<number>(
     initialState.members.length
   );
@@ -66,33 +78,53 @@ export default function HomePage({
   useEffect(() => {
     const activeFilters = focuses
       .concat(industries)
+      .concat(experiences)
       .filter((foc) => foc.active);
-    const membersWithFocuses = members
+    const membersWithFilters = members
       .map((mem) => ({
         ...mem,
         focus: mem.focus?.map((foc) => ({
           ...foc,
           // update member focuses if filtered
-          active: activeFilters.map((foc) => foc.id).includes(foc.id),
+          active: activeFilters.map((item) => item.id).includes(foc.id),
         })),
         industry: mem.industry?.map((ind) => ({
           ...ind,
-          active: activeFilters.map((ind) => ind.id).includes(ind.id),
+          active: activeFilters.map((item) => item.id).includes(ind.id),
         })),
+        experience: mem.yearsExperience
+          ? [
+              {
+                id: experienceOptions.find(
+                  (item) => item.name === mem.yearsExperience
+                ).id,
+                name: mem.yearsExperience,
+                active: activeFilters
+                  .map((item) => item.id)
+                  .includes(
+                    experienceOptions.find(
+                      (item) => item.name === mem.yearsExperience
+                    ).id
+                  ),
+              },
+            ]
+          : [],
       }))
       // sort by number of filters set
       .sort((a, b) => {
         if (
-          a.focus.concat(a.industry) === undefined ||
-          b.focus.concat(b.industry) === undefined
+          a.focus.concat(a.industry).concat(a.experience) === undefined ||
+          b.focus.concat(b.industry).concat(b.experience) === undefined
         )
           return;
         const firstActive = a.focus
           .concat(a.industry)
+          .concat(a.experience)
           .map((fil) => fil?.active)
           .filter((fil) => fil).length;
         const nextActive = b?.focus
           .concat(b?.industry)
+          .concat(b?.experience)
           .map((fil) => fil?.active)
           .filter((fil) => fil).length;
         // if same count, randomize
@@ -100,14 +132,15 @@ export default function HomePage({
         // or sort by
         return nextActive > firstActive ? 1 : -1;
       });
-    const selectedMemberCount = membersWithFocuses.filter(
+    const selectedMemberCount = membersWithFilters.filter(
       (mem) =>
         mem.focus.filter((fil) => fil.active).length > 0 ||
-        mem.industry.filter((fil) => fil.active).length > 0
+        mem.industry.filter((fil) => fil.active).length > 0 ||
+        mem.experience.filter((fil) => fil.active).length > 0
     ).length;
     setMembersCount(selectedMemberCount ? selectedMemberCount : members.length);
-    setMembers(membersWithFocuses);
-  }, [focuses, industries]);
+    setMembers(membersWithFilters);
+  }, [focuses, industries, experiences]);
 
   const setListItemActive = (
     list?: PickerFilter[],
@@ -128,11 +161,14 @@ export default function HomePage({
         ? focuses
         : filterType == "industry"
         ? industries
+        : filterType == "experience"
+        ? experiences
         : filtersList;
     let filter = listToUpdate.filter((foc) => id === foc.id)[0];
     setListItemActive(filtersList, setFiltersList, id);
     setListItemActive(focuses, setFocuses, id);
     setListItemActive(industries, setIndustries, id);
+    setListItemActive(experiences, setExperiences, id);
     if (filter.active) {
       setActiveFilters(activeFilters.filter((item) => item.id !== id));
     } else {
@@ -153,6 +189,12 @@ export default function HomePage({
         : setFiltersList(
             filtersList.filter((item) => item.filterType != "industry")
           );
+    } else if (filterSelect == "experience") {
+      enable
+        ? setFiltersList(filtersList.concat(experiences))
+        : setFiltersList(
+            filtersList.filter((item) => item.filterType != "experience")
+          );
     }
   };
 
@@ -170,7 +212,6 @@ export default function HomePage({
         <aside>
           {focuses && (
             <FilterPicker
-              focuses={focuses}
               filtersList={filtersList}
               activeFilters={activeFilters}
               onFilterClick={handleFilter}
