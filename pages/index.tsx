@@ -1,12 +1,16 @@
-import { getExperience } from "@/components/filters/FilterFromUser";
 import FilterPicker, { PickerFilter } from "@/components/filters/FilterPicker";
-import { experienceOptions } from "@/components/intake-form/WorkExperience";
 import MemberDirectory, { DirectoryMember } from "@/components/MemberDirectory";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { Title } from "@/components/Title.js";
 // Change to "@/lib/stubApi" if no access to airtable vars!
-import { Filter, getFilters, getMembers, MemberPublic } from "@/lib/api";
+import {
+  Filter,
+  getFilters,
+  getFiltersBasic,
+  getMembers,
+  MemberPublic,
+} from "@/lib/api";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import theme from "styles/theme";
@@ -23,7 +27,7 @@ export async function getStaticProps() {
     true,
     members.map((member) => member.id)
   );
-  const experience: Filter[] = await getExperience(members);
+  const experience: Filter[] = await getFiltersBasic(members, "experience");
   return {
     props: {
       fetchedMembers: members,
@@ -95,16 +99,16 @@ export default function HomePage({
         experience: mem.yearsExperience
           ? [
               {
-                id: experienceOptions.find(
-                  (item) => item.name === mem.yearsExperience
-                ).id,
+                id: experiences.find(
+                  (item) => item["name"] === mem.yearsExperience
+                )["id"],
                 name: mem.yearsExperience,
                 active: activeFilters
                   .map((item) => item.id)
                   .includes(
-                    experienceOptions.find(
-                      (item) => item.name === mem.yearsExperience
-                    ).id
+                    experiences.find(
+                      (item) => item["name"] === mem.yearsExperience
+                    )["id"]
                   ),
               },
             ]

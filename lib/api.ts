@@ -7,7 +7,13 @@ airtable.configure({
 });
 
 interface BaseProps {
-  name: "Members" | "Regions" | "Roles" | "Focuses" | "Industries";
+  name:
+    | "Members"
+    | "Regions"
+    | "Roles"
+    | "Focuses"
+    | "Industries"
+    | "Experience";
   view?: string;
 }
 
@@ -218,4 +224,51 @@ export async function getFilters(
       };
     })
     .sort((a, b) => b.count - a.count);
+}
+
+export interface FilterBasic {
+  name: string;
+  id: string;
+}
+
+export async function getFiltersBasic(
+  members: MemberPublic[],
+  filterType: string
+): Promise<Filter[]> {
+  const filterList = [];
+  const filters = await getBase({
+    name: filterType == "experience" ? "Experience" : "Regions",
+  });
+  const returnedFilters = filters.map((role) => {
+    return {
+      name:
+        typeof role.fields["Name"] === "string" ? role.fields["Name"] : null,
+      id: typeof role.fields["ID"] === "string" ? role.fields["ID"] : null,
+    };
+  });
+  returnedFilters.forEach((fil) => {
+    filterList.push({
+      name: fil.name,
+      id: fil.id,
+      filterType: filterType,
+      members: [],
+      count: 0,
+      hasApprovedMembers: false,
+    });
+  });
+  const memFil = members.filter((member) =>
+    filterType == "experience" ? member.yearsExperience : member.region
+  );
+  memFil.forEach((member) => {
+    let expIndex = filterList.findIndex(
+      (exp) =>
+        exp.name ===
+        (filterType == "experience" ? member.yearsExperience : member.region)
+    );
+    if (!filterList[expIndex].hasApprovedMembers)
+      filterList[expIndex].hasApprovedMembers = true;
+    filterList[expIndex].count++;
+    filterList[expIndex].members.push(member.id);
+  });
+  return filterList;
 }
