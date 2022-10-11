@@ -27,7 +27,7 @@ export default function FilterPicker({
 }: FilterPickerProps) {
   const width = useWindowWidth();
   const [defaultHeight, setDefaultHeight] = useState<number>();
-  const [focusActive, setFocusActive] = useState<boolean>();
+  const [focusActive, setFocusActive] = useState<boolean>(true);
   const [industryActive, setIndustryActive] = useState<boolean>();
   const [regionActive, setRegionActive] = useState<boolean>();
   const [experienceActive, setExperienceActive] = useState<boolean>();

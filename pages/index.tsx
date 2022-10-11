@@ -72,7 +72,9 @@ export default function HomePage({
     initialState.members
   );
   const [activeFilters, setActiveFilters] = useState<PickerFilter[]>([]);
-  const [filtersList, setFiltersList] = useState<PickerFilter[]>([]);
+  const [filtersList, setFiltersList] = useState<PickerFilter[]>(
+    initialState.focuses
+  );
   const [focuses, setFocuses] = useState<PickerFilter[]>(initialState.focuses);
   const [industries, setIndustries] = useState<PickerFilter[]>(
     initialState.industries
