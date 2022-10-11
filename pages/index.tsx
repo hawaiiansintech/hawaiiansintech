@@ -197,7 +197,7 @@ export default function HomePage({
     setListItemActive(industries, setIndustries, id);
     setListItemActive(experiences, setExperiences, id);
     setListItemActive(regions, setRegions, id);
-    if (filter.active) {
+    if (activeFilters.find((item) => item.id === id)) {
       setActiveFilters(activeFilters.filter((item) => item.id !== id));
     } else {
       setActiveFilters([...activeFilters, filter]);
