@@ -7,7 +7,6 @@ import Label from "@/components/form/Label";
 import RadioBox from "@/components/form/RadioBox";
 import { Filter } from "@/lib/api";
 import { useWindowWidth } from "@/lib/hooks";
-import { Industry } from "@/lib/stubApi";
 import { scrollToTop } from "helpers";
 import React, { useEffect, useState } from "react";
 import theme from "styles/theme";
@@ -39,7 +38,7 @@ export default function CompanyIndustry({
   showNew,
 }: CompanyIndustryProps) {
   const width = useWindowWidth();
-  let industries: Industry[] = initial.industries;
+  let industries: Filter[] = initial.industries;
   const [industriesSelected, setIndustriesSelected] = useState<string[]>(
     initial.industriesSelected
   );
