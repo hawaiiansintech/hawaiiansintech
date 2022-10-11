@@ -29,7 +29,7 @@ export default function FilterPicker({
   const [defaultHeight, setDefaultHeight] = useState<number>();
   const [focusActive, setFocusActive] = useState<boolean>();
   const [industryActive, setIndustryActive] = useState<boolean>();
-  const [locationActive, setLocationActive] = useState<boolean>();
+  const [regionActive, setRegionActive] = useState<boolean>();
   const [experienceActive, setExperienceActive] = useState<boolean>();
   const listRef = useRef<HTMLUListElement>();
   const listItemRef = useRef<HTMLLIElement>();
@@ -81,15 +81,6 @@ export default function FilterPicker({
                 activateFilter(industryActive, setIndustryActive, "industry")
               }
             />
-            {/* <FilterPickerCategory
-              category="Location"
-              active={locationActive}
-              onClick={() =>
-                locationActive
-                  ? setLocationActive(false)
-                  : setLocationActive(true)
-              }
-            /> */}
             <FilterPickerCategory
               category="Experience"
               active={experienceActive}
@@ -99,6 +90,13 @@ export default function FilterPicker({
                   setExperienceActive,
                   "experience"
                 )
+              }
+            />
+            <FilterPickerCategory
+              category="Region"
+              active={regionActive}
+              onClick={() =>
+                activateFilter(regionActive, setRegionActive, "region")
               }
             />
             <div
@@ -121,7 +119,7 @@ export default function FilterPicker({
                 <Selectable
                   fullWidth
                   headline={focus.name}
-                  onClick={() => onFilterClick(focus.id, focus.filterType)}
+                  onClick={() => onFilterClick(focus.id)}
                   selected={true}
                   size={SelectableSize.Large}
                 />

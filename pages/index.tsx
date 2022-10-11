@@ -27,13 +27,15 @@ export async function getStaticProps() {
     true,
     members.map((member) => member.id)
   );
-  const experience: Filter[] = await getFiltersBasic(members, "experience");
+  const experiences: Filter[] = await getFiltersBasic(members, "experience");
+  const regions: Filter[] = await getFiltersBasic(members, "region");
   return {
     props: {
       fetchedMembers: members,
       fetchedFocuses: focuses,
       fetchedIndustries: industries,
-      fetchedExperiences: experience,
+      fetchedExperiences: experiences,
+      fetchedRegions: regions,
       pageTitle: "Hawaiians in Tech",
     },
     revalidate: 60,
@@ -45,6 +47,7 @@ export default function HomePage({
   fetchedFocuses,
   fetchedIndustries,
   fetchedExperiences,
+  fetchedRegions,
   pageTitle,
 }) {
   const initialState = {
@@ -57,15 +60,13 @@ export default function HomePage({
       industry: mem.industry
         ? mem.industry.map((ind) => ({ ...ind, active: false }))
         : [],
-      experience: mem.experience
-        ? mem.experience.map((exp) => ({ ...exp, active: false }))
-        : [],
+      experienceFilter: [],
+      regionFilter: [],
     })),
     focuses: fetchedFocuses.filter((focus) => focus.count > 0),
     industries: fetchedIndustries.filter((industry) => industry.count > 0),
-    experiences: fetchedExperiences.filter(
-      (experience) => experience.count > 0
-    ),
+    experiences: fetchedExperiences,
+    regions: fetchedRegions.filter((region) => region.count > 0),
   };
   const [members, setMembers] = useState<DirectoryMember[]>(
     initialState.members
@@ -75,6 +76,7 @@ export default function HomePage({
   const [focuses, setFocuses] = useState<PickerFilter[]>(initialState.focuses);
   const [industries, setIndustries] = useState<[]>(initialState.industries);
   const [experiences, setExperiences] = useState<[]>(initialState.experiences);
+  const [regions, setRegions] = useState<[]>(initialState.regions);
   const [membersCount, setMembersCount] = useState<number>(
     initialState.members.length
   );
@@ -83,6 +85,7 @@ export default function HomePage({
     const activeFilters = focuses
       .concat(industries)
       .concat(experiences)
+      .concat(regions)
       .filter((foc) => foc.active);
     const membersWithFilters = members
       .map((mem) => ({
@@ -96,19 +99,32 @@ export default function HomePage({
           ...ind,
           active: activeFilters.map((item) => item.id).includes(ind.id),
         })),
-        experience: mem.yearsExperience
+        experienceFilter: mem.yearsExperience
           ? [
               {
                 id: experiences.find(
-                  (item) => item["name"] === mem.yearsExperience
-                )["id"],
+                  (item) => item.name === mem.yearsExperience
+                ).id,
                 name: mem.yearsExperience,
                 active: activeFilters
                   .map((item) => item.id)
                   .includes(
                     experiences.find(
-                      (item) => item["name"] === mem.yearsExperience
-                    )["id"]
+                      (item) => item.name === mem.yearsExperience
+                    ).id
+                  ),
+              },
+            ]
+          : [],
+        regionFilter: mem.region
+          ? [
+              {
+                id: regions.find((item) => item.name === mem.region).id,
+                name: mem.region,
+                active: activeFilters
+                  .map((item) => item.id)
+                  .includes(
+                    regions.find((item) => item.name === mem.region).id
                   ),
               },
             ]
@@ -117,18 +133,26 @@ export default function HomePage({
       // sort by number of filters set
       .sort((a, b) => {
         if (
-          a.focus.concat(a.industry).concat(a.experience) === undefined ||
-          b.focus.concat(b.industry).concat(b.experience) === undefined
+          a.focus
+            .concat(a.industry)
+            .concat(a.experienceFilter)
+            .concat(a.regionFilter) === undefined ||
+          b.focus
+            .concat(b.industry)
+            .concat(b.experienceFilter)
+            .concat(b.regionFilter) === undefined
         )
           return;
         const firstActive = a.focus
           .concat(a.industry)
-          .concat(a.experience)
+          .concat(a.experienceFilter)
+          .concat(a.regionFilter)
           .map((fil) => fil?.active)
           .filter((fil) => fil).length;
         const nextActive = b?.focus
           .concat(b?.industry)
-          .concat(b?.experience)
+          .concat(b?.experienceFilter)
+          .concat(b?.regionFilter)
           .map((fil) => fil?.active)
           .filter((fil) => fil).length;
         // if same count, randomize
@@ -140,11 +164,12 @@ export default function HomePage({
       (mem) =>
         mem.focus.filter((fil) => fil.active).length > 0 ||
         mem.industry.filter((fil) => fil.active).length > 0 ||
-        mem.experience.filter((fil) => fil.active).length > 0
+        mem.experienceFilter.filter((fil) => fil.active).length > 0 ||
+        mem.regionFilter.filter((fil) => fil.active).length > 0
     ).length;
     setMembersCount(selectedMemberCount ? selectedMemberCount : members.length);
     setMembers(membersWithFilters);
-  }, [focuses, industries, experiences]);
+  }, [focuses, industries, experiences, regions]);
 
   const setListItemActive = (
     list?: PickerFilter[],
@@ -159,20 +184,13 @@ export default function HomePage({
     );
   };
 
-  const handleFilter = (id?: string, filterType?: string) => {
-    let listToUpdate =
-      filterType == "focus"
-        ? focuses
-        : filterType == "industry"
-        ? industries
-        : filterType == "experience"
-        ? experiences
-        : filtersList;
-    let filter = listToUpdate.filter((foc) => id === foc.id)[0];
+  const handleFilter = (id?: string) => {
+    let filter = filtersList.filter((foc) => id === foc.id)[0];
     setListItemActive(filtersList, setFiltersList, id);
     setListItemActive(focuses, setFocuses, id);
     setListItemActive(industries, setIndustries, id);
     setListItemActive(experiences, setExperiences, id);
+    setListItemActive(regions, setRegions, id);
     if (filter.active) {
       setActiveFilters(activeFilters.filter((item) => item.id !== id));
     } else {
@@ -198,6 +216,12 @@ export default function HomePage({
         ? setFiltersList(filtersList.concat(experiences))
         : setFiltersList(
             filtersList.filter((item) => item.filterType != "experience")
+          );
+    } else if (filterSelect == "region") {
+      enable
+        ? setFiltersList(filtersList.concat(regions))
+        : setFiltersList(
+            filtersList.filter((item) => item.filterType != "region")
           );
     }
   };
