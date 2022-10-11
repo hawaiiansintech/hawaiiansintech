@@ -47,24 +47,6 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
             >
               <h2 className="member__name">{member.name}</h2>
               <div className="member__location">
-                {/* <h3
-                  className={
-                    member.regionFilter[0] && member.regionFilter[0].active
-                      ? "region--selected"
-                      : null
-                  }
-                >
-                  {member.location}
-                </h3>
-                <h4
-                  className={
-                    member.regionFilter[0] && member.regionFilter[0].active
-                      ? "region--selected"
-                      : null
-                  }
-                >
-                  {member.region}
-                </h4> */}
                 <h3>{member.location}</h3>
                 {member.regionFilter[0] ? (
                   <h4>
