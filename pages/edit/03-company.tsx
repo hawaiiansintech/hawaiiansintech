@@ -5,7 +5,7 @@ import CompanyIndustry, {
 } from "@/components/intake-form/CompanyIndustry";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
-import { getIndustries, MemberPublicEditing } from "@/lib/api";
+import { getFilters, MemberPublicEditing } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
 import { FORM_LINKS } from "@/lib/utils";
 import lodash from "lodash";
@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 const NEXT_PAGE = "04-contact";
 
 export async function getStaticProps() {
-  let industries = (await getIndustries()) ?? [];
+  let industries = (await getFilters("industry")) ?? [];
   return {
     props: {
       industries: industries,

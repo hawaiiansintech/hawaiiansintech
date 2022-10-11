@@ -1,41 +1,66 @@
 import { DataList } from "@/components/DataList";
-import { Focus } from "@/lib/api";
+import { Filter } from "@/lib/api";
 import { useWindowWidth } from "@/lib/hooks";
 import { useLayoutEffect, useRef, useState } from "react";
 import theme from "styles/theme";
 import Selectable, { SelectableSize } from "../form/Selectable";
 import FilterPickerCategory from "./FilterPickerCategory";
 
-export interface PickerFocus extends Focus {
+export interface PickerFilter extends Filter {
   active?: boolean;
 }
 
 interface FilterPickerProps {
-  focuses: PickerFocus[];
-  onFilterClick: (id?: string) => any;
-  memberCount?: number;
+  filtersList: PickerFilter[];
+  activeFilters: PickerFilter[];
+  onFilterClick: (id?: string, filterType?: string) => any;
+  onFilterSeclect: (filterSelect?: string, enable?: boolean) => any;
+  selectedMemberCount?: number;
 }
 
 export default function FilterPicker({
-  focuses,
+  filtersList,
+  activeFilters,
   onFilterClick,
-  memberCount,
+  onFilterSeclect,
+  selectedMemberCount,
 }: FilterPickerProps) {
   const width = useWindowWidth();
   const [defaultHeight, setDefaultHeight] = useState<number>();
   const [focusActive, setFocusActive] = useState<boolean>();
   const [industryActive, setIndustryActive] = useState<boolean>();
-  const [locationActive, setLocationActive] = useState<boolean>();
+  const [regionActive, setRegionActive] = useState<boolean>();
   const [experienceActive, setExperienceActive] = useState<boolean>();
   const listRef = useRef<HTMLUListElement>();
   const listItemRef = useRef<HTMLLIElement>();
   const listItemsRef = useRef<HTMLLIElement[]>([]);
-  const filterIsSelected = focuses.filter((foc) => foc.active).length === 0;
+  const filterIsSelected = activeFilters.length !== 0;
 
   useLayoutEffect(() => {
     if (!listItemsRef) return;
     setDefaultHeight(listRef.current.scrollHeight);
   }, [width]);
+
+  function activateFilter(
+    filterActive: boolean,
+    setFilter: Function,
+    filtertype: string
+  ) {
+    let enable = filterActive ? false : true;
+    setFilter(enable);
+    onFilterSeclect(filtertype, enable);
+  }
+
+  function deselectAll() {
+    if (activeFilters.length > 0) {
+      console.log(activeFilters[0]);
+      onFilterClick(activeFilters[0].id, activeFilters[0].filterType);
+    }
+    // activeFilters.forEach(function (filter, index) {
+    //   console.log(filter);
+    //   onFilterClick(filter.id, filter.filterType);
+    // });
+  }
 
   return (
     <>
@@ -46,65 +71,47 @@ export default function FilterPicker({
               category="Focus"
               active={focusActive}
               onClick={() =>
-                focusActive ? setFocusActive(false) : setFocusActive(true)
+                activateFilter(focusActive, setFocusActive, "focus")
               }
             />
             <FilterPickerCategory
               category="Industry"
               active={industryActive}
               onClick={() =>
-                industryActive
-                  ? setIndustryActive(false)
-                  : setIndustryActive(true)
-              }
-            />
-            <FilterPickerCategory
-              category="Location"
-              active={locationActive}
-              onClick={() =>
-                locationActive
-                  ? setLocationActive(false)
-                  : setLocationActive(true)
+                activateFilter(industryActive, setIndustryActive, "industry")
               }
             />
             <FilterPickerCategory
               category="Experience"
               active={experienceActive}
               onClick={() =>
-                experienceActive
-                  ? setExperienceActive(false)
-                  : setExperienceActive(true)
+                activateFilter(
+                  experienceActive,
+                  setExperienceActive,
+                  "experience"
+                )
               }
             />
+            <FilterPickerCategory
+              category="Region"
+              active={regionActive}
+              onClick={() =>
+                activateFilter(regionActive, setRegionActive, "region")
+              }
+            />
+            <div
+              onClick={() => (filterIsSelected ? deselectAll() : null)}
+              className="selected-member-count"
+            >{`${
+              filterIsSelected
+                ? `Selected (${selectedMemberCount})`
+                : `All (${selectedMemberCount})`
+            }`}</div>
           </DataList>
         </div>
-        <div className="picker__container">
-          <ul
-            className="picker__list"
-            ref={listRef}
-            style={{
-              maxHeight: defaultHeight,
-            }}
-          ></ul>
-        </div>
-        <div className="picker__container">
-          <ul
-            className="picker__list"
-            ref={listRef}
-            style={{
-              maxHeight: defaultHeight,
-            }}
-          >
-            <li className="picker__item" ref={listItemRef}>
-              <Selectable
-                fullWidth
-                headline={`All ${memberCount ? `(${memberCount})` : ""}`}
-                onClick={() => (!filterIsSelected ? onFilterClick() : null)}
-                selected={filterIsSelected}
-                size={SelectableSize.Large}
-              />
-            </li>
-            {focuses.map((focus, i) => (
+        <div className="picker__container top">
+          <ul className="picker__list" ref={listRef}>
+            {activeFilters.map((focus, i) => (
               <li
                 key={`focus-filter-${i}`}
                 ref={(el) => (listItemsRef.current[i] = el)}
@@ -113,8 +120,35 @@ export default function FilterPicker({
                   fullWidth
                   headline={focus.name}
                   onClick={() => onFilterClick(focus.id)}
-                  selected={focus.active}
-                  disabled={focus.count === 0}
+                  selected={true}
+                  size={SelectableSize.Large}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="picker__container">
+          <ul className="picker__list" ref={listRef}>
+            {/* <li className="picker__item" ref={listItemRef}>
+              <Selectable
+                fullWidth
+                headline={`All ${memberCount ? `(${memberCount})` : ""}`}
+                onClick={() => (!filterIsSelected ? onFilterClick() : null)}
+                selected={filterIsSelected}
+                size={SelectableSize.Large}
+              />
+            </li> */}
+            {filtersList.map((filter, i) => (
+              <li
+                key={`focus-filter-${i}`}
+                ref={(el) => (listItemsRef.current[i] = el)}
+              >
+                <Selectable
+                  fullWidth
+                  headline={filter.name}
+                  onClick={() => onFilterClick(filter.id)}
+                  selected={filter.active}
+                  disabled={filter.count === 0}
                   size={SelectableSize.Large}
                 />
               </li>
@@ -138,6 +172,9 @@ export default function FilterPicker({
             align-items: flex-end;
             width: 100%;
           }
+          .top {
+            margin-bottom: 1.5rem;
+          }
           .picker__list {
             list-style: none;
             margin: 0 0.5rem 0 0;
@@ -152,6 +189,15 @@ export default function FilterPicker({
             margin: 0;
             white-space: initial;
             flex-shrink: 0;
+          }
+          .selected-member-count {
+            color: ${filterIsSelected
+              ? theme.color.brand.alt
+              : theme.color.text.alt2};
+            cursor: ${filterIsSelected ? "pointer" : "default"};
+            position: absolute;
+            right: 2rem;
+            transition: color 0.5s ease;
           }
           @media screen and (min-width: ${theme.layout.breakPoints.medium}) {
             .picker__list {
