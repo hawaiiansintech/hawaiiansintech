@@ -74,9 +74,13 @@ export default function HomePage({
   const [activeFilters, setActiveFilters] = useState<PickerFilter[]>([]);
   const [filtersList, setFiltersList] = useState<PickerFilter[]>([]);
   const [focuses, setFocuses] = useState<PickerFilter[]>(initialState.focuses);
-  const [industries, setIndustries] = useState<[]>(initialState.industries);
-  const [experiences, setExperiences] = useState<[]>(initialState.experiences);
-  const [regions, setRegions] = useState<[]>(initialState.regions);
+  const [industries, setIndustries] = useState<PickerFilter[]>(
+    initialState.industries
+  );
+  const [experiences, setExperiences] = useState<PickerFilter[]>(
+    initialState.experiences
+  );
+  const [regions, setRegions] = useState<PickerFilter[]>(initialState.regions);
   const [membersCount, setMembersCount] = useState<number>(
     initialState.members.length
   );
@@ -198,32 +202,18 @@ export default function HomePage({
     }
   };
 
-  const filterSeclect = (filterSelect?: string, enable?: boolean) => {
-    if (filterSelect == "focus") {
-      enable
-        ? setFiltersList(filtersList.concat(focuses))
-        : setFiltersList(
-            filtersList.filter((item) => item.filterType != "focus")
-          );
-    } else if (filterSelect == "industry") {
-      enable
-        ? setFiltersList(filtersList.concat(industries))
-        : setFiltersList(
-            filtersList.filter((item) => item.filterType != "industry")
-          );
-    } else if (filterSelect == "experience") {
-      enable
-        ? setFiltersList(filtersList.concat(experiences))
-        : setFiltersList(
-            filtersList.filter((item) => item.filterType != "experience")
-          );
-    } else if (filterSelect == "region") {
-      enable
-        ? setFiltersList(filtersList.concat(regions))
-        : setFiltersList(
-            filtersList.filter((item) => item.filterType != "region")
-          );
-    }
+  const filterSeclect = (filterType?: string, enable?: boolean) => {
+    const filterMap = {
+      focus: focuses,
+      industry: industries,
+      experience: experiences,
+      region: regions,
+    };
+    enable
+      ? setFiltersList(filtersList.concat(filterMap[filterType]))
+      : setFiltersList(
+          filtersList.filter((item) => item.filterType != filterType)
+        );
   };
 
   return (

@@ -36,7 +36,6 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
             ?.filter((foc) => foc.active).length > 0;
         return (
           <motion.div layout="position" key={`member-${member.id}`}>
-            {isSelected ? console.log(member.regionFilter[0].active) : null}
             <a
               href={member.link}
               target="_blank"
