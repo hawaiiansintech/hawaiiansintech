@@ -235,7 +235,7 @@ export default function HomePage({
               filtersList={filtersList}
               activeFilters={activeFilters}
               onFilterClick={handleFilter}
-              onFilterSeclect={filterSeclect}
+              onFilterSelect={filterSeclect}
               selectedMemberCount={membersCount}
             />
           )}

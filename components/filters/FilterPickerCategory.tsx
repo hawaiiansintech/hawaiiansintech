@@ -16,9 +16,9 @@ export default function FilterPickerCategory({
   };
   return (
     <div onClick={handleOnClick}>
-      {category}{" "}
-      <svg height="1rem" width="1rem">
-        <circle cx=".4rem" cy=".4rem" r=".4rem" />
+      {category}
+      <svg height="0.4rem" width="0.4rem">
+        <circle cx="50%" cy="50%" r="50%" />
       </svg>
       <style jsx>{`
         div {
@@ -39,6 +39,7 @@ export default function FilterPickerCategory({
           display: inline-block;
           vertical-align: middle;
           visibility: ${active ? "visible" : "hidden"};
+          margin-left: 0.5rem;
           opacity: ${active ? 1 : 0};
           transition: visibility 0.3s ease, opacity 0.3s ease;
         }

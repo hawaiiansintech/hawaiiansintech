@@ -53,7 +53,6 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
                     <Pill
                       active={member.regionFilter[0].active}
                       customWidth="max-content"
-                      customFontSize="1rem"
                     >
                       {member.regionFilter[0].name}
                     </Pill>

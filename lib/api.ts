@@ -26,6 +26,13 @@ const getBase = async ({ name, view }: BaseProps) => {
     .all();
 };
 
+const apiFilterTypes = {
+  focus: "Focuses",
+  industry: "Industries",
+  experience: "Experience",
+  region: "Regions",
+};
+
 export interface MemberPublic {
   name?: string;
   companySize?: string;
@@ -195,7 +202,7 @@ export async function getFilters(
   approvedMemberIds?: string[]
 ): Promise<Filter[]> {
   const filters = await getBase({
-    name: filterType == "focus" ? "Focuses" : "Industries",
+    name: apiFilterTypes[filterType],
     view: "Approved",
   });
   return filters
@@ -237,7 +244,7 @@ export async function getFiltersBasic(
 ): Promise<Filter[]> {
   const filterList = [];
   const filters = await getBase({
-    name: filterType == "experience" ? "Experience" : "Regions",
+    name: apiFilterTypes[filterType],
   });
   const returnedFilters = filters.map((role) => {
     return {

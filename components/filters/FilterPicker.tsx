@@ -14,7 +14,7 @@ interface FilterPickerProps {
   filtersList: PickerFilter[];
   activeFilters: PickerFilter[];
   onFilterClick: (id?: string, filterType?: string) => any;
-  onFilterSeclect: (filterSelect?: string, enable?: boolean) => any;
+  onFilterSelect: (filterSelect?: string, enable?: boolean) => any;
   selectedMemberCount?: number;
 }
 
@@ -22,7 +22,7 @@ export default function FilterPicker({
   filtersList,
   activeFilters,
   onFilterClick,
-  onFilterSeclect,
+  onFilterSelect,
   selectedMemberCount,
 }: FilterPickerProps) {
   const width = useWindowWidth();
@@ -47,7 +47,7 @@ export default function FilterPicker({
   ) {
     let enable = filterActive ? false : true;
     setFilter(enable);
-    onFilterSeclect(filtertype, enable);
+    onFilterSelect(filtertype, enable);
   }
 
   return (
