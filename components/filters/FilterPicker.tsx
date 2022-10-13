@@ -40,14 +40,18 @@ export default function FilterPicker({
     setDefaultHeight(listRef.current.scrollHeight);
   }, [width]);
 
-  function activateFilter(
-    filterActive: boolean,
-    setFilter: Function,
-    filtertype: string
-  ) {
-    let enable = filterActive ? false : true;
-    setFilter(enable);
-    onFilterSelect(filtertype, enable);
+  function activateFilter(setFilter: Function, filtertype: string) {
+    const filterSetList = [
+      setFocusActive,
+      setIndustryActive,
+      setRegionActive,
+      setExperienceActive,
+    ];
+    for (const filterSet of filterSetList) {
+      if (filterSet !== setFilter) filterSet(false);
+    }
+    setFilter(true);
+    onFilterSelect(filtertype);
   }
 
   return (
@@ -58,34 +62,22 @@ export default function FilterPicker({
             <FilterPickerCategory
               category="Focus"
               active={focusActive}
-              onClick={() =>
-                activateFilter(focusActive, setFocusActive, "focus")
-              }
+              onClick={() => activateFilter(setFocusActive, "focus")}
             />
             <FilterPickerCategory
               category="Industry"
               active={industryActive}
-              onClick={() =>
-                activateFilter(industryActive, setIndustryActive, "industry")
-              }
+              onClick={() => activateFilter(setIndustryActive, "industry")}
             />
             <FilterPickerCategory
               category="Experience"
               active={experienceActive}
-              onClick={() =>
-                activateFilter(
-                  experienceActive,
-                  setExperienceActive,
-                  "experience"
-                )
-              }
+              onClick={() => activateFilter(setExperienceActive, "experience")}
             />
             <FilterPickerCategory
               category="Region"
               active={regionActive}
-              onClick={() =>
-                activateFilter(regionActive, setRegionActive, "region")
-              }
+              onClick={() => activateFilter(setRegionActive, "region")}
             />
             <div className="selected-member-count">{`${
               filterIsSelected

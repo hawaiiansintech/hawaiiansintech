@@ -204,18 +204,14 @@ export default function HomePage({
     }
   };
 
-  const filterSeclect = (filterType?: string, enable?: boolean) => {
+  const filterSelect = (filterType?: string) => {
     const filterMap = {
       focus: focuses,
       industry: industries,
       experience: experiences,
       region: regions,
     };
-    enable
-      ? setFiltersList(filtersList.concat(filterMap[filterType]))
-      : setFiltersList(
-          filtersList.filter((item) => item.filterType != filterType)
-        );
+    setFiltersList(filterMap[filterType]);
   };
 
   return (
@@ -235,7 +231,7 @@ export default function HomePage({
               filtersList={filtersList}
               activeFilters={activeFilters}
               onFilterClick={handleFilter}
-              onFilterSelect={filterSeclect}
+              onFilterSelect={filterSelect}
               selectedMemberCount={membersCount}
             />
           )}
