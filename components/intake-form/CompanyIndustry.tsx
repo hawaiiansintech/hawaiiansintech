@@ -38,7 +38,7 @@ export default function CompanyIndustry({
   showNew,
 }: CompanyIndustryProps) {
   const width = useWindowWidth();
-  let industries: Industry[] = initial.industries;
+  let industries: Filter[] = initial.industries;
   const [industriesSelected, setIndustriesSelected] = useState<string[]>(
     initial.industriesSelected
   );

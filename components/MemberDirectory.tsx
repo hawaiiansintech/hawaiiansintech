@@ -48,7 +48,19 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
               <h2 className="member__name">{member.name}</h2>
               <div className="member__location">
                 <h3>{member.location}</h3>
-                <h4>{member.region}</h4>
+                {member.regionFilter[0] ? (
+                  <h4>
+                    <Pill
+                      active={member.regionFilter[0].active}
+                      customWidth="max-content"
+                      customFontSize="1rem"
+                    >
+                      {member.regionFilter[0].name}
+                    </Pill>
+                  </h4>
+                ) : (
+                  <h4>{member.region}</h4>
+                )}
               </div>
               <div>
                 <h3 className="member__title">{member.title}</h3>
@@ -64,11 +76,6 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
                     </dt>
                   ))}
                   {member.experienceFilter?.map((fil) => (
-                    <dt key={`member-meta-${fil.id}`}>
-                      <Pill active={fil.active}>{fil.name}</Pill>
-                    </dt>
-                  ))}
-                  {member.regionFilter?.map((fil) => (
                     <dt key={`member-meta-${fil.id}`}>
                       <Pill active={fil.active}>{fil.name}</Pill>
                     </dt>
@@ -156,7 +163,7 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
         }
         h4 {
           font-weight: 400;
-          margin-top: 0.25rem;
+          margin-top: 0.4rem;
         }
         .member__location h3:after {
           content: ",";
@@ -177,6 +184,9 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
           .member--selected {
             background: ${theme.color.brand.alpha};
             border-color: ${theme.color.brand.alpha};
+          }
+          .region--selected {
+            color: ${theme.color.brand.base};
           }
           .member__name {
             font-size: 2rem;

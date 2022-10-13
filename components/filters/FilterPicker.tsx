@@ -27,12 +27,11 @@ export default function FilterPicker({
 }: FilterPickerProps) {
   const width = useWindowWidth();
   const [defaultHeight, setDefaultHeight] = useState<number>();
-  const [focusActive, setFocusActive] = useState<boolean>();
+  const [focusActive, setFocusActive] = useState<boolean>(true);
   const [industryActive, setIndustryActive] = useState<boolean>();
   const [regionActive, setRegionActive] = useState<boolean>();
   const [experienceActive, setExperienceActive] = useState<boolean>();
   const listRef = useRef<HTMLUListElement>();
-  const listItemRef = useRef<HTMLLIElement>();
   const listItemsRef = useRef<HTMLLIElement[]>([]);
   const filterIsSelected = activeFilters.length !== 0;
 
@@ -49,17 +48,6 @@ export default function FilterPicker({
     let enable = filterActive ? false : true;
     setFilter(enable);
     onFilterSeclect(filtertype, enable);
-  }
-
-  function deselectAll() {
-    if (activeFilters.length > 0) {
-      console.log(activeFilters[0]);
-      onFilterClick(activeFilters[0].id, activeFilters[0].filterType);
-    }
-    // activeFilters.forEach(function (filter, index) {
-    //   console.log(filter);
-    //   onFilterClick(filter.id, filter.filterType);
-    // });
   }
 
   return (
@@ -99,10 +87,7 @@ export default function FilterPicker({
                 activateFilter(regionActive, setRegionActive, "region")
               }
             />
-            <div
-              onClick={() => (filterIsSelected ? deselectAll() : null)}
-              className="selected-member-count"
-            >{`${
+            <div className="selected-member-count">{`${
               filterIsSelected
                 ? `Selected (${selectedMemberCount})`
                 : `All (${selectedMemberCount})`
@@ -129,15 +114,6 @@ export default function FilterPicker({
         </div>
         <div className="picker__container">
           <ul className="picker__list" ref={listRef}>
-            {/* <li className="picker__item" ref={listItemRef}>
-              <Selectable
-                fullWidth
-                headline={`All ${memberCount ? `(${memberCount})` : ""}`}
-                onClick={() => (!filterIsSelected ? onFilterClick() : null)}
-                selected={filterIsSelected}
-                size={SelectableSize.Large}
-              />
-            </li> */}
             {filtersList.map((filter, i) => (
               <li
                 key={`focus-filter-${i}`}
@@ -194,7 +170,6 @@ export default function FilterPicker({
             color: ${filterIsSelected
               ? theme.color.brand.alt
               : theme.color.text.alt2};
-            cursor: ${filterIsSelected ? "pointer" : "default"};
             position: absolute;
             right: 2rem;
             transition: color 0.5s ease;

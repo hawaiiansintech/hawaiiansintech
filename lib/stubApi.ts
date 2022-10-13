@@ -1,5 +1,5 @@
-import { Filter, Focus, Industry, MemberPublic } from "./api";
-export type { Focus, Industry, MemberPublic };
+import { Filter, MemberPublic } from "./api";
+export type { MemberPublic };
 
 /**
  * Stubbed function to simulate fetching technologists
