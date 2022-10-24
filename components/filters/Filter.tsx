@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import theme from "styles/theme";
-import CheckSVG from "./icon/CheckSVG.js";
-import CloseSVG from "./icon/CloseSVG.js";
+import CheckSVG from "../icon/CheckSVG.js";
+import CloseSVG from "../icon/CloseSVG.js";
 
 const sidebarAnimation = {
   hidden: { x: "120%" },
@@ -126,6 +126,7 @@ function FilterItem({ label, active, onClick, count }) {
 
         .filterItem:hover {
           color: ${theme.color.link.base};
+          cursor: pointer;
         }
         .filterItem__count {
           font-size: 0.75em;

@@ -7,7 +7,13 @@ airtable.configure({
 });
 
 interface BaseProps {
-  name: "Members" | "Regions" | "Roles" | "Focuses" | "Industries";
+  name:
+    | "Members"
+    | "Regions"
+    | "Roles"
+    | "Focuses"
+    | "Industries"
+    | "Experience";
   view?: string;
 }
 
@@ -18,6 +24,13 @@ const getBase = async ({ name, view }: BaseProps) => {
       view: view || "All",
     })
     .all();
+};
+
+const apiFilterTypes = {
+  focus: "Focuses",
+  industry: "Industries",
+  experience: "Experience",
+  region: "Regions",
 };
 
 export interface MemberPublic {
@@ -164,63 +177,105 @@ export async function getMembers(): Promise<MemberPublic[]> {
   });
 }
 
-export interface Focus {
+function hasApprovedMembers(approvedMemberIds: string[], memberList) {
+  // TODO: add type to memberList
+  for (const member in memberList) {
+    if (approvedMemberIds.includes(memberList[member])) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export interface Filter {
   name: string;
   id: string;
+  filterType: string;
   members?: string[];
   count?: number;
   hasApprovedMembers?: boolean;
 }
 
-export async function getFocuses(limitByMembers?: boolean): Promise<Focus[]> {
-  const focuses = await getBase({ name: "Focuses", view: "Approved" });
-  return focuses
-    .filter((role) => role.fields["Name"])
-    .filter((role) =>
-      limitByMembers ? role.fields["Has Approved Members"] : true
+export async function getFilters(
+  filterType: string,
+  limitByMembers?: boolean,
+  approvedMemberIds?: string[]
+): Promise<Filter[]> {
+  const filters = await getBase({
+    name: apiFilterTypes[filterType],
+    view: "Approved",
+  });
+  return filters
+    .filter(
+      (role) =>
+        role.fields["Name"] &&
+        (limitByMembers
+          ? hasApprovedMembers(approvedMemberIds, role.fields["Members"])
+          : true)
     )
     .map((role) => {
       return {
         name:
           typeof role.fields["Name"] === "string" ? role.fields["Name"] : null,
         id: typeof role.fields["ID"] === "string" ? role.fields["ID"] : null,
+        filterType: filterType,
         members: Array.isArray(role.fields["Members"])
           ? role.fields["Members"]
           : null,
         count: Array.isArray(role.fields["Members"])
           ? role.fields["Members"].length
           : 0,
-        hasApprovedMembers:
-          typeof role.fields["Has Approved Members"] === "string" &&
-          role.fields["Has Approved Members"] !== "",
+        hasApprovedMembers: limitByMembers
+          ? hasApprovedMembers(approvedMemberIds, role.fields["Members"])
+          : null,
       };
     })
     .sort((a, b) => b.count - a.count);
 }
 
-export interface Industry {
+export interface FilterBasic {
   name: string;
   id: string;
-  members?: string[];
-  count?: number;
 }
 
-export async function getIndustries(): Promise<Industry[]> {
-  const industries = await getBase({ name: "Industries", view: "Approved" });
-
-  return industries
-    .filter((role) => role.fields["Name"])
-    .map((role) => {
-      return {
-        name:
-          typeof role.fields["Name"] === "string" ? role.fields["Name"] : null,
-        id: typeof role.fields["ID"] === "string" ? role.fields["ID"] : null,
-        members: Array.isArray(role.fields["Members"])
-          ? role.fields["Members"]
-          : null,
-        count: Array.isArray(role.fields["Members"])
-          ? role.fields["Members"].length
-          : 0,
-      };
+export async function getFiltersBasic(
+  members: MemberPublic[],
+  filterType: string
+): Promise<Filter[]> {
+  const filterList = [];
+  const filters = await getBase({
+    name: apiFilterTypes[filterType],
+  });
+  const returnedFilters = filters.map((role) => {
+    return {
+      name:
+        typeof role.fields["Name"] === "string" ? role.fields["Name"] : null,
+      id: typeof role.fields["ID"] === "string" ? role.fields["ID"] : null,
+    };
+  });
+  returnedFilters.forEach((fil) => {
+    filterList.push({
+      name: fil.name,
+      id: fil.id,
+      filterType: filterType,
+      members: [],
+      count: 0,
+      hasApprovedMembers: false,
     });
+  });
+  const memFil = members.filter((member) =>
+    filterType == "experience" ? member.yearsExperience : member.region
+  );
+  memFil.forEach((member) => {
+    let expIndex = filterList.findIndex(
+      (exp) =>
+        exp.name ===
+        (filterType == "experience" ? member.yearsExperience : member.region)
+    );
+    if (!filterList[expIndex].hasApprovedMembers)
+      filterList[expIndex].hasApprovedMembers = true;
+    filterList[expIndex].count++;
+    filterList[expIndex].members.push(member.id);
+  });
+  return filterList;
 }

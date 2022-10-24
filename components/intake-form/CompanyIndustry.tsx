@@ -5,7 +5,7 @@ import ErrorMessage, {
 import InputBox from "@/components/form/InputBox";
 import Label from "@/components/form/Label";
 import RadioBox from "@/components/form/RadioBox";
-import { Industry } from "@/lib/api";
+import { Filter } from "@/lib/api";
 import { useWindowWidth } from "@/lib/hooks";
 import { scrollToTop } from "helpers";
 import React, { useEffect, useState } from "react";
@@ -19,7 +19,7 @@ const MAX_COUNT = 3;
 const TECHNOLOGY_LABEL = "Internet / Technology";
 
 export interface CompanyIndustryInitialProps {
-  industries?: Industry[];
+  industries?: Filter[];
   industriesSelected?: string[];
   industrySuggested?: string;
   deferIndustry?: "true" | undefined;
@@ -38,7 +38,7 @@ export default function CompanyIndustry({
   showNew,
 }: CompanyIndustryProps) {
   const width = useWindowWidth();
-  let industries: Industry[] = initial.industries;
+  let industries: Filter[] = initial.industries;
   const [industriesSelected, setIndustriesSelected] = useState<string[]>(
     initial.industriesSelected
   );

@@ -7,7 +7,7 @@ import Input from "@/components/form/Input";
 import InputBox from "@/components/form/InputBox";
 import Label from "@/components/form/Label";
 import RadioBox from "@/components/form/RadioBox";
-import { Focus } from "@/lib/api";
+import { Filter } from "@/lib/api";
 import { useWindowWidth } from "@/lib/hooks";
 import { MAX_FOCUS_COUNT } from "@/lib/utils";
 import { scrollToTop } from "helpers";
@@ -19,7 +19,7 @@ import Selectable, {
 } from "../form/Selectable";
 
 export interface WorkExperienceInitialProps {
-  focuses?: Focus[];
+  focuses?: Filter[];
   deferTitle?: "true" | undefined;
   focusesSelected?: string[];
   focusSuggested?: string;

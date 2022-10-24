@@ -14,7 +14,7 @@ import { Heading } from "@/components/Heading";
 import { WorkExperienceWarning } from "@/components/intake-form/WorkExperience";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
-import { getIndustries } from "@/lib/api";
+import { getFilters } from "@/lib/api";
 import { useStorage, useWindowWidth } from "@/lib/hooks";
 import { FORM_LINKS, useInvalid } from "@/lib/utils";
 import Head from "next/head";
@@ -26,7 +26,7 @@ import { scrollToTop } from "../../helpers";
 const NEXT_PAGE = "04-contact";
 
 export async function getStaticProps() {
-  let industries = (await getIndustries()) ?? [];
+  let industries = (await getFilters("industry")) ?? [];
   return {
     props: {
       industries: industries,

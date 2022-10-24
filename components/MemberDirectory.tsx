@@ -6,6 +6,9 @@ import Pill from "./Pill";
 
 export interface DirectoryMember extends MemberPublic {
   focus: { active?: boolean; id: string; name: string }[];
+  industry: { active?: boolean; id: string; name: string }[];
+  experienceFilter: { active?: boolean; id: string; name: string }[];
+  regionFilter: { active?: boolean; id: string; name: string }[];
 }
 
 interface MemberDirectoryProps {
@@ -14,12 +17,23 @@ interface MemberDirectoryProps {
 
 export default function MemberDirectory({ members }: MemberDirectoryProps) {
   const isFiltered =
-    members.filter((mem) => mem.focus?.filter((foc) => foc.active).length > 0)
-      .length > 0;
+    members.filter(
+      (mem) =>
+        mem.focus
+          .concat(mem.industry)
+          .concat(mem.experienceFilter)
+          .concat(mem.regionFilter)
+          ?.filter((foc) => foc.active).length > 0
+    ).length > 0;
   return (
     <section>
       {members.map((member, i) => {
-        const isSelected = member.focus?.filter((foc) => foc.active).length > 0;
+        const isSelected =
+          member.focus
+            .concat(member.industry)
+            .concat(member.experienceFilter)
+            .concat(member.regionFilter)
+            ?.filter((foc) => foc.active).length > 0;
         return (
           <motion.div layout="position" key={`member-${member.id}`}>
             <a
@@ -34,14 +48,35 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
               <h2 className="member__name">{member.name}</h2>
               <div className="member__location">
                 <h3>{member.location}</h3>
-                <h4>{member.region}</h4>
+                {member.regionFilter[0] ? (
+                  <h4>
+                    <Pill
+                      active={member.regionFilter[0].active}
+                      customWidth="max-content"
+                    >
+                      {member.regionFilter[0].name}
+                    </Pill>
+                  </h4>
+                ) : (
+                  <h4>{member.region}</h4>
+                )}
               </div>
               <div>
                 <h3 className="member__title">{member.title}</h3>
                 <dl className="member__meta">
-                  {member.focus?.map((foc) => (
-                    <dt key={`member-meta-${foc.id}`}>
-                      <Pill active={foc.active}>{foc.name}</Pill>
+                  {member.focus?.map((fil) => (
+                    <dt key={`member-meta-${fil.id}`}>
+                      <Pill active={fil.active}>{fil.name}</Pill>
+                    </dt>
+                  ))}
+                  {member.industry?.map((fil) => (
+                    <dt key={`member-meta-${fil.id}`}>
+                      <Pill active={fil.active}>{fil.name}</Pill>
+                    </dt>
+                  ))}
+                  {member.experienceFilter?.map((fil) => (
+                    <dt key={`member-meta-${fil.id}`}>
+                      <Pill active={fil.active}>{fil.name}</Pill>
                     </dt>
                   ))}
                 </dl>
@@ -127,7 +162,7 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
         }
         h4 {
           font-weight: 400;
-          margin-top: 0.25rem;
+          margin-top: 0.4rem;
         }
         .member__location h3:after {
           content: ",";
@@ -144,12 +179,13 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
           }
           .member:hover {
             color: ${theme.color.brand.base};
-            background: ${theme.color.brand.alpha};
-            transition: background 150ms ease-out;
           }
           .member--selected {
             background: ${theme.color.brand.alpha};
             border-color: ${theme.color.brand.alpha};
+          }
+          .region--selected {
+            color: ${theme.color.brand.base};
           }
           .member__name {
             font-size: 2rem;
