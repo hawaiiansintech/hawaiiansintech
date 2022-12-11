@@ -73,7 +73,7 @@ export default function HomePage({
   );
   const [activeFilters, setActiveFilters] = useState<PickerFilter[]>([]);
   const [filtersList, setFiltersList] = useState<PickerFilter[]>(
-    initialState.focuses
+    initialState.focuses.slice(0, 7)
   );
   const [focuses, setFocuses] = useState<PickerFilter[]>(initialState.focuses);
   const [industries, setIndustries] = useState<PickerFilter[]>(
@@ -86,6 +86,7 @@ export default function HomePage({
   const [membersCount, setMembersCount] = useState<number>(
     initialState.members.length
   );
+  const [viewAll, setViewAll] = useState<Boolean>(true);
 
   useEffect(() => {
     const activeFilters = focuses
@@ -205,6 +206,7 @@ export default function HomePage({
   };
 
   const filterSelect = (filterType?: string) => {
+    if (viewAll === true) setViewAll(false);
     const filterMap = {
       focus: focuses,
       industry: industries,
@@ -235,6 +237,16 @@ export default function HomePage({
               selectedMemberCount={membersCount}
             />
           )}
+          {viewAll ? (
+            <h4
+              onClick={() => {
+                setFiltersList(focuses);
+                setViewAll(false);
+              }}
+            >
+              View All
+            </h4>
+          ) : null}
         </aside>
         <main>{members && <MemberDirectory members={members} />}</main>
       </div>
@@ -269,6 +281,13 @@ export default function HomePage({
           aside {
             padding: 0 2rem 1rem;
           }
+        }
+        h4 {
+          margin: 0;
+          text-align: right;
+          width: 5rem;
+          color: ${theme.color.brand.base};
+          cursor: pointer;
         }
         h5 {
           margin: 0;
