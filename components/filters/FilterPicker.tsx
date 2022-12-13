@@ -174,8 +174,7 @@ export default function FilterPicker({
           }
           @media screen and (max-width: ${theme.layout.breakPoints.medium}) {
             .selected-member-count {
-              position: sticky;
-              right: 0rem;
+              position: static;
               width: 100%;
               margin-top: 1rem;
             }

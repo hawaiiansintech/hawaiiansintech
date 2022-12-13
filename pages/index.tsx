@@ -206,7 +206,7 @@ export default function HomePage({
   };
 
   const filterSelect = (filterType?: string) => {
-    if (viewAll === true) setViewAll(false);
+    if (viewAll) setViewAll(false);
     const filterMap = {
       focus: focuses,
       industry: industries,
@@ -238,14 +238,14 @@ export default function HomePage({
             />
           )}
           {viewAll ? (
-            <h4
+            <a
               onClick={() => {
                 setFiltersList(focuses);
                 setViewAll(false);
               }}
             >
               View All
-            </h4>
+            </a>
           ) : null}
         </aside>
         <main>{members && <MemberDirectory members={members} />}</main>
@@ -282,7 +282,7 @@ export default function HomePage({
             padding: 0 2rem 1rem;
           }
         }
-        h4 {
+        a {
           margin: 0;
           text-align: right;
           width: 5rem;
