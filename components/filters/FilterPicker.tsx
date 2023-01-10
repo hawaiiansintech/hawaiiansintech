@@ -58,7 +58,7 @@ export default function FilterPicker({
     <>
       <div className="picker">
         <div className="picker__selection">
-          <DataList gap="0rem 3rem">
+          <DataList gap="1rem 3rem">
             <FilterPickerCategory
               category="Focus"
               active={focusActive}
@@ -170,6 +170,13 @@ export default function FilterPicker({
             .picker__list {
               margin-bottom: 0;
               max-height: initial;
+            }
+          }
+          @media screen and (max-width: ${theme.layout.breakPoints.medium}) {
+            .selected-member-count {
+              position: static;
+              width: 100%;
+              margin-top: 1rem;
             }
           }
         `}</style>
