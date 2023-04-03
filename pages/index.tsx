@@ -3,7 +3,6 @@ import MemberDirectory, { DirectoryMember } from "@/components/MemberDirectory";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { Title } from "@/components/Title.js";
-// Change to "@/lib/stubApi" if no access to airtable vars!
 import {
   Filter,
   getFilters,
@@ -18,17 +17,17 @@ import theme from "styles/theme";
 export async function getStaticProps() {
   const members: MemberPublic[] = await getMembers();
   const focuses: Filter[] = await getFilters(
-    "focus",
+    "focuses",
     true,
     members.map((member) => member.id)
   );
   const industries: Filter[] = await getFilters(
-    "industry",
+    "industries",
     true,
     members.map((member) => member.id)
   );
   const experiences: Filter[] = await getFiltersBasic(members, "experience");
-  const regions: Filter[] = await getFiltersBasic(members, "region");
+  const regions: Filter[] = await getFiltersBasic(members, "regions");
   return {
     props: {
       fetchedMembers: members,

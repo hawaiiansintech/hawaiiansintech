@@ -1,5 +1,5 @@
-import globalStyles from "../styles/global";
 import { AnimatePresence } from "framer-motion";
+import globalStyles from "../styles/global";
 
 function App({ Component, pageProps }) {
   return (
