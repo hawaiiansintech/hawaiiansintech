@@ -4,9 +4,11 @@ import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { Title } from "@/components/Title.js";
 import {
+  DocumentData,
   Filter,
   getFilters,
   getFiltersBasic,
+  getFirebaseTable,
   getMembers,
   MemberPublic,
 } from "@/lib/api";
@@ -15,19 +17,32 @@ import React, { useEffect, useState } from "react";
 import theme from "styles/theme";
 
 export async function getStaticProps() {
-  const members: MemberPublic[] = await getMembers();
+  const focusesData: DocumentData[] = await getFirebaseTable("focuses");
+  const industriesData: DocumentData[] = await getFirebaseTable("industries");
+  const regionsData: DocumentData[] = await getFirebaseTable("regions");
+  const members: MemberPublic[] = await getMembers(
+    focusesData,
+    industriesData,
+    regionsData
+  );
   const focuses: Filter[] = await getFilters(
     "focuses",
     true,
-    members.map((member) => member.id)
+    members.map((member) => member.id),
+    focusesData
   );
   const industries: Filter[] = await getFilters(
     "industries",
     true,
-    members.map((member) => member.id)
+    members.map((member) => member.id),
+    industriesData
   );
   const experiences: Filter[] = await getFiltersBasic(members, "experience");
-  const regions: Filter[] = await getFiltersBasic(members, "regions");
+  const regions: Filter[] = await getFiltersBasic(
+    members,
+    "regions",
+    regionsData
+  );
   return {
     props: {
       fetchedMembers: members,

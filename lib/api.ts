@@ -22,7 +22,12 @@ export interface MemberPublicEditing extends MemberPublic {
   editing?: { field: string; changeTo: string | string[] }[];
 }
 
-async function getFirebaseTable(table: string) {
+export interface DocumentData {
+  id: string;
+  fields: any;
+}
+
+export async function getFirebaseTable(table: string) {
   const documentsCollection = collection(db, table);
   const documentsSnapshot = await getDocs(documentsCollection);
   const documentsData = documentsSnapshot.docs.map((doc) => ({
@@ -32,7 +37,7 @@ async function getFirebaseTable(table: string) {
   return documentsData;
 }
 
-function regionLookup(member, regions) {
+function regionLookup(member: DocumentData, regions: DocumentData[]) {
   return (
     regions.find((region) => {
       const memberRegion = member.fields.regions;
@@ -44,7 +49,7 @@ function regionLookup(member, regions) {
   );
 }
 
-function focusLookup(member, focuses) {
+function focusLookup(member: DocumentData, focuses: DocumentData[]) {
   const memberFocus = member.fields.focuses;
   if (memberFocus && Array.isArray(memberFocus)) {
     return memberFocus.map((foc) => {
@@ -66,7 +71,7 @@ function focusLookup(member, focuses) {
   return null;
 }
 
-function industryLookup(member, industries) {
+function industryLookup(member: DocumentData, industries: DocumentData[]) {
   const memberIndustry = member.fields.industries;
   if (memberIndustry && Array.isArray(memberIndustry)) {
     return memberIndustry.map((ind) => {
@@ -88,7 +93,7 @@ function industryLookup(member, industries) {
   return null;
 }
 
-function emailLookup(member) {
+function emailLookup(member: DocumentData) {
   const memberEmail = member.fields["email"];
   if (memberEmail && typeof memberEmail === "string") {
     const [first, last, domain] = useEmailCloaker(memberEmail);
@@ -97,15 +102,15 @@ function emailLookup(member) {
   return null;
 }
 
-export async function getMembers(): Promise<MemberPublic[]> {
+export async function getMembers(
+  focusesData: DocumentData[],
+  industriesData: DocumentData[],
+  regionsData: DocumentData[]
+): Promise<MemberPublic[]> {
   const members = await getFirebaseTable("kanakas");
-  // TODO: pass in the focuses, industries, and regions if they're being called in getFilters() anyway
-  const focuses = await getFirebaseTable("focuses");
-  const industries = await getFirebaseTable("industries");
-  const regions = await getFirebaseTable("regions");
   return members
     .map((member) => {
-      const regionLookupVal = regionLookup(member, regions);
+      const regionLookupVal = regionLookup(member, regionsData);
       return member.fields.status === "approved"
         ? {
             name:
@@ -136,8 +141,8 @@ export async function getMembers(): Promise<MemberPublic[]> {
             emailAbbr: emailLookup(member),
             region:
               typeof regionLookupVal === "string" ? regionLookupVal : null,
-            industry: industryLookup(member, industries),
-            focus: focusLookup(member, focuses),
+            industry: industryLookup(member, industriesData),
+            focus: focusLookup(member, focusesData),
           }
         : null;
     })
@@ -152,8 +157,10 @@ export async function getMembers(): Promise<MemberPublic[]> {
     });
 }
 
-function hasApprovedMembers(approvedMemberIds: string[], memberList) {
-  // TODO: add type to memberList
+function hasApprovedMembers(
+  approvedMemberIds: string[],
+  memberList: DocumentData
+) {
   for (const member in memberList) {
     if (approvedMemberIds.includes(memberList[member])) {
       return true;
@@ -174,9 +181,10 @@ export interface Filter {
 export async function getFilters(
   filterType: string,
   limitByMembers?: boolean,
-  approvedMemberIds?: string[]
+  approvedMemberIds?: string[],
+  filterData?: DocumentData[]
 ): Promise<Filter[]> {
-  const filters = await getFirebaseTable(filterType);
+  const filters = filterData ? filterData : await getFirebaseTable(filterType);
   return filters
     .filter(
       (role) =>
@@ -212,10 +220,11 @@ export interface FilterBasic {
 
 export async function getFiltersBasic(
   members: MemberPublic[],
-  filterType: string
+  filterType: string,
+  filterData?: DocumentData[]
 ): Promise<Filter[]> {
   const filterList = [];
-  const filters = await getFirebaseTable(filterType);
+  const filters = filterData ? filterData : await getFirebaseTable(filterType);
   const returnedFilters = filters.map((role) => {
     return {
       name:
