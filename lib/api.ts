@@ -103,14 +103,17 @@ function emailLookup(member: DocumentData) {
 }
 
 export async function getMembers(
-  focusesData: DocumentData[],
-  industriesData: DocumentData[],
-  regionsData: DocumentData[]
+  focusesData?: DocumentData[],
+  industriesData?: DocumentData[],
+  regionsData?: DocumentData[]
 ): Promise<MemberPublic[]> {
   const members = await getFirebaseTable("kanakas");
+  const focuses = focusesData || (await getFirebaseTable("regions"));
+  const industries = industriesData || (await getFirebaseTable("regions"));
+  const regions = regionsData || (await getFirebaseTable("regions"));
   return members
     .map((member) => {
-      const regionLookupVal = regionLookup(member, regionsData);
+      const regionLookupVal = regionLookup(member, regions);
       return member.fields.status === "approved"
         ? {
             name:
@@ -141,8 +144,8 @@ export async function getMembers(
             emailAbbr: emailLookup(member),
             region:
               typeof regionLookupVal === "string" ? regionLookupVal : null,
-            industry: industryLookup(member, industriesData),
-            focus: focusLookup(member, focusesData),
+            industry: industryLookup(member, industries),
+            focus: focusLookup(member, focuses),
           }
         : null;
     })
@@ -184,7 +187,7 @@ export async function getFilters(
   approvedMemberIds?: string[],
   filterData?: DocumentData[]
 ): Promise<Filter[]> {
-  const filters = filterData ? filterData : await getFirebaseTable(filterType);
+  const filters = filterData || (await getFirebaseTable(filterType));
   return filters
     .filter(
       (role) =>
@@ -224,7 +227,7 @@ export async function getFiltersBasic(
   filterData?: DocumentData[]
 ): Promise<Filter[]> {
   const filterList = [];
-  const filters = filterData ? filterData : await getFirebaseTable(filterType);
+  const filters = filterData || (await getFirebaseTable(filterType));
   const returnedFilters = filters.map((role) => {
     return {
       name:
