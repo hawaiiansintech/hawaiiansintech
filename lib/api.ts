@@ -42,7 +42,11 @@ function regionLookup(member: DocumentData, regions: DocumentData[]) {
     regions.find((region) => {
       const memberRegion = member.fields.regions;
       // TODO: Change this check if we're expecting only one region per member
-      if (memberRegion && Array.isArray(memberRegion)) {
+      if (
+        memberRegion &&
+        Array.isArray(memberRegion) &&
+        memberRegion.length !== 0
+      ) {
         return region.id === memberRegion[0].id;
       }
     })?.fields.name || null
@@ -51,7 +55,7 @@ function regionLookup(member: DocumentData, regions: DocumentData[]) {
 
 function focusLookup(member: DocumentData, focuses: DocumentData[]) {
   const memberFocus = member.fields.focuses;
-  if (memberFocus && Array.isArray(memberFocus)) {
+  if (memberFocus && Array.isArray(memberFocus) && memberFocus.length !== 0) {
     return memberFocus.map((foc) => {
       return (
         focuses
@@ -73,7 +77,11 @@ function focusLookup(member: DocumentData, focuses: DocumentData[]) {
 
 function industryLookup(member: DocumentData, industries: DocumentData[]) {
   const memberIndustry = member.fields.industries;
-  if (memberIndustry && Array.isArray(memberIndustry)) {
+  if (
+    memberIndustry &&
+    Array.isArray(memberIndustry) &&
+    memberIndustry.length !== 0
+  ) {
     return memberIndustry.map((ind) => {
       return (
         industries
@@ -107,7 +115,7 @@ export async function getMembers(
   industriesData?: DocumentData[],
   regionsData?: DocumentData[]
 ): Promise<MemberPublic[]> {
-  const members = await getFirebaseTable("kanakas");
+  const members = await getFirebaseTable("members");
   const focuses = focusesData || (await getFirebaseTable("regions"));
   const industries = industriesData || (await getFirebaseTable("regions"));
   const regions = regionsData || (await getFirebaseTable("regions"));
@@ -148,6 +156,9 @@ export async function getMembers(
             focus: focusLookup(member, focuses),
           }
         : null;
+    })
+    .filter(function (value) {
+      return value !== null;
     })
     .sort((a, b) => {
       if (a.name < b.name) {
@@ -195,19 +206,19 @@ export async function getFilters(
         (limitByMembers
           ? hasApprovedMembers(
               approvedMemberIds,
-              role.fields["kanakas"].map((member) => member.id)
+              role.fields["members"].map((member) => member.id)
             )
           : true)
     )
     .map((role) => {
-      const member_ids = role.fields["kanakas"].map((member) => member.id);
+      const member_ids = role.fields["members"].map((member) => member.id);
       return {
         name:
           typeof role.fields["name"] === "string" ? role.fields["name"] : null,
         id: typeof role.id === "string" ? role.id : null,
         filterType: filterType,
-        members: Array.isArray(role.fields["kanakas"]) ? member_ids : null,
-        count: Array.isArray(role.fields["kanakas"]) ? member_ids.length : 0,
+        members: Array.isArray(role.fields["members"]) ? member_ids : null,
+        count: Array.isArray(role.fields["members"]) ? member_ids.length : 0,
         hasApprovedMembers: limitByMembers
           ? hasApprovedMembers(approvedMemberIds, member_ids)
           : null,
