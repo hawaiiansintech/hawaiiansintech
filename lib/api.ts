@@ -1,6 +1,6 @@
+import { db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { useEmailCloaker } from "helpers";
-import { db } from "pages/api/firebase";
 
 export interface MemberPublic {
   name?: string;
@@ -203,6 +203,7 @@ export async function getFilters(
     .filter(
       (role) =>
         role.fields["name"] &&
+        role.fields.status === "approved" &&
         (limitByMembers
           ? hasApprovedMembers(
               approvedMemberIds,

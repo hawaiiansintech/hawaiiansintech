@@ -14,7 +14,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export async function getStaticProps() {
-  let focuses = (await getFilters("focus")) ?? [];
+  let focuses = (await getFilters("focuses")) ?? [];
   return {
     props: {
       focuses: focuses,
@@ -86,7 +86,7 @@ export default function JoinStep2({ focuses, pageTitle }) {
     }
     if (values.deferTitle) modified.title = "";
 
-    if (modified && modified !== {}) updateEdited(modified);
+    if (modified && Object.keys(modified).length !== 0) updateEdited(modified);
     router.push({ pathname: FORM_LINKS[2], query: router.query });
   };
 

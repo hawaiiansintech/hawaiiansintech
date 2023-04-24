@@ -26,7 +26,7 @@ import { scrollToTop } from "../../helpers";
 const NEXT_PAGE = "04-contact";
 
 export async function getStaticProps() {
-  let industries = (await getFilters("industry")) ?? [];
+  let industries = (await getFilters("industries")) ?? [];
   return {
     props: {
       industries: industries,

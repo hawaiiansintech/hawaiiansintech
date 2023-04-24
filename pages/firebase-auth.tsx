@@ -2,7 +2,7 @@ import Button, { ButtonSize } from "@/components/Button";
 import { useEmailCloaker } from "helpers";
 import { useEffect, useState } from "react";
 import theme from "styles/theme";
-import { signInWithGoogle, signOutWithGoogle } from "./api/firebase";
+import { signInWithGoogle, signOutWithGoogle } from "../lib/firebase";
 
 interface User {
   name: string;

@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 const NEXT_PAGE = "04-contact";
 
 export async function getStaticProps() {
-  let industries = (await getFilters("industry")) ?? [];
+  let industries = (await getFilters("industries")) ?? [];
   return {
     props: {
       industries: industries,
@@ -83,7 +83,7 @@ export default function JoinStep3({ industries, pageTitle }) {
       modified.industrySuggested = values.industrySuggested;
     }
 
-    if (modified && modified !== {}) updateEdited(modified);
+    if (modified && Object.keys(modified).length !== 0) updateEdited(modified);
 
     setTimeout(() => {
       router.push({ pathname: FORM_LINKS[3] });
