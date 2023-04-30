@@ -11,8 +11,9 @@ interface User {
   emailIsVerified: boolean;
 }
 
-export default function authTest() {
+export default function auth() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAnAdmin, setIsAnAdmin] = useState(false);
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
@@ -31,11 +32,41 @@ export default function authTest() {
   const handleSignOut = () => {
     signOutWithGoogle();
     setIsLoggedIn(false);
+    setIsAnAdmin(false);
+  };
+
+  const checkIsAdmin = async () => {
+    if (isLoggedIn) {
+      try {
+        const response = await fetch("/api/is-admin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ uid: userData.uid }),
+        });
+        const data = await response.json();
+        setIsAnAdmin(data.isAdmin);
+      } catch (error) {
+        console.error("An error occurred:", error);
+        setIsAnAdmin(false);
+      }
+    } else {
+      setIsAnAdmin(false);
+    }
   };
 
   return (
     <div>
       <h2>Sign In</h2>
+      <Button
+        size={ButtonSize.Small}
+        customWidth="16rem"
+        customWidthSmall="28rem"
+        customFontSize="1.5rem"
+        onClick={checkIsAdmin}
+      >
+        is admin
+      </Button>
+      <h3>{isAnAdmin ? "You ARE an admin" : "You ARE NOT an admin"}</h3>
       <h3>{isLoggedIn ? "Signed in as: " + userData.name : "Not Signed In"}</h3>
       <Button
         size={ButtonSize.Small}
