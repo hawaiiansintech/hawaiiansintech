@@ -116,8 +116,8 @@ export async function getMembers(
   regionsData?: DocumentData[]
 ): Promise<MemberPublic[]> {
   const members = await getFirebaseTable("members");
-  const focuses = focusesData || (await getFirebaseTable("regions"));
-  const industries = industriesData || (await getFirebaseTable("regions"));
+  const focuses = focusesData || (await getFirebaseTable("focuses"));
+  const industries = industriesData || (await getFirebaseTable("industries"));
   const regions = regionsData || (await getFirebaseTable("regions"));
   return members
     .map((member) => {

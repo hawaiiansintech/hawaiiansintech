@@ -1,12 +1,9 @@
+import { initializeAdmin } from "@/lib/firebase";
+
 const admin = require("firebase-admin");
 
 const isAdmin = async (uid: string): Promise<boolean> => {
-  if (!admin.apps.length) {
-    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-    });
-  }
+  await initializeAdmin();
   const db = admin.firestore();
   const docRef = db.collection("admins").doc(uid);
 

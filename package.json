@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@sendgrid/mail": "^7.6.0",
-    "airtable": "^0.11.1",
     "babel-plugin-inline-react-svg": "^1.1.1",
     "drive-db": "^6.0.0",
     "email-addresses": "^5.0.0",

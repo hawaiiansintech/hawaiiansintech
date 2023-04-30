@@ -3,7 +3,7 @@ export type { MemberPublic };
 
 /**
  * Stubbed function to simulate fetching technologists
- * without connecting to airtable.
+ * without connecting to firebase.
  *
  * @returns stubbed values
  */
@@ -72,7 +72,7 @@ export function getMembers(): MemberPublic[] {
 }
 
 /**
- * Stubbed function to fetch roles without connecting to airtable.
+ * Stubbed function to fetch roles without connecting to firebase.
  *
  * @returns stubbed roles
  */

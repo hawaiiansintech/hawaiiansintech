@@ -13,6 +13,7 @@ export const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
+const admin = require("firebase-admin");
 const app = initializeApp(firebaseConfig);
 const provider = new GoogleAuthProvider();
 export const auth = getAuth(app);
@@ -36,4 +37,12 @@ export const signOutWithGoogle = () => {
   auth.signOut();
   sessionStorage.removeItem("user");
   location.reload();
+};
+export const initializeAdmin = async () => {
+  if (!admin.apps.length) {
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+    });
+  }
 };

@@ -79,7 +79,6 @@ const addMember = async (member: MemberFields): Promise<DocumentReference> => {
     last_modified: serverTimestamp(),
     last_modified_by: "",
     masked_email: masked_email_str,
-    reason_declined: "",
     requests: "",
     status: StatusEnum.PENDING,
     unsubscribed: false,
@@ -128,7 +127,7 @@ interface MemberFields {
   email: string;
   location: string;
   website?: string;
-  link?: string; //TODO: Remove website and replace with link
+  link?: string;
   focusesSelected?: string | string[];
   focusSuggested?: string;
   title?: string;
@@ -147,7 +146,7 @@ const addToFirebase = async (
     email: fields.email,
     focuses: [],
     industries: [],
-    link: fields.website,
+    link: fields.website, //TODO: Remove "website" input param and replace with "link"
     location: fields.location,
     name: fields.name,
     regions: [],
@@ -203,11 +202,15 @@ const addToFirebase = async (
 
 const sendSgEmail = async ({
   email,
-  airtableID,
+  firebaseId,
   name,
 }: SendConfirmationEmailProps) => {
   return new Promise((resolve, reject) => {
-    sendConfirmationEmails({ email: email, airtableID: airtableID, name: name })
+    sendConfirmationEmails({
+      email: email,
+      firebaseId: firebaseId,
+      name: name,
+    })
       .then((response) => {
         resolve(response);
       })
@@ -227,15 +230,16 @@ export default async function handler(req, res) {
       const docRef: DocumentReference = await addToFirebase({
         ...req.body,
       }).then((body) => {
-        console.log("✅ added member to airtable");
+        console.log("✅ added member to firebase");
         return body;
       });
-      // await sendSgEmail({
-      //   email: req.body.email,
-      //   name: req.body.name,
-      // }).then(() => {
-      //   console.log("✅ sent member email via sendgrid");
-      // });
+      await sendSgEmail({
+        email: req.body.email,
+        firebaseId: docRef.id,
+        name: req.body.name,
+      }).then(() => {
+        console.log("✅ sent member email via sendgrid");
+      });
       return res.status(200).json({ message: "Successfully added member." });
     } else {
       return res.status(422).json({
