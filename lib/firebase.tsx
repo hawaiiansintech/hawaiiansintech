@@ -1,4 +1,5 @@
 import { getFirestore } from "@firebase/firestore";
+import admin from "firebase-admin";
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { getStorage } from "firebase/storage";
@@ -13,7 +14,6 @@ export const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-const admin = require("firebase-admin");
 const app = initializeApp(firebaseConfig);
 const provider = new GoogleAuthProvider();
 export const auth = getAuth(app);

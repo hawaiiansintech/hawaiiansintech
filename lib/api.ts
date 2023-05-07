@@ -41,7 +41,6 @@ function regionLookup(member: DocumentData, regions: DocumentData[]) {
   return (
     regions.find((region) => {
       const memberRegion = member.fields.regions;
-      // TODO: Change this check if we're expecting only one region per member
       if (
         memberRegion &&
         Array.isArray(memberRegion) &&
@@ -102,7 +101,7 @@ function industryLookup(member: DocumentData, industries: DocumentData[]) {
 }
 
 function emailLookup(member: DocumentData) {
-  const memberEmail = member.fields["email"];
+  const memberEmail = member.fields.email;
   if (memberEmail && typeof memberEmail === "string") {
     const [first, last, domain] = useEmailCloaker(memberEmail);
     return [first, last, domain];
