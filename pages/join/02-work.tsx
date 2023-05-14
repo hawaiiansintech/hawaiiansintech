@@ -13,7 +13,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export async function getStaticProps() {
-  let focuses = (await getFilters("focus")) ?? [];
+  let focuses = (await getFilters("focuses")) ?? [];
   return {
     props: {
       focuses: focuses.sort((a, b) => b.count - a.count),

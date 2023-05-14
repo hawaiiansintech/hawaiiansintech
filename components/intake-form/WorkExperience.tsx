@@ -8,6 +8,7 @@ import InputBox from "@/components/form/InputBox";
 import Label from "@/components/form/Label";
 import RadioBox from "@/components/form/RadioBox";
 import { Filter } from "@/lib/api";
+import { YearsOfExperienceEnum } from "@/lib/enums";
 import { useWindowWidth } from "@/lib/hooks";
 import { MAX_FOCUS_COUNT } from "@/lib/utils";
 import { scrollToTop } from "helpers";
@@ -226,14 +227,7 @@ export default function WorkExperience({
               margin: "1rem auto 2rem",
             }}
           >
-            {[
-              "Less than a year",
-              "1 – 2 years",
-              "3 – 4 years",
-              "5 – 9 years",
-              "10 – 19 years",
-              "More than 20 years",
-            ].map((dur) => (
+            {Object.values(YearsOfExperienceEnum).map((dur) => (
               <div style={{ margin: "0 0.5rem 0.5rem 0" }} key={`dur-${dur}`}>
                 <RadioBox
                   seriesOf="years-experience"

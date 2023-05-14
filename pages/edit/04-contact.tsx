@@ -50,7 +50,7 @@ export default function JoinStep4({ pageTitle }) {
             ? `${userData.emailAbbr[0]}...${userData.emailAbbr[1]}${userData.emailAbbr[2]}`
             : undefined,
           name: editedData.name || userData.name,
-          airtableID: userData.id || "",
+          firebaseId: userData.id || "",
           removeRequest: removeRequest,
         }),
       }).then(

@@ -46,7 +46,7 @@ export default function JoinStep1({ pageTitle }) {
       modified.location = values.location;
     if (values.website !== data.link) modified.link = values.website;
 
-    if (modified !== {}) {
+    if (Object.keys(modified).length !== 0) {
       setItem("editedData", JSON.stringify(modified));
     }
 

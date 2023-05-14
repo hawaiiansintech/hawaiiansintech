@@ -6,6 +6,7 @@ import InputBox from "@/components/form/InputBox";
 import Label from "@/components/form/Label";
 import RadioBox from "@/components/form/RadioBox";
 import { Filter } from "@/lib/api";
+import { CompanySizeEnum } from "@/lib/enums";
 import { useWindowWidth } from "@/lib/hooks";
 import { scrollToTop } from "helpers";
 import React, { useEffect, useState } from "react";
@@ -241,18 +242,7 @@ export default function CompanyIndustry({
               margin: "1rem auto 2rem",
             }}
           >
-            {[
-              "1",
-              "2 – 9",
-              "10 – 19",
-              "20 – 49",
-              "50 – 99",
-              "100 – 999",
-              "1000 – 4999",
-              "5000 – 10000",
-              "More than 10000",
-              "N/A",
-            ].map((size, i) => {
+            {Object.values(CompanySizeEnum).map((size, i) => {
               return (
                 <div
                   style={{ margin: "0 0.5rem 0.5rem 0", marginRight: "0.5rem" }}

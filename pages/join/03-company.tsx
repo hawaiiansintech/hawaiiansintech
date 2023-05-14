@@ -15,6 +15,7 @@ import { WorkExperienceWarning } from "@/components/intake-form/WorkExperience";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { getFilters } from "@/lib/api";
+import { CompanySizeEnum } from "@/lib/enums";
 import { useStorage, useWindowWidth } from "@/lib/hooks";
 import { FORM_LINKS, useInvalid } from "@/lib/utils";
 import Head from "next/head";
@@ -26,7 +27,7 @@ import { scrollToTop } from "../../helpers";
 const NEXT_PAGE = "04-contact";
 
 export async function getStaticProps() {
-  let industries = (await getFilters("industry")) ?? [];
+  let industries = (await getFilters("industries")) ?? [];
   return {
     props: {
       industries: industries,
@@ -282,18 +283,7 @@ export default function JoinStep3({ industries, pageTitle }) {
               margin: "1rem auto 2rem",
             }}
           >
-            {[
-              "1",
-              "2 – 9",
-              "10 – 19",
-              "20 – 49",
-              "50 – 99",
-              "100 – 999",
-              "1000 – 4999",
-              "5000 – 10000",
-              "More than 10000",
-              "N/A",
-            ].map((size, i) => (
+            {Object.values(CompanySizeEnum).map((size, i) => (
               <div
                 style={{ margin: "0 0.5rem 0.5rem 0", marginRight: "0.5rem" }}
                 key={`size-${i}`}
