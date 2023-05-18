@@ -46,9 +46,7 @@ export default function JoinStep4({ pageTitle }) {
           userData,
           editedData,
           message: other,
-          email: userData.emailAbbr
-            ? `${userData.emailAbbr[0]}...${userData.emailAbbr[1]}${userData.emailAbbr[2]}`
-            : undefined,
+          email: userData.emailAbbr ? userData.emailAbbr : undefined,
           name: editedData.name || userData.name,
           firebaseId: userData.id || "",
           removeRequest: removeRequest,
@@ -129,8 +127,7 @@ export default function JoinStep4({ pageTitle }) {
           {removeRequest
             ? "No hard feelings. We'll reach out to you at "
             : "Once you submit, expect one of us to review and confirm these changes with you at "}
-          <strong>{`${userData.emailAbbr[0]}...${userData.emailAbbr[1]}${userData.emailAbbr[2]}`}</strong>
-          . Mahalo for your patience!
+          <strong>{userData.emailAbbr}</strong>. Mahalo for your patience!
         </Subheading>
       ) : (
         <div className="email-alert">

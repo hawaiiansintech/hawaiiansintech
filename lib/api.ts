@@ -1,11 +1,11 @@
 import { db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
-import { useEmailCloaker } from "helpers";
+import { YearsOfExperienceEnum } from "./enums";
 
 export interface MemberPublic {
   name?: string;
   companySize?: string;
-  emailAbbr?: string[];
+  emailAbbr?: string;
   focus?: { name: string; id: string }[] | string[];
   focusSuggested?: string;
   id?: string;
@@ -100,15 +100,6 @@ function industryLookup(member: DocumentData, industries: DocumentData[]) {
   return null;
 }
 
-function emailLookup(member: DocumentData) {
-  const memberEmail = member.fields.email;
-  if (memberEmail && typeof memberEmail === "string") {
-    const [first, last, domain] = useEmailCloaker(memberEmail);
-    return [first, last, domain];
-  }
-  return null;
-}
-
 export async function getMembers(
   focusesData?: DocumentData[],
   industriesData?: DocumentData[],
@@ -148,7 +139,7 @@ export async function getMembers(
               typeof member.fields["years_experience"] === "string"
                 ? member.fields["years_experience"]
                 : null,
-            emailAbbr: emailLookup(member),
+            emailAbbr: member.fields["masked_email"] || null,
             region:
               typeof regionLookupVal === "string" ? regionLookupVal : null,
             industry: industryLookup(member, industries),
@@ -221,7 +212,7 @@ export async function getFilters(
         count: Array.isArray(role.fields["members"]) ? member_ids.length : 0,
         hasApprovedMembers: limitByMembers
           ? hasApprovedMembers(approvedMemberIds, member_ids)
-          : null,
+          : true,
       };
     })
     .sort((a, b) => b.count - a.count);
@@ -232,13 +223,28 @@ export interface FilterBasic {
   id: string;
 }
 
+export function getExperienceData(): FilterBasic[] {
+  let return_list = [];
+  for (let item in YearsOfExperienceEnum) {
+    return_list.push({
+      fields: { name: YearsOfExperienceEnum[item] },
+      id: item,
+    });
+  }
+  return return_list;
+}
+
 export async function getFiltersBasic(
   members: MemberPublic[],
   filterType: string,
   filterData?: DocumentData[]
 ): Promise<Filter[]> {
   const filterList = [];
-  const filters = filterData || (await getFirebaseTable(filterType));
+  const filters =
+    filterData ||
+    (filterType == "experience"
+      ? getExperienceData()
+      : await getFirebaseTable(filterType));
   const returnedFilters = filters.map((role) => {
     return {
       name:
