@@ -2,7 +2,7 @@ import {
   SendConfirmationEmailProps,
   sendConfirmationEmails,
 } from "@/lib/email/confirmation-email";
-import { StatusEnum } from "@/lib/enums";
+import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
 import { db } from "@/lib/firebase";
 import Client from "@sendgrid/client";
 import SendGrid from "@sendgrid/mail";
@@ -71,7 +71,7 @@ const addMemberToLabels = async (
 };
 
 const addMember = async (member: MemberFields): Promise<DocumentReference> => {
-  const collectionRef = collection(db, "members");
+  const collectionRef = collection(db, FirebaseTablesEnum.MEMBERS);
   const masked_email = useEmailCloaker(member.email);
   const masked_email_str = `${masked_email[0]}...${masked_email[1]}${masked_email[2]}`;
   const data = {
@@ -84,12 +84,12 @@ const addMember = async (member: MemberFields): Promise<DocumentReference> => {
     unsubscribed: false,
   };
   const docRef = await addDoc(collectionRef, data);
-  addPendingReviewRecord(docRef, "members");
+  addPendingReviewRecord(docRef, FirebaseTablesEnum.MEMBERS);
   return docRef;
 };
 
 const emailExists = async (email: string): Promise<boolean> => {
-  const collectionRef = collection(db, "members");
+  const collectionRef = collection(db, FirebaseTablesEnum.MEMBERS);
   const q = query(collectionRef, where("email", "==", email));
   const querySnapshot = await getDocs(q);
   if (querySnapshot.empty) {

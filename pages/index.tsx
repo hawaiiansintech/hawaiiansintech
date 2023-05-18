@@ -12,27 +12,34 @@ import {
   getMembers,
   MemberPublic,
 } from "@/lib/api";
+import { FirebaseTablesEnum } from "@/lib/enums";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import theme from "styles/theme";
 
 export async function getStaticProps() {
-  const focusesData: DocumentData[] = await getFirebaseTable("focuses");
-  const industriesData: DocumentData[] = await getFirebaseTable("industries");
-  const regionsData: DocumentData[] = await getFirebaseTable("regions");
+  const focusesData: DocumentData[] = await getFirebaseTable(
+    FirebaseTablesEnum.FOCUSES
+  );
+  const industriesData: DocumentData[] = await getFirebaseTable(
+    FirebaseTablesEnum.INDUSTRIES
+  );
+  const regionsData: DocumentData[] = await getFirebaseTable(
+    FirebaseTablesEnum.REGIONS
+  );
   const members: MemberPublic[] = await getMembers(
     focusesData,
     industriesData,
     regionsData
   );
   const focuses: Filter[] = await getFilters(
-    "focuses",
+    FirebaseTablesEnum.FOCUSES,
     true,
     members.map((member) => member.id),
     focusesData
   );
   const industries: Filter[] = await getFilters(
-    "industries",
+    FirebaseTablesEnum.INDUSTRIES,
     true,
     members.map((member) => member.id),
     industriesData
@@ -40,7 +47,7 @@ export async function getStaticProps() {
   const experiences: Filter[] = await getFiltersBasic(members, "experience");
   const regions: Filter[] = await getFiltersBasic(
     members,
-    "regions",
+    FirebaseTablesEnum.REGIONS,
     regionsData
   );
   return {

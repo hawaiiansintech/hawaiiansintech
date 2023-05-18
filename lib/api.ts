@@ -1,6 +1,6 @@
 import { db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
-import { YearsOfExperienceEnum } from "./enums";
+import { FirebaseTablesEnum, YearsOfExperienceEnum } from "./enums";
 
 export interface MemberPublic {
   name?: string;
@@ -27,7 +27,7 @@ export interface DocumentData {
   fields: any;
 }
 
-export async function getFirebaseTable(table: string) {
+export async function getFirebaseTable(table: FirebaseTablesEnum) {
   const documentsCollection = collection(db, table);
   const documentsSnapshot = await getDocs(documentsCollection);
   const documentsData = documentsSnapshot.docs.map((doc) => ({
@@ -105,10 +105,13 @@ export async function getMembers(
   industriesData?: DocumentData[],
   regionsData?: DocumentData[]
 ): Promise<MemberPublic[]> {
-  const members = await getFirebaseTable("members");
-  const focuses = focusesData || (await getFirebaseTable("focuses"));
-  const industries = industriesData || (await getFirebaseTable("industries"));
-  const regions = regionsData || (await getFirebaseTable("regions"));
+  const members = await getFirebaseTable(FirebaseTablesEnum.MEMBERS);
+  const focuses =
+    focusesData || (await getFirebaseTable(FirebaseTablesEnum.FOCUSES));
+  const industries =
+    industriesData || (await getFirebaseTable(FirebaseTablesEnum.INDUSTRIES));
+  const regions =
+    regionsData || (await getFirebaseTable(FirebaseTablesEnum.REGIONS));
   return members
     .map((member) => {
       const regionLookupVal = regionLookup(member, regions);
@@ -183,7 +186,7 @@ export interface Filter {
 }
 
 export async function getFilters(
-  filterType: string,
+  filterType: FirebaseTablesEnum,
   limitByMembers?: boolean,
   approvedMemberIds?: string[],
   filterData?: DocumentData[]
@@ -236,7 +239,7 @@ export function getExperienceData(): FilterBasic[] {
 
 export async function getFiltersBasic(
   members: MemberPublic[],
-  filterType: string,
+  filterType: FirebaseTablesEnum | "experience",
   filterData?: DocumentData[]
 ): Promise<Filter[]> {
   const filterList = [];

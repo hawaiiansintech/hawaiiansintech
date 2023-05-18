@@ -26,3 +26,13 @@ export enum YearsOfExperienceEnum {
   TEN_TO_NINETEEN = "10 - 19 years",
   MORE_THAN_FIFTEEN = "More than 20 years",
 }
+
+export enum FirebaseTablesEnum {
+  ADMINS = "admins",
+  FOCUSES = "focuses",
+  INDUSTRIES = "industries",
+  MEMBERS = "members",
+  REGIONS = "regions",
+  REVIEW = "review",
+  SECURE_MEMBER_DATA = "secureMemberData",
+}
