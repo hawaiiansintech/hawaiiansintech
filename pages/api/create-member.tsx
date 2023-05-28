@@ -107,6 +107,7 @@ const addMember = async (member: MemberFields): Promise<DocumentReference> => {
     status: StatusEnum.PENDING,
     unsubscribed: false,
   };
+  delete data.email; // Don't store email in the member record
   const docRef = await addDoc(collectionRef, data);
   addPendingReviewRecord(docRef, FirebaseTablesEnum.MEMBERS);
   addSecureEmail(member.email, docRef);
