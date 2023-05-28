@@ -36,3 +36,7 @@ export enum FirebaseTablesEnum {
   REVIEW = "review",
   SECURE_MEMBER_DATA = "secureMemberData",
 }
+
+export enum FirebaseDefaultValuesEnum {
+  LAST_MODIFIED_BY = "new_member_form",
+}

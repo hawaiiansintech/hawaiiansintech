@@ -16,6 +16,12 @@ module.exports = {
         destination: "https://discord.gg/WHpCrPqeqx",
         permanent: true,
       },
+      {
+        source: "/linkedin-page",
+        destination:
+          "https://www.linkedin.com/company/hawaiians-in-technology/",
+        permanent: true,
+      },
     ];
   },
 };
