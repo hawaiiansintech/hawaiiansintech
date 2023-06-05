@@ -102,63 +102,40 @@ export default function AboutPage({ pageTitle }) {
           <p>
             This website was originally a fork of{" "}
             <a href="https://brazilianswho.design/">Brazillians Who Design</a>'s
-            repo. There are many more that continue to inspire us, including:
-          </p>
-          <p>
-            <ul className="link-list">
-              <li className="link-list__item">
-                <a href="https://nativesintech.org/">Natives in Tech</a>
-              </li>
-              <li className="link-list__item">
-                <a href="https://womenwho.design/">Women Who Design</a>
-              </li>
-              <li className="link-list__item">
-                <a target="_blank" href="https://www.womenwhodraw.com/">
-                  Women Who Draw
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a target="_blank" href="http://www.28blacks.com/">
-                  28 Black Designers
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a target="_blank" href="https://www.latinxswhodesign.com/">
-                  Latinx Who Design
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a target="_blank" href="https://queerdesign.club/">
-                  Queer Design Club
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a
-                  target="_blank"
-                  href="https://filipinos-who-design.webflow.io/"
-                >
-                  Filipinos Who Design
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a target="_blank" href="https://www.apiwho.design/">
-                  Asian & Pacific Islanders Who Design
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a
-                  target="_blank"
-                  href="https://filipinos-who-design.webflow.io/"
-                >
-                  People Of Craft
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a target="_blank" href="https://indianswhodesign.in/">
-                  Indians Who Design
-                </a>
-              </li>
-            </ul>
+            repo. There are many more that continue to inspire us, including:{" "}
+            <a href="https://nativesintech.org/">Natives in Tech</a>,{" "}
+            <a href="https://womenwho.design/">Women Who Design</a>,{" "}
+            <a target="_blank" href="https://www.womenwhodraw.com/">
+              Women Who Draw
+            </a>
+            ,{" "}
+            <a target="_blank" href="http://www.28blacks.com/">
+              28 Black Designers
+            </a>
+            ,{" "}
+            <a target="_blank" href="https://www.latinxswhodesign.com/">
+              Latinx Who Design
+            </a>
+            ,{" "}
+            <a target="_blank" href="https://queerdesign.club/">
+              Queer Design Club
+            </a>
+            ,{" "}
+            <a target="_blank" href="https://filipinos-who-design.webflow.io/">
+              Filipinos Who Design
+            </a>
+            ,{" "}
+            <a target="_blank" href="https://www.apiwho.design/">
+              Asian & Pacific Islanders Who Design
+            </a>
+            ,{" "}
+            <a target="_blank" href="https://filipinos-who-design.webflow.io/">
+              People Of Craft
+            </a>
+            , and{" "}
+            <a target="_blank" href="https://indianswhodesign.in/">
+              Indians Who Design
+            </a>
           </p>
           <h3>Who’s behind this?</h3>
           <p>
