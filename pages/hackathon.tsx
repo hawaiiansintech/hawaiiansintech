@@ -514,18 +514,6 @@ export default function HackathonPage({ pageTitle }) {
           padding-top: 26vh;
         }
 
-        /* 
-      <div className="hackathon-alert-banner">
-        <header className="hackathon-alert-banner__header">
-          <h2>The event was a blast. Learn more.</h2>
-        </header>
-        <main className="hackathon-alert-banner__main">
-          <a href="#" target="_blank">
-            Read the article
-          </a>
-        </main>
-      </div> */
-
         .hackathon-images {
           display: grid;
           grid-template-columns: repeat(5, 1fr);
