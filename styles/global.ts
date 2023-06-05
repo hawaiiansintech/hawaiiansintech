@@ -31,6 +31,7 @@ export default css.global`
     --border-radius-small: ${theme.borderRadius.sm};
     --border-radius-medium: ${theme.borderRadius.md};
     --border-radius-large: ${theme.borderRadius.lg};
+    --border-radius-rounded: ${theme.borderRadius.rounded};
 
     --width-page-interior: ${theme.layout.width.interior};
     --width-resp-small: ${theme.layout.breakPoints.small};
