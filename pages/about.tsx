@@ -79,10 +79,7 @@ export default function AboutPage({ pageTitle }) {
             If you are <strong>Native Hawaiian</strong>, work in{" "}
             <strong>the field / industry of technology</strong>, and want to be
             part of this directory and community, simply complete this{" "}
-            <Link href="/join/01-you">
-              <a>Join form</a>
-            </Link>
-            .
+            <Link href="/join/01-you">Join form</Link>.
           </p>
           <p>
             Most could just stop there. But reach out to the community! Meet
@@ -196,10 +193,7 @@ export default function AboutPage({ pageTitle }) {
           <h3>How can I update my profile? Or remove myself altogether?</h3>
           <p>
             Changes, including removal from the list, can be{" "}
-            <Link href="/edit">
-              <a>requested here</a>
-            </Link>
-            .
+            <Link href="/edit">requested here</Link>.
           </p>
         </div>
       </div>

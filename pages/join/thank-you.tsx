@@ -22,9 +22,7 @@ export default function ThankYou({ pageTitle }) {
       </Head>
       <div className="thank-you">
         <header>
-          <Link href="/" passHref>
-            <a>Back to home</a>
-          </Link>
+          <Link href="/">Back to home</Link>
           <HitLogo />
         </header>
         <main>
