@@ -58,6 +58,7 @@ const theme = {
     breakPoints: {
       small: "40rem",
       medium: "60rem",
+      large: "80rem",
     },
     zIndex: {
       below: "100",
