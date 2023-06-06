@@ -45,11 +45,11 @@ export default function UndoButton({
 
   if (linkTo) {
     button = (
-      <Link href={linkTo}>
-        <a className="undo-button" onClick={onClick}>
+      <Link href={linkTo} onClick={onClick}>
+        <div className="undo-button">
           {button}
           {buttonStyles}
-        </a>
+        </div>
       </Link>
     );
   } else {

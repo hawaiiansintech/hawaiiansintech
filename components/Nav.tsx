@@ -30,24 +30,24 @@ export default function Nav({
         <div style={{ display: "flex", alignItems: "center" }}>
           {backUrl ? (
             <Link href={backUrl} shallow={true}>
-              <a className="back-link">
+              <div className="back-link">
                 <Icon asset={IconAsset.CaretLeft} color={IconColor.Inherit} />
-              </a>
+              </div>
             </Link>
           ) : null}
           {primaryNav?.show ? (
             <div className="nav__links">
               <Link href="/about">
-                <a className="nav-link">About</a>
+                <div className="nav-link">About</div>
               </Link>
               <Link href="/join/01-you">
-                <a className="primary-link">Join the list</a>
+                <div className="primary-link">Join the list</div>
               </Link>
               <Link href="/edit">
-                <a className="nav-link">Request Changes</a>
+                <div className="nav-link">Request Changes</div>
               </Link>
               <Link href="/hackathon">
-                <a className="hackathon-link">Hackathon</a>
+                <div className="hackathon-link">Hackathon</div>
               </Link>
             </div>
           ) : null}

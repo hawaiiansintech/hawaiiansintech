@@ -31,7 +31,7 @@ export default function ThankYou({ pageTitle }) {
       <div className="thank-you">
         <header>
           <Link href="/" passHref>
-            <a>Back to home</a>
+            Back to home
           </Link>
           <HitLogo />
         </header>
