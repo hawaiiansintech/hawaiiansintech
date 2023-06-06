@@ -6,6 +6,7 @@ import CompanyIndustry, {
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { getFilters, MemberPublicEditing } from "@/lib/api";
+import { FirebaseTablesEnum } from "@/lib/enums";
 import { useStorage } from "@/lib/hooks";
 import { FORM_LINKS } from "@/lib/utils";
 import lodash from "lodash";
@@ -16,7 +17,7 @@ import { useEffect, useState } from "react";
 const NEXT_PAGE = "04-contact";
 
 export async function getStaticProps() {
-  let industries = (await getFilters("industries")) ?? [];
+  let industries = (await getFilters(FirebaseTablesEnum.INDUSTRIES)) ?? [];
   return {
     props: {
       industries: industries,

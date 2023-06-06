@@ -15,7 +15,7 @@ import { WorkExperienceWarning } from "@/components/intake-form/WorkExperience";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { getFilters } from "@/lib/api";
-import { CompanySizeEnum } from "@/lib/enums";
+import { CompanySizeEnum, FirebaseTablesEnum } from "@/lib/enums";
 import { useStorage, useWindowWidth } from "@/lib/hooks";
 import { FORM_LINKS, useInvalid } from "@/lib/utils";
 import Head from "next/head";
@@ -27,7 +27,7 @@ import { scrollToTop } from "../../helpers";
 const NEXT_PAGE = "04-contact";
 
 export async function getStaticProps() {
-  let industries = (await getFilters("industries")) ?? [];
+  let industries = (await getFilters(FirebaseTablesEnum.INDUSTRIES)) ?? [];
   return {
     props: {
       industries: industries,

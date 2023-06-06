@@ -6,6 +6,7 @@ import WorkExperience, {
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import { getFilters } from "@/lib/api";
+import { FirebaseTablesEnum } from "@/lib/enums";
 import { useStorage } from "@/lib/hooks";
 import { FORM_LINKS, useInvalid } from "@/lib/utils";
 import Head from "next/head";
@@ -13,7 +14,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export async function getStaticProps() {
-  let focuses = (await getFilters("focuses")) ?? [];
+  let focuses = (await getFilters(FirebaseTablesEnum.FOCUSES)) ?? [];
   return {
     props: {
       focuses: focuses.sort((a, b) => b.count - a.count),
