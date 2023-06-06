@@ -3,6 +3,7 @@ import {
   RequestUpdateEmailProps,
   sendRequestUpdateEmail,
 } from "@/lib/email/request-update-email";
+import { FirebaseTablesEnum } from "@/lib/enums";
 import { initializeAdmin } from "@/lib/firebase";
 import * as admin from "firebase-admin";
 
@@ -11,7 +12,10 @@ const addRequest = async (
   requestData: string
 ): Promise<FirebaseFirestore.WriteResult> => {
   await initializeAdmin();
-  const docRef = admin.firestore().collection("members").doc(uid);
+  const docRef = admin
+    .firestore()
+    .collection(FirebaseTablesEnum.MEMBERS)
+    .doc(uid);
   const doc = await docRef.get();
   const currentRequestData = doc.get("request") || "";
 

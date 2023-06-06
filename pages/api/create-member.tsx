@@ -2,10 +2,15 @@ import {
   SendConfirmationEmailProps,
   sendConfirmationEmails,
 } from "@/lib/email/confirmation-email";
-import { StatusEnum } from "@/lib/enums";
-import { db } from "@/lib/firebase";
+import {
+  FirebaseDefaultValuesEnum,
+  FirebaseTablesEnum,
+  StatusEnum,
+} from "@/lib/enums";
+import { db, initializeAdmin } from "@/lib/firebase";
 import Client from "@sendgrid/client";
 import SendGrid from "@sendgrid/mail";
+import * as admin from "firebase-admin";
 import {
   addDoc,
   arrayUnion,
@@ -70,26 +75,47 @@ const addMemberToLabels = async (
   }
 };
 
+const addSecureEmail = async (
+  email: string,
+  memberDocRef: DocumentReference
+) => {
+  await initializeAdmin();
+  const collectionRef = admin
+    .firestore()
+    .collection(FirebaseTablesEnum.SECURE_MEMBER_DATA);
+  const docRef = collectionRef.doc(memberDocRef.id); // Use memberDocRef ID as new doc ID
+  const data = {
+    last_modified: admin.firestore.FieldValue.serverTimestamp(),
+    last_modified_by: FirebaseDefaultValuesEnum.LAST_MODIFIED_BY,
+    email: email,
+    member: memberDocRef.path,
+  };
+  await docRef.set(data);
+  return docRef;
+};
+
 const addMember = async (member: MemberFields): Promise<DocumentReference> => {
-  const collectionRef = collection(db, "members");
-  const masked_email = useEmailCloaker(member.email);
-  const masked_email_str = `${masked_email[0]}...${masked_email[1]}${masked_email[2]}`;
+  const collectionRef = collection(db, FirebaseTablesEnum.MEMBERS);
+  const maskedEmail = useEmailCloaker(member.email);
+  const maskedEmailString = `${maskedEmail[0]}...${maskedEmail[1]}${maskedEmail[2]}`;
   const data = {
     ...member,
     last_modified: serverTimestamp(),
-    last_modified_by: "",
-    masked_email: masked_email_str,
+    last_modified_by: FirebaseDefaultValuesEnum.LAST_MODIFIED_BY,
+    masked_email: maskedEmailString,
     requests: "",
     status: StatusEnum.PENDING,
     unsubscribed: false,
   };
+  delete data.email; // Don't store email in the member record
   const docRef = await addDoc(collectionRef, data);
-  addPendingReviewRecord(docRef, "members");
+  addPendingReviewRecord(docRef, FirebaseTablesEnum.MEMBERS);
+  addSecureEmail(member.email, docRef);
   return docRef;
 };
 
 const emailExists = async (email: string): Promise<boolean> => {
-  const collectionRef = collection(db, "members");
+  const collectionRef = collection(db, FirebaseTablesEnum.MEMBERS);
   const q = query(collectionRef, where("email", "==", email));
   const querySnapshot = await getDocs(q);
   if (querySnapshot.empty) {

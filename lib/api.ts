@@ -1,11 +1,11 @@
 import { db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
-import { useEmailCloaker } from "helpers";
+import { FirebaseTablesEnum, YearsOfExperienceEnum } from "./enums";
 
 export interface MemberPublic {
   name?: string;
   companySize?: string;
-  emailAbbr?: string[];
+  emailAbbr?: string;
   focus?: { name: string; id: string }[] | string[];
   focusSuggested?: string;
   id?: string;
@@ -27,7 +27,14 @@ export interface DocumentData {
   fields: any;
 }
 
-export async function getFirebaseTable(table: string) {
+export interface FilterData {
+  id: string;
+  name: string;
+}
+
+export async function getFirebaseTable(
+  table: FirebaseTablesEnum
+): Promise<DocumentData[]> {
   const documentsCollection = collection(db, table);
   const documentsSnapshot = await getDocs(documentsCollection);
   const documentsData = documentsSnapshot.docs.map((doc) => ({
@@ -37,7 +44,10 @@ export async function getFirebaseTable(table: string) {
   return documentsData;
 }
 
-function regionLookup(member: DocumentData, regions: DocumentData[]) {
+function regionLookup(
+  member: DocumentData,
+  regions: DocumentData[]
+): FilterData {
   return (
     regions.find((region) => {
       const memberRegion = member.fields.regions;
@@ -52,7 +62,10 @@ function regionLookup(member: DocumentData, regions: DocumentData[]) {
   );
 }
 
-function focusLookup(member: DocumentData, focuses: DocumentData[]) {
+function focusLookup(
+  member: DocumentData,
+  focuses: DocumentData[]
+): FilterData[] {
   const memberFocus = member.fields.focuses;
   if (memberFocus && Array.isArray(memberFocus) && memberFocus.length !== 0) {
     return memberFocus.map((foc) => {
@@ -74,7 +87,10 @@ function focusLookup(member: DocumentData, focuses: DocumentData[]) {
   return null;
 }
 
-function industryLookup(member: DocumentData, industries: DocumentData[]) {
+function industryLookup(
+  member: DocumentData,
+  industries: DocumentData[]
+): FilterData[] {
   const memberIndustry = member.fields.industries;
   if (
     memberIndustry &&
@@ -100,24 +116,18 @@ function industryLookup(member: DocumentData, industries: DocumentData[]) {
   return null;
 }
 
-function emailLookup(member: DocumentData) {
-  const memberEmail = member.fields.email;
-  if (memberEmail && typeof memberEmail === "string") {
-    const [first, last, domain] = useEmailCloaker(memberEmail);
-    return [first, last, domain];
-  }
-  return null;
-}
-
 export async function getMembers(
   focusesData?: DocumentData[],
   industriesData?: DocumentData[],
   regionsData?: DocumentData[]
 ): Promise<MemberPublic[]> {
-  const members = await getFirebaseTable("members");
-  const focuses = focusesData || (await getFirebaseTable("focuses"));
-  const industries = industriesData || (await getFirebaseTable("industries"));
-  const regions = regionsData || (await getFirebaseTable("regions"));
+  const members = await getFirebaseTable(FirebaseTablesEnum.MEMBERS);
+  const focuses =
+    focusesData || (await getFirebaseTable(FirebaseTablesEnum.FOCUSES));
+  const industries =
+    industriesData || (await getFirebaseTable(FirebaseTablesEnum.INDUSTRIES));
+  const regions =
+    regionsData || (await getFirebaseTable(FirebaseTablesEnum.REGIONS));
   return members
     .map((member) => {
       const regionLookupVal = regionLookup(member, regions);
@@ -148,7 +158,7 @@ export async function getMembers(
               typeof member.fields["years_experience"] === "string"
                 ? member.fields["years_experience"]
                 : null,
-            emailAbbr: emailLookup(member),
+            emailAbbr: member.fields["masked_email"] || null,
             region:
               typeof regionLookupVal === "string" ? regionLookupVal : null,
             industry: industryLookup(member, industries),
@@ -173,7 +183,7 @@ export async function getMembers(
 function hasApprovedMembers(
   approvedMemberIds: string[],
   memberList: DocumentData
-) {
+): boolean {
   for (const member in memberList) {
     if (approvedMemberIds.includes(memberList[member])) {
       return true;
@@ -192,7 +202,7 @@ export interface Filter {
 }
 
 export async function getFilters(
-  filterType: string,
+  filterType: FirebaseTablesEnum,
   limitByMembers?: boolean,
   approvedMemberIds?: string[],
   filterData?: DocumentData[]
@@ -221,24 +231,34 @@ export async function getFilters(
         count: Array.isArray(role.fields["members"]) ? member_ids.length : 0,
         hasApprovedMembers: limitByMembers
           ? hasApprovedMembers(approvedMemberIds, member_ids)
-          : null,
+          : true,
       };
     })
     .sort((a, b) => b.count - a.count);
 }
 
-export interface FilterBasic {
-  name: string;
-  id: string;
+export function getExperienceData(): FilterData[] {
+  let return_list = [];
+  for (let item in YearsOfExperienceEnum) {
+    return_list.push({
+      fields: { name: YearsOfExperienceEnum[item] },
+      id: item,
+    });
+  }
+  return return_list;
 }
 
 export async function getFiltersBasic(
   members: MemberPublic[],
-  filterType: string,
+  filterType: FirebaseTablesEnum | "experience",
   filterData?: DocumentData[]
 ): Promise<Filter[]> {
   const filterList = [];
-  const filters = filterData || (await getFirebaseTable(filterType));
+  const filters =
+    filterData ||
+    (filterType == "experience"
+      ? getExperienceData()
+      : await getFirebaseTable(filterType));
   const returnedFilters = filters.map((role) => {
     return {
       name:
