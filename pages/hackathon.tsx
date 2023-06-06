@@ -1,6 +1,7 @@
 import Button, { ButtonSize, ButtonVariant } from "@/components/Button";
 import { DataList, DataListItem } from "@/components/DataList";
 import Dropdown from "@/components/Dropdown";
+import { Icon, IconAsset } from "@/components/icon/icon";
 import ImageExpand from "@/components/ImageExpand";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
@@ -26,9 +27,6 @@ const container = {
     },
   },
 };
-
-export const EVENTBRITE_LINK =
-  "https://www.eventbrite.com/e/mookuauhau-moolelo-hackathon-tickets-363299948927";
 
 export async function getStaticProps() {
   return {
@@ -73,6 +71,60 @@ export default function HackathonPage({ pageTitle }) {
           </p>
         </motion.div>
       </div>
+      <div className="hackathon-images">
+        <a href="/images/hackathon/halau-inana-group.jpg" target="_blank">
+          <img src="/images/hackathon/halau-inana-group.jpg" />
+        </a>
+        <a href="/images/hackathon/stickers.jpg" target="_blank">
+          <img src="/images/hackathon/stickers.jpg" />
+        </a>
+        <a href="/images/hackathon/halau-inana-kamakani.jpg" target="_blank">
+          <img src="/images/hackathon/halau-inana-kamakani.jpg" />
+        </a>
+        <a href="/images/hackathon/halau-inana-nohea.jpg" target="_blank">
+          <img src="/images/hackathon/halau-inana-nohea.jpg" />
+        </a>
+        <a href="/images/hackathon/waimanalo.jpg" target="_blank">
+          <img src="/images/hackathon/waimanalo.jpg" />
+        </a>
+        <a href="/images/hackathon/waimanalo-laptop.jpg" target="_blank">
+          <img src="/images/hackathon/waimanalo-laptop.jpg" />
+        </a>
+        <a href="/images/hackathon/waimanalo-loi.jpg" target="_blank">
+          <img src="/images/hackathon/waimanalo-loi.jpg" />
+        </a>
+
+        <a href="/images/hackathon/waimanalo-table.jpg" target="_blank">
+          <img src="/images/hackathon/waimanalo-table.jpg" />
+        </a>
+        <a href="/images/hackathon/waimanalo-group.jpg" target="_blank">
+          <img src="/images/hackathon/waimanalo-group.jpg" />
+        </a>
+        <a href="/images/hackathon/closer.jpg" target="_blank">
+          <img src="/images/hackathon/closer.jpg" />
+        </a>
+      </div>
+      <div className="hackathon-alert-banner">
+        <aside className="hackathon-alert-banner__aside">
+          <Icon asset={IconAsset.Network} />
+        </aside>
+        <main className="hackathon-alert-banner__main">
+          <h2>Well, the event was a blast.</h2>
+          <blockquote>
+            A three-day hackathon kicked off this afternoon, bringing together
+            non-native and native Hawaiian technologists, researchers, coders,
+            cultural practitioners and community members to lend their thoughts
+            and talents to the field of native Hawaiian genealogy.
+          </blockquote>
+          <a
+            className="hackathon-alert-banner__button"
+            href="https://www.hawaiibulletin.com/p/hawaiians-in-tech"
+            target="_blank"
+          >
+            Read about the first day
+          </a>
+        </main>
+      </div>
       <div className="foreground">
         <DataList
           marginSmall="3rem auto 0"
@@ -113,6 +165,7 @@ export default function HackathonPage({ pageTitle }) {
             </p>
           </DataListItem>
         </DataList>
+
         <DataList
           marginSmall="3rem auto 0"
           marginLarge="3rem 0 0 0"
@@ -120,16 +173,6 @@ export default function HackathonPage({ pageTitle }) {
           paddingLarge="0 2rem"
           gap="1rem 1rem"
         >
-          <a href={EVENTBRITE_LINK}>
-            <Button
-              size={ButtonSize.Small}
-              customWidth="16rem"
-              customWidthSmall="28rem"
-              customFontSize="1.5rem"
-            >
-              Buy Tickets
-            </Button>
-          </a>
           <a href={DISCORD_URL}>
             <Button
               customWidth="16rem"
@@ -469,6 +512,60 @@ export default function HackathonPage({ pageTitle }) {
         .hackathon-splash {
           margin: 0 1rem;
           padding-top: 26vh;
+        }
+
+        .hackathon-images {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          align-items: center;
+          gap: 0.5rem;
+          margin: 1rem 0.5rem;
+        }
+        .hackathon-images img {
+          display: block;
+          width: 100%;
+          height: auto;
+          border-radius: var(--border-radius-small);
+        }
+        .hackathon-alert-banner {
+          display: flex;
+          gap: 1rem;
+          margin: 2rem 2rem 0;
+          padding: 1rem;
+          background: var(--color-background-alt);
+          max-width: 48rem;
+          border-radius: var(--border-radius-small);
+        }
+        .hackathon-alert-banner__aside {
+        }
+        .hackathon-alert-banner__main h2 {
+          font-size: 1.25rem;
+          font-weight: 600;
+          margin: 0.5rem 0;
+        }
+
+        .hackathon-alert-banner__main blockquote {
+          margin: 0 0 1rem 0.5rem;
+          padding-left: 0.5rem;
+          font-weight: 400;
+          line-height: 1.5;
+          line-clamp: 2;
+          color: var(--color-text-alt-2);
+          border-left: 0.2rem solid var(--color-border-alt);
+
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        .hackathon-alert-banner__button {
+          display: inline-block;
+          font-size: 1rem;
+          padding: 0.5rem 1rem;
+          border-radius: var(--border-radius-rounded);
+          color: var(--color-text-overlay);
+          background: var(--color-brand);
         }
 
         .foreground {
