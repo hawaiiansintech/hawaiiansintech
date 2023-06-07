@@ -7,6 +7,7 @@ import ProgressBar from "@/components/form/ProgressBar";
 import { Heading, Subheading } from "@/components/Heading";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
+import Plausible from "@/components/Plausible";
 import { useStorage } from "@/lib/hooks";
 import { clearAllStoredFields, useInvalid } from "@/lib/utils";
 import { Formik } from "formik";
@@ -129,6 +130,7 @@ export default function JoinStep4({ pageTitle }) {
   return (
     <>
       <Head>
+        <Plausible />
         <MetaTags title={pageTitle} />
         <title>{pageTitle}</title>
       </Head>
