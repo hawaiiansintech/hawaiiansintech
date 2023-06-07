@@ -6,6 +6,7 @@ import ImageExpand from "@/components/ImageExpand";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import NihoShimmer from "@/components/NihoShimmer";
+import Plausible from "@/components/Plausible";
 import SplitSection from "@/components/SplitSection";
 import { Title } from "@/components/Title.js";
 import { motion } from "framer-motion";
@@ -40,6 +41,7 @@ export default function HackathonPage({ pageTitle }) {
   return (
     <>
       <Head>
+        <Plausible />
         <MetaTags
           image="https://hawaiiansintech.org/images/ogimage-hackathon.png"
           description="Our inaugural Hackathon event, in partnership with Purple Maiʻa. Hosted by Native Hawaiians in the technology industry."

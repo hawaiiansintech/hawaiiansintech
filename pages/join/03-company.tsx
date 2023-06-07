@@ -14,6 +14,7 @@ import { Heading } from "@/components/Heading";
 import { WorkExperienceWarning } from "@/components/intake-form/WorkExperience";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
+import Plausible from "@/components/Plausible";
 import { getFilters } from "@/lib/api";
 import { CompanySizeEnum, FirebaseTablesEnum } from "@/lib/enums";
 import { useStorage, useWindowWidth } from "@/lib/hooks";
@@ -153,6 +154,7 @@ export default function JoinStep3({ industries, pageTitle }) {
   return (
     <>
       <Head>
+        <Plausible />
         <MetaTags title={pageTitle} />
         <title>{pageTitle}</title>
       </Head>

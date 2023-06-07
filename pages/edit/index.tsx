@@ -2,6 +2,7 @@ import Button, { ButtonSize } from "@/components/Button";
 import { Heading, Subheading } from "@/components/Heading";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
+import Plausible from "@/components/Plausible";
 import Tag from "@/components/Tag";
 import { MemberPublic } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
@@ -23,6 +24,7 @@ export default function EditPage({ pageTitle }) {
   return (
     <>
       <Head>
+        <Plausible />
         <MetaTags title={pageTitle} />
         <title>{pageTitle}</title>
       </Head>

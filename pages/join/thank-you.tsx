@@ -1,5 +1,6 @@
 import HitLogo from "@/components/HitLogo";
 import MetaTags from "@/components/Metatags";
+import Plausible from "@/components/Plausible";
 import { Subtitle } from "@/components/Title";
 import Head from "next/head";
 import Link from "next/link";
@@ -17,6 +18,7 @@ export default function ThankYou({ pageTitle }) {
   return (
     <>
       <Head>
+        <Plausible />
         <MetaTags title={pageTitle} />
         <title>{pageTitle}</title>
       </Head>

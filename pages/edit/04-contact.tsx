@@ -7,6 +7,7 @@ import ProgressBar from "@/components/form/ProgressBar";
 import { Heading, Subheading } from "@/components/Heading";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
+import Plausible from "@/components/Plausible";
 import Tag from "@/components/Tag";
 import { MemberPublic, MemberPublicEditing } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
@@ -113,6 +114,7 @@ export default function JoinStep4({ pageTitle }) {
   return (
     <>
       <Head>
+        <Plausible />
         <MetaTags title={pageTitle} />
         <title>{pageTitle}</title>
       </Head>

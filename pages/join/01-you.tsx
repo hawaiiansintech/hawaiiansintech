@@ -3,6 +3,7 @@ import { Heading, Subheading } from "@/components/Heading";
 import BasicInformationForm from "@/components/intake-form/BasicInformation";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
+import Plausible from "@/components/Plausible";
 import { useStorage } from "@/lib/hooks";
 import { clearAllStoredFields } from "@/lib/utils";
 import Head from "next/head";
@@ -67,6 +68,7 @@ export default function JoinStep1({ pageTitle }) {
   return (
     <>
       <Head>
+        <Plausible />
         <MetaTags title={pageTitle} />
         <title>{pageTitle}</title>
       </Head>
