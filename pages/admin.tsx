@@ -2,13 +2,17 @@ import Button, { ButtonSize } from "@/components/Button";
 import ErrorMessage, {
   ErrorMessageProps,
 } from "@/components/form/ErrorMessage";
-import { DocumentData, getFirebaseTable, MemberPublic } from "@/lib/api";
+import {
+  DocumentData,
+  getFirebaseTable,
+  getMembers,
+  MemberPublic,
+} from "@/lib/api";
 import { ADMIN_EMAILS } from "@/lib/email/utils";
-import { FirebaseTablesEnum } from "@/lib/enums";
-import { getOneMember } from "@/lib/testMember";
+import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
+import MemberCard from "@/lib/memberCard";
 import { useEmailCloaker } from "helpers";
 import { useEffect, useState } from "react";
-import theme from "styles/theme";
 import { signInWithGoogle, signOutWithGoogle } from "../lib/firebase";
 
 interface User {
@@ -43,16 +47,15 @@ export async function getStaticProps() {
   const regionsData: DocumentData[] = await getFirebaseTable(
     FirebaseTablesEnum.REGIONS
   );
-  // const members: MemberPublic[] = await getMembers(
-  //   focusesData,
-  //   industriesData,
-  //   regionsData,
-  //   [StatusEnum.IN_PROGRESS, StatusEnum.PENDING]
-  // );
-  const oneMember = await getOneMember(process.env.TEST_MEMBER_ID);
+  const members: MemberPublic[] = await getMembers(
+    focusesData,
+    industriesData,
+    regionsData,
+    [StatusEnum.IN_PROGRESS, StatusEnum.PENDING]
+  );
   return {
     props: {
-      fetchedMembers: [oneMember],
+      fetchedMembers: members,
     },
     revalidate: 60,
   };
@@ -99,7 +102,7 @@ export default function auth(props: { fetchedMembers: MemberPublic[] }) {
   };
 
   return (
-    <>
+    <div className="content">
       <div className="simple-nav">
         <h3>
           {isLoggedIn ? "Signed in as: " + userData.name : "Not Signed In"}
@@ -116,7 +119,7 @@ export default function auth(props: { fetchedMembers: MemberPublic[] }) {
           </Button>
         </div>
       </div>
-      <div>
+      <div className="dashboard">
         {isLoggedIn ? (
           <Button
             size={ButtonSize.Small}
@@ -136,61 +139,38 @@ export default function auth(props: { fetchedMembers: MemberPublic[] }) {
       </div>
       {showDashboard && (
         <div>
+          {/* {console.log("TESTING", memberData)} */}
           {memberData
             .sort((a, b) => b.status.localeCompare(a.status))
-            .map((member) => (
-              <div key={member.id}>
-                <h4>
-                  {member.name} - {member.status}
-                </h4>
-                <p>ID: {member.id}</p>
-                <p>Last Modified: {member.lastModified}</p>
-                <p>Location: {member.location}</p>
-                <p>Title: {member.title}</p>
-                <p>Company Size: {member.companySize}</p>
-                <p>Region: {member.region}</p>
-                <p>
-                  Focus:{" "}
-                  {member.focus &&
-                    member.focus.map((focus) => (
-                      <span key={focus.id}>
-                        <br />
-                        &nbsp;&nbsp;&nbsp;&nbsp; - {focus.name} - {focus.status}
-                      </span>
-                    ))}
-                </p>
-                <p>
-                  Industry:{" "}
-                  {member.industry &&
-                    member.industry.map((industry) => (
-                      <span key={industry.id}>
-                        <br />
-                        &nbsp;&nbsp;&nbsp;&nbsp; - {industry.name} -{" "}
-                        {industry.status}
-                      </span>
-                    ))}
-                </p>
-              </div>
-            ))}
+            .map((member) => MemberCard(member))}
         </div>
       )}
       <style jsx>{`
-        div {
-          margin: 3rem auto 0;
-          padding: 0 4rem;
-          max-width: ${theme.layout.breakPoints.large};
+        .content {
+          width: 90%;
+          margin: 0 auto;
         }
+
         .simple-nav {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
+          height: 5rem;
+          position: relative;
+          margin-top: 1rem;
         }
+
+        .simple-nav h3 {
+          display: inline-block;
+        }
+
         .auth-button {
-          position: fixed;
+          position: absolute;
           right: 0;
-          margin: 0;
+          top: 1.2rem;
+        }
+
+        .dashboard {
+          margin-top: 2rem;
         }
       `}</style>
-    </>
+    </div>
   );
 }

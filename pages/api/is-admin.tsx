@@ -1,12 +1,11 @@
+import { FirebaseTablesEnum } from "@/lib/enums";
 import { initializeAdmin } from "@/lib/firebase-admin";
-
 const admin = require("firebase-admin");
 
 const isAdmin = async (uid: string): Promise<boolean> => {
   await initializeAdmin();
   const db = admin.firestore();
-  const docRef = db.collection("admins").doc(uid);
-
+  const docRef = db.collection(FirebaseTablesEnum.ADMINS).doc(uid);
   const docSnapshot = await docRef.get();
   return docSnapshot.exists;
 };
