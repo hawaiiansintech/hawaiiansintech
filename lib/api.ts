@@ -6,17 +6,24 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { FirebaseTablesEnum, StatusEnum, YearsOfExperienceEnum } from "./enums";
-import { Member, memberConverter } from "./firestore-converters/member";
+import { memberConverter } from "./firestore-converters/member";
 
 const statusEnumValues = Object.values(StatusEnum);
 
-export interface MemberPublic extends Member {
+export interface MemberPublic {
+  name?: string;
+  companySize?: string;
   emailAbbr?: string;
   focus?: { name: string; id: string }[] | string[];
   focusSuggested?: string;
+  id?: string;
   industry?: { name: string; id: string }[] | string[];
   industrySuggested?: string;
+  link?: string;
+  location?: string;
   region?: string;
+  title?: string;
+  yearsExperience?: string;
 }
 
 export interface MemberPublicEditing extends MemberPublic {
