@@ -2,6 +2,7 @@ import FilterPicker, { PickerFilter } from "@/components/filters/FilterPicker";
 import MemberDirectory, { DirectoryMember } from "@/components/MemberDirectory";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
+import Plausible from "@/components/Plausible";
 import { Title } from "@/components/Title.js";
 import {
   DocumentData,
@@ -240,6 +241,7 @@ export default function HomePage({
   return (
     <>
       <Head>
+        <Plausible />
         <MetaTags title={pageTitle} />
         <title>{pageTitle}</title>
       </Head>

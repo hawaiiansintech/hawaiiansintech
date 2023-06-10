@@ -1,5 +1,6 @@
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
+import Plausible from "@/components/Plausible";
 import { Title } from "@/components/Title.js";
 import { motion } from "framer-motion";
 import Head from "next/head";
@@ -35,6 +36,7 @@ export default function AboutPage({ pageTitle }) {
   return (
     <>
       <Head>
+        <Plausible />
         <MetaTags title={pageTitle} />
         <title>{pageTitle}</title>
       </Head>
@@ -79,10 +81,7 @@ export default function AboutPage({ pageTitle }) {
             If you are <strong>Native Hawaiian</strong>, work in{" "}
             <strong>the field / industry of technology</strong>, and want to be
             part of this directory and community, simply complete this{" "}
-            <Link href="/join/01-you">
-              <a>Join form</a>
-            </Link>
-            .
+            <Link href="/join/01-you">Join form</Link>.
           </p>
           <p>
             Most could just stop there. But reach out to the community! Meet
@@ -105,63 +104,40 @@ export default function AboutPage({ pageTitle }) {
           <p>
             This website was originally a fork of{" "}
             <a href="https://brazilianswho.design/">Brazillians Who Design</a>'s
-            repo. There are many more that continue to inspire us, including:
-          </p>
-          <p>
-            <ul className="link-list">
-              <li className="link-list__item">
-                <a href="https://nativesintech.org/">Natives in Tech</a>
-              </li>
-              <li className="link-list__item">
-                <a href="https://womenwho.design/">Women Who Design</a>
-              </li>
-              <li className="link-list__item">
-                <a target="_blank" href="https://www.womenwhodraw.com/">
-                  Women Who Draw
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a target="_blank" href="http://www.28blacks.com/">
-                  28 Black Designers
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a target="_blank" href="https://www.latinxswhodesign.com/">
-                  Latinx Who Design
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a target="_blank" href="https://queerdesign.club/">
-                  Queer Design Club
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a
-                  target="_blank"
-                  href="https://filipinos-who-design.webflow.io/"
-                >
-                  Filipinos Who Design
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a target="_blank" href="https://www.apiwho.design/">
-                  Asian & Pacific Islanders Who Design
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a
-                  target="_blank"
-                  href="https://filipinos-who-design.webflow.io/"
-                >
-                  People Of Craft
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a target="_blank" href="https://indianswhodesign.in/">
-                  Indians Who Design
-                </a>
-              </li>
-            </ul>
+            repo. There are many more that continue to inspire us, including:{" "}
+            <a href="https://nativesintech.org/">Natives in Tech</a>,{" "}
+            <a href="https://womenwho.design/">Women Who Design</a>,{" "}
+            <a target="_blank" href="https://www.womenwhodraw.com/">
+              Women Who Draw
+            </a>
+            ,{" "}
+            <a target="_blank" href="http://www.28blacks.com/">
+              28 Black Designers
+            </a>
+            ,{" "}
+            <a target="_blank" href="https://www.latinxswhodesign.com/">
+              Latinx Who Design
+            </a>
+            ,{" "}
+            <a target="_blank" href="https://queerdesign.club/">
+              Queer Design Club
+            </a>
+            ,{" "}
+            <a target="_blank" href="https://filipinos-who-design.webflow.io/">
+              Filipinos Who Design
+            </a>
+            ,{" "}
+            <a target="_blank" href="https://www.apiwho.design/">
+              Asian & Pacific Islanders Who Design
+            </a>
+            ,{" "}
+            <a target="_blank" href="https://filipinos-who-design.webflow.io/">
+              People Of Craft
+            </a>
+            , and{" "}
+            <a target="_blank" href="https://indianswhodesign.in/">
+              Indians Who Design
+            </a>
           </p>
           <h3>Who’s behind this?</h3>
           <p>
@@ -196,10 +172,7 @@ export default function AboutPage({ pageTitle }) {
           <h3>How can I update my profile? Or remove myself altogether?</h3>
           <p>
             Changes, including removal from the list, can be{" "}
-            <Link href="/edit">
-              <a>requested here</a>
-            </Link>
-            .
+            <Link href="/edit">requested here</Link>.
           </p>
         </div>
       </div>

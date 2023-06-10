@@ -1,6 +1,6 @@
 import { Filter, MemberPublic } from "./api";
+import { CompanySizeEnum, YearsOfExperienceEnum } from "./enums";
 export type { MemberPublic };
-
 /**
  * Stubbed function to simulate fetching technologists
  * without connecting to firebase.
@@ -11,7 +11,7 @@ export type { MemberPublic };
 interface MemberPublicDupe {
   name?: string;
   companySize?: string;
-  emailAbbr?: string[];
+  emailAbbr?: string;
   focus?: { name: string; id: string }[] | string[];
   focusSuggested?: string;
   id?: string;
@@ -24,7 +24,7 @@ interface MemberPublicDupe {
   yearsExperience?: string;
 }
 
-export function getMembers(): MemberPublic[] {
+export function getMembers(): MemberPublicDupe[] {
   return [
     {
       id: "fakeMemberID01",
@@ -36,8 +36,8 @@ export function getMembers(): MemberPublic[] {
       link: "https://linkedin.com/in/andrewtaeoalii",
       focus: [{ name: "Engineering", id: "fakeFocusID01" }],
       industry: [{ name: "Internet / Technology", id: "fakeIndustryID01" }],
-      companySize: "5000 – 1000",
-      yearsExperience: "10 – 19 years",
+      companySize: CompanySizeEnum.FIVE_THOUSAND_TO_TEN_THOUSAND,
+      yearsExperience: YearsOfExperienceEnum.TEN_TO_NINETEEN,
     },
     {
       id: "fakeMemberID02",
@@ -49,8 +49,9 @@ export function getMembers(): MemberPublic[] {
       emailAbbr: "k...i@hawaiiansintech.org",
       focus: [{ name: "Engineering", id: "fakeFocusID01" }],
       industry: [{ name: "Healthcare", id: "fakeIndustryID02" }],
-      companySize: "1000 – 4999",
-      yearsExperience: "3 – 4 years",
+      companySize:
+        CompanySizeEnum.ONE_THOUSAND_TO_FOUR_THOUSAND_NINE_HUNDRED_NINETY_NINE,
+      yearsExperience: YearsOfExperienceEnum.TEN_TO_NINETEEN,
     },
     {
       id: "fakeMemberID03",
@@ -65,8 +66,9 @@ export function getMembers(): MemberPublic[] {
         { name: "Design", id: "fakeFocusID02" },
       ],
       industry: [{ name: "Internet / Technology", id: "fakeIndustryID01" }],
-      companySize: "1000 – 4999",
-      yearsExperience: "10 – 19 years",
+      companySize:
+        CompanySizeEnum.ONE_THOUSAND_TO_FOUR_THOUSAND_NINE_HUNDRED_NINETY_NINE,
+      yearsExperience: YearsOfExperienceEnum.TEN_TO_NINETEEN,
     },
   ];
 }

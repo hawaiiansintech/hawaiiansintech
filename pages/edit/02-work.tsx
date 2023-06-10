@@ -5,6 +5,7 @@ import WorkExperience, {
 } from "@/components/intake-form/WorkExperience";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
+import Plausible from "@/components/Plausible";
 import { getFilters, MemberPublicEditing } from "@/lib/api";
 import { FirebaseTablesEnum } from "@/lib/enums";
 import { useStorage } from "@/lib/hooks";
@@ -96,6 +97,7 @@ export default function JoinStep2({ focuses, pageTitle }) {
   return (
     <>
       <Head>
+        <Plausible />
         <MetaTags title={pageTitle} />
         <title>{pageTitle}</title>
       </Head>
