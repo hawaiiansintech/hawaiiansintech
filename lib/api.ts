@@ -1,21 +1,22 @@
 import { db } from "@/lib/firebase";
-import { collection, getDocs } from "firebase/firestore";
-import { FirebaseTablesEnum, YearsOfExperienceEnum } from "./enums";
+import {
+  collection,
+  DocumentReference,
+  FirestoreDataConverter,
+  getDocs,
+} from "firebase/firestore";
+import { FirebaseTablesEnum, StatusEnum, YearsOfExperienceEnum } from "./enums";
+import { Member, memberConverter } from "./firestore-converters/member";
 
-export interface MemberPublic {
-  name?: string;
-  companySize?: string;
+const statusEnumValues = Object.values(StatusEnum);
+
+export interface MemberPublic extends Member {
   emailAbbr?: string;
   focus?: { name: string; id: string }[] | string[];
   focusSuggested?: string;
-  id?: string;
   industry?: { name: string; id: string }[] | string[];
   industrySuggested?: string;
-  link?: string;
-  location?: string;
   region?: string;
-  title?: string;
-  yearsExperience?: string;
 }
 
 export interface MemberPublicEditing extends MemberPublic {
@@ -30,6 +31,7 @@ export interface DocumentData {
 export interface FilterData {
   id: string;
   name: string;
+  status?: StatusEnum;
 }
 
 export async function getFirebaseTable(
@@ -44,31 +46,42 @@ export async function getFirebaseTable(
   return documentsData;
 }
 
-function regionLookup(
-  member: DocumentData,
-  regions: DocumentData[]
+export async function getFirebaseData(
+  table: FirebaseTablesEnum,
+  converter: FirestoreDataConverter<any>
+): Promise<any[]> {
+  const documentsCollection = collection(db, table).withConverter(converter);
+  const documentsSnapshot = await getDocs(documentsCollection);
+  return documentsSnapshot.docs.map((doc) => doc.data());
+}
+
+export function regionLookup(
+  regions: DocumentData[],
+  memberRegionData: DocumentReference[]
 ): FilterData {
   return (
     regions.find((region) => {
-      const memberRegion = member.fields.regions;
       if (
-        memberRegion &&
-        Array.isArray(memberRegion) &&
-        memberRegion.length !== 0
+        memberRegionData &&
+        Array.isArray(memberRegionData) &&
+        memberRegionData.length !== 0
       ) {
-        return region.id === memberRegion[0].id;
+        return region.id === memberRegionData[0].id;
       }
     })?.fields.name || null
   );
 }
 
-function focusLookup(
-  member: DocumentData,
-  focuses: DocumentData[]
+export function focusLookup(
+  focuses: DocumentData[],
+  memberFocusData?: DocumentReference[]
 ): FilterData[] {
-  const memberFocus = member.fields.focuses;
-  if (memberFocus && Array.isArray(memberFocus) && memberFocus.length !== 0) {
-    return memberFocus.map((foc) => {
+  if (
+    memberFocusData &&
+    Array.isArray(memberFocusData) &&
+    memberFocusData.length !== 0
+  ) {
+    return memberFocusData.map((foc) => {
       return (
         focuses
           .filter((thisFoc) => foc.id === thisFoc.id)
@@ -79,6 +92,9 @@ function focusLookup(
                   ? foc.fields["name"]
                   : null,
               id: typeof foc.id === "string" ? foc.id : null,
+              status: typeof statusEnumValues.includes(foc.fields["status"])
+                ? foc.fields["status"]
+                : null,
             };
           })[0] || null
       );
@@ -87,17 +103,16 @@ function focusLookup(
   return null;
 }
 
-function industryLookup(
-  member: DocumentData,
-  industries: DocumentData[]
+export function industryLookup(
+  industries: DocumentData[],
+  memberIndustryData: DocumentReference[]
 ): FilterData[] {
-  const memberIndustry = member.fields.industries;
   if (
-    memberIndustry &&
-    Array.isArray(memberIndustry) &&
-    memberIndustry.length !== 0
+    memberIndustryData &&
+    Array.isArray(memberIndustryData) &&
+    memberIndustryData.length !== 0
   ) {
-    return memberIndustry.map((ind) => {
+    return memberIndustryData.map((ind) => {
       return (
         industries
           .filter((thisInd) => ind.id === thisInd.id)
@@ -108,6 +123,9 @@ function industryLookup(
                   ? ind.fields["name"]
                   : null,
               id: typeof ind.id === "string" ? ind.id : null,
+              status: typeof statusEnumValues.includes(ind.fields["status"])
+                ? ind.fields["status"]
+                : null,
             };
           })[0] || null
       );
@@ -119,50 +137,30 @@ function industryLookup(
 export async function getMembers(
   focusesData?: DocumentData[],
   industriesData?: DocumentData[],
-  regionsData?: DocumentData[]
+  regionsData?: DocumentData[],
+  filterByStatus: StatusEnum[] = [StatusEnum.APPROVED]
 ): Promise<MemberPublic[]> {
-  const members = await getFirebaseTable(FirebaseTablesEnum.MEMBERS);
-  const focuses =
+  const members = await getFirebaseData(
+    FirebaseTablesEnum.MEMBERS,
+    memberConverter
+  );
+  const focusesFb =
     focusesData || (await getFirebaseTable(FirebaseTablesEnum.FOCUSES));
-  const industries =
+  const industriesFb =
     industriesData || (await getFirebaseTable(FirebaseTablesEnum.INDUSTRIES));
-  const regions =
+  const regionsFb =
     regionsData || (await getFirebaseTable(FirebaseTablesEnum.REGIONS));
   return members
     .map((member) => {
-      const regionLookupVal = regionLookup(member, regions);
-      return member.fields.status === "approved"
+      const { regions, industries, focuses, lastModifiedBy, ...rest } = member;
+      return filterByStatus.includes(member.status)
         ? {
-            name:
-              typeof member.fields["name"] === "string"
-                ? member.fields["name"]
-                : null,
-            location:
-              typeof member.fields["location"] === "string"
-                ? member.fields["location"]
-                : null,
-            link:
-              typeof member.fields["link"] === "string"
-                ? member.fields["link"]
-                : null,
-            title:
-              typeof member.fields["title"] === "string"
-                ? member.fields["title"]
-                : null,
-            id: typeof member.id === "string" ? member.id : null,
-            companySize:
-              typeof member.fields["company_size"] === "string"
-                ? member.fields["company_size"]
-                : null,
-            yearsExperience:
-              typeof member.fields["years_experience"] === "string"
-                ? member.fields["years_experience"]
-                : null,
-            emailAbbr: member.fields["masked_email"] || null,
-            region:
-              typeof regionLookupVal === "string" ? regionLookupVal : null,
-            industry: industryLookup(member, industries),
-            focus: focusLookup(member, focuses),
+            ...rest,
+            lastModified: member.lastModified.toDate().toLocaleString(),
+            emailAbbr: member.maskedEmail,
+            region: regionLookup(regionsFb, member.regions),
+            industry: industryLookup(industriesFb, member.industries),
+            focus: focusLookup(focusesFb, member.focuses),
           }
         : null;
     })

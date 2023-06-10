@@ -7,7 +7,8 @@ import {
   FirebaseTablesEnum,
   StatusEnum,
 } from "@/lib/enums";
-import { db, initializeAdmin } from "@/lib/firebase";
+import { db } from "@/lib/firebase";
+import { initializeAdmin } from "@/lib/firebase-admin";
 import Client from "@sendgrid/client";
 import SendGrid from "@sendgrid/mail";
 import * as admin from "firebase-admin";

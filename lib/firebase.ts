@@ -1,5 +1,4 @@
 import { getFirestore } from "@firebase/firestore";
-import admin from "firebase-admin";
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { getStorage } from "firebase/storage";
@@ -37,12 +36,4 @@ export const signOutWithGoogle = () => {
   auth.signOut();
   sessionStorage.removeItem("user");
   location.reload();
-};
-export const initializeAdmin = async () => {
-  if (!admin.apps.length) {
-    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-    });
-  }
 };
