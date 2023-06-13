@@ -77,8 +77,8 @@ export default function JoinStep1({ pageTitle }) {
       <Heading>Welcome to our little hui.</Heading>
       <Subheading centered>
         To join the directory, we just ask that you are{" "}
-        <strong>Native Hawaiian</strong> and work in the{" "}
-        <strong>field / industry of technology</strong>.
+        <strong className="font-medium">Native Hawaiian</strong> and work in the{" "}
+        <strong className="font-medium">field / industry of technology</strong>.
       </Subheading>
       <BasicInformationForm
         initial={{ name: name, location: location, website: website }}

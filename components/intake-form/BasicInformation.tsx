@@ -49,13 +49,7 @@ export default function BasicInformationForm({
 
   return (
     <>
-      <section
-        style={{
-          margin: "2rem auto 0",
-          padding: "0 2rem",
-          maxWidth: theme.layout.width.interior,
-        }}
-      >
+      <section className="max-w-3xl mt-8 mx-auto px-8">
         {renderButton()}
 
         <Formik
@@ -90,31 +84,27 @@ export default function BasicInformationForm({
           })}
         >
           {(props) => (
-            <form onSubmit={props.handleSubmit}>
-              <div style={{ marginBottom: "2rem" }}>
-                <Input
-                  name="name"
-                  label="What’s your name?"
-                  value={props.values.name}
-                  labelTranslation="ʻO wai kou inoa?"
-                  placeholder="Full name"
-                  onBlur={props.handleBlur}
-                  onChange={props.handleChange}
-                  error={props.touched.name && props.errors.name}
-                />
-              </div>
-              <div style={{ marginBottom: "2rem" }}>
-                <Input
-                  name="location"
-                  value={props.values.location}
-                  label="Where you stay now days?"
-                  labelTranslation="Ma hea ʻoe e noho ʻana?"
-                  placeholder="Island/City, State"
-                  onBlur={props.handleBlur}
-                  onChange={props.handleChange}
-                  error={props.touched.location && props.errors.location}
-                />
-              </div>
+            <form className="space-y-6" onSubmit={props.handleSubmit}>
+              <Input
+                name="name"
+                label="What’s your name?"
+                value={props.values.name}
+                labelTranslation="ʻO wai kou inoa?"
+                placeholder="Full name"
+                onBlur={props.handleBlur}
+                onChange={props.handleChange}
+                error={props.touched.name && props.errors.name}
+              />
+              <Input
+                name="location"
+                value={props.values.location}
+                label="Where you stay now days?"
+                labelTranslation="Ma hea ʻoe e noho ʻana?"
+                placeholder="Island/City, State"
+                onBlur={props.handleBlur}
+                onChange={props.handleChange}
+                error={props.touched.location && props.errors.location}
+              />
               <Input
                 name="website"
                 value={props.values.website}
@@ -125,7 +115,7 @@ export default function BasicInformationForm({
                 error={props.touched.website && props.errors.website}
               />
 
-              <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
+              <div className="max-w-3xl">
                 <Button fullWidth loading={loading} type="submit">
                   Continue
                 </Button>
