@@ -38,7 +38,7 @@ export default function Input({
 }: InputProps) {
   const nameKebab = toKebab(name);
   return (
-    <div className={`space-y-2 w-full`}>
+    <div className={`space-y-4 w-full`}>
       {label && labelTranslation && (
         <Label
           htmlFor={nameKebab}

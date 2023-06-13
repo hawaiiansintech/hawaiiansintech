@@ -5,7 +5,7 @@ import "../styles/globals.css";
 
 function App({ Component, pageProps }) {
   useEffect(() => {
-    document.body.className = "bg-stone-200";
+    document.body.className = "bg-tan-200";
   });
   return (
     <>

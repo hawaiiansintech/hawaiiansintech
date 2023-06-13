@@ -49,15 +49,6 @@ export default css.global`
     box-sizing: inherit;
   }
 
-  body {
-    font-family: ${theme.fontFamily.base};
-    background: ${theme.color.background.base};
-    color: ${theme.color.text.base};
-    font-weight: 500;
-    margin: 0;
-    padding: 0;
-  }
-
   .container {
     position: relative;
     margin: 3rem auto;

@@ -1,6 +1,5 @@
 import { Formik } from "formik";
 import React, { useState } from "react";
-import theme from "styles/theme";
 import urlRegex from "url-regex";
 import * as Yup from "yup";
 import Button from "../Button";
@@ -25,22 +24,12 @@ export default function BasicInformationForm({
     if (!onReset) return <></>;
     if (initial.name || initial.location || initial.website)
       return (
-        // TODO remove this hardcoded css
-        <div
-          style={{
-            border: `0.125rem solid ${theme.color.border.base}`,
-            borderRadius: theme.borderRadius.sm,
-            fontSize: "0.875rem",
-            padding: "0.5rem",
-            marginBottom: "2rem",
-            display: "flex",
-            justifyContent: "center",
-            gap: "0.5rem",
-            color: theme.color.text.alt2,
-          }}
-        >
-          It looks like you might've gotten started already. Continue below or{" "}
-          <div>
+        <div className="flex items-center border-2 border-tan-400 pl-3 pr-2 py-2 mb-4 rounded-lg bg-tan-300 text-xs text-tan-800">
+          <h4 className="grow-1 w-full">
+            <strong className="font-semibold">Start over?</strong> It looks like
+            you might've gotten started already.
+          </h4>
+          <div className="shrink-0">
             <UndoButton onClick={onReset}>Clear all fields</UndoButton>
           </div>
         </div>
@@ -51,7 +40,6 @@ export default function BasicInformationForm({
     <>
       <section className="max-w-3xl mt-8 mx-auto px-8">
         {renderButton()}
-
         <Formik
           enableReinitialize
           initialValues={{
@@ -115,11 +103,11 @@ export default function BasicInformationForm({
                 error={props.touched.website && props.errors.website}
               />
 
-              <div className="max-w-3xl">
+              <section className="max-w-md mx-auto">
                 <Button fullWidth loading={loading} type="submit">
                   Continue
                 </Button>
-              </div>
+              </section>
             </form>
           )}
         </Formik>

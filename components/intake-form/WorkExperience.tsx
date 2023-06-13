@@ -127,15 +127,9 @@ export default function WorkExperience({
 
   return (
     <>
-      <section
-        style={{
-          margin: "0 auto 1rem",
-          padding: "0 2rem",
-          maxWidth: theme.layout.width.interior,
-        }}
-      >
+      <section className="max-w-3xl px-8 mt-0 mx-auto mb-4 space-y-6">
         {error && <ErrorMessage headline={error.headline} body={error.body} />}
-        <div style={{ margin: "2rem 0 1rem" }}>
+        <section className="space-y-4">
           <Label
             label="Which of the following best describes your field of work?"
             labelTranslation="He aha kou (mau) hana ʻoi a pau?"
@@ -145,8 +139,6 @@ export default function WorkExperience({
                 : undefined
             }
           />
-        </div>
-        <div style={{ marginTop: "1rem" }}>
           <SelectableGrid columns={columnCount}>
             {initial.focuses.map((focus, i: number) => {
               const isDisabled =
@@ -210,9 +202,19 @@ export default function WorkExperience({
               )}
             </div>
           </SelectableGrid>
-        </div>
-        {!showSuggestButton || focusSuggested ? WorkExperienceWarning() : null}
-        <div style={{ margin: "2rem 0" }}>
+
+          {!showSuggestButton || focusSuggested ? (
+            <ErrorMessage
+              headline="Please suggest with care 🤙🏽"
+              body={`As we manually review all submissions, suggesting a new 
+        label increases the time it takes to approve your entry. To be mindful of this, please consider any existing labels might fit 
+        your situation.`}
+              warning
+            />
+          ) : null}
+        </section>
+
+        <section className="space-y-4">
           <Label
             label="How many years of experience do you have in your field?"
             labelTranslation="Ehia ka makahiki o kou hana ʻana ma kou ʻoi hana?"
@@ -220,15 +222,9 @@ export default function WorkExperience({
               showNew && initial.yearsExperience === "" ? "NEW" : undefined
             }
           />
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              margin: "1rem auto 2rem",
-            }}
-          >
+          <div className="flex flex-wrap mx-auto mb-8">
             {Object.values(YearsOfExperienceEnum).map((dur) => (
-              <div style={{ margin: "0 0.5rem 0.5rem 0" }} key={`dur-${dur}`}>
+              <div className="mr-2 mb-2">
                 <RadioBox
                   seriesOf="years-experience"
                   checked={dur === yearsExperience}
@@ -238,9 +234,9 @@ export default function WorkExperience({
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
-        <div style={{ margin: "2rem 0" }}>
+        <section className="space-y-4">
           <Input
             name="title"
             label="What’s your current title?"
@@ -251,18 +247,17 @@ export default function WorkExperience({
             onChange={(e) => setTitle(e.target.value)}
             labelTagged={showNew && initial.title === "" ? "NEW" : undefined}
           />
-          <div style={{ marginTop: "1rem", display: "inline-block" }}>
-            <CheckBox
-              checked={deferTitle === "true"}
-              label={"N/A, or Prefer not to answer"}
-              id="defer-title"
-              onClick={() =>
-                setDeferTitle(deferTitle === "true" ? undefined : "true")
-              }
-            />
-          </div>
-        </div>
-        <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
+
+          <CheckBox
+            checked={deferTitle === "true"}
+            label={"N/A, or Prefer not to answer"}
+            id="defer-title"
+            onClick={() =>
+              setDeferTitle(deferTitle === "true" ? undefined : "true")
+            }
+          />
+        </section>
+        <section className="max-w-md mx-auto">
           <Button
             fullWidth
             onClick={handleSubmit}
@@ -271,24 +266,8 @@ export default function WorkExperience({
           >
             Continue
           </Button>
-        </div>
+        </section>
       </section>
     </>
-  );
-}
-
-export function WorkExperienceWarning() {
-  const labelNote = `We manually review all submissions. Suggesting a new 
-    label increases the time it takes for our admins to approve your 
-    submission. Please be mindful of this and see if any existing labels fit 
-    under the label you'd like to suggest.`;
-  return (
-    <div style={{ margin: "1rem" }}>
-      <ErrorMessage
-        headline="Please suggest with care 🤙🏽"
-        body={labelNote}
-        textColor={theme.color.text.base}
-      />
-    </div>
   );
 }

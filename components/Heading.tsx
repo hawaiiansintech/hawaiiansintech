@@ -23,7 +23,7 @@ export function Subheading(props: SubheadingProps) {
     <p
       className={classNames(
         { "text-center": props.centered, "text-left": !props.centered },
-        `font-normal text-stone-700 text-2xl max-w-3xl mx-auto mt-0 mb-8 px-8`
+        `font-normal text-stone-600 text-2xl max-w-3xl mx-auto mt-0 mb-8 px-8`
       )}
     >
       {props.children}
