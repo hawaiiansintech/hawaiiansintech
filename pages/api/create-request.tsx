@@ -4,7 +4,7 @@ import {
   sendRequestUpdateEmail,
 } from "@/lib/email/request-update-email";
 import { FirebaseTablesEnum } from "@/lib/enums";
-import { initializeAdmin } from "@/lib/firebase";
+import { initializeAdmin } from "@/lib/firebase-admin";
 import * as admin from "firebase-admin";
 
 const addRequest = async (
