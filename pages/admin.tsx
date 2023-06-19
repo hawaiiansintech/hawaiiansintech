@@ -61,12 +61,21 @@ export async function getStaticProps() {
   };
 }
 
-export default function auth(props: { fetchedMembers: MemberPublic[] }) {
+export default function admin(props: { fetchedMembers: MemberPublic[] }) {
   const [memberData, setMemberData] = useState(props.fetchedMembers);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState<ErrorMessageProps>(undefined);
   const [showDashboard, setShowDashboard] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
+
+  const [memberStates, setMemberStates] = useState(
+    props.fetchedMembers.map((member) => ({
+      id: member.id,
+      deleteSelected: false,
+      isHidden: false,
+    }))
+  );
 
   useEffect(() => {
     if (sessionStorage.getItem("user")) {
@@ -80,6 +89,28 @@ export default function auth(props: { fetchedMembers: MemberPublic[] }) {
       setUserData(userData);
     }
   }, []);
+
+  const handleDeleteClick = (id: string) => {
+    setMemberStates((prevStates) =>
+      prevStates.map((state) =>
+        state.id === id
+          ? { ...state, deleteSelected: !state.deleteSelected }
+          : state
+      )
+    );
+  };
+
+  const handleHideMember = (id: string) => {
+    setMemberStates((prevStates) =>
+      prevStates.map((state) =>
+        state.id === id ? { ...state, isHidden: !state.isHidden } : state
+      )
+    );
+  };
+
+  const handleShowDelete = () => {
+    setShowDelete(!showDelete);
+  };
 
   const handleSignOut = () => {
     signOutWithGoogle();
@@ -96,7 +127,6 @@ export default function auth(props: { fetchedMembers: MemberPublic[] }) {
           ADMIN_EMAILS.join(", "),
       });
     } else {
-      console.log(memberData);
       setShowDashboard(true);
     }
   };
@@ -121,15 +151,29 @@ export default function auth(props: { fetchedMembers: MemberPublic[] }) {
       </div>
       <div className="dashboard">
         {isLoggedIn ? (
-          <Button
-            size={ButtonSize.Small}
-            customWidth="16rem"
-            customWidthSmall="28rem"
-            customFontSize="1.5rem"
-            onClick={handleDashboard}
-          >
-            View Dashboard
-          </Button>
+          <div style={{ display: "flex" }}>
+            <div style={{ marginRight: "auto" }}>
+              <Button
+                size={ButtonSize.Small}
+                customWidth="16rem"
+                customWidthSmall="28rem"
+                customFontSize="1.5rem"
+                onClick={handleDashboard}
+              >
+                View Dashboard
+              </Button>
+            </div>
+            <div>
+              <Button
+                size={ButtonSize.Small}
+                customWidth="10rem"
+                customFontSize="1rem"
+                onClick={handleShowDelete}
+              >
+                {showDelete ? "Hide Delete" : "Show Delete"}
+              </Button>
+            </div>
+          </div>
         ) : null}
         {error && (
           <div style={{ marginBottom: "1rem" }}>
@@ -139,10 +183,19 @@ export default function auth(props: { fetchedMembers: MemberPublic[] }) {
       </div>
       {showDashboard && (
         <div>
-          {/* {console.log("TESTING", memberData)} */}
           {memberData
             .sort((a, b) => b.status.localeCompare(a.status))
-            .map((member) => MemberCard(member))}
+            .map((member) =>
+              MemberCard(
+                member,
+                memberStates.find((state) => state.id === member.id)
+                  .deleteSelected,
+                handleDeleteClick,
+                memberStates.find((state) => state.id === member.id).isHidden,
+                handleHideMember,
+                showDelete
+              )
+            )}
         </div>
       )}
       <style jsx>{`

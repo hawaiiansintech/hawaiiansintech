@@ -22,6 +22,7 @@ export interface MemberPublic {
   link?: string;
   location?: string;
   region?: string;
+  status?: StatusEnum;
   title?: string;
   yearsExperience?: string;
 }

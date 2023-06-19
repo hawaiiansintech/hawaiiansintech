@@ -1,6 +1,85 @@
-import { StatusEnum } from "@/lib/enums";
-export default function MemberCard(member) {
-  console.log("member:", member);
+import Button, { ButtonSize, ButtonVariant } from "@/components/Button";
+import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
+import {
+  deleteDoc,
+  doc,
+  DocumentReference,
+  getDoc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
+import { db } from "./firebase";
+import { memberConverter } from "./firestore-converters/member";
+
+export interface referencesToDelete {
+  memberRef: DocumentReference;
+  focuses: DocumentReference[];
+  industries: DocumentReference[];
+  regions: DocumentReference[];
+  secureMemberData: DocumentReference;
+}
+
+export async function getReferencesToDelete(
+  uid: string
+): Promise<referencesToDelete> {
+  const documentRef = doc(db, FirebaseTablesEnum.MEMBERS, uid).withConverter(
+    memberConverter
+  );
+  const documentSnapshot = await getDoc(documentRef);
+  if (!documentSnapshot.exists()) {
+    return null;
+  }
+  const data = documentSnapshot.data();
+  const returnData = {
+    memberRef: documentRef,
+    focuses: data.focuses,
+    industries: data.industries,
+    regions: data.regions,
+    secureMemberData: doc(db, FirebaseTablesEnum.SECURE_MEMBER_DATA, uid),
+  };
+  return returnData;
+}
+
+export async function deleteReferences(
+  memberRef: DocumentReference,
+  references: DocumentReference[]
+) {
+  for (const reference of references) {
+    const documentSnapshot = await getDoc(reference);
+    const memberRefs = documentSnapshot.data().members;
+    const memberRefToDelete = memberRef.id;
+    const updatedMemberRefs = memberRefs.filter(
+      (ref) => ref.id !== memberRefToDelete
+    );
+    console.log("Removing member from:", reference.id);
+    await updateDoc(reference, {
+      members: updatedMemberRefs,
+      last_modified: serverTimestamp(),
+      last_modified_by: sessionStorage.getItem("user"),
+    });
+  }
+}
+
+export async function deleteDocument(docRef: DocumentReference) {
+  const documentSnapshot = await getDoc(docRef);
+  if (documentSnapshot.exists()) {
+    try {
+      await deleteDoc(docRef);
+      console.log("Document successfully deleted:", docRef.id);
+    } catch (error) {
+      console.error("Error deleting document: ", error);
+    }
+  }
+}
+
+export default function MemberCard(
+  member,
+  deleteSelected: boolean,
+  selectDelect: (id: string) => void,
+  isHidden: boolean,
+  setIsHidden: (id: string) => void,
+  showDelete: boolean
+) {
   let backgroundColor = "#f2f2f2";
   switch (member.status) {
     case StatusEnum.APPROVED:
@@ -18,11 +97,70 @@ export default function MemberCard(member) {
     default:
       break;
   }
-  return (
+
+  const handleDeleteSelect = () => {
+    selectDelect(member.id);
+  };
+
+  const handleConfirmDelete = async () => {
+    const references = await getReferencesToDelete(member.id);
+    const memberRef = references.memberRef;
+    console.log("removing focuses references");
+    await deleteReferences(memberRef, references.focuses);
+    console.log("removing industries references");
+    await deleteReferences(memberRef, references.industries);
+    console.log("removing regions references");
+    await deleteReferences(memberRef, references.regions);
+    console.log("removing secureMemberData document");
+    await deleteDocument(references.secureMemberData);
+    console.log("removing member document");
+    await deleteDocument(references.memberRef);
+    setIsHidden(member.id);
+  };
+
+  return isHidden ? null : (
     <div className="member-container" key={member.id}>
       <div className="member-header">
-        <h2>
+        <h2 style={{ display: "flex" }}>
           {member.name}, {member.title}
+          {showDelete &&
+            (!deleteSelected ? (
+              <div style={{ marginLeft: "1rem", marginTop: "0" }}>
+                <Button
+                  size={ButtonSize.Small}
+                  customWidth="10rem"
+                  customFontSize="1rem"
+                  onClick={handleDeleteSelect}
+                >
+                  Delete
+                </Button>
+              </div>
+            ) : (
+              <div style={{ marginLeft: "1rem", display: "flex" }}>
+                <div style={{ marginRight: "0.5rem" }}>
+                  <Button
+                    size={ButtonSize.Small}
+                    customWidth="12rem"
+                    customFontSize="1rem"
+                    onClick={handleConfirmDelete}
+                    variant={ButtonVariant.Secondary}
+                  >
+                    ✔️ (confirm delete)
+                  </Button>
+                </div>
+                <div>
+                  <Button
+                    size={ButtonSize.Small}
+                    customWidth="12rem"
+                    customFontSize="1rem"
+                    onClick={handleDeleteSelect}
+                    variant={ButtonVariant.Secondary}
+                  >
+                    ❌ (don't delete)
+                  </Button>
+                </div>
+              </div>
+            ))}
         </h2>
       </div>
       <div className="member-body">

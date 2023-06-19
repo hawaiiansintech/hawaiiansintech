@@ -23,7 +23,7 @@ export const signInWithGoogle = () => {
     .then((result) => {
       sessionStorage.setItem("user", result.user.displayName);
       sessionStorage.setItem("uid", result.user.uid);
-      sessionStorage.setItem("email", result.user.uid);
+      sessionStorage.setItem("email", result.user.email);
       sessionStorage.setItem(
         "emailIsVerified",
         String(result.user.emailVerified)
