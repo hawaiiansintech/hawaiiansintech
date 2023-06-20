@@ -1,4 +1,4 @@
-import Button, { ButtonSize } from "@/components/Button";
+import Button, { ButtonSize, ButtonVariant } from "@/components/Button";
 import ErrorMessage, {
   ErrorMessageProps,
 } from "@/components/form/ErrorMessage";
@@ -47,30 +47,63 @@ export async function getStaticProps() {
   const regionsData: DocumentData[] = await getFirebaseTable(
     FirebaseTablesEnum.REGIONS
   );
-  const members: MemberPublic[] = await getMembers(
+  const nonApprovedmembers: MemberPublic[] = await getMembers(
     focusesData,
     industriesData,
     regionsData,
     [StatusEnum.IN_PROGRESS, StatusEnum.PENDING]
   );
+  const approvedmembers: MemberPublic[] = await getMembers(
+    focusesData,
+    industriesData,
+    regionsData,
+    [StatusEnum.APPROVED]
+  );
   return {
     props: {
-      fetchedMembers: members,
+      nonApprovedMembers: nonApprovedmembers,
+      approvedMembers: approvedmembers,
     },
     revalidate: 60,
   };
 }
 
-export default function admin(props: { fetchedMembers: MemberPublic[] }) {
-  const [memberData, setMemberData] = useState(props.fetchedMembers);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+export async function getEmails(
+  approvedMembers: MemberPublic[]
+): Promise<string[]> {
+  const secureMemberData: DocumentData[] = await getFirebaseTable(
+    FirebaseTablesEnum.SECURE_MEMBER_DATA
+  );
+  let returnData = [];
+  for (const member of approvedMembers) {
+    const secureMember = secureMemberData.find(
+      (secureMember) =>
+        secureMember.id === member.id &&
+        member.unsubscribed === false &&
+        "fields" in secureMember &&
+        secureMember.fields !== undefined
+    );
+    secureMember && returnData.push(secureMember.fields.email);
+  }
+  returnData.sort();
+  return returnData;
+}
+
+export default function admin(props: {
+  nonApprovedMembers: MemberPublic[];
+  approvedMembers: MemberPublic[];
+}) {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState<ErrorMessageProps>(undefined);
-  const [showDashboard, setShowDashboard] = useState(false);
-  const [showDelete, setShowDelete] = useState(false);
+  const [showDashboard, setShowDashboard] = useState<boolean>(false);
+  const [showDelete, setShowDelete] = useState<boolean>(false);
+  const [emailList, setEmailList] = useState<string[]>([]);
+  const [showEmails, setShowEmails] = useState<boolean>(false);
+  const [copiedToClipboard, setCopiedToClipboard] = useState<boolean>(false);
 
   const [memberStates, setMemberStates] = useState(
-    props.fetchedMembers.map((member) => ({
+    props.nonApprovedMembers.map((member) => ({
       id: member.id,
       deleteSelected: false,
       isHidden: false,
@@ -127,8 +160,23 @@ export default function admin(props: { fetchedMembers: MemberPublic[] }) {
           ADMIN_EMAILS.join(", "),
       });
     } else {
-      setShowDashboard(true);
+      setShowDashboard(!showDashboard);
     }
+  };
+
+  const handleGetEmails = async () => {
+    if (emailList.length === 0) {
+      const emails = await getEmails(props.approvedMembers);
+      setEmailList(emails);
+    }
+    if (showEmails) setCopiedToClipboard(false);
+    setShowEmails(!showEmails);
+  };
+
+  const handleCopyToClipboard = () => {
+    const emailListText = emailList.join("\n");
+    navigator.clipboard.writeText(emailListText);
+    setCopiedToClipboard(true);
   };
 
   return (
@@ -160,21 +208,56 @@ export default function admin(props: { fetchedMembers: MemberPublic[] }) {
                 customFontSize="1.5rem"
                 onClick={handleDashboard}
               >
-                View Dashboard
+                {showDashboard ? "Hide Dashboard" : "View Dashboard"}
               </Button>
             </div>
             <div>
+              {showDashboard && (
+                <Button
+                  size={ButtonSize.Small}
+                  customWidth="10rem"
+                  customFontSize="1rem"
+                  onClick={handleShowDelete}
+                >
+                  {showDelete ? "Hide Delete" : "Show Delete"}
+                </Button>
+              )}
+            </div>
+          </div>
+        ) : null}
+        <div style={{ marginTop: "1.5rem", display: "flex" }}>
+          <div style={{ marginRight: "1.5rem" }}>
+            <Button
+              size={ButtonSize.Small}
+              customWidth="16rem"
+              customWidthSmall="28rem"
+              customFontSize="1.5rem"
+              onClick={handleGetEmails}
+            >
+              {showEmails ? "Hide Emails" : "Get Emails"}
+            </Button>
+          </div>
+          <div>
+            {showEmails && (
               <Button
                 size={ButtonSize.Small}
                 customWidth="10rem"
                 customFontSize="1rem"
-                onClick={handleShowDelete}
+                onClick={handleCopyToClipboard}
+                variant={ButtonVariant.Secondary}
               >
-                {showDelete ? "Hide Delete" : "Show Delete"}
+                {copiedToClipboard ? "Copied! ✔️" : "Copy to Clipboard"}
               </Button>
-            </div>
+            )}
           </div>
-        ) : null}
+        </div>
+        {showEmails && (
+          <div style={{ marginTop: "1.5rem" }}>
+            {emailList.map((email) => (
+              <div key={email}>{email}</div>
+            ))}
+          </div>
+        )}
         {error && (
           <div style={{ marginBottom: "1rem" }}>
             <ErrorMessage headline={error.headline} body={error.body} />
@@ -183,7 +266,7 @@ export default function admin(props: { fetchedMembers: MemberPublic[] }) {
       </div>
       {showDashboard && (
         <div>
-          {memberData
+          {props.nonApprovedMembers
             .sort((a, b) => b.status.localeCompare(a.status))
             .map((member) =>
               MemberCard(

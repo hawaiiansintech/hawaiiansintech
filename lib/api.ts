@@ -4,6 +4,7 @@ import {
   DocumentReference,
   FirestoreDataConverter,
   getDocs,
+  Timestamp,
 } from "firebase/firestore";
 import { FirebaseTablesEnum, StatusEnum, YearsOfExperienceEnum } from "./enums";
 import { memberConverter } from "./firestore-converters/member";
@@ -25,6 +26,8 @@ export interface MemberPublic {
   status?: StatusEnum;
   title?: string;
   yearsExperience?: string;
+  lastModified?: Timestamp;
+  unsubscribed?: boolean;
 }
 
 export interface MemberPublicEditing extends MemberPublic {

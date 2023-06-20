@@ -8,6 +8,7 @@ import {
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
+import { MemberPublic } from "./api";
 import { db } from "./firebase";
 import { memberConverter } from "./firestore-converters/member";
 
@@ -73,7 +74,7 @@ export async function deleteDocument(docRef: DocumentReference) {
 }
 
 export default function MemberCard(
-  member,
+  member: MemberPublic,
   deleteSelected: boolean,
   selectDelect: (id: string) => void,
   isHidden: boolean,
