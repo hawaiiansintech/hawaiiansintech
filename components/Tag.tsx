@@ -5,11 +5,7 @@ interface TagProps {
 
 export default function Tag({ children, label }: TagProps) {
   return (
-    <span
-      className={
-        "text-white font-base bg-brown-600 text-xs px-1 py-0.5 leading-4 rounded tracking-wider"
-      }
-    >
+    <span className="font-base rounded bg-brown-600 px-1 py-0.5 text-xs leading-4 tracking-wider text-white">
       {children ? children : null}
       {label ? label : null}
     </span>

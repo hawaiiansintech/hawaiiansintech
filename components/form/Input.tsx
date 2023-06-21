@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import { clsx } from "clsx";
 import React from "react";
 import { toKebab } from "../../helpers";
 import Label from "./Label";
@@ -38,7 +38,7 @@ export default function Input({
 }: InputProps) {
   const nameKebab = toKebab(name);
   return (
-    <div className={`space-y-4 w-full`}>
+    <div className="w-full space-y-4">
       {label && labelTranslation && (
         <Label
           htmlFor={nameKebab}
@@ -49,7 +49,7 @@ export default function Input({
       )}
       <input
         className={classNames(
-          "w-full py-3 px-4 text-xl rounded border-transparent bg-stone-100 focus:ring-8 focus:ring-brown-500/30 disabled:opacity-50 disabled:cursor-not-allowed placeholder:font-normal placeholder:text-stone-400",
+          "w-full rounded border-transparent bg-stone-100 px-4 text-xl first-letter:py-3 placeholder:font-normal placeholder:text-stone-400 focus:ring-8 focus:ring-brown-500/30 disabled:cursor-not-allowed disabled:opacity-50",
           { "ring-8": error, "ring-red-500/50": error }
         )}
         defaultValue={defaultValue}
@@ -72,7 +72,7 @@ export default function Input({
 
 export function InputError({ children }: { children: React.ReactNode }) {
   return (
-    <span className="block mt-8 text-xs text-red-500 font-normal">
+    <span className="mt-8 block text-xs font-normal text-red-500">
       {children}
     </span>
   );

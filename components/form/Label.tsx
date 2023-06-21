@@ -38,7 +38,7 @@ export default function Label({
       <main>
         <h3 className="my-0 text-xl font-semibold text-stone-700">{label}</h3>
         {labelTranslation && (
-          <h4 className="text-brown-600 italic my-0 text-sm font-semibold">
+          <h4 className="my-0 text-sm font-semibold italic text-brown-600">
             {labelTranslation}
           </h4>
         )}

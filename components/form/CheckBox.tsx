@@ -22,11 +22,11 @@ export default function CheckBox(props: CheckBoxProps) {
         checked={props.checked}
         defaultChecked={props.defaultChecked}
         readOnly
-        className="hidden peer"
+        className="peer hidden"
         tabIndex={-1}
       />
       <label
-        className={`flex items-center text-stone-600 cursor-pointer peer-checked:text-brown-800 before:content-[''] before:block before:w-5 before:h-5 before:border-4 before:border-tan-400 before:rounded peer-checked:before:bg-brown-600 peer-checked:before:border-0 peer-checked:after:content[''] peer-checked:after:absolute peer-checked:after:block peer-checked:after:bg-white peer-checked:after:w-2 peer-checked:after:h-2 peer-checked:after:rounded-sm peer-checked:after:left-1.5 peer-checked:after:top-2`}
+        className={`peer-checked:after:content[''] flex cursor-pointer items-center text-stone-600 before:block before:h-5 before:w-5 before:rounded before:border-4 before:border-tan-400 before:content-[''] peer-checked:text-brown-800 peer-checked:before:border-0 peer-checked:before:bg-brown-600 peer-checked:after:absolute peer-checked:after:left-1.5 peer-checked:after:top-2 peer-checked:after:block peer-checked:after:h-2 peer-checked:after:w-2 peer-checked:after:rounded-sm peer-checked:after:bg-white`}
         htmlFor={labelKebab}
       >
         <h3 className="ml-2 font-medium">{props.label}</h3>

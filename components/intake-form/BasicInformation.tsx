@@ -24,7 +24,7 @@ export default function BasicInformationForm({
     if (!onReset) return <></>;
     if (initial.name || initial.location || initial.website)
       return (
-        <div className="flex items-center border-2 border-tan-400 pl-3 pr-2 py-2 mb-4 rounded-lg bg-tan-300 text-xs text-tan-800">
+        <div className="mb-4 flex items-center rounded-lg border-2 border-tan-400 bg-tan-300 py-2 pl-3 pr-2 text-xs text-tan-800">
           <h4 className="grow-1 w-full">
             <strong className="font-semibold">Start over?</strong> It looks like
             you might've gotten started already.
@@ -38,7 +38,7 @@ export default function BasicInformationForm({
 
   return (
     <>
-      <section className="max-w-3xl mt-8 mx-auto px-8">
+      <section className="mx-auto mt-8 max-w-3xl px-8">
         {renderButton()}
         <Formik
           enableReinitialize
@@ -103,7 +103,7 @@ export default function BasicInformationForm({
                 error={props.touched.website && props.errors.website}
               />
 
-              <section className="max-w-md mx-auto">
+              <section className="mx-auto max-w-md">
                 <Button fullWidth loading={loading} type="submit">
                   Continue
                 </Button>

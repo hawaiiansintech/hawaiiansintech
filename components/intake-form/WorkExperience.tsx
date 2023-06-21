@@ -127,7 +127,7 @@ export default function WorkExperience({
 
   return (
     <>
-      <section className="max-w-3xl px-8 mt-0 mx-auto mb-4 space-y-6">
+      <section className="mx-auto mb-4 mt-0 max-w-3xl space-y-6 px-8">
         {error && <ErrorMessage headline={error.headline} body={error.body} />}
         <section className="space-y-4">
           <Label
@@ -222,9 +222,9 @@ export default function WorkExperience({
               showNew && initial.yearsExperience === "" ? "NEW" : undefined
             }
           />
-          <div className="flex flex-wrap mx-auto mb-8">
+          <div className="mx-auto mb-8 flex flex-wrap">
             {Object.values(YearsOfExperienceEnum).map((dur) => (
-              <div className="mr-2 mb-2">
+              <div className="mb-2 mr-2">
                 <RadioBox
                   seriesOf="years-experience"
                   checked={dur === yearsExperience}
@@ -257,7 +257,7 @@ export default function WorkExperience({
             }
           />
         </section>
-        <section className="max-w-md mx-auto">
+        <section className="mx-auto max-w-md">
           <Button
             fullWidth
             onClick={handleSubmit}

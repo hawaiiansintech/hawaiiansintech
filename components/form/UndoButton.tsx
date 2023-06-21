@@ -15,18 +15,27 @@ export default function UndoButton({
 }: UndoButtonProps) {
   let button = <>{children}</>;
 
-  const classes =
-    "inline-block px-2 py-0.5 ml-1 rounded bg-tan-400 hover:bg-tan-400/50 hover:ring-2 hover:ring-inset hover:ring-tan-400/70";
-
   if (linkTo) {
     button = (
       <Link href={linkTo} onClick={onClick}>
-        <div className={classes}>{button}</div>
+        <div
+          className={
+            "ml-1 inline-block rounded bg-tan-400 px-2 py-0.5 hover:bg-tan-400/50 hover:ring-2 hover:ring-inset hover:ring-tan-400/70"
+          }
+        >
+          {button}
+        </div>
       </Link>
     );
   } else {
     button = (
-      <button type={type} className={classes} onClick={onClick}>
+      <button
+        type={type}
+        className={
+          "ml-1 inline-block rounded bg-tan-400 px-2 py-0.5 hover:bg-tan-400/50 hover:ring-2 hover:ring-inset hover:ring-tan-400/70"
+        }
+        onClick={onClick}
+      >
         {button}
       </button>
     );

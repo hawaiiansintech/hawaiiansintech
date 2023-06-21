@@ -7,7 +7,7 @@ interface HeadingProps {
 
 export function Heading(props: HeadingProps) {
   return (
-    <h1 className="text-stone-800 font-medium text-4xl max-w-3xl mx-auto mt-0 mb-8 px-8 text-center">
+    <h1 className="mx-auto mb-8 mt-0 max-w-3xl px-8 text-center text-4xl font-medium text-stone-800">
       {props.children}
     </h1>
   );
@@ -22,8 +22,8 @@ export function Subheading(props: SubheadingProps) {
   return (
     <p
       className={classNames(
-        { "text-center": props.centered, "text-left": !props.centered },
-        `font-normal text-stone-600 text-2xl max-w-3xl mx-auto mt-0 mb-8 px-8`
+        "mx-auto mb-8 mt-0 max-w-3xl px-8 text-2xl font-normal text-stone-600",
+        { "text-center": props.centered, "text-left": !props.centered }
       )}
     >
       {props.children}
