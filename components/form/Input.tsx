@@ -1,6 +1,5 @@
-import { clsx } from "clsx";
 import React from "react";
-import { toKebab } from "../../helpers";
+import { cn, toKebab } from "../../helpers";
 import Label from "./Label";
 
 interface InputProps {
@@ -48,8 +47,21 @@ export default function Input({
         />
       )}
       <input
-        className={classNames(
-          "w-full rounded border-transparent bg-stone-100 px-4 text-xl first-letter:py-3 placeholder:font-normal placeholder:text-stone-400 focus:ring-8 focus:ring-brown-500/30 disabled:cursor-not-allowed disabled:opacity-50",
+        className={cn(
+          `w-full
+          rounded
+          border-transparent
+          bg-stone-100
+          px-4
+          py-2
+          text-xl
+          first-letter:py-3
+          placeholder:font-normal
+          placeholder:text-stone-400
+          focus:ring-8
+          focus:ring-brown-500/30
+          disabled:cursor-not-allowed
+          disabled:opacity-50`,
           { "ring-8": error, "ring-red-500/50": error }
         )}
         defaultValue={defaultValue}
