@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import { cn } from "helpers";
 
 interface HeadingProps {
   children: React.ReactNode;
@@ -21,9 +21,9 @@ interface SubheadingProps {
 export function Subheading(props: SubheadingProps) {
   return (
     <p
-      className={classNames(
-        "mx-auto mb-8 mt-0 max-w-3xl px-8 text-2xl font-normal text-stone-600",
-        { "text-center": props.centered, "text-left": !props.centered }
+      className={cn(
+        { "text-center": props.centered, "text-left": !props.centered },
+        "mx-auto mb-8 mt-0 max-w-3xl px-8 text-2xl font-normal text-stone-600 "
       )}
     >
       {props.children}

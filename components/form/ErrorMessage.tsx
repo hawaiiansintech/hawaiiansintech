@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import { cn } from "helpers";
 import { ErrorSVG } from "../icon/ErrorSVG";
 
 export interface ErrorMessageProps {
@@ -14,7 +14,7 @@ export default function ErrorMessage({
 }: ErrorMessageProps) {
   return (
     <div
-      className={classNames("flex p-4 space-x-4 rounded-lg border-2", {
+      className={cn("flex space-x-4 rounded-lg border-2 p-4", {
         "bg-red-300/30": !warning,
         "border-red-300": !warning,
         "bg-amber-500/20": warning,
