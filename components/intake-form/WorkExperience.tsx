@@ -4,7 +4,6 @@ import ErrorMessage, {
   ErrorMessageProps,
 } from "@/components/form/ErrorMessage";
 import Input from "@/components/form/Input";
-import InputBox from "@/components/form/InputBox";
 import Label from "@/components/form/Label";
 import RadioBox from "@/components/form/RadioBox";
 import { Filter } from "@/lib/api";
@@ -167,6 +166,7 @@ export default function WorkExperience({
               {showSuggestButton ? (
                 <Selectable
                   centered
+                  variant={SelectableVariant.Blank}
                   headline={
                     focusSuggested
                       ? `${focusSuggested}`
@@ -176,7 +176,6 @@ export default function WorkExperience({
                   selected={!!focusSuggested}
                   disabled={isMaxSelected && !!!focusSuggested}
                   fullWidth
-                  variant={SelectableVariant.Alt}
                   onClear={
                     focusSuggested
                       ? () =>
@@ -187,15 +186,18 @@ export default function WorkExperience({
                   }
                 />
               ) : (
-                <InputBox
-                  fullWidth
-                  border
-                  focusedOnInit
+                <Input
+                  autoFocus
+                  name="add-field"
+                  centered
+                  fullHeight
                   onChange={(e) => {
                     setFocusSuggested(e.target.value);
                   }}
                   onBlur={() => setShowSuggestButton(true)}
-                  onEnter={() => setShowSuggestButton(true)}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") setShowSuggestButton(true);
+                  }}
                   value={focusSuggested}
                   disabled={isMaxSelected && !!!focusSuggested}
                 />
@@ -206,8 +208,7 @@ export default function WorkExperience({
           {!showSuggestButton || focusSuggested ? (
             <ErrorMessage
               headline="Please suggest with care 🤙🏽"
-              body={`As we manually review all submissions, suggesting a new 
-        label increases the time it takes to approve your entry. To be mindful of this, please consider any existing labels might fit 
+              body={`Suggesting a new label increases the time it takes to approve your entry, as we manually review all submissions. Please consider any existing labels that might fit 
         your situation.`}
               warning
             />

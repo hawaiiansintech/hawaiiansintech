@@ -3,7 +3,7 @@ import { Filter } from "@/lib/api";
 import { useWindowWidth } from "@/lib/hooks";
 import { useLayoutEffect, useRef, useState } from "react";
 import theme from "styles/theme";
-import Selectable, { SelectableSize } from "../form/Selectable";
+import Selectable from "../form/Selectable";
 import FilterPickerCategory from "./FilterPickerCategory";
 
 export interface PickerFilter extends Filter {
@@ -98,7 +98,7 @@ export default function FilterPicker({
                   headline={focus.name}
                   onClick={() => onFilterClick(focus.id)}
                   selected={true}
-                  size={SelectableSize.Large}
+                  round
                 />
               </li>
             ))}
@@ -117,7 +117,7 @@ export default function FilterPicker({
                   onClick={() => onFilterClick(filter.id)}
                   selected={filter.active}
                   disabled={filter.count === 0}
-                  size={SelectableSize.Large}
+                  round
                 />
               </li>
             ))}

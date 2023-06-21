@@ -5,13 +5,13 @@ interface CheckBoxProps {
   defaultChecked?: boolean;
   description?: React.ReactNode;
   id?: string;
-  label: string;
+  label?: string;
   onClick?: () => void;
   small?: string;
 }
 
 export default function CheckBox(props: CheckBoxProps) {
-  const labelKebab = toKebab(props.label);
+  const labelKebab = props.label ? toKebab(props.label) : null;
   return (
     <div className="relative flex" onClick={props.onClick}>
       <input
@@ -25,13 +25,13 @@ export default function CheckBox(props: CheckBoxProps) {
         className="peer hidden"
         tabIndex={-1}
       />
+
       <label
         className={`
-          peer-checked:after:content['']
           flex
           cursor-pointer
-          items-center 
-          text-stone-600
+          items-center
+          text-stone-600 
           before:block
           before:h-5
           before:w-5
@@ -50,10 +50,13 @@ export default function CheckBox(props: CheckBoxProps) {
           peer-checked:after:w-2
           peer-checked:after:rounded-sm
           peer-checked:after:bg-white
+          peer-checked:after:content-['']
         `}
         htmlFor={labelKebab}
       >
-        <h3 className="ml-2 font-medium">{props.label}</h3>
+        {props.label ? (
+          <h3 className="ml-2 font-medium">{props.label}</h3>
+        ) : null}
       </label>
     </div>
   );

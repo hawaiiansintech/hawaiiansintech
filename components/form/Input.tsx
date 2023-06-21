@@ -3,16 +3,19 @@ import { cn, toKebab } from "../../helpers";
 import Label from "./Label";
 
 interface InputProps {
+  autoFocus?: boolean;
+  centered?: boolean;
   defaultValue?: string;
   disabled?: boolean;
   error?: string;
-  fullWidth?: boolean;
+  fullHeight?: boolean;
   label?: string;
   labelTagged?: string;
   labelTranslation?: string;
   name: string;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => any;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => any;
+  onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => any;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => any;
   placeholder?: string;
   value?: string;
@@ -20,10 +23,12 @@ interface InputProps {
 }
 
 export default function Input({
+  autoFocus,
   defaultValue,
+  centered,
   disabled,
   error,
-  fullWidth,
+  fullHeight,
   label,
   labelTagged,
   labelTranslation,
@@ -31,13 +36,14 @@ export default function Input({
   onBlur,
   onChange,
   onFocus,
+  onKeyPress,
   placeholder,
   tabIndex,
   value,
 }: InputProps) {
   const nameKebab = toKebab(name);
   return (
-    <div className="w-full space-y-4">
+    <div className={cn(`w-full space-y-4`, fullHeight && "h-full")}>
       {label && labelTranslation && (
         <Label
           htmlFor={nameKebab}
@@ -62,7 +68,9 @@ export default function Input({
           focus:ring-brown-500/30
           disabled:cursor-not-allowed
           disabled:opacity-50`,
-          { "ring-8": error, "ring-red-500/50": error }
+          { "ring-8": error, "ring-red-500/50": error },
+          centered && "text-center",
+          fullHeight && "h-full"
         )}
         defaultValue={defaultValue}
         id={nameKebab}
@@ -74,6 +82,8 @@ export default function Input({
         onBlur={onBlur}
         onChange={onChange}
         onFocus={onFocus}
+        onKeyPress={onKeyPress}
+        autoFocus={autoFocus}
         value={value}
         disabled={disabled}
       />
