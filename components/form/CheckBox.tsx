@@ -33,24 +33,21 @@ export default function CheckBox(props: CheckBoxProps) {
           items-center
           text-stone-600 
           before:block
-          before:h-5
-          before:w-5
+          before:h-4
+          before:w-4
           before:rounded
           before:border-4
           before:border-tan-400
+          before:transition-all
           before:content-['']
+          hover:transition-all
+          hover:before:border-tan-600/50
           peer-checked:text-brown-800
-          peer-checked:before:border-transparent
-          peer-checked:before:bg-brown-600
-          peer-checked:after:absolute
-          peer-checked:after:left-1.5
-          peer-checked:after:top-2
-          peer-checked:after:block
-          peer-checked:after:h-2
-          peer-checked:after:w-2
-          peer-checked:after:rounded-sm
-          peer-checked:after:bg-white
-          peer-checked:after:content-['']
+          peer-checked:before:border-[6px]
+          peer-checked:before:border-brown-600
+          peer-checked:before:bg-white
+          peer-checked:before:content-['']
+          peer-checked:hover:before:border-brown-700
         `}
         htmlFor={labelKebab}
       >

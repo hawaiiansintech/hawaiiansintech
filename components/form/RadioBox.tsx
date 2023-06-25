@@ -1,4 +1,3 @@
-import theme from "styles/theme";
 import { cn, toKebab } from "../../helpers";
 
 interface RadioBoxProps {
@@ -73,40 +72,6 @@ export default function RadioBox(props: RadioBoxProps) {
       >
         <h3>{props.label}</h3>
       </label>
-      <style jsx>{`
-        /* input:not(:checked) + label:before {
-          background: transparent;
-          border: 0.2rem solid ${theme.color.border.alt};
-        }
-        input:not(:checked) + label:after {
-          border-color: transparent;
-        }
-        label:hover {
-          border-color: ${theme.color.brand.alt};
-        }
-        input:not(:checked) + label:hover {
-          border-color: ${theme.color.border.alt};
-        }
-        input:focus + label {
-          border-color: ${theme.color.brand.alt};
-          box-shadow: ${theme.elevation.one.brand};
-        }
-        input:not(:checked) + label:focus {
-          border-color: ${theme.color.border.alt};
-        }
-        label:focus:hover {
-          border-color: ${theme.color.brand.alt};
-        }
-        input:not(:checked) + label:focus:hover {
-          border-color: ${theme.color.border.alt};
-        }
-        h3 {
-          font-size: 1rem;
-          font-weight: 600;
-          line-height: 120%;
-          margin: 0;
-        } */
-      `}</style>
     </div>
   );
 }
