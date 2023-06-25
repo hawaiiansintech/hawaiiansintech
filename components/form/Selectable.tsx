@@ -56,7 +56,7 @@ export default function Selectable({
         h-full
         items-end
         break-words
-        rounded-md
+        rounded-lg
         border-4
         border-transparent
         bg-tan-300
@@ -72,16 +72,22 @@ export default function Selectable({
         after:self-end
         after:rounded
         after:border-4
-        after:border-tan-500/50
+        after:border-tan-400
         after:content-['']
         hover:border-tan-500/50
+        hover:transition-all
+        hover:after:border-tan-600/50
+        hover:after:transition-all
       `,
         selected &&
           `border-brown-700/50
           bg-brown-600
+          after:border-[6px]
           after:border-brown-700
           after:bg-white
-          hover:border-brown-700`,
+          hover:border-brown-700
+          hover:after:border-brown-800
+          `,
         centered && "items-center text-center",
         fullWidth && "w-full",
         round && "rounded-xl py-2 pl-4 pr-3",
@@ -162,7 +168,7 @@ interface SelectableGridProps {
 
 export function SelectableGrid({ children, columns = 3 }: SelectableGridProps) {
   return (
-    <div className="rounded-lg bg-tan-400 p-2">
+    <div className="rounded-xl bg-tan-400 p-2">
       <div
         className="grid auto-rows-fr gap-2"
         style={{ gridTemplateColumns: `${"1fr ".repeat(columns)}` }}

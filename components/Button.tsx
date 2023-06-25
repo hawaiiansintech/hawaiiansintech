@@ -54,6 +54,7 @@ export default function Button({
         font-semibold
         tracking-wide
         text-white
+        transition-all
         hover:border-brown-700/40
         focus:ring-8
         focus:ring-brown-500/30
