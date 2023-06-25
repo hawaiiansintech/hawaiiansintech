@@ -227,15 +227,17 @@ export default function admin(props: {
         ) : null}
         <div style={{ marginTop: "1.5rem", display: "flex" }}>
           <div style={{ marginRight: "1.5rem" }}>
-            <Button
-              size={ButtonSize.Small}
-              customWidth="16rem"
-              customWidthSmall="28rem"
-              customFontSize="1.5rem"
-              onClick={handleGetEmails}
-            >
-              {showEmails ? "Hide Emails" : "Get Emails"}
-            </Button>
+            {isLoggedIn && (
+              <Button
+                size={ButtonSize.Small}
+                customWidth="16rem"
+                customWidthSmall="28rem"
+                customFontSize="1.5rem"
+                onClick={handleGetEmails}
+              >
+                {showEmails ? "Hide Emails" : "Get Emails"}
+              </Button>
+            )}
           </div>
           <div>
             {showEmails && (
@@ -252,7 +254,7 @@ export default function admin(props: {
           </div>
         </div>
         {showEmails && (
-          <div style={{ marginTop: "1.5rem" }}>
+          <div style={{ marginTop: "1.5rem", marginBottom: "1.5rem" }}>
             {emailList.map((email) => (
               <div key={email}>{email}</div>
             ))}
