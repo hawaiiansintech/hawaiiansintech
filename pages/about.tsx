@@ -49,7 +49,7 @@ export default function AboutPage({ pageTitle }) {
         `}
       >
         <Title
-          className="m0 p0"
+          className="m-0 p-0"
           text="Hawaiians*in&nbsp;Technology"
           noAnimation
         />

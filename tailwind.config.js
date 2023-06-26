@@ -12,6 +12,10 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    fontFamily: {
+      sans: ["Helvetica Now Display", "Helvetica Neue", "Helvetica"],
+      script: ["Permanent Marker"],
+    },
     extend: {
       colors: {
         brown: {
