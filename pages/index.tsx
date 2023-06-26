@@ -16,7 +16,6 @@ import {
 import { FirebaseTablesEnum } from "@/lib/enums";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
-import theme from "styles/theme";
 
 export async function getStaticProps() {
   const focusesData: DocumentData[] = await getFirebaseTable(
@@ -246,78 +245,30 @@ export default function HomePage({
         <title>{pageTitle}</title>
       </Head>
       <Nav primaryNav={{ show: true }} />
-      <div className="home-splash">
+      <div
+        className={`
+          px-4
+          pt-[26vh]
+          lg:px-8
+        `}
+      >
         <Title className="m0 p0" text="Hawaiians*in&nbsp;Technology" />
+        {focuses && (
+          <FilterPicker
+            filtersList={filtersList}
+            activeFilters={activeFilters}
+            onFilterClick={handleFilter}
+            onFilterSelect={filterSelect}
+            onViewAll={() => {
+              setFiltersList(focuses);
+              setViewAll(false);
+            }}
+            selectedMemberCount={membersCount}
+            viewAll={viewAll}
+          />
+        )}
       </div>
-      <div>
-        <aside>
-          {focuses && (
-            <FilterPicker
-              filtersList={filtersList}
-              activeFilters={activeFilters}
-              onFilterClick={handleFilter}
-              onFilterSelect={filterSelect}
-              onViewAll={() => {
-                setFiltersList(focuses);
-                setViewAll(false);
-              }}
-              selectedMemberCount={membersCount}
-              viewAll={viewAll}
-            />
-          )}
-        </aside>
-        <main>{members && <MemberDirectory members={members} />}</main>
-      </div>
-      <style jsx>{`
-        .home-splash {
-          margin: 0 1rem;
-          padding-top: 26vh;
-        }
-        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-          .home-splash {
-            margin: 0 2rem;
-          }
-        }
-        main {
-          padding: 0 1rem;
-        }
-        @media screen and (min-width: ${theme.layout.breakPoints.medium}) {
-          main {
-            padding: 0 1rem;
-          }
-        }
-        aside {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-end;
-          margin: 8rem 0 1rem;
-          padding: 0 1rem 0.5rem;
-          border-bottom: 0.125rem solid ${theme.color.border.base};
-        }
-        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-          aside {
-            padding: 0 2rem 1rem;
-          }
-        }
-        a {
-          margin: 0;
-          text-align: right;
-          width: 5rem;
-          color: ${theme.color.brand.base};
-          cursor: pointer;
-        }
-        h5 {
-          margin: 0;
-          text-align: right;
-          font-size: 1.125rem;
-          color: ${theme.color.text.alt2};
-          font-weight: 400;
-        }
-        h5 strong {
-          color: ${theme.color.text.alt};
-          font-weight: 500;
-        }
-      `}</style>
+      {members && <MemberDirectory members={members} />}
     </>
   );
 }

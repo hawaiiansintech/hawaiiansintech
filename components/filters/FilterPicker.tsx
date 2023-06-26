@@ -50,7 +50,7 @@ export default function FilterPicker({
 
   return (
     <>
-      <div className="relative w-full">
+      <div className="relative mt-16 w-full">
         <ul className={`mb-4 flex min-h-[44px] w-full flex-wrap gap-2`}>
           {activeFilters.map((focus, i) => (
             <li key={`focus-filter-${i}`}>
@@ -78,7 +78,7 @@ export default function FilterPicker({
               onClick={() => activateFilter(setExperienceActive, "experience")}
             />
             <FilterPickerCategory
-              category="Region"
+              category="Location"
               active={regionActive}
               onClick={() => activateFilter(setRegionActive, "region")}
             />
