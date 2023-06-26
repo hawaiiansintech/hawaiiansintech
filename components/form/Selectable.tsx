@@ -5,12 +5,6 @@ export enum SelectableVariant {
   Blank = "blank",
 }
 
-export enum SelectableSize {
-  Small = "primary",
-  Default = "default",
-  Large = "large",
-}
-
 interface SelectableProps {
   border?: boolean;
   centered?: boolean;
@@ -22,7 +16,6 @@ interface SelectableProps {
   onClick?: (e: React.MouseEvent) => any;
   round?: boolean;
   selected?: boolean;
-  size?: SelectableSize;
   value?: string;
   variant?: SelectableVariant;
 }
@@ -37,7 +30,6 @@ export default function Selectable({
   fullWidth,
   round,
   selected,
-  size = SelectableSize.Small,
   value,
   variant = SelectableVariant.Checkbox,
 }: SelectableProps) {
@@ -58,12 +50,13 @@ export default function Selectable({
         break-words
         rounded-lg
         border-4
-        border-transparent
+        border-tan-300
         bg-tan-300
         px-2
         py-1
         text-left
         leading-tight
+        transition-all
         after:ml-2
         after:block
         after:h-4
@@ -73,11 +66,10 @@ export default function Selectable({
         after:rounded
         after:border-4
         after:border-tan-400
+        after:transition-all
         after:content-['']
-        hover:border-tan-500/50
-        hover:transition-all
-        hover:after:border-tan-600/50
-        hover:after:transition-all
+        hover:border-tan-400
+        hover:after:border-tan-500/50
       `,
         selected &&
           `border-brown-700/50
@@ -98,7 +90,15 @@ export default function Selectable({
       style={gridSpan ? { gridColumn: `span ${gridSpan}` } : {}}
       disabled={disabled}
     >
-      <h4 className={cn(`m-0 grow font-semibold`, selected && "text-white")}>
+      <h4
+        className={cn(
+          `m-0
+          grow
+          font-semibold
+          transition-all`,
+          selected && "text-white"
+        )}
+      >
         {headline}
       </h4>
       {onClear ? (
@@ -138,25 +138,6 @@ export default function Selectable({
           onClick={onClear}
         />
       ) : null}
-      {/* span {
-          position: absolute;
-          top: 0;
-          right: 0;
-          transform: translate(0.7rem, -0.7rem);
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          height: 1.4rem;
-          width: 1.4rem;
-          border-radius: 0.7rem;
-          line-height: 1;
-          font-size: 0.8em;
-          background: ${selected
-            ? variant === SelectableVariant.Blank
-              ? theme.color.border.alt3
-              : theme.color.brand.alt
-            : theme.color.border.alt2};
-          color: ${theme.color.text.overlay.base}; */}
     </button>
   );
 }

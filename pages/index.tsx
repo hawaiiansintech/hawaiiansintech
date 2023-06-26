@@ -95,7 +95,7 @@ export default function HomePage({
   );
   const [activeFilters, setActiveFilters] = useState<PickerFilter[]>([]);
   const [filtersList, setFiltersList] = useState<PickerFilter[]>(
-    initialState.focuses.slice(0, 7)
+    initialState.focuses.slice(0, 6)
   );
   const [focuses, setFocuses] = useState<PickerFilter[]>(initialState.focuses);
   const [industries, setIndustries] = useState<PickerFilter[]>(
@@ -108,7 +108,7 @@ export default function HomePage({
   const [membersCount, setMembersCount] = useState<number>(
     initialState.members.length
   );
-  const [viewAll, setViewAll] = useState<Boolean>(true);
+  const [viewAll, setViewAll] = useState<boolean>(true);
 
   useEffect(() => {
     const activeFilters = focuses
@@ -257,19 +257,14 @@ export default function HomePage({
               activeFilters={activeFilters}
               onFilterClick={handleFilter}
               onFilterSelect={filterSelect}
-              selectedMemberCount={membersCount}
-            />
-          )}
-          {viewAll ? (
-            <a
-              onClick={() => {
+              onViewAll={() => {
                 setFiltersList(focuses);
                 setViewAll(false);
               }}
-            >
-              View All
-            </a>
-          ) : null}
+              selectedMemberCount={membersCount}
+              viewAll={viewAll}
+            />
+          )}
         </aside>
         <main>{members && <MemberDirectory members={members} />}</main>
       </div>
@@ -297,7 +292,6 @@ export default function HomePage({
           align-items: flex-end;
           margin: 8rem 0 1rem;
           padding: 0 1rem 0.5rem;
-          background: ${theme.color.background.base};
           border-bottom: 0.125rem solid ${theme.color.border.base};
         }
         @media screen and (min-width: ${theme.layout.breakPoints.small}) {
