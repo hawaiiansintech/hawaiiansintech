@@ -4,6 +4,10 @@ export enum SelectableVariant {
   Checkbox = "checkbox",
   Blank = "blank",
 }
+export enum SelectableSize {
+  Default = "default",
+  Large = "large",
+}
 
 interface SelectableProps {
   border?: boolean;
@@ -14,8 +18,8 @@ interface SelectableProps {
   headline: string;
   onClear?: (e: React.MouseEvent) => any;
   onClick?: (e: React.MouseEvent) => any;
-  round?: boolean;
   selected?: boolean;
+  size?: SelectableSize;
   value?: string;
   variant?: SelectableVariant;
 }
@@ -28,8 +32,8 @@ export default function Selectable({
   onClick,
   onClear,
   fullWidth,
-  round,
   selected,
+  size,
   value,
   variant = SelectableVariant.Checkbox,
 }: SelectableProps) {
@@ -68,7 +72,7 @@ export default function Selectable({
         after:border-tan-400
         after:transition-all
         after:content-['']
-        hover:border-tan-400
+        hover:border-tan-500/50
         hover:after:border-tan-500/50
       `,
         selected &&
@@ -80,12 +84,12 @@ export default function Selectable({
           hover:border-brown-700
           hover:after:border-brown-800
           `,
-        centered && "items-center text-center",
+        centered && "items-center text-center after:self-center",
         fullWidth && "w-full",
-        round && "rounded-xl py-2 pl-4 pr-3",
         disabled &&
           "cursor-not-allowed opacity-50 ring-0 hover:border-transparent",
-        variant === SelectableVariant.Blank && "before:hidden after:hidden"
+        variant === SelectableVariant.Blank && "before:hidden after:hidden",
+        size === SelectableSize.Large && "px-3 py-2"
       )}
       style={gridSpan ? { gridColumn: `span ${gridSpan}` } : {}}
       disabled={disabled}

@@ -1,7 +1,7 @@
 import { Filter } from "@/lib/api";
 import { cn } from "helpers";
 import { useState } from "react";
-import Selectable from "../form/Selectable";
+import Selectable, { SelectableSize } from "../form/Selectable";
 import FormTag from "../FormTag";
 import FilterPickerCategory from "./FilterPickerCategory";
 
@@ -99,12 +99,12 @@ export default function FilterPicker({
           {filtersList.map((filter, i) => (
             <li key={`focus-filter-${i}`}>
               <Selectable
-                fullWidth
                 headline={filter.name}
                 onClick={() => onFilterClick(filter.id)}
                 selected={filter.active}
                 disabled={filter.count === 0}
-                round
+                centered
+                size={SelectableSize.Large}
               />
             </li>
           ))}
