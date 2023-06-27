@@ -22,11 +22,11 @@ export default function FilterPickerCategory({
           px-4
           py-1
           font-medium
-          text-stone-600
+          text-stone-700
           transition-all
         `,
         active && "bg-white text-stone-900",
-        !active && "hover:bg-tan-300 hover:text-stone-800"
+        !active && "hover:bg-tan-300"
       )}
       onClick={handleOnClick}
     >

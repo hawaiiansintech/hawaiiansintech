@@ -61,7 +61,7 @@ export default function FilterPicker({
           ))}
         </ul>
         <div className="mb-4 flex items-center">
-          <div className="inline-flex gap-2 rounded-full bg-tan-300/50 p-1">
+          <div className="inline-flex gap-2 rounded-full bg-tan-400 p-1">
             <FilterPickerCategory
               category="Focus"
               active={focusActive}
