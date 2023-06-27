@@ -48,11 +48,7 @@ export default function AboutPage({ pageTitle }) {
           lg:px-8
         `}
       >
-        <Title
-          className="m-0 p-0"
-          text="Hawaiians*in&nbsp;Technology"
-          noAnimation
-        />
+        <Title text="Hawaiians*in&nbsp;Technology" noAnimation />
 
         <motion.div
           variants={container}
@@ -61,18 +57,22 @@ export default function AboutPage({ pageTitle }) {
           exit="hidden"
         >
           <p className="f1 extend">
-            <motion.span variants={item}>
-              is a directory and community of <strong>Native Hawaiians</strong>{" "}
-              in the
+            <motion.span className="text-stone-800" variants={item}>
+              is a directory and community of{" "}
+              <strong className="font-semibold text-stone-900">
+                Native Hawaiians
+              </strong>{" "}
+              in the{" "}
+              <strong className="font-semibold text-stone-900">
+                technology industry
+              </strong>
+              .
             </motion.span>{" "}
-            <motion.span variants={item}>
-              <strong>technology industry</strong>. The goal is to connect,
-              inspire, provide
+            <motion.span className="text-stone-800" variants={item}>
+              The goal is to connect, inspire, provide representation, and
+              promote the presence of Native Hawaiians
             </motion.span>{" "}
-            <motion.span variants={item}>
-              representation, and promote the presence of Native Hawaiians
-            </motion.span>{" "}
-            <motion.span variants={item}>
+            <motion.span className="text-stone-800" variants={item}>
               who work in the technology industry.
             </motion.span>{" "}
           </p>

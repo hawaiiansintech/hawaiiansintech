@@ -57,9 +57,9 @@ export default function Input({
           `w-full
           rounded
           border-transparent
-          bg-stone-100
+          bg-tan-100
           px-4
-          py-2
+          py-3
           text-xl
           first-letter:py-3
           placeholder:font-normal

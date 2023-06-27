@@ -24,7 +24,7 @@ export function Title(props) {
   return (
     <motion.h1
       {...props}
-      className="m0 p0"
+      className="m-0 p-0"
       variants={container}
       initial={noAnimation ? "show" : "hidden"}
       animate="show"
