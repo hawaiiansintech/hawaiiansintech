@@ -13,7 +13,6 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      sans: ["Helvetica Now Display", "Helvetica Neue", "Helvetica"],
       script: ["Permanent Marker"],
     },
     extend: {

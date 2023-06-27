@@ -252,7 +252,7 @@ export default function HomePage({
           lg:px-8
         `}
       >
-        <Title className="m-0 p-0" text="Hawaiians*in&nbsp;Technology" />
+        <Title text="Hawaiians*in&nbsp;Technology" />
         {focuses && (
           <FilterPicker
             filtersList={filtersList}

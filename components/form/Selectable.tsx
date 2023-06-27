@@ -18,6 +18,7 @@ interface SelectableProps {
   headline: string;
   onClear?: (e: React.MouseEvent) => any;
   onClick?: (e: React.MouseEvent) => any;
+  count?: string | number;
   selected?: boolean;
   size?: SelectableSize;
   value?: string;
@@ -32,6 +33,7 @@ export default function Selectable({
   onClick,
   onClear,
   fullWidth,
+  count,
   selected,
   size,
   value,
@@ -105,6 +107,28 @@ export default function Selectable({
       >
         {headline}
       </h4>
+      {count ? (
+        <span
+          className={cn(
+            `
+            ml-2
+            rounded-xl
+            bg-tan-400
+            px-2
+            py-0.5
+            text-xs
+            font-semibold
+            text-stone-700
+            transition-all
+          `,
+            selected && "bg-brown-700 text-white"
+          )}
+        >
+          {count}
+        </span>
+      ) : (
+        <></>
+      )}
       {onClear ? (
         <span
           className={`

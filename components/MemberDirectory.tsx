@@ -75,18 +75,35 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
             href={member.link}
             target="_blank"
           >
-            <h2 className="text-2xl text-stone-800">{member.name}</h2>
+            <h2
+              className={cn(
+                `
+                text-2xl
+              text-stone-800
+              `,
+                isSelected && "text-stone-900"
+              )}
+            >
+              {member.name}
+            </h2>
             <div className="flex grow flex-col gap-2">
-              <h3
-                className={`
+              {member.title ? (
+                <h3
+                  className={cn(
+                    `
                   text-lg
                   font-medium
                   leading-tight
-                  text-stone-600
-                `}
-              >
-                {member.title}
-              </h3>
+                  text-brown-600
+                `,
+                    isSelected && "text-stone-700"
+                  )}
+                >
+                  {member.title}
+                </h3>
+              ) : (
+                <></>
+              )}
               <div className="flex flex-col gap-1">
                 {member.focus.length > 0 && (
                   <section className="border-b border-tan-400/50 pb-2">

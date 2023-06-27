@@ -96,18 +96,23 @@ export default function FilterPicker({
         </div>
 
         <ul className="flex flex-wrap gap-2 transition-all">
-          {filtersList.map((filter, i) => (
-            <li key={`focus-filter-${i}`}>
-              <Selectable
-                headline={filter.name}
-                onClick={() => onFilterClick(filter.id)}
-                selected={filter.active}
-                disabled={filter.count === 0}
-                centered
-                size={SelectableSize.Large}
-              />
-            </li>
-          ))}
+          {filtersList
+            .sort((a, b) => b.count - a.count)
+            .map((filter, i) => (
+              <li key={`focus-filter-${filter.id}`}>
+                <Selectable
+                  headline={filter.name}
+                  onClick={() => onFilterClick(filter.id)}
+                  // TODO: fix inaccurate count
+                  //       - thinking it has something to do with non-approved
+                  // count={filter.count}
+                  selected={filter.active}
+                  disabled={filter.count === 0}
+                  centered
+                  size={SelectableSize.Large}
+                />
+              </li>
+            ))}
           {viewAll && (
             <li>
               <button
