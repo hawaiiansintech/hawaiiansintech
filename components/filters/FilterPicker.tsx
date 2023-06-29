@@ -85,7 +85,7 @@ export default function FilterPicker({
           </div>
           <h4
             className={cn(
-              `grow text-right text-stone-600`,
+              `grow text-right text-sm text-stone-600 sm:text-lg`,
               filterIsSelected && "text-brown-600"
             )}
           >{`${
