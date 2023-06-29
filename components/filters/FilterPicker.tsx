@@ -1,8 +1,8 @@
 import { Filter } from "@/lib/api";
 import { cn } from "helpers";
 import { useState } from "react";
+import BigPill from "../BigPill";
 import Selectable, { SelectableSize } from "../form/Selectable";
-import FormTag from "../FormTag";
 import FilterPickerCategory from "./FilterPickerCategory";
 
 export interface PickerFilter extends Filter {
@@ -54,9 +54,9 @@ export default function FilterPicker({
         <ul className={`mb-4 flex min-h-[44px] w-full flex-wrap gap-2`}>
           {activeFilters.map((focus, i) => (
             <li key={`focus-filter-${i}`}>
-              <FormTag onClick={() => onFilterClick(focus.id)}>
+              <BigPill onClick={() => onFilterClick(focus.id)}>
                 {focus.name}
-              </FormTag>
+              </BigPill>
             </li>
           ))}
         </ul>

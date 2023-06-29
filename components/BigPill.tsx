@@ -1,11 +1,11 @@
 import { cn } from "helpers";
 
-interface FormTagProps {
+interface BigPillProps {
   children?: React.ReactNode;
   onClick?: () => {};
 }
 
-export default function FormTag({ children, onClick }: FormTagProps) {
+export default function BigPill({ children, onClick }: BigPillProps) {
   return (
     <button
       className={cn(`
