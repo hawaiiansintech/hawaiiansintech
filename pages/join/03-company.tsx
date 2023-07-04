@@ -250,7 +250,7 @@ export default function JoinStep3({ industries, pageTitle }) {
                   centered
                   fullHeight
                   onChange={(e) => {
-                    setIndustrySuggested(e.target.value + "fda");
+                    setIndustrySuggested(e.target.value);
                   }}
                   onBlur={() => setShowSuggestButton(true)}
                   onKeyPress={(e) => {
