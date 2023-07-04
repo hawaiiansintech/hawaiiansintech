@@ -80,11 +80,12 @@ export default function Selectable({
         selected &&
           `border-brown-700/50
           bg-brown-600
-          after:border-[6px]
+          after:border-4
           after:border-brown-700
           after:bg-white
           hover:border-brown-700
           hover:after:border-brown-800
+          sm:after:border-6
           `,
         centered && "items-center text-center after:self-center",
         fullWidth && "w-full",

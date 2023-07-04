@@ -43,11 +43,12 @@ export default function CheckBox(props: CheckBoxProps) {
           hover:transition-all
           hover:before:border-tan-600/50
           peer-checked:text-brown-800
-          peer-checked:before:border-[6px]
+          peer-checked:before:border-4
           peer-checked:before:border-brown-600
           peer-checked:before:bg-white
           peer-checked:before:content-['']
           peer-checked:hover:before:border-brown-700
+          sm:peer-checked:before:border-6
         `}
         htmlFor={labelKebab}
       >

@@ -16,6 +16,9 @@ module.exports = {
       script: ["Permanent Marker"],
     },
     extend: {
+      borderWidth: {
+        6: "6px",
+      },
       colors: {
         brown: {
           50: "#fef9ec",

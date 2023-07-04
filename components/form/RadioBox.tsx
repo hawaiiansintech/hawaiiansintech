@@ -60,11 +60,12 @@ export default function RadioBox(props: RadioBoxProps) {
             border-brown-700/50
             bg-brown-600
             text-white
-            before:border-[6px]
+            before:border-4
             before:border-brown-700
             before:bg-white
             hover:border-brown-700
             hover:before:border-brown-800
+            sm:before:border-6
             `
           // props.fullHeight && "h-full"
         )}
