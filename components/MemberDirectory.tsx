@@ -1,5 +1,4 @@
 import { MemberPublic } from "@/lib/api";
-import { motion } from "framer-motion";
 import { cn } from "helpers";
 
 export interface DirectoryMember extends MemberPublic {
@@ -26,7 +25,7 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
   return (
     <section
       className={`
-        mt-4
+        mt-8
         grid
         grid-flow-row
         grid-cols-1
@@ -46,7 +45,7 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
             .concat(member.regionFilter)
             ?.filter((foc) => foc.active).length > 0;
         return (
-          <motion.a
+          <a
             className={cn(
               `
               flex
@@ -70,7 +69,6 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
                 ? "opacity-50 hover:opacity-100"
                 : ""
             )}
-            layout="position"
             key={`member-${member.id}`}
             href={member.link}
             target="_blank"
@@ -223,7 +221,7 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
                 </section>
               </div>
             </div>
-          </motion.a>
+          </a>
         );
       })}
     </section>
