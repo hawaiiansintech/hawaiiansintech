@@ -127,12 +127,7 @@ export default function MemberCard(
           {showDelete &&
             (!deleteSelected ? (
               <div style={{ marginLeft: "1rem", marginTop: "0" }}>
-                <Button
-                  size={ButtonSize.Small}
-                  customWidth="10rem"
-                  customFontSize="1rem"
-                  onClick={handleDeleteSelect}
-                >
+                <Button size={ButtonSize.Small} onClick={handleDeleteSelect}>
                   Delete
                 </Button>
               </div>
@@ -141,8 +136,6 @@ export default function MemberCard(
                 <div style={{ marginRight: "0.5rem" }}>
                   <Button
                     size={ButtonSize.Small}
-                    customWidth="12rem"
-                    customFontSize="1rem"
                     onClick={handleConfirmDelete}
                     variant={ButtonVariant.Secondary}
                   >
@@ -152,8 +145,6 @@ export default function MemberCard(
                 <div>
                   <Button
                     size={ButtonSize.Small}
-                    customWidth="12rem"
-                    customFontSize="1rem"
                     onClick={handleDeleteSelect}
                     variant={ButtonVariant.Secondary}
                   >
