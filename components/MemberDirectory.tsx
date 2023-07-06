@@ -1,8 +1,5 @@
 import { MemberPublic } from "@/lib/api";
-import { motion } from "framer-motion";
-import theme from "styles/theme";
-import { Icon, IconAsset, IconColor, IconSize } from "./icon/icon";
-import Pill from "./Pill";
+import { cn } from "helpers";
 
 export interface DirectoryMember extends MemberPublic {
   focus: { active?: boolean; id: string; name: string }[];
@@ -26,7 +23,21 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
           ?.filter((foc) => foc.active).length > 0
     ).length > 0;
   return (
-    <section>
+    <section
+      className={`
+        mt-8
+        grid
+        grid-flow-row
+        grid-cols-1
+        gap-4
+        px-4
+        pb-4
+        sm:auto-rows-fr
+        sm:grid-cols-2
+        md:grid-cols-3
+        lg:grid-cols-4
+      `}
+    >
       {members.map((member, i) => {
         const isSelected =
           member.focus
@@ -35,197 +46,185 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
             .concat(member.regionFilter)
             ?.filter((foc) => foc.active).length > 0;
         return (
-          <motion.div layout="position" key={`member-${member.id}`}>
-            <a
-              href={member.link}
-              target="_blank"
-              className={`member ${
-                isFiltered && !isSelected && "member--disabled"
-              } ${i === members.length - 1 && "member--last"} ${
-                isSelected && "member--selected"
-              }`}
+          <a
+            className={cn(
+              `
+              flex
+              min-h-[140px]
+              flex-col
+              rounded-2xl
+              border-4
+              border-transparent
+              bg-tan-300/50
+              px-2
+              py-1
+              transition-all
+              hover:border-tan-400
+              hover:bg-tan-300
+              sm:px-4
+              sm:py-2
+            `,
+              isSelected
+                ? "border-brown-600/50 bg-brown-600/10 hover:border-brown-600/30 hover:bg-brown-600/30"
+                : isFiltered
+                ? "opacity-50 hover:opacity-100"
+                : ""
+            )}
+            key={`member-${member.id}`}
+            href={member.link}
+            target="_blank"
+          >
+            <h2
+              className={cn(
+                `
+                text-2xl
+              text-stone-800
+              `,
+                isSelected && "text-stone-900"
+              )}
             >
-              <h2 className="member__name">{member.name}</h2>
-              <div className="member__location">
-                <h3>{member.location}</h3>
-                {member.regionFilter[0] ? (
-                  <h4>
-                    <Pill
-                      active={member.regionFilter[0].active}
-                      customWidth="max-content"
-                    >
-                      {member.regionFilter[0].name}
-                    </Pill>
-                  </h4>
-                ) : (
-                  <h4>{member.region}</h4>
+              {member.name}
+            </h2>
+            <div className="flex grow flex-col gap-2">
+              {member.title ? (
+                <h3
+                  className={cn(
+                    `
+                  text-lg
+                  font-medium
+                  leading-tight
+                  text-brown-600
+                `,
+                    isSelected && "text-stone-700"
+                  )}
+                >
+                  {member.title}
+                </h3>
+              ) : (
+                <></>
+              )}
+              <div className="flex flex-col gap-1">
+                {member.focus.length > 0 && (
+                  <section className="border-b border-tan-400/50 pb-2">
+                    <h5 className="text-sm font-medium text-stone-600">
+                      Focus{member.focus.length >= 2 && "es"}
+                    </h5>
+                    {member.focus?.map((fil, index) => (
+                      <h4
+                        className={cn(
+                          `
+                            inline
+                            text-base
+                            font-semibold
+                            leading-snug
+                            text-stone-900
+                          `,
+                          fil.active && "text-brown-600"
+                        )}
+                        key={`member-meta-${fil.id}`}
+                      >
+                        {fil.name}
+                        {index !== member.focus.length - 1 && ", "}
+                      </h4>
+                    ))}
+                  </section>
                 )}
+                {member.industry.length > 0 && (
+                  <section className="border-b border-tan-400/50 pb-2">
+                    <h5 className="text-sm font-medium text-stone-600">
+                      Industr{member.industry.length >= 2 ? "ies" : "y"}
+                    </h5>
+                    <h4 className="leading-snug">
+                      {member.industry?.map((fil, index) => (
+                        <span
+                          className={cn(
+                            `
+                            text-base
+                            font-semibold
+                            text-stone-900
+                          `,
+                            fil.active && "text-brown-600"
+                          )}
+                          key={`member-meta-${fil.id}`}
+                        >
+                          {fil.name}
+                          {index !== member.industry.length - 1 && ", "}
+                        </span>
+                      ))}
+                    </h4>
+                  </section>
+                )}
+                {member.experienceFilter.length > 0 && (
+                  <section className="border-b border-tan-400/50 pb-2">
+                    <h5
+                      className={cn(
+                        `
+                          text-sm
+                          font-medium
+                          text-stone-600
+                        `
+                      )}
+                    >
+                      Years of Experience
+                    </h5>
+                    <h4 className="leading-snug">
+                      {member.experienceFilter?.map((fil) => (
+                        <span
+                          className={cn(
+                            `
+                            text-base
+                            font-semibold
+                            leading-snug
+                            text-stone-900
+                            `,
+                            member.experienceFilter[0]?.active &&
+                              "text-brown-600"
+                          )}
+                          key={`member-meta-${fil.id}`}
+                        >
+                          {fil.name}
+                        </span>
+                      ))}
+                    </h4>
+                  </section>
+                )}
+
+                <section>
+                  <h5
+                    className={cn(
+                      `
+                      text-sm
+                      font-medium
+                      text-stone-600
+                    `
+                    )}
+                  >
+                    Location
+                  </h5>
+                  <h4
+                    className={cn(
+                      `
+                    text-base
+                    font-semibold
+                    leading-snug
+                    text-stone-900
+                  `,
+                      member.regionFilter[0]?.active && "text-brown-600"
+                    )}
+                  >
+                    {member.location ? member.location + ", " : ""}
+                    {member.regionFilter[0] ? (
+                      <span>{member.regionFilter[0].name}</span>
+                    ) : (
+                      <span>{member.region}</span>
+                    )}
+                  </h4>
+                </section>
               </div>
-              <div>
-                <h3 className="member__title">{member.title}</h3>
-                <dl className="member__meta">
-                  {member.focus?.map((fil) => (
-                    <dt key={`member-meta-${fil.id}`}>
-                      <Pill active={fil.active}>{fil.name}</Pill>
-                    </dt>
-                  ))}
-                  {member.industry?.map((fil) => (
-                    <dt key={`member-meta-${fil.id}`}>
-                      <Pill active={fil.active}>{fil.name}</Pill>
-                    </dt>
-                  ))}
-                  {member.experienceFilter?.map((fil) => (
-                    <dt key={`member-meta-${fil.id}`}>
-                      <Pill active={fil.active}>{fil.name}</Pill>
-                    </dt>
-                  ))}
-                </dl>
-              </div>
-              <div className="member__link">
-                <Icon
-                  asset={IconAsset.CaretRight}
-                  color={IconColor.Inherit}
-                  size={IconSize.Small}
-                />
-              </div>
-            </a>
-          </motion.div>
+            </div>
+          </a>
         );
       })}
-
-      <style jsx>{`
-        .member {
-          position: relative;
-          display: block;
-          padding: 1rem 3rem 1rem 0;
-          margin-bottom: 0.5rem;
-          color: ${theme.color.text.base};
-          border-radius: ${theme.borderRadius.md};
-        }
-        .member--disabled {
-          opacity: 0.5;
-        }
-        .member__name {
-          color: inherit;
-          font-size: 1.5rem;
-          font-weight: 500;
-          margin: 0;
-        }
-        .member__title,
-        .member__location {
-          display: inline-block;
-        }
-        .member__title {
-          margin-bottom: 0.25rem;
-        }
-        .member__location:after {
-          content: "·";
-          margin: 0 0.5rem;
-          color: ${theme.color.text.alt3};
-        }
-        .member__link {
-          position: absolute;
-          right: 1rem;
-          top: 50%;
-          transform: translateX(-0.5rem) translateY(-50%);
-          transform-origin: center right;
-          padding: 0.5rem;
-          color: ${theme.color.brand.base};
-          transition: transform ease-in 150ms;
-        }
-        .member:hover .member__link {
-          transform: translateX(0) translateY(-50%);
-          opacity: 1;
-        }
-        dl,
-        dt {
-          overflow: hidden;
-        }
-        dl {
-          display: flex;
-          flex-wrap: wrap;
-          margin: 0;
-        }
-        dt {
-          margin-right: 0.25rem;
-          margin-bottom: 0.25rem;
-        }
-        h3,
-        h4 {
-          color: ${theme.color.text.alt2};
-          display: inline-block;
-          font-size: 1.25rem;
-          margin: 0;
-        }
-        h3 {
-          font-weight: 400;
-        }
-        h4 {
-          font-weight: 400;
-          margin-top: 0.4rem;
-        }
-        .member__location h3:after {
-          content: ",";
-          margin-right: 0.25rem;
-        }
-        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-          .member {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            grid-column-gap: 2rem;
-            padding: 0.5rem 4rem 0.5rem 0.5rem;
-            border: 0.25rem solid transparent;
-            background: transparent;
-          }
-          .member:hover {
-            color: ${theme.color.brand.base};
-          }
-          .member--selected {
-            background: ${theme.color.brand.alpha};
-            border-color: ${theme.color.brand.alpha};
-          }
-          .region--selected {
-            color: ${theme.color.brand.base};
-          }
-          .member__name {
-            font-size: 2rem;
-          }
-          .member__location {
-          }
-          .member__title {
-            margin-bottom: 0.25rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-          }
-          .member__location:after {
-            display: none;
-          }
-          h3,
-          h4 {
-            display: block;
-          }
-          h3 {
-            color: ${theme.color.text.alt};
-            font-size: 1.5rem;
-          }
-          h3:after {
-            display: none;
-          }
-          h4 {
-            font-size: 1.25rem;
-            color: ${theme.color.text.alt2};
-          }
-          .member:hover {
-            border-color: ${theme.color.brand.alpha};
-          }
-          .member:hover h3,
-          .member:hover h4 {
-            color: inherit;
-          }
-        }
-      `}</style>
     </section>
   );
 }
