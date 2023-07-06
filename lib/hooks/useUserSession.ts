@@ -2,6 +2,7 @@ import { useEmailCloaker } from "helpers";
 import { useEffect, useState } from "react";
 
 export default function useUserSession() {
+  const [isLoadingUserSession, setIsLoadingUserSession] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
 
@@ -16,7 +17,8 @@ export default function useUserSession() {
       setIsLoggedIn(true);
       setUserData(userData);
     }
+    setIsLoadingUserSession(false);
   }, []);
 
-  return { isLoggedIn, setIsLoggedIn, userData };
+  return { isLoggedIn, userData, isLoadingUserSession };
 }

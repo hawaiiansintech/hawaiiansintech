@@ -31,6 +31,7 @@ export const checkUserIsAdmin = async (user_id: string) => {
       body: JSON.stringify({ uid: user_id }),
     });
     const data = await response.json();
+    console.log(`😆 data.isAdmin: ${data.isAdmin}`);
     return data.isAdmin;
   } catch (error) {
     console.error("An error occurred:", error);
@@ -102,7 +103,7 @@ export default function AdminPage(props: {
   const [emailList, setEmailList] = useState<string[]>([]);
   const [showEmails, setShowEmails] = useState<boolean>(false);
   const [copiedToClipboard, setCopiedToClipboard] = useState<boolean>(false);
-  const { isLoggedIn, setIsLoggedIn, userData } = useUserSession();
+  const { isLoggedIn, userData } = useUserSession();
 
   const [memberStates, setMemberStates] = useState(
     props.nonApprovedMembers.map((member) => ({
@@ -173,7 +174,6 @@ export default function AdminPage(props: {
       <AdminNav
         handleLogOut={signOutWithGoogle}
         handleLogIn={signInWithGoogle}
-        isLoggedIn={isLoggedIn}
         name={userData?.name}
       />
 
