@@ -1,5 +1,5 @@
-import HitLogo from "@/components/HitLogo";
 import { Icon, IconAsset, IconColor } from "@/components/icon/icon";
+import Logo from "@/components/Logo";
 import Link from "next/link";
 
 interface NavProps {
@@ -11,7 +11,7 @@ interface NavProps {
 }
 
 export default function Nav({ backUrl, children, primaryNav }: NavProps) {
-  let logo = <HitLogo inline />;
+  let logo = <Logo />;
   if (backUrl) {
     logo = (
       <a
