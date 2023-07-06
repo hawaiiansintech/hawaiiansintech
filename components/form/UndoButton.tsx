@@ -1,5 +1,4 @@
 import Link from "next/link";
-import theme from "styles/theme";
 
 interface UndoButtonProps {
   children: React.ReactNode;
@@ -16,47 +15,28 @@ export default function UndoButton({
 }: UndoButtonProps) {
   let button = <>{children}</>;
 
-  let buttonStyles = (
-    <style jsx>{`
-      .undo-button {
-        padding: 0.125em 0.25em;
-        border: 0.125rem solid transparent;
-        border-radius: ${theme.borderRadius.xs};
-        font-size: 0.8em;
-        font-weight: 600;
-        background: ${theme.color.background.alt};
-        cursor: pointer;
-        transition: background 150ms ease-out;
-      }
-      .undo-button:hover {
-        background: ${theme.color.border.alt};
-      }
-      .undo-button:focus {
-        box-shadow: var(--box-shadow-outline-undo-button);
-      }
-      .undo-button:focus:not(:focus-visible) {
-        outline: none;
-      }
-      .undo-button:focus:not(:-moz-focusring) {
-        outline: none;
-      }
-    `}</style>
-  );
-
   if (linkTo) {
     button = (
       <Link href={linkTo} onClick={onClick}>
-        <div className="undo-button">
+        <div
+          className={
+            "ml-1 inline-block rounded bg-tan-400 px-2 py-0.5 hover:bg-tan-400/50 hover:ring-2 hover:ring-inset hover:ring-tan-400/70"
+          }
+        >
           {button}
-          {buttonStyles}
         </div>
       </Link>
     );
   } else {
     button = (
-      <button type={type} className="undo-button" onClick={onClick}>
+      <button
+        type={type}
+        className={
+          "ml-1 inline-block rounded bg-tan-400 px-2 py-0.5 hover:bg-tan-400/50 hover:ring-2 hover:ring-inset hover:ring-tan-400/70"
+        }
+        onClick={onClick}
+      >
         {button}
-        {buttonStyles}
       </button>
     );
   }

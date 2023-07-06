@@ -176,13 +176,7 @@ export default function HackathonPage({ pageTitle }) {
           gap="1rem 1rem"
         >
           <a href={DISCORD_URL}>
-            <Button
-              customWidth="16rem"
-              customWidthSmall="20rem"
-              customFontSize="1.5rem"
-              size={ButtonSize.Small}
-              variant={ButtonVariant.Secondary}
-            >
+            <Button size={ButtonSize.Small} variant={ButtonVariant.Secondary}>
               Join the Discord
             </Button>
           </a>
@@ -195,13 +189,7 @@ export default function HackathonPage({ pageTitle }) {
               hawaiiansintech: "https://www.instagram.com/hawaiiansintech/",
             }}
             button={
-              <Button
-                customWidth="5rem"
-                customWidthSmall="7rem"
-                customFontSize="1.5rem"
-                size={ButtonSize.Small}
-                variant={ButtonVariant.Secondary}
-              >
+              <Button size={ButtonSize.Small} variant={ButtonVariant.Secondary}>
                 ...
               </Button>
             }
@@ -493,12 +481,7 @@ export default function HackathonPage({ pageTitle }) {
           <div>
             <h4>Interested in sponsoring? Have other ways to support us?</h4>
             <a href="mailto:kekai@hawaiiansintech.org,kamakani@hawaiiansintech.org,andrew@hawaiiansintech.org">
-              <Button
-                customWidth="13rem"
-                customFontSize="1.5rem"
-                size={ButtonSize.Small}
-                variant={ButtonVariant.Secondary}
-              >
+              <Button size={ButtonSize.Small} variant={ButtonVariant.Secondary}>
                 Contact Us
               </Button>
             </a>
