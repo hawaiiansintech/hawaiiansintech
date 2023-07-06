@@ -19,7 +19,7 @@ export default function Logo({ size = LogoSize.Default }: LogoProps) {
           w-16
           sm:w-24
         `,
-          size === LogoSize.Small && "w-8 sm:w-8"
+          size === LogoSize.Small && "w-10 sm:w-10"
         )}
         src={"/images/HitLogoNoBackground.png"}
         alt="Hawaiians in Tech logo"

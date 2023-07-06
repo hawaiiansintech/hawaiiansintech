@@ -1,7 +1,21 @@
-export default function LoadingSpinner() {
+import { cn } from "helpers";
+
+export enum LoadingSpinnerVariant {
+  Default = "default",
+  Invert = "invert",
+}
+
+interface LoadingSpinnerProps {
+  variant?: LoadingSpinnerVariant;
+}
+
+export default function LoadingSpinner({
+  variant = LoadingSpinnerVariant.Default,
+}: LoadingSpinnerProps) {
   return (
     <figure
-      className={`
+      className={cn(
+        `
         inline-block
         h-6
         w-6
@@ -10,7 +24,10 @@ export default function LoadingSpinner() {
         border-4
         border-white/50
         border-t-white
-      `}
-    ></figure>
+      `,
+        variant === LoadingSpinnerVariant.Invert &&
+          `border-brown-600/20 border-t-brown-600`
+      )}
+    />
   );
 }
