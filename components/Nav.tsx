@@ -14,12 +14,12 @@ export default function Nav({ backUrl, children, primaryNav }: NavProps) {
   let logo = <Logo />;
   if (backUrl) {
     logo = (
-      <a
+      <Link
         href={"/"}
         className="transition-transform hover:scale-105 active:scale-95"
       >
         {logo}
-      </a>
+      </Link>
     );
   }
   return (
