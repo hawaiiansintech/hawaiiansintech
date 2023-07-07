@@ -6,61 +6,64 @@ import LoadingSpinner, {
 } from "@/components/LoadingSpinner";
 import MetaTags from "@/components/Metatags";
 import Plausible from "@/components/Plausible";
-import {
-  DocumentData,
-  getFirebaseTable,
-  getMembers,
-  MemberPublic,
-} from "@/lib/api";
-import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
+import { DocumentData, getFirebaseTable } from "@/lib/api";
+import { FirebaseTablesEnum } from "@/lib/enums";
 import { useUserSession } from "@/lib/hooks";
+import { doc, getDoc } from "firebase/firestore";
 import Head from "next/head";
 import Router from "next/router";
 import { useEffect, useState } from "react";
-import { signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
+import { db, signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
+
+interface MemberEmail {
+  id: string;
+  email: string;
+  unsubscribed: boolean;
+}
 
 export async function getStaticProps() {
-  // skipping fetching unneeded facets
-  //   e.g. no need regions/focuses/industries
-  //        only pulling id
-  const approvedMembers: MemberPublic[] = await getMembers(
-    undefined,
-    undefined,
-    undefined,
-    [StatusEnum.APPROVED]
-  );
-
   const secureMemberData: DocumentData[] = await getFirebaseTable(
     FirebaseTablesEnum.SECURE_MEMBER_DATA
   );
 
-  const emails: string[] = secureMemberData
-    .filter((secM) => {
-      return approvedMembers.find(
-        (m) =>
-          secM.id === m.id &&
-          m.unsubscribed === false &&
-          "fields" in secM &&
-          secM.fields !== undefined
-      );
-    })
-    .map((m) => m.fields.email);
+  const emailPromises = secureMemberData.map((secM) => {
+    if (secM.fields.email === "") return null;
+    const docRef = doc(db, FirebaseTablesEnum.MEMBERS, secM.id);
+
+    return getDoc(docRef)
+      .then((docSnapshot) => {
+        if (docSnapshot.exists()) {
+          return {
+            id: secM.id,
+            email: secM.fields.email,
+            unsubscribed: docSnapshot.data().unsubscribed || false,
+          };
+        } else {
+          console.log(
+            `No data available for ${secM.id} in MEMBERS (${secM.fields.email})`
+          );
+          return null;
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        return null;
+      });
+  });
+
+  const emails: MemberEmail[] = await Promise.all(emailPromises);
+  const filteredEmails = emails.filter((email) => email !== null);
 
   return {
     props: {
-      emails: emails,
+      emails: filteredEmails,
       pageTitle: "Admin Panel · Hawaiians in Technology",
     },
     revalidate: 60,
   };
 }
 
-export default function AdminPage(props: {
-  nonApprovedMembers: MemberPublic[];
-  approvedMembers: MemberPublic[];
-  emails: string[];
-  pageTitle;
-}) {
+export default function AdminPage(props: { emails: MemberEmail[]; pageTitle }) {
   const [error, setError] = useState<ErrorMessageProps>(undefined);
   const [copiedToClipboard, setCopiedToClipboard] = useState<boolean>(false);
   const { isLoggedIn, userData, isLoadingUserSession } = useUserSession();
@@ -77,33 +80,8 @@ export default function AdminPage(props: {
   };
 
   useEffect(() => {
-    console.log(
-      `🔥 isLoading: ${isLoadingUserSession}, isLoggedIn: ${isLoggedIn}`
-    );
-    if (!isLoadingUserSession && !isLoggedIn) {
-      Router.push(`/admin`);
-    }
+    if (!isLoadingUserSession && !isLoggedIn) Router.push(`/admin`);
   }, [isLoggedIn, isLoadingUserSession]);
-
-  if (isLoadingUserSession || !isLoggedIn) {
-    return (
-      <>
-        <Head>
-          <Plausible />
-          <MetaTags title={props.pageTitle} />
-          <title>{props.pageTitle}</title>
-        </Head>
-        <AdminNav
-          handleLogOut={signOutWithGoogle}
-          handleLogIn={signInWithGoogle}
-          name={userData?.name}
-        />
-        <div className="flex w-full justify-center p-4">
-          <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
-        </div>
-      </>
-    );
-  }
 
   return (
     <>
@@ -112,29 +90,41 @@ export default function AdminPage(props: {
         <MetaTags title={props.pageTitle} />
         <title>{props.pageTitle}</title>
       </Head>
-
       <AdminNav
         handleLogOut={signOutWithGoogle}
         handleLogIn={signInWithGoogle}
         name={userData?.name}
       />
-
-      <div className="mx-auto max-w-3xl px-8 py-4">
-        {props.emails ? (
-          <Button
-            onClick={handleCopyToClipboard}
-            size={ButtonSize.Small}
-            variant={ButtonVariant.Secondary}
-          >
-            {copiedToClipboard ? "Copied! ✔️" : "Copy to Clipboard"}
-          </Button>
-        ) : (
-          <></>
-        )}
-        {props.emails.map((em) => {
-          return <p key={`email-${em}`}>{em}</p>;
-        })}
-      </div>
+      {isLoadingUserSession || !isLoggedIn ? (
+        <div className="flex w-full justify-center p-4">
+          <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
+        </div>
+      ) : (
+        <>
+          <div className="mx-auto max-w-3xl px-8 py-4">
+            {props.emails ? (
+              <Button
+                onClick={handleCopyToClipboard}
+                size={ButtonSize.Small}
+                variant={ButtonVariant.Secondary}
+              >
+                {copiedToClipboard ? "Copied! ✔️" : "Copy to Clipboard"}
+              </Button>
+            ) : (
+              <></>
+            )}
+            {props.emails.map((em) => {
+              console.log(em);
+              return (
+                <div className="flex" key={`email-${em.email}-${em.id}`}>
+                  <p>email: {em.email}</p>
+                  {em.unsubscribed && <div>🚫</div>}
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
     </>
   );
 }
