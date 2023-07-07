@@ -153,12 +153,21 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
     <div className="flex flex-col gap-1">
       <div className="flex gap-2">
         <div className="flex grow items-center gap-2">
-          <h2 className="text-xl font-semibold">Emails</h2>
-          <span className="text-xl text-stone-500">{emails.length}</span>
+          <h2 className="text-xl font-semibold leading-8">Emails</h2>
+          <div className="flex grow items-center gap-1">
+            <span className="text-stone-500">
+              {emailSubscribed.length} subscribers
+            </span>
+            {showUnsubscribed && (
+              <span className="text-red-600">
+                {`(+${emails.length - emailSubscribed.length})`}
+              </span>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <CheckBox
-            label="Subscribed-Only"
+            label={`Subscribers-Only`}
             checked={!showUnsubscribed}
             onChange={() => {
               setShowUnsubscribed(!showUnsubscribed);
@@ -186,9 +195,9 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
       {emailsShown.map((em) => (
         <button
           className={cn(
-            `flex flex-col gap-0.5 rounded border border-tan-300 p-2 text-left hover:border-tan-400 hover:bg-tan-300/50 active:bg-tan-300`,
+            `flex flex-col gap-0.5 rounded border border-tan-300 p-2 text-left hover:border-tan-400 hover:bg-tan-300/50 active:bg-tan-300/80`,
             em.unsubscribed &&
-              `border-red-400/50 bg-red-400/10 text-red-600 hover:border-red-400 hover:bg-red-400/20`
+              `border-red-400/50 bg-red-400/10 text-red-600 hover:border-red-400 hover:bg-red-400/20 active:bg-red-400/30`
           )}
           key={`email-${em.email}-${em.id}`}
         >
