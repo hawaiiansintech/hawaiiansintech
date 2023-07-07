@@ -5,6 +5,11 @@ export enum CheckBoxSize {
   Small = "small",
 }
 
+export enum CheckBoxVariant {
+  Default = "default",
+  Darker = "darker",
+}
+
 interface CheckBoxProps {
   checked?: boolean;
   defaultChecked?: boolean;
@@ -13,6 +18,7 @@ interface CheckBoxProps {
   onClick?: () => void;
   onChange?: () => void;
   size?: CheckBoxSize;
+  variant?: CheckBoxVariant;
 }
 
 export default function CheckBox({
@@ -22,7 +28,8 @@ export default function CheckBox({
   label,
   onClick,
   onChange,
-  size,
+  size = CheckBoxSize.Default,
+  variant = CheckBoxVariant.Default,
 }: CheckBoxProps) {
   const labelKebab = label ? toKebab(label) : null;
   return (
@@ -66,7 +73,9 @@ export default function CheckBox({
           peer-checked:hover:before:border-brown-700
           sm:peer-checked:before:border-6
         `,
-          size === CheckBoxSize.Small && `gap-1`
+          size === CheckBoxSize.Small && `gap-1`,
+          variant === CheckBoxVariant.Darker &&
+            `text-stone-700 before:border-tan-500`
         )}
         htmlFor={labelKebab}
       >
