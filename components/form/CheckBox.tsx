@@ -1,37 +1,54 @@
-import { toKebab } from "../../helpers";
+import { cn, toKebab } from "../../helpers";
+
+export enum CheckBoxSize {
+  Default = "default",
+  Small = "small",
+}
 
 interface CheckBoxProps {
   checked?: boolean;
   defaultChecked?: boolean;
-  description?: React.ReactNode;
   id?: string;
   label?: string;
   onClick?: () => void;
-  small?: string;
+  onChange?: () => void;
+  size?: CheckBoxSize;
 }
 
-export default function CheckBox(props: CheckBoxProps) {
-  const labelKebab = props.label ? toKebab(props.label) : null;
+export default function CheckBox({
+  checked,
+  defaultChecked,
+  id,
+  label,
+  onClick,
+  onChange,
+  size,
+}: CheckBoxProps) {
+  const labelKebab = label ? toKebab(label) : null;
   return (
-    <div className="relative flex" onClick={props.onClick}>
+    <div className={`relative flex gap-4`} onClick={onClick}>
       <input
-        id={props.id || labelKebab}
-        value={props.id || labelKebab}
+        id={id || labelKebab}
+        value={id || labelKebab}
         type="checkbox"
-        name={props.id || labelKebab}
-        checked={props.checked}
-        defaultChecked={props.defaultChecked}
+        name={id || labelKebab}
+        checked={checked}
+        defaultChecked={defaultChecked}
         readOnly
         className="peer hidden"
         tabIndex={-1}
+        onChange={onChange}
       />
 
       <label
-        className={`
+        className={cn(
+          `
           flex
           cursor-pointer
+          select-none
           items-center
-          text-stone-600 
+          gap-2 
+          text-stone-600
           before:block
           before:h-4
           before:w-4
@@ -42,18 +59,26 @@ export default function CheckBox(props: CheckBoxProps) {
           before:content-['']
           hover:transition-all
           hover:before:border-tan-600/50
-          peer-checked:text-brown-800
           peer-checked:before:border-4
           peer-checked:before:border-brown-600
           peer-checked:before:bg-white
           peer-checked:before:content-['']
           peer-checked:hover:before:border-brown-700
           sm:peer-checked:before:border-6
-        `}
+        `,
+          size === CheckBoxSize.Small && `gap-1`
+        )}
         htmlFor={labelKebab}
       >
-        {props.label ? (
-          <h3 className="ml-2 font-medium">{props.label}</h3>
+        {label ? (
+          <h3
+            className={cn(
+              `font-medium`,
+              size === CheckBoxSize.Small && `text-xs`
+            )}
+          >
+            {label}
+          </h3>
         ) : null}
       </label>
     </div>
