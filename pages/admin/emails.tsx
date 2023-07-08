@@ -16,6 +16,7 @@ import Tag, { TagVariant } from "@/components/Tag";
 import { DocumentData, getFirebaseTable } from "@/lib/api";
 import { FirebaseTablesEnum } from "@/lib/enums";
 import { useUserSession } from "@/lib/hooks";
+import { CheckIcon, PlusIcon } from "@radix-ui/react-icons";
 import { doc, getDoc } from "firebase/firestore";
 import { cn } from "helpers";
 import Head from "next/head";
@@ -182,8 +183,8 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
 
   return (
     <>
-      <div className="sticky top-12 w-full bg-tan-400">
-        <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center py-1 pl-4 pr-2 lg:px-0">
+      <div className="sticky top-12 z-50 w-full bg-tan-400">
+        <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center px-2 py-1">
           <div className="flex grow items-center gap-2">
             <h2 className="text-xl font-semibold leading-8">Emails</h2>
             <div className="flex items-center gap-0.5 rounded-full bg-tan-500/50 p-1">
@@ -278,7 +279,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                 ? "Copied! ✔️"
                 : selectedEmails.length > 0
                 ? `Copy Selected (${selectedEmails.length})`
-                : "Copy All"}
+                : `Copy All${showUnsubscribed ? "" : " Subscribers"}`}
             </Button>
           </div>
         </div>
@@ -301,17 +302,17 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
           );
           return (
             <button
+              key={`email-${em.email}-${em.id}`}
               className={cn(
                 `
-              group
-              w-full
-              border-b
-              border-tan-300
-              pl-4
-              hover:border-tan-600/40
-              hover:bg-tan-600/5
-              active:bg-brown-600/10
-            `,
+                  group
+                  w-full
+                  border-b
+                  border-tan-300
+                  hover:border-tan-600/40
+                  hover:bg-tan-600/5
+                  active:bg-brown-600/10
+                `,
                 selected &&
                   "border-brown-600/40 bg-brown-600/10 text-stone-800 hover:bg-brown-600/20 active:bg-brown-600/10",
                 em.unsubscribed &&
@@ -331,45 +332,25 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
               }}
             >
               <div
-                className="
-              mx-auto flex w-full max-w-5xl gap-2"
+                className={cn(`
+                  mx-auto
+                  flex
+                  w-full
+                  max-w-5xl
+                  items-center
+                  gap-2
+                `)}
               >
-                <input
-                  className={cn(
-                    `
-                accent-brown-600
-                opacity-0
-                group-hover:opacity-100
-              `,
-                    selectedEmails?.length > 0 && `opacity-100`,
-                    em.unsubscribed && `accent-red-600`
-                  )}
-                  type="checkbox"
-                  checked={selectedEmails
-                    .map((selectedEm) => selectedEm.id)
-                    .includes(em.id)}
-                  onChange={() =>
-                    handleEmailSelection({
-                      id: em.id,
-                      name: em.name,
-                      email: em.email,
-                      emailAbbr: em.emailAbbr,
-                      unsubscribed: em.unsubscribed,
-                    })
-                  }
-                />
                 <div
                   className={cn(
                     `mx-auto
-              flex
-              w-full
-              flex-col
-              gap-0.5
-              p-2
-              px-2
-              text-left`
+                    flex
+                    w-full
+                    flex-col
+                    gap-0.5
+                    p-2
+                    text-left`
                   )}
-                  key={`email-${em.email}-${em.id}`}
                 >
                   <div className="flex items-start gap-2">
                     <h3 className="grow text-sm font-semibold">{em.name}</h3>
@@ -417,6 +398,19 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                       </>
                     )}
                   </div>
+                </div>
+                <div
+                  className={cn(
+                    `pr-4 text-stone-500 opacity-50 group-hover:opacity-100`,
+                    selected && `text-brown-600 opacity-100`,
+                    em.unsubscribed && `text-red-600`
+                  )}
+                >
+                  {selected ? (
+                    <CheckIcon width={20} height={20} />
+                  ) : (
+                    <PlusIcon width={20} height={20} />
+                  )}
                 </div>
               </div>
             </button>
