@@ -68,7 +68,7 @@ export default function Button({
         loading &&
           "cursor-progress border-transparent bg-brown-600/25 text-transparent hover:border-transparent",
         variant === ButtonVariant.Secondary &&
-          "bg-tan-400/50 text-stone-700 hover:border-tan-500/20 hover:text-stone-900 focus:ring-tan-400/20",
+          " bg-tan-500/50 text-stone-700 hover:border-tan-500 hover:text-stone-900 focus:ring-tan-400/20",
         variant === ButtonVariant.Invert &&
           "bg-tan-50 text-stone-600 hover:border-tan-500/20 hover:text-stone-900 focus:ring-tan-500/20",
         size === ButtonSize.Small && "rounded-md px-2 py-1 text-sm",
