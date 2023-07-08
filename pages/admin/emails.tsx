@@ -77,17 +77,6 @@ export default function AdminPage(props: { emails: MemberEmail[]; pageTitle }) {
   const [copiedToClipboard, setCopiedToClipboard] = useState<boolean>(false);
   const { isLoggedIn, userData, isLoadingUserSession } = useUserSession();
 
-  const handleCopyToClipboard = () => {
-    const emailListText = props.emails.join("\n");
-    navigator.clipboard.writeText(emailListText);
-    setCopiedToClipboard(true);
-
-    const timeout = setTimeout(() => {
-      setCopiedToClipboard(false);
-      clearTimeout(timeout);
-    }, 2000);
-  };
-
   useEffect(() => {
     if (!isLoadingUserSession && !isLoggedIn) Router.push(`/admin`);
   }, [isLoggedIn, isLoadingUserSession]);
@@ -124,6 +113,26 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
   const [emailsShown, setEmailsShown] = useState<MemberEmail[]>(emails);
   const [revealEmail, setRevealEmail] = useState<boolean>(false);
   const [includeName, setIncludeName] = useState<boolean>(true);
+  const [selectedEmails, setSelectedEmails] = useState<MemberEmail[]>([]);
+
+  const handleEmailSelection = (em: MemberEmail, isSelected: boolean) => {
+    if (isSelected) {
+      setSelectedEmails([
+        ...selectedEmails,
+        {
+          id: em.id,
+          name: em.name,
+          email: em.email,
+          emailAbbr: em.emailAbbr,
+          unsubscribed: em.unsubscribed,
+        },
+      ]);
+    } else {
+      setSelectedEmails(
+        selectedEmails.filter((selectedEm) => em.id !== selectedEm.id)
+      );
+    }
+  };
 
   const emailSubscribed = emails
     .filter((em) => !em.unsubscribed)
@@ -132,16 +141,19 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
     .filter((em) => em.unsubscribed)
     .sort((a, b) => a.name.localeCompare(b.name));
 
-  const handleCopyToClipboard = () => {
-    const emailListText = emailsShown
+  const handleCopyToClipboard = (emailList: MemberEmail[]) => {
+    const emailListText = emailList
       .map((em) => {
         if (includeName) {
           return `${em.name} <${em.email}>`;
         }
-        return em.email;
+        return `${em.email}`;
       })
       .join("\n");
     navigator.clipboard.writeText(emailListText);
+    console.log("🔥 🔥 🔥 emailListText 🔥 🔥 🔥");
+    console.log(emailListText);
+
     setCopiedToClipboard(true);
 
     const timeout = setTimeout(() => {
@@ -204,83 +216,124 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
               variant={CheckBoxVariant.Darker}
             />
             <Button
-              onClick={handleCopyToClipboard}
+              onClick={() => {
+                if (selectedEmails.length > 0) {
+                  handleCopyToClipboard(selectedEmails);
+                } else if (emailsShown) {
+                  handleCopyToClipboard(emailsShown);
+                }
+              }}
               size={ButtonSize.XSmall}
               variant={ButtonVariant.Invert}
             >
-              {copiedToClipboard ? "Copied! ✔️" : "Copy All to Clipboard"}
+              {copiedToClipboard
+                ? "Copied! ✔️"
+                : selectedEmails.length > 0
+                ? "Copy Selected"
+                : "Copy All"}
             </Button>
           </div>
         </div>
       </div>
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-2 px-2">
         {emailsShown.map((em) => (
-          <button
-            className={cn(
-              `mx-auto
-            flex
-            w-full
-            flex-col
-            gap-0.5
-            rounded
-            border
-            border-tan-300
-            p-2
-            px-2
-            text-left
-            hover:border-tan-400
-            hover:bg-tan-300/50
-            active:bg-tan-300/80`,
-              em.unsubscribed &&
-                `border-red-400/50 bg-red-400/10 text-red-600 hover:border-red-400 hover:bg-red-400/20 active:bg-red-400/30`
-            )}
-            key={`email-${em.email}-${em.id}`}
-          >
-            <div className="flex items-start gap-2">
-              <h3 className="grow text-sm font-semibold">{em.name}</h3>
-              {em.unsubscribed && (
-                <Tag variant={TagVariant.Alert}>Unsubscribed</Tag>
+          <>
+            <button
+              className={cn(
+                `mx-auto
+              flex
+              w-full
+              flex-col
+              gap-0.5
+              rounded
+              border
+              border-tan-300
+              p-2
+              px-2
+              text-left
+              hover:border-tan-400
+              hover:bg-tan-300/50
+              active:bg-tan-300/80`,
+                em.unsubscribed &&
+                  `border-red-400/50 bg-red-400/10 text-red-600 hover:border-red-400 hover:bg-red-400/20 active:bg-red-400/30`
               )}
-            </div>
-            <div className="flex items-center gap-1 text-xs">
-              {includeName && (
+              key={`email-${em.email}-${em.id}`}
+              onClick={() => {
+                handleCopyToClipboard([
+                  {
+                    id: em.id,
+                    name: em.name,
+                    email: em.email,
+                    emailAbbr: em.emailAbbr,
+                    unsubscribed: em.unsubscribed,
+                  },
+                ]);
+              }}
+            >
+              <div className="flex items-start gap-2">
+                <h3 className="grow text-sm font-semibold">{em.name}</h3>
+                {em.unsubscribed && (
+                  <Tag variant={TagVariant.Alert}>Unsubscribed</Tag>
+                )}
+              </div>
+              <div className="flex items-center gap-1 text-xs">
+                {includeName && (
+                  <p
+                    className={cn(
+                      `inline-flex shrink-0 text-stone-500`,
+                      em.unsubscribed && `text-red-600/60`
+                    )}
+                  >
+                    {em.name}
+                  </p>
+                )}
+
                 <p
                   className={cn(
-                    `inline-flex shrink-0 text-stone-500`,
+                    `flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap text-stone-500`,
                     em.unsubscribed && `text-red-600/60`
                   )}
                 >
-                  {em.name}
+                  {includeName && `<`}
+                  {revealEmail ? em.email : em.emailAbbr}
+                  {includeName && `>`}
                 </p>
-              )}
-
-              <p
-                className={cn(
-                  `flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap text-stone-500`,
-                  em.unsubscribed && `text-red-600/60`
-                )}
-              >
-                {includeName && `<`}
-                {revealEmail ? em.email : em.emailAbbr}
-                {includeName && `>`}
-              </p>
-              {em.unsubscribed && (
-                <>
-                  {/* <span
+                {em.unsubscribed && (
+                  <>
+                    {/* <span
                     className={cn(
                       `shrink-0 text-stone-400`,
                       em.unsubscribed && `text-red-600/30`
-                    )}
-                  >
-                    ·
-                  </span> */}
-                  <p className={cn("shrink-0 text-xs text-red-600/60")}>
-                    Transactional / urgent emails only
-                  </p>
-                </>
-              )}
-            </div>
-          </button>
+                      )}
+                      >
+                      ·
+                    </span> */}
+                    <p className={cn("shrink-0 text-xs text-red-600/60")}>
+                      Transactional / urgent emails only
+                    </p>
+                  </>
+                )}
+              </div>
+            </button>
+            <input
+              type="checkbox"
+              checked={selectedEmails
+                .map((selectedEm) => selectedEm.id)
+                .includes(em.id)}
+              onChange={(e) =>
+                handleEmailSelection(
+                  {
+                    id: em.id,
+                    name: em.name,
+                    email: em.email,
+                    emailAbbr: em.emailAbbr,
+                    unsubscribed: em.unsubscribed,
+                  },
+                  e.target.checked
+                )
+              }
+            />
+          </>
         ))}
       </div>
     </>
