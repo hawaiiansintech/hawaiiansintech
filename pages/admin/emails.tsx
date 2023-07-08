@@ -151,8 +151,6 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
       })
       .join("\n");
     navigator.clipboard.writeText(emailListText);
-    console.log("🔥 🔥 🔥 emailListText 🔥 🔥 🔥");
-    console.log(emailListText);
 
     setCopiedToClipboard(true);
 
@@ -173,24 +171,24 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
   return (
     <>
       <div className="sticky top-12 w-full bg-tan-400">
-        <div className="mx-auto flex w-full flex-wrap items-center px-4 py-1 ">
+        <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center py-1 pl-4 pr-2 lg:px-0">
           <div className="flex grow items-center gap-2">
             <h2 className="text-xl font-semibold leading-8">Emails</h2>
-            <div className="flex grow items-center gap-1">
+            <div className="flex items-center gap-0.5 rounded-full bg-tan-500/50 p-1">
               <button
                 className={cn(
                   `
                     rounded-full
-                    bg-tan-500/60
-                    px-4
-                    py-2
+                    bg-white
+                    px-3
+                    py-1
                     text-sm
                     font-medium
-                    leading-none
-                    text-stone-700
+                    leading-tight
+                    text-stone-900
                     transition-all
                   `,
-                  !showUnsubscribed && "bg-white text-stone-900"
+                  showUnsubscribed && "bg-transparent text-stone-700"
                 )}
                 onClick={() => {
                   setShowUnsubscribed(!showUnsubscribed);
@@ -206,30 +204,21 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                 className={cn(
                   `
                     rounded-full 
-                    bg-white
-                    px-4
-                    py-2
+                    px-3
+                    py-1
                     text-sm
                     font-medium
-                    leading-none
-                    text-stone-900
+                    leading-tight
+                    text-stone-700
                     transition-all
                   `,
-                  !showUnsubscribed && "bg-tan-500/60 text-stone-700"
+                  showUnsubscribed && "bg-white text-stone-900"
                 )}
                 onClick={() => setShowUnsubscribed(!showUnsubscribed)}
               >
                 All <span className="text-tan-800">{emails.length}</span>
               </button>
-              {selectedEmails.length > 0 && (
-                <h4 className="ml-2 text-sm text-tan-700">
-                  {`(${selectedEmails.length} selected)`}
-                </h4>
-              )}
             </div>
-            {/* <h4 className="text-sm text-tan-700">
-              {`(${selectedEmails.length} selected)`}
-            </h4> */}
           </div>
           <div className="flex items-center gap-2">
             <CheckBox
@@ -275,7 +264,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
               {copiedToClipboard
                 ? "Copied! ✔️"
                 : selectedEmails.length > 0
-                ? "Copy Selected"
+                ? `Copy Selected (${selectedEmails.length})`
                 : "Copy All"}
             </Button>
           </div>
@@ -290,8 +279,11 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
             <div
               className={cn(
                 `
-              group 
+              group
+              mx-auto
               flex
+              w-full
+              max-w-5xl
               gap-2
               border-b
               border-tan-300
