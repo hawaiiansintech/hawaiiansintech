@@ -4,7 +4,9 @@ import CheckBox, {
   CheckBoxSize,
   CheckBoxVariant,
 } from "@/components/form/CheckBox";
-import { ErrorMessageProps } from "@/components/form/ErrorMessage";
+import ErrorMessage, {
+  ErrorMessageProps,
+} from "@/components/form/ErrorMessage";
 import LoadingSpinner, {
   LoadingSpinnerVariant,
 } from "@/components/LoadingSpinner";
@@ -73,8 +75,6 @@ export async function getStaticProps() {
 }
 
 export default function AdminPage(props: { emails: MemberEmail[]; pageTitle }) {
-  const [error, setError] = useState<ErrorMessageProps>(undefined);
-  const [copiedToClipboard, setCopiedToClipboard] = useState<boolean>(false);
   const { isLoggedIn, userData, isLoadingUserSession } = useUserSession();
 
   useEffect(() => {
@@ -108,6 +108,7 @@ export default function AdminPage(props: { emails: MemberEmail[]; pageTitle }) {
 }
 
 const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
+  const [error, setError] = useState<ErrorMessageProps>(null);
   const [copiedToClipboard, setCopiedToClipboard] = useState<boolean>(false);
   const [showUnsubscribed, setShowUnsubscribed] = useState<boolean>(false);
   const [emailsShown, setEmailsShown] = useState<MemberEmail[]>(emails);
@@ -142,6 +143,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   const handleCopyToClipboard = (emailList: MemberEmail[]) => {
+    setError(null);
     const emailListText = emailList
       .map((em) => {
         if (includeName) {
@@ -150,14 +152,24 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
         return `${em.email}`;
       })
       .join("\n");
-    navigator.clipboard.writeText(emailListText);
 
-    setCopiedToClipboard(true);
+    navigator.clipboard
+      .writeText(emailListText)
+      .then(() => {
+        setCopiedToClipboard(true);
 
-    const timeout = setTimeout(() => {
-      setCopiedToClipboard(false);
-      clearTimeout(timeout);
-    }, 2000);
+        const timeout = setTimeout(() => {
+          setCopiedToClipboard(false);
+          clearTimeout(timeout);
+        }, 2000);
+      })
+      .catch((err) => {
+        console.error("Failed to copy text: ", err);
+        setError({
+          headline: "Error",
+          body: "Failed to copy text to clipboard. Please try again.",
+        });
+      });
   };
 
   useEffect(() => {
@@ -216,7 +228,8 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                 )}
                 onClick={() => setShowUnsubscribed(!showUnsubscribed)}
               >
-                All <span className="text-tan-800">{emails.length}</span>
+                All <span className="text-tan-800">{emails.length}</span> (+
+                Unsubscribers)
               </button>
             </div>
           </div>
@@ -271,20 +284,27 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
         </div>
       </div>
       <div className="mx-auto flex w-full flex-col">
+        {error && (
+          <div className="mx-auto my-2 w-full max-w-5xl">
+            <ErrorMessage
+              headline={error.headline}
+              body={error.body}
+              onClose={() => {
+                setError(null);
+              }}
+            />
+          </div>
+        )}
         {emailsShown.map((em) => {
           const selected = selectedEmails.find(
             (selectedEm) => em.id === selectedEm.id
           );
           return (
-            <div
+            <button
               className={cn(
                 `
               group
-              mx-auto
-              flex
               w-full
-              max-w-5xl
-              gap-2
               border-b
               border-tan-300
               pl-4
@@ -295,36 +315,52 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                 selected &&
                   "border-brown-600/40 bg-brown-600/10 text-stone-800 hover:bg-brown-600/20 active:bg-brown-600/10",
                 em.unsubscribed &&
-                  `border-red-400/50 bg-red-400/10 text-red-600 hover:border-red-400 hover:bg-red-400/20  active:bg-red-400/30`
+                  `border-red-400/50 bg-red-400/5 text-red-600 hover:border-red-400 hover:bg-red-400/20  active:bg-red-400/30`,
+                em.unsubscribed &&
+                  selected &&
+                  `border-red-400 bg-red-400/20 text-red-600 hover:bg-red-400/30  active:bg-red-400/20`
               )}
+              onClick={() => {
+                handleEmailSelection({
+                  id: em.id,
+                  name: em.name,
+                  email: em.email,
+                  emailAbbr: em.emailAbbr,
+                  unsubscribed: em.unsubscribed,
+                });
+              }}
             >
-              <input
-                className={cn(
-                  `
+              <div
+                className="
+              mx-auto flex w-full max-w-5xl gap-2"
+              >
+                <input
+                  className={cn(
+                    `
                 accent-brown-600
                 opacity-0
                 group-hover:opacity-100
               `,
-                  selectedEmails?.length > 0 && `opacity-100`,
-                  em.unsubscribed && `accent-red-600`
-                )}
-                type="checkbox"
-                checked={selectedEmails
-                  .map((selectedEm) => selectedEm.id)
-                  .includes(em.id)}
-                onChange={() =>
-                  handleEmailSelection({
-                    id: em.id,
-                    name: em.name,
-                    email: em.email,
-                    emailAbbr: em.emailAbbr,
-                    unsubscribed: em.unsubscribed,
-                  })
-                }
-              />
-              <button
-                className={cn(
-                  `mx-auto
+                    selectedEmails?.length > 0 && `opacity-100`,
+                    em.unsubscribed && `accent-red-600`
+                  )}
+                  type="checkbox"
+                  checked={selectedEmails
+                    .map((selectedEm) => selectedEm.id)
+                    .includes(em.id)}
+                  onChange={() =>
+                    handleEmailSelection({
+                      id: em.id,
+                      name: em.name,
+                      email: em.email,
+                      emailAbbr: em.emailAbbr,
+                      unsubscribed: em.unsubscribed,
+                    })
+                  }
+                />
+                <div
+                  className={cn(
+                    `mx-auto
               flex
               w-full
               flex-col
@@ -332,51 +368,42 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
               p-2
               px-2
               text-left`
-                )}
-                key={`email-${em.email}-${em.id}`}
-                onClick={() => {
-                  handleEmailSelection({
-                    id: em.id,
-                    name: em.name,
-                    email: em.email,
-                    emailAbbr: em.emailAbbr,
-                    unsubscribed: em.unsubscribed,
-                  });
-                }}
-              >
-                <div className="flex items-start gap-2">
-                  <h3 className="grow text-sm font-semibold">{em.name}</h3>
-                  {em.unsubscribed && (
-                    <Tag variant={TagVariant.Alert}>Unsubscribed</Tag>
                   )}
-                </div>
-                <div className="flex items-center gap-1 text-xs">
-                  {includeName && (
+                  key={`email-${em.email}-${em.id}`}
+                >
+                  <div className="flex items-start gap-2">
+                    <h3 className="grow text-sm font-semibold">{em.name}</h3>
+                    {em.unsubscribed && (
+                      <Tag variant={TagVariant.Alert}>Unsubscribed</Tag>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1 text-xs">
+                    {includeName && (
+                      <p
+                        className={cn(
+                          `inline-flex shrink-0 text-stone-500`,
+                          selected && "text-stone-600",
+                          em.unsubscribed && `text-red-600/60`
+                        )}
+                      >
+                        {em.name}
+                      </p>
+                    )}
+
                     <p
                       className={cn(
-                        `inline-flex shrink-0 text-stone-500`,
+                        `flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap text-stone-500`,
                         selected && "text-stone-600",
                         em.unsubscribed && `text-red-600/60`
                       )}
                     >
-                      {em.name}
+                      {includeName && `<`}
+                      {revealEmail ? em.email : em.emailAbbr}
+                      {includeName && `>`}
                     </p>
-                  )}
-
-                  <p
-                    className={cn(
-                      `flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap text-stone-500`,
-                      selected && "text-stone-600",
-                      em.unsubscribed && `text-red-600/60`
-                    )}
-                  >
-                    {includeName && `<`}
-                    {revealEmail ? em.email : em.emailAbbr}
-                    {includeName && `>`}
-                  </p>
-                  {em.unsubscribed && (
-                    <>
-                      {/* <span
+                    {em.unsubscribed && (
+                      <>
+                        {/* <span
                     className={cn(
                       `shrink-0 text-stone-400`,
                       em.unsubscribed && `text-red-600/30`
@@ -384,14 +411,15 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                       >
                       ·
                     </span> */}
-                      <p className={cn("shrink-0 text-xs text-red-600/60")}>
-                        Transactional / urgent emails only
-                      </p>
-                    </>
-                  )}
+                        <p className={cn("shrink-0 text-xs text-red-600/60")}>
+                          Transactional / urgent emails only
+                        </p>
+                      </>
+                    )}
+                  </div>
                 </div>
-              </button>
-            </div>
+              </div>
+            </button>
           );
         })}
       </div>
