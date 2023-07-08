@@ -186,7 +186,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
           </div>
           <div className="flex items-center gap-2">
             <CheckBox
-              label="Obscure Emails"
+              label="Obscure Email"
               checked={!revealEmail}
               onChange={() => {
                 setRevealEmail(!revealEmail);
@@ -244,21 +244,19 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
             </div>
             <div className="flex items-center gap-1 text-xs">
               {includeName && (
-                <>
-                  <p
-                    className={cn(
-                      `text-stone-500`,
-                      em.unsubscribed && `text-red-600/60`
-                    )}
-                  >
-                    {includeName && `${em.name}`}
-                  </p>
-                </>
+                <p
+                  className={cn(
+                    `inline-flex shrink-0 text-stone-500`,
+                    em.unsubscribed && `text-red-600/60`
+                  )}
+                >
+                  {em.name}
+                </p>
               )}
 
               <p
                 className={cn(
-                  `text-stone-500`,
+                  `flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap text-stone-500`,
                   em.unsubscribed && `text-red-600/60`
                 )}
               >
@@ -266,14 +264,21 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                 {revealEmail ? em.email : em.emailAbbr}
                 {includeName && `>`}
               </p>
-              {/* <span
-                className={cn(
-                  `text-stone-400`,
-                  em.unsubscribed && `text-red-600/30`
-                )}
-              >
-                ·
-              </span> */}
+              {em.unsubscribed && (
+                <>
+                  {/* <span
+                    className={cn(
+                      `shrink-0 text-stone-400`,
+                      em.unsubscribed && `text-red-600/30`
+                    )}
+                  >
+                    ·
+                  </span> */}
+                  <p className={cn("shrink-0 text-xs text-red-600/60")}>
+                    Transactional / urgent emails only
+                  </p>
+                </>
+              )}
             </div>
           </button>
         ))}
