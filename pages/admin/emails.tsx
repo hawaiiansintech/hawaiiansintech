@@ -187,51 +187,38 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-1 px-2 py-1">
           <div className="flex grow items-center gap-2">
             <h2 className="text-xl font-semibold leading-8">Emails</h2>
-            <div className="flex items-center gap-0.5 rounded-full bg-tan-500/50 p-1">
-              <button
-                className={cn(
-                  `
-                    rounded-full
-                    bg-white
-                    px-3
-                    py-1
-                    text-sm
-                    font-medium
-                    leading-tight
-                    text-stone-900
-                    transition-all
-                  `,
-                  showUnsubscribed && "bg-transparent text-stone-700"
-                )}
-                onClick={() => {
-                  setShowUnsubscribed(!showUnsubscribed);
-                  setSelectedEmails(
-                    selectedEmails.filter((em) => !em.unsubscribed)
-                  );
-                }}
-              >
-                Subscribers{" "}
-                <span className="text-tan-800">{emailSubscribed.length}</span>
-              </button>
-              <button
-                className={cn(
-                  `
-                    rounded-full 
-                    px-3
-                    py-1
-                    text-sm
-                    font-medium
-                    leading-tight
-                    text-stone-700
-                    transition-all
-                  `,
-                  showUnsubscribed && "bg-white text-stone-900"
-                )}
-                onClick={() => setShowUnsubscribed(!showUnsubscribed)}
-              >
-                All <span className="text-tan-800">{emails.length}</span>
-              </button>
-            </div>
+            <Tabs
+              items={[
+                {
+                  label: (
+                    <>
+                      Subscribers{" "}
+                      <span className="text-tan-700">
+                        {emailSubscribed.length}
+                      </span>
+                    </>
+                  ),
+                  onClick: () => {
+                    setShowUnsubscribed(!showUnsubscribed);
+                    setSelectedEmails(
+                      selectedEmails.filter((em) => !em.unsubscribed)
+                    );
+                  },
+                  selected: !showUnsubscribed,
+                },
+                {
+                  label: (
+                    <>
+                      All <span className="text-tan-700">{emails.length}</span>
+                    </>
+                  ),
+                  onClick: () => {
+                    setShowUnsubscribed(!showUnsubscribed);
+                  },
+                  selected: showUnsubscribed,
+                },
+              ]}
+            />
           </div>
           <div className="flex items-center gap-2">
             <CheckBox
