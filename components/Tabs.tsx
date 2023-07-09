@@ -1,14 +1,20 @@
 import { cn } from "helpers";
 
-export type TabsProps = {
+export enum TabsSize {
+  Default = "default",
+  Large = "large",
+}
+
+export interface TabsProps {
   items: Array<{
     label: string | React.ReactNode;
     onClick: () => void;
     selected?: boolean;
   }>;
-};
+  size?: TabsSize;
+}
 
-export default function Tabs({ items }: TabsProps) {
+export default function Tabs({ items, size = TabsSize.Default }: TabsProps) {
   return (
     <div className="flex items-center gap-1 rounded-full bg-tan-500/50 p-1">
       {items.map((item, i) => (
@@ -24,7 +30,8 @@ export default function Tabs({ items }: TabsProps) {
             text-tan-900
             transition-all
             hover:bg-tan-400/70`,
-            item.selected && "bg-white text-stone-900 hover:bg-white"
+            item.selected && "bg-white text-stone-900 hover:bg-white",
+            size === TabsSize.Large && "px-4 text-base"
           )}
           onClick={items[i].onClick}
         >
