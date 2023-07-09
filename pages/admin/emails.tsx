@@ -184,7 +184,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
   return (
     <>
       <div className="sticky top-12 z-50 w-full bg-tan-400">
-        <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center px-2 py-1">
+        <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-1 px-2 py-1">
           <div className="flex grow items-center gap-2">
             <h2 className="text-xl font-semibold leading-8">Emails</h2>
             <div className="flex items-center gap-0.5 rounded-full bg-tan-500/50 p-1">
@@ -229,8 +229,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                 )}
                 onClick={() => setShowUnsubscribed(!showUnsubscribed)}
               >
-                All <span className="text-tan-800">{emails.length}</span> (+
-                Unsubscribers)
+                All <span className="text-tan-800">{emails.length}</span>
               </button>
             </div>
           </div>
