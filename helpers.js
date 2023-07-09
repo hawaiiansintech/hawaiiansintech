@@ -80,3 +80,7 @@ export function useEmailCloaker(initialValue) {
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
+
+export function convertStringSnake(str) {
+  return str.replace(/_/g, " ").toUpperCase();
+}

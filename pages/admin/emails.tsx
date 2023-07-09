@@ -12,13 +12,22 @@ import LoadingSpinner, {
 } from "@/components/LoadingSpinner";
 import MetaTags from "@/components/Metatags";
 import Plausible from "@/components/Plausible";
+import Tabs from "@/components/Tabs";
 import Tag, { TagVariant } from "@/components/Tag";
 import { DocumentData, getFirebaseTable } from "@/lib/api";
-import { FirebaseTablesEnum } from "@/lib/enums";
+import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
 import { useUserSession } from "@/lib/hooks";
-import { CheckIcon, PlusIcon } from "@radix-ui/react-icons";
+import {
+  CheckCircledIcon,
+  CheckIcon,
+  CircleBackslashIcon,
+  EnvelopeClosedIcon,
+  PlusIcon,
+  QuestionMarkCircledIcon,
+  UpdateIcon,
+} from "@radix-ui/react-icons";
 import { doc, getDoc } from "firebase/firestore";
-import { cn } from "helpers";
+import { cn, convertStringSnake } from "helpers";
 import Head from "next/head";
 import Router from "next/router";
 import { FC, useEffect, useState } from "react";
@@ -29,6 +38,7 @@ interface MemberEmail {
   name: string;
   email: string;
   emailAbbr: string;
+  status: StatusEnum;
   unsubscribed: boolean;
 }
 
@@ -48,10 +58,11 @@ export async function getStaticProps() {
             email: secM.fields.email,
             name: docSnapshot.data().name || null,
             emailAbbr: docSnapshot.data().masked_email || null,
+            status: docSnapshot.data().status || null,
             unsubscribed: docSnapshot.data().unsubscribed || false,
           };
         } else {
-          console.log(
+          console.warn(
             `No data available for ${secM.id} in MEMBERS (${secM.fields.email})`
           );
           return null;
@@ -130,6 +141,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
           name: em.name,
           email: em.email,
           emailAbbr: em.emailAbbr,
+          status: em.status,
           unsubscribed: em.unsubscribed,
         },
       ]);
@@ -297,6 +309,7 @@ Are you sure you want to deselect?`
           const selected = selectedEmails.find(
             (selectedEm) => em.id === selectedEm.id
           );
+
           return (
             <button
               key={`email-${em.email}-${em.id}`}
@@ -324,6 +337,7 @@ Are you sure you want to deselect?`
                   name: em.name,
                   email: em.email,
                   emailAbbr: em.emailAbbr,
+                  status: em.status,
                   unsubscribed: em.unsubscribed,
                 });
               }}
@@ -350,9 +364,37 @@ Are you sure you want to deselect?`
                   )}
                 >
                   <div className="flex items-start gap-2">
-                    <h3 className="grow text-sm font-semibold">{em.name}</h3>
+                    <div className="flex grow items-center gap-2">
+                      <h3 className="text-sm font-semibold">{em.name}</h3>
+                    </div>
+                    {em.status && (
+                      <Tag
+                        variant={
+                          em.status === StatusEnum.APPROVED
+                            ? TagVariant.Success
+                            : em.status === StatusEnum.IN_PROGRESS
+                            ? TagVariant.NearSuccess
+                            : em.status === StatusEnum.PENDING
+                            ? TagVariant.Warn
+                            : TagVariant.Alert
+                        }
+                      >
+                        {em.status === StatusEnum.APPROVED ? (
+                          <CheckCircledIcon />
+                        ) : em.status === StatusEnum.IN_PROGRESS ? (
+                          <UpdateIcon />
+                        ) : em.status === StatusEnum.PENDING ? (
+                          <QuestionMarkCircledIcon />
+                        ) : (
+                          <CircleBackslashIcon />
+                        )}
+                        {convertStringSnake(em.status)}
+                      </Tag>
+                    )}
                     {em.unsubscribed && (
-                      <Tag variant={TagVariant.Alert}>Unsubscribed</Tag>
+                      <Tag variant={TagVariant.Alert}>
+                        <EnvelopeClosedIcon /> UNSUBSCRIBER
+                      </Tag>
                     )}
                   </div>
                   <h5 className="inline-flex items-center gap-1 text-sm">
@@ -367,7 +409,6 @@ Are you sure you want to deselect?`
                         {em.name}
                       </span>
                     )}
-
                     <span
                       className={cn(
                         `flex-grow cursor-text select-text overflow-hidden overflow-ellipsis whitespace-nowrap text-stone-500`,
