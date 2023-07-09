@@ -17,15 +17,7 @@ import Tag, { TagVariant } from "@/components/Tag";
 import { DocumentData, getFirebaseTable } from "@/lib/api";
 import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
 import { useUserSession } from "@/lib/hooks";
-import {
-  CheckCircledIcon,
-  CheckIcon,
-  CircleBackslashIcon,
-  EnvelopeClosedIcon,
-  PlusIcon,
-  QuestionMarkCircledIcon,
-  UpdateIcon,
-} from "@radix-ui/react-icons";
+import { CheckIcon, PlusIcon } from "@radix-ui/react-icons";
 import { doc, getDoc } from "firebase/firestore";
 import { cn, convertStringSnake } from "helpers";
 import Head from "next/head";
@@ -256,11 +248,9 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                 size={ButtonSize.XSmall}
                 variant={ButtonVariant.Secondary}
                 onClick={() => {
-                  if (selectedEmails.length > 8) {
+                  if (selectedEmails.length >= 5) {
                     const confirmDelete = window.confirm(
-                      `You've selected ${selectedEmails.length} emails. That's a lot; more than most.
-                      
-Are you sure you want to deselect?`
+                      `Are you sure you want to deselect ${selectedEmails.length} members?`
                     );
                     if (confirmDelete) {
                       setSelectedEmails([]);
@@ -379,22 +369,11 @@ Are you sure you want to deselect?`
                             : TagVariant.Alert
                         }
                       >
-                        {em.status === StatusEnum.APPROVED ? (
-                          <CheckCircledIcon />
-                        ) : em.status === StatusEnum.IN_PROGRESS ? (
-                          <UpdateIcon />
-                        ) : em.status === StatusEnum.PENDING ? (
-                          <QuestionMarkCircledIcon />
-                        ) : (
-                          <CircleBackslashIcon />
-                        )}
                         {convertStringSnake(em.status)}
                       </Tag>
                     )}
                     {em.unsubscribed && (
-                      <Tag variant={TagVariant.Alert}>
-                        <EnvelopeClosedIcon /> UNSUBSCRIBER
-                      </Tag>
+                      <Tag variant={TagVariant.Alert}>UNSUBSCRIBER</Tag>
                     )}
                   </div>
                   <h5 className="inline-flex items-center gap-1 text-sm">

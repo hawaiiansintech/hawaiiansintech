@@ -28,22 +28,22 @@ export default function Tag({
         items-center
         gap-1
         rounded-full
-        bg-brown-500/20
-        px-1
+        bg-brown-500/10 bg-gradient-to-br from-brown-500/10 to-brown-500/60
+        px-2
         py-0.5
         text-xs
         leading-none
         tracking-wider
-        text-brown-600
+        text-brown-700
         `,
         variant === TagVariant.Alert &&
-          `bg-red-500/10 bg-gradient-to-br from-red-500/10 to-red-500/60 text-red-800`,
+          `bg-red-500/10 bg-gradient-to-br from-red-500/10 to-red-500/60 text-red-700`,
         variant === TagVariant.Success &&
-          `bg-emerald-500/10 bg-gradient-to-br from-emerald-500/10 to-emerald-500/60 text-emerald-800`,
+          `bg-emerald-500/10 bg-gradient-to-br from-emerald-500/10 to-emerald-500/60 text-emerald-700`,
         variant === TagVariant.NearSuccess &&
-          `bg-violet-500/10 bg-gradient-to-br from-violet-500/10 to-violet-500/60 text-violet-800`,
+          `bg-violet-500/10 bg-gradient-to-br from-violet-500/10 to-violet-500/60 text-violet-700`,
         variant === TagVariant.Warn &&
-          `bg-amber-500/10 bg-gradient-to-br from-amber-500/10 to-amber-500/60 text-amber-800`
+          `bg-amber-500/10 bg-gradient-to-br from-amber-500/10 to-amber-500/60 text-amber-700`
       )}
     >
       {children ? children : null}
