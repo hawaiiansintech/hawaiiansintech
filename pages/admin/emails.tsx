@@ -257,7 +257,18 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                 size={ButtonSize.XSmall}
                 variant={ButtonVariant.Secondary}
                 onClick={() => {
-                  setSelectedEmails([]);
+                  if (selectedEmails.length > 8) {
+                    const confirmDelete = window.confirm(
+                      `You've selected ${selectedEmails.length} emails. That's a lot; more than most.
+                      
+Are you sure you want to deselect?`
+                    );
+                    if (confirmDelete) {
+                      setSelectedEmails([]);
+                    }
+                  } else {
+                    setSelectedEmails([]);
+                  }
                 }}
               >
                 Deselect All
