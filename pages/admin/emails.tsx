@@ -357,22 +357,22 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                       <Tag variant={TagVariant.Alert}>Unsubscribed</Tag>
                     )}
                   </div>
-                  <div className="flex items-center gap-1 text-xs">
+                  <h5 className="inline-flex items-center gap-1 text-sm">
                     {includeName && (
-                      <p
+                      <span
                         className={cn(
-                          `inline-flex shrink-0 text-stone-500`,
+                          `inline-flex shrink-0 cursor-text select-text text-stone-500`,
                           selected && "text-stone-600",
                           em.unsubscribed && `text-red-600/60`
                         )}
                       >
                         {em.name}
-                      </p>
+                      </span>
                     )}
 
-                    <p
+                    <span
                       className={cn(
-                        `flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap text-stone-500`,
+                        `flex-grow cursor-text select-text overflow-hidden overflow-ellipsis whitespace-nowrap text-stone-500`,
                         selected && "text-stone-600",
                         em.unsubscribed && `text-red-600/60`
                       )}
@@ -380,7 +380,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                       {includeName && `<`}
                       {revealEmail ? em.email : em.emailAbbr}
                       {includeName && `>`}
-                    </p>
+                    </span>
                     {em.unsubscribed && (
                       <>
                         {/* <span
@@ -391,12 +391,14 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                       >
                       ·
                     </span> */}
-                        <p className={cn("shrink-0 text-xs text-red-600/60")}>
+                        <span
+                          className={cn("shrink-0 text-xs text-red-600/60")}
+                        >
                           Transactional / urgent emails only
-                        </p>
+                        </span>
                       </>
                     )}
-                  </div>
+                  </h5>
                 </div>
                 <div
                   className={cn(
