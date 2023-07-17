@@ -1,4 +1,3 @@
-import { useUserSession } from "@/lib/hooks";
 import { cn } from "helpers";
 import Link from "next/link";
 import Button, { ButtonSize, ButtonVariant } from "../Button";
@@ -8,17 +7,21 @@ type AdminNavProps = {
   handleLogOut: () => any;
   handleLogIn: () => any;
   name?: string;
+  isAdmin?: boolean;
+  isLoggedIn?: boolean;
+  sticky?: boolean;
 };
 
 export default function AdminNav({
   handleLogOut,
   handleLogIn,
   name,
+  sticky,
+  isAdmin,
+  isLoggedIn,
 }: AdminNavProps) {
-  const { isLoggedIn } = useUserSession();
-
   return (
-    <nav className="sticky top-0 z-50 w-full">
+    <nav className={cn(`w-full`, sticky && `sticky top-0 z-50`)}>
       <div className="flex h-12 w-full items-center bg-tan-300 px-2">
         <section className="flex h-full grow items-center">
           <Link
@@ -28,8 +31,9 @@ export default function AdminNav({
             <Logo size={LogoSize.Small} />
           </Link>
           {isLoggedIn &&
+            isAdmin &&
             [
-              { label: "Dashboard", url: "/admin" },
+              { label: "Directory", url: "/admin/directory" },
               { label: "Email List", url: "/admin/emails" },
               { label: "Back to main site", url: "/", small: true },
             ].map((link: { label: string; url: string; small?: boolean }) => (
@@ -55,7 +59,9 @@ export default function AdminNav({
             ))}
         </section>
         <section className="flex items-center gap-2">
-          {isLoggedIn && <h1 className="text-sm leading-none">{name}</h1>}
+          {isLoggedIn && name && (
+            <h1 className="text-sm leading-none">{name}</h1>
+          )}
           <Button
             size={ButtonSize.XSmall}
             variant={
