@@ -67,7 +67,13 @@ export async function getStaticProps() {
   });
 
   const emails: MemberEmail[] = await Promise.all(getEmails);
-  const filteredEmails = emails.filter((email) => email !== null);
+  const filteredEmails = emails.filter((email) => {
+    return (
+      email !== null &&
+      email.status !== StatusEnum.DECLINED &&
+      email.status !== StatusEnum.PENDING
+    );
+  });
 
   return {
     props: {
@@ -394,10 +400,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                     text-left`
                   )}
                 >
-                  <div className="flex items-start gap-2">
-                    <div className="flex grow items-center gap-2">
-                      <h3 className="text-sm font-semibold">{em.name}</h3>
-                    </div>
+                  <div className="flex grow flex-col items-start gap-1">
                     {em.status && (
                       <Tag
                         variant={
@@ -413,11 +416,17 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                         {convertStringSnake(em.status)}
                       </Tag>
                     )}
-                    {em.unsubscribed && (
-                      <Tag variant={TagVariant.Alert}>UNSUBSCRIBER</Tag>
-                    )}
+                    <h3 className="text-xl font-semibold">{em.name}</h3>
                   </div>
-                  <h5 className="inline-flex items-center gap-1 text-sm">
+                  <h5
+                    className={cn(
+                      "inline-flex items-center gap-1 rounded bg-tan-500/10 px-2 py-1 text-xs",
+                      em.unsubscribed && "bg-red-400/10 text-red-600"
+                    )}
+                  >
+                    {em.unsubscribed && (
+                      <span className="font-medium">UNSUBSCRIBER</span>
+                    )}
                     {includeName && (
                       <span
                         className={cn(
@@ -439,7 +448,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                       {includeName && `<`}
                       {revealEmail ? em.email : em.emailAbbr}
                       {includeName && `>`}
-                    </span>
+                    </span>{" "}
                     {em.unsubscribed && (
                       <>
                         {/* <span

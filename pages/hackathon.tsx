@@ -564,6 +564,7 @@ export default function HackathonPage({ pageTitle }) {
           right: 0;
           padding: 0 1rem;
           opacity: 0.5;
+          pointer-events: none;
           z-index: ${theme.layout.zIndex.below};
         }
 
