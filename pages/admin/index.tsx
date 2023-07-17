@@ -1,7 +1,8 @@
 import AdminNav from "@/components/admin/AdminNav";
-import Dashboard from "@/components/admin/Dashboard";
 import Button, { ButtonSize, ButtonVariant } from "@/components/Button";
-import { ErrorMessageProps } from "@/components/form/ErrorMessage";
+import LoadingSpinner, {
+  LoadingSpinnerVariant,
+} from "@/components/LoadingSpinner";
 import MetaTags from "@/components/Metatags";
 import Plausible from "@/components/Plausible";
 import {
@@ -13,7 +14,8 @@ import {
 import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
 import { useUserSession } from "@/lib/hooks";
 import Head from "next/head";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
 
 interface User {
@@ -31,7 +33,6 @@ export const checkUserIsAdmin = async (user_id: string) => {
       body: JSON.stringify({ uid: user_id }),
     });
     const data = await response.json();
-    console.log(`😆 data.isAdmin: ${data.isAdmin}`);
     return data.isAdmin;
   } catch (error) {
     console.error("An error occurred:", error);
@@ -64,33 +65,12 @@ export async function getStaticProps() {
 
   return {
     props: {
+      pageTitle: "Admin Panel · Hawaiians in Technology",
       nonApprovedMembers: nonApprovedmembers,
       approvedMembers: approvedmembers,
-      pageTitle: "Admin Panel · Hawaiians in Technology",
     },
     revalidate: 60,
   };
-}
-
-export async function getEmails(
-  approvedMembers: MemberPublic[]
-): Promise<string[]> {
-  const secureMemberData: DocumentData[] = await getFirebaseTable(
-    FirebaseTablesEnum.SECURE_MEMBER_DATA
-  );
-  let returnData = [];
-  for (const member of approvedMembers) {
-    const secureMember = secureMemberData.find(
-      (secureMember) =>
-        secureMember.id === member.id &&
-        member.unsubscribed === false &&
-        "fields" in secureMember &&
-        secureMember.fields !== undefined
-    );
-    secureMember && returnData.push(secureMember.fields.email);
-  }
-  returnData.sort();
-  return returnData;
 }
 
 export default function AdminPage(props: {
@@ -98,12 +78,8 @@ export default function AdminPage(props: {
   approvedMembers: MemberPublic[];
   pageTitle;
 }) {
-  const [error, setError] = useState<ErrorMessageProps>(undefined);
-  const [showDelete, setShowDelete] = useState<boolean>(false);
-  const [emailList, setEmailList] = useState<string[]>([]);
-  const [showEmails, setShowEmails] = useState<boolean>(false);
-  const [copiedToClipboard, setCopiedToClipboard] = useState<boolean>(false);
-  const { isLoggedIn, userData } = useUserSession();
+  const { userData, isLoggedIn, isAdmin } = useUserSession();
+  const router = useRouter();
 
   const [memberStates, setMemberStates] = useState(
     props.nonApprovedMembers.map((member) => ({
@@ -113,55 +89,9 @@ export default function AdminPage(props: {
     }))
   );
 
-  const handleDeleteClick = (id: string) => {
-    setMemberStates((prevStates) =>
-      prevStates.map((state) =>
-        state.id === id
-          ? { ...state, deleteSelected: !state.deleteSelected }
-          : state
-      )
-    );
-  };
-
-  const handleHideMember = (id: string) => {
-    setMemberStates((prevStates) =>
-      prevStates.map((state) =>
-        state.id === id ? { ...state, isHidden: !state.isHidden } : state
-      )
-    );
-  };
-
-  const handleShowDelete = () => {
-    setShowDelete(!showDelete);
-  };
-
-  // const handleDashboard = () => {
-  //   if (!checkUserIsAdmin(userData.uid)) {
-  //     setError({
-  //       headline: "Eh you not one admin!",
-  //       body:
-  //         "If you are, try ask one of the admins for access: " +
-  //         ADMIN_EMAILS.join(", "),
-  //     });
-  //   } else {
-  //     setShowDashboard(!showDashboard);
-  //   }
-  // };
-
-  const handleGetEmails = async () => {
-    if (emailList.length === 0) {
-      const emails = await getEmails(props.approvedMembers);
-      setEmailList(emails);
-    }
-    if (showEmails) setCopiedToClipboard(false);
-    setShowEmails(!showEmails);
-  };
-
-  const handleCopyToClipboard = () => {
-    const emailListText = emailList.join("\n");
-    navigator.clipboard.writeText(emailListText);
-    setCopiedToClipboard(true);
-  };
+  useEffect(() => {
+    if (userData && isLoggedIn && isAdmin) router.push(`/admin/directory`);
+  }, [isLoggedIn, isAdmin, userData]);
 
   return (
     <>
@@ -169,18 +99,21 @@ export default function AdminPage(props: {
         <Plausible />
         <MetaTags title={props.pageTitle} />
         <title>{props.pageTitle}</title>
+        <AdminNav
+          handleLogOut={signOutWithGoogle}
+          handleLogIn={signInWithGoogle}
+          sticky
+        />
       </Head>
 
-      <AdminNav
-        handleLogOut={signOutWithGoogle}
-        handleLogIn={signInWithGoogle}
-        name={userData?.name}
-      />
-
       <div className="mx-auto max-w-3xl px-8 py-4">
-        {isLoggedIn ? (
-          <Dashboard userId={userData?.uid} />
-        ) : (
+        {userData === null && (
+          <div className="flex w-full justify-center p-4">
+            <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
+          </div>
+        )}
+
+        {userData === undefined && (
           <h4>
             <span>You must</span>{" "}
             <Button
@@ -194,76 +127,6 @@ export default function AdminPage(props: {
           </h4>
         )}
       </div>
-
-      {/* <div className="mx-auto max-w-3xl p-8">
-        <div className="dashboard">
-          {isLoggedIn ? (
-            <div style={{ display: "flex" }}>
-              <div style={{ marginRight: "auto" }}>
-                <Button onClick={handleDashboard}>
-                  {showDashboard ? "Hide Dashboard" : "View Dashboard"}
-                </Button>
-              </div>
-              <div>
-                {showDashboard && (
-                  <Button size={ButtonSize.Small} onClick={handleShowDelete}>
-                    {showDelete ? "Hide Delete" : "Show Delete"}
-                  </Button>
-                )}
-              </div>
-            </div>
-          ) : null}
-          <div style={{ marginTop: "1.5rem", display: "flex" }}>
-            <div style={{ marginRight: "1.5rem" }}>
-              {isLoggedIn && (
-                <Button size={ButtonSize.Small} onClick={handleGetEmails}>
-                  {showEmails ? "Hide Emails" : "Get Emails"}
-                </Button>
-              )}
-            </div>
-            <div>
-              {showEmails && (
-                <Button
-                  size={ButtonSize.Small}
-                  onClick={handleCopyToClipboard}
-                  variant={ButtonVariant.Secondary}
-                >
-                  {copiedToClipboard ? "Copied! ✔️" : "Copy to Clipboard"}
-                </Button>
-              )}
-            </div>
-          </div>
-          {showEmails && (
-            <div style={{ marginTop: "1.5rem", marginBottom: "1.5rem" }}>
-              {emailList.map((email) => (
-                <div key={email}>{email}</div>
-              ))}
-            </div>
-          )}
-          {error && (
-            <div style={{ marginBottom: "1rem" }}>
-              <ErrorMessage headline={error.headline} body={error.body} />
-            </div>
-          )}
-        </div>
-        {showDashboard && (
-          <div>
-            {props.nonApprovedMembers
-              .sort((a, b) => b.status.localeCompare(a.status))
-              .map((member) =>
-                MemberCard(
-                  member,
-                  memberStates.find((state) => state.id === member.id)
-                    .deleteSelected,
-                  handleDeleteClick,
-                  memberStates.find((state) => state.id === member.id).isHidden,
-                  handleHideMember,
-                  showDelete
-                )
-              )}
-          </div>
-        )}
-      </div> */}
     </>
   );
 }
