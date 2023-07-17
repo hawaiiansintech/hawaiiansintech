@@ -21,7 +21,7 @@ import { CheckIcon, PlusIcon } from "@radix-ui/react-icons";
 import { doc, getDoc } from "firebase/firestore";
 import { cn, convertStringSnake } from "helpers";
 import Head from "next/head";
-import Router from "next/router";
+import { useRouter } from "next/router";
 import { FC, useEffect, useState } from "react";
 import { db, signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
 
@@ -39,7 +39,7 @@ export async function getStaticProps() {
     FirebaseTablesEnum.SECURE_MEMBER_DATA
   );
 
-  const emailPromises = secureMemberData.map((secM) => {
+  const getEmails = secureMemberData.map((secM) => {
     if (secM.fields.email === "") return null;
     const docRef = doc(db, FirebaseTablesEnum.MEMBERS, secM.id);
     return getDoc(docRef)
@@ -66,24 +66,28 @@ export async function getStaticProps() {
       });
   });
 
-  const emails: MemberEmail[] = await Promise.all(emailPromises);
+  const emails: MemberEmail[] = await Promise.all(getEmails);
   const filteredEmails = emails.filter((email) => email !== null);
 
   return {
     props: {
-      emails: filteredEmails,
       pageTitle: "Admin Panel · Hawaiians in Technology",
+      emails: filteredEmails,
     },
     revalidate: 60,
   };
 }
 
-export default function AdminPage(props: { emails: MemberEmail[]; pageTitle }) {
-  const { isLoggedIn, userData, isLoadingUserSession } = useUserSession();
+export default function EmailsPage(props: {
+  emails: MemberEmail[];
+  pageTitle;
+}) {
+  const { userData, isLoggedIn, isAdmin } = useUserSession();
+  const router = useRouter();
 
   useEffect(() => {
-    if (!isLoadingUserSession && !isLoggedIn) Router.push(`/admin`);
-  }, [isLoggedIn, isLoadingUserSession]);
+    if (userData !== null && !isAdmin) router.push(`/admin`);
+  }, [isLoggedIn, isAdmin, userData]);
 
   return (
     <>
@@ -95,16 +99,24 @@ export default function AdminPage(props: { emails: MemberEmail[]; pageTitle }) {
       <AdminNav
         handleLogOut={signOutWithGoogle}
         handleLogIn={signInWithGoogle}
+        isAdmin={isAdmin}
+        isLoggedIn={isLoggedIn}
         name={userData?.name}
       />
 
-      {isLoadingUserSession || !isLoggedIn ? (
+      {userData === null && (
         <div className="flex w-full justify-center p-4">
           <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
         </div>
-      ) : (
+      )}
+
+      {userData !== null && isAdmin && (
         <div className="mx-auto">
-          {props.emails ? <EmailList emails={props.emails} /> : <></>}
+          {props.emails ? (
+            <EmailList emails={props.emails} />
+          ) : (
+            <strong>Authorized, but emails did not load.</strong>
+          )}
         </div>
       )}
     </>
@@ -187,7 +199,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
 
   return (
     <>
-      <div className="sticky top-12 z-50 w-full bg-tan-400">
+      <div className="sticky top-0 z-50 w-full bg-tan-400">
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-1 px-2 py-1">
           <div className="flex grow items-center gap-2">
             <h2 className="text-xl font-semibold leading-8">Emails</h2>
@@ -196,7 +208,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                 {
                   label: (
                     <>
-                      Subscribers{" "}
+                      🍒 Da Mail List™{" "}
                       <span className="text-tan-700">
                         {emailSubscribed.length}
                       </span>
@@ -225,32 +237,14 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
             />
           </div>
           <div className="flex items-center gap-2">
-            <CheckBox
-              label="Obscure Email"
-              checked={!revealEmail}
-              onChange={() => {
-                setRevealEmail(!revealEmail);
-              }}
-              size={CheckBoxSize.Small}
-              variant={CheckBoxVariant.Darker}
-            />
-            <CheckBox
-              label={`Prepend Name`}
-              checked={includeName}
-              onChange={() => {
-                setIncludeName(!includeName);
-              }}
-              size={CheckBoxSize.Small}
-              variant={CheckBoxVariant.Darker}
-            />
-            {selectedEmails.length > 0 && (
+            {selectedEmails.length > 0 ? (
               <Button
                 size={ButtonSize.XSmall}
                 variant={ButtonVariant.Secondary}
                 onClick={() => {
                   if (selectedEmails.length >= 5) {
                     const confirmDelete = window.confirm(
-                      `Are you sure you want to deselect ${selectedEmails.length} members?`
+                      `Are you sure you want to deselect all ${selectedEmails.length} members?`
                     );
                     if (confirmDelete) {
                       setSelectedEmails([]);
@@ -261,6 +255,16 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                 }}
               >
                 Deselect All
+              </Button>
+            ) : (
+              <Button
+                size={ButtonSize.XSmall}
+                variant={ButtonVariant.Secondary}
+                onClick={() => {
+                  setSelectedEmails([...emails]);
+                }}
+              >
+                Select All
               </Button>
             )}
             <Button
@@ -278,12 +282,49 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                 ? "Copied! ✔️"
                 : selectedEmails.length > 0
                 ? `Copy Selected (${selectedEmails.length})`
-                : `Copy All${showUnsubscribed ? "" : " Subscribers"}`}
+                : `Copy All (${emailsShown.length})`}
             </Button>
           </div>
         </div>
       </div>
       <div className="mx-auto flex w-full flex-col">
+        <div className="w-full border-b border-tan-400 bg-tan-100">
+          <div className="mx-auto flex max-w-5xl justify-between gap-4 p-2">
+            {!showUnsubscribed ? (
+              <p className="text-xs text-stone-500">
+                Includes all email addresses we send to.{" "}
+                <span className="text-stone-400">(no unsubscribers)</span>
+              </p>
+            ) : (
+              <p className="flex flex-wrap gap-x-1 text-xs text-stone-500">
+                Includes all emails, including unsubscribed. No marketing or
+                newsletter emails to{" "}
+                <Tag variant={TagVariant.Alert}>UNSUBSCRIBED</Tag> members on
+                this list.
+              </p>
+            )}
+            <div className="flex shrink-0 gap-4">
+              <CheckBox
+                label="Obscure Email"
+                checked={!revealEmail}
+                onChange={() => {
+                  setRevealEmail(!revealEmail);
+                }}
+                size={CheckBoxSize.Small}
+                variant={CheckBoxVariant.Darker}
+              />
+              <CheckBox
+                label={`Prepend Name`}
+                checked={includeName}
+                onChange={() => {
+                  setIncludeName(!includeName);
+                }}
+                size={CheckBoxSize.Small}
+                variant={CheckBoxVariant.Darker}
+              />
+            </div>
+          </div>
+        </div>
         {error && (
           <div className="mx-auto my-2 w-full max-w-5xl">
             <ErrorMessage
