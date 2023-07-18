@@ -124,7 +124,6 @@ const Directory: FC<{ members?: MemberPublic[] }> = ({ members }) => {
   const [sortOrder, setSortOrder] = useState<DirectorySortOrder>(
     DirectorySortOrder.LastModified
   );
-  const [showDelete, setShowDelete] = useState<boolean>(false);
   const [error, setError] = useState<ErrorMessageProps>(null);
 
   let membersFiltered = members
@@ -175,14 +174,6 @@ const Directory: FC<{ members?: MemberPublic[] }> = ({ members }) => {
                 ))}
               </select>
             </div>
-            {/* <Button
-              size={ButtonSize.XSmall}
-              onClick={() => {
-                setShowDelete(!showDelete);
-              }}
-            >
-              {showDelete ? "Done" : "Delete"}
-            </Button> */}
           </div>
         </div>
       </div>
@@ -338,24 +329,12 @@ export function MemberCard({ member, isHidden, setIsHidden }: MemberCardProps) {
                 member.status === StatusEnum.IN_PROGRESS && "bg-violet-500/10"
               )}
             >
-              {/* <section>
-                <h4 className="font-medium text-stone-600">ID</h4>
-                <p className="break-words text-stone-500 font-light">{member.id}</p>
-              </section> */}
-              {/* <section>
-                <h4 className="font-medium text-stone-600">Name</h4>
-                <p className="break-words text-stone-500 font-light">{member.name}</p>
-              </section> */}
               <section>
                 <h4 className="font-medium text-stone-600">Title</h4>
                 <p className="break-words font-light text-stone-500">
                   {member.title}
                 </p>
               </section>
-              {/* <section>
-                <h4 className="font-medium text-stone-600">Status</h4>
-                <p className="break-words text-stone-500 font-light">{member.status}</p>
-              </section> */}
               <section>
                 <h4 className="font-medium text-stone-600">Location</h4>
                 <p className="break-words font-light text-stone-500">
@@ -422,10 +401,6 @@ export function MemberCard({ member, isHidden, setIsHidden }: MemberCardProps) {
                     })}
                 </p>
               </section>
-              {/* <section>
-                <h4 className="font-medium text-stone-600">Last Modified</h4>
-                <p className="break-words text-stone-500 font-light">{member.lastModified}</p>
-              </section> */}
             </div>
           </div>
         </div>
