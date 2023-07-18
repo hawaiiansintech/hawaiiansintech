@@ -4,6 +4,7 @@ import LoadingSpinner from "./LoadingSpinner";
 export enum ButtonVariant {
   Primary = "primary",
   Secondary = "secondary",
+  Destructive = "destructive",
   Invert = "invert",
 }
 
@@ -68,9 +69,11 @@ export default function Button({
         loading &&
           "cursor-progress border-transparent bg-brown-600/25 text-transparent hover:border-transparent",
         variant === ButtonVariant.Secondary &&
-          " bg-tan-500/50 text-stone-700 hover:border-tan-500 hover:text-stone-900 focus:ring-tan-400/20",
+          " bg-tan-500/40 text-stone-700 hover:border-tan-500/30 hover:text-stone-900 focus:ring-tan-500/5",
         variant === ButtonVariant.Invert &&
           "bg-tan-50 text-stone-600 hover:border-tan-500/20 hover:text-stone-900 focus:ring-tan-500/20",
+        variant === ButtonVariant.Destructive &&
+          "bg-red-500/20 text-red-600 hover:border-red-500/10 focus:ring-red-500/10",
         size === ButtonSize.Small && "rounded-md px-2 py-1 text-sm",
         size === ButtonSize.XSmall &&
           "rounded-sm border-2 px-1 py-0.5 text-xs tracking-wide focus:ring-4"
