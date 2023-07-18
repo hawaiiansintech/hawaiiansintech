@@ -15,7 +15,7 @@ import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
 import { useUserSession } from "@/lib/hooks";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
 
 interface User {
@@ -81,14 +81,6 @@ export default function AdminPage(props: {
   const { userData, isLoggedIn, isAdmin } = useUserSession();
   const router = useRouter();
 
-  const [memberStates, setMemberStates] = useState(
-    props.nonApprovedMembers.map((member) => ({
-      id: member.id,
-      deleteSelected: false,
-      isHidden: false,
-    }))
-  );
-
   useEffect(() => {
     if (userData && isLoggedIn && isAdmin) router.push(`/admin/directory`);
   }, [isLoggedIn, isAdmin, userData]);
@@ -99,21 +91,28 @@ export default function AdminPage(props: {
         <Plausible />
         <MetaTags title={props.pageTitle} />
         <title>{props.pageTitle}</title>
-        <AdminNav
-          handleLogOut={signOutWithGoogle}
-          handleLogIn={signInWithGoogle}
-          sticky
-        />
       </Head>
-
+      <AdminNav
+        handleLogOut={signOutWithGoogle}
+        handleLogIn={signInWithGoogle}
+        isLoggedIn={isLoggedIn}
+        isAdmin={isAdmin}
+        name={userData?.name}
+        sticky
+      />
       <div className="mx-auto max-w-3xl px-8 py-4">
         {userData === null && (
           <div className="flex w-full justify-center p-4">
             <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
           </div>
         )}
-
-        {userData === undefined && (
+        {userData !== null && isLoggedIn && !isAdmin && (
+          <h4>
+            You cannot access this page. Please contact an administrator if you
+            believe this is an error.
+          </h4>
+        )}
+        {userData !== null && !isLoggedIn && (
           <h4>
             <span>You must</span>{" "}
             <Button
