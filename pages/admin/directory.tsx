@@ -1,4 +1,5 @@
 import AdminNav from "@/components/admin/AdminNav";
+import Button, { ButtonVariant } from "@/components/Button";
 import ErrorMessage, {
   ErrorMessageProps,
 } from "@/components/form/ErrorMessage";
@@ -6,6 +7,7 @@ import LoadingSpinner, {
   LoadingSpinnerVariant,
 } from "@/components/LoadingSpinner";
 import MetaTags from "@/components/Metatags";
+import Modal from "@/components/Modal";
 import Plausible from "@/components/Plausible";
 import Tabs from "@/components/Tabs";
 import Tag, { TagVariant } from "@/components/Tag";
@@ -26,7 +28,7 @@ import { cn, convertStringSnake } from "helpers";
 import moment from "moment";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { FC, useEffect, useState } from "react";
+import { FC, ReactNode, useEffect, useState } from "react";
 import { signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
 
 interface MemberEmail {
@@ -139,8 +141,7 @@ const Directory: FC<{ members?: MemberPublic[] }> = ({ members }) => {
         if (moment(a.lastModified) < moment(b.lastModified)) return 1;
         return 0;
       }
-      // Handle other sort orders here if needed
-      return 0; // Default case
+      return 0;
     });
 
   return (
@@ -204,7 +205,6 @@ const Directory: FC<{ members?: MemberPublic[] }> = ({ members }) => {
                 member={m}
                 isHidden={false}
                 setIsHidden={() => {}}
-                showDelete={showDelete}
                 key={`member-card-${m.id}`}
               />
             ))}
@@ -221,15 +221,11 @@ interface MemberCardProps {
   member: MemberPublic;
   isHidden: boolean;
   setIsHidden: (id: string) => void;
-  showDelete: boolean;
 }
 
-export function MemberCard({
-  member,
-  isHidden,
-  setIsHidden,
-  showDelete,
-}: MemberCardProps) {
+export function MemberCard({ member, isHidden, setIsHidden }: MemberCardProps) {
+  const [showModal, setShowModal] = useState<ReactNode | false>(false);
+
   const handleDelete = async () => {
     console.log("NOT ACTUALLY DELETING!!! RETURNING EARLY");
     return;
@@ -247,8 +243,10 @@ export function MemberCard({
     await deleteDocument(references.memberRef);
     setIsHidden(member.id);
   };
+
   return isHidden ? null : (
     <>
+      {showModal && <Modal>{showModal}</Modal>}
       <button
         key={`member-${member.id}`}
         className={cn(
@@ -266,7 +264,13 @@ export function MemberCard({
             : "border-red-500/30 bg-red-500/5 hover:bg-red-500/10 active:bg-red-500/20"
         )}
         onClick={() => {
-          console.log("clicked");
+          setShowModal(
+            <MemberProfileModal
+              member={member}
+              onClose={() => setShowModal(false)}
+              onDelete={handleDelete}
+            />
+          );
         }}
         title={member.id}
       >
@@ -335,11 +339,11 @@ export function MemberCard({
               )}
             >
               {/* <section>
-                <h4 className="text-medium text-stone-600">ID</h4>
+                <h4 className="font-medium text-stone-600">ID</h4>
                 <p className="break-words text-stone-500 font-light">{member.id}</p>
               </section> */}
               {/* <section>
-                <h4 className="text-medium text-stone-600">Name</h4>
+                <h4 className="font-medium text-stone-600">Name</h4>
                 <p className="break-words text-stone-500 font-light">{member.name}</p>
               </section> */}
               <section>
@@ -349,7 +353,7 @@ export function MemberCard({
                 </p>
               </section>
               {/* <section>
-                <h4 className="text-medium text-stone-600">Status</h4>
+                <h4 className="font-medium text-stone-600">Status</h4>
                 <p className="break-words text-stone-500 font-light">{member.status}</p>
               </section> */}
               <section>
@@ -419,7 +423,7 @@ export function MemberCard({
                 </p>
               </section>
               {/* <section>
-                <h4 className="text-medium text-stone-600">Last Modified</h4>
+                <h4 className="font-medium text-stone-600">Last Modified</h4>
                 <p className="break-words text-stone-500 font-light">{member.lastModified}</p>
               </section> */}
             </div>
@@ -429,3 +433,210 @@ export function MemberCard({
     </>
   );
 }
+
+const MemberProfileModal: FC<{
+  member: MemberPublic;
+  onClose: () => void;
+  onDelete: () => void;
+}> = ({ member, onClose, onDelete }) => {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  return (
+    <div className="pointer-events-none fixed inset-x-0 inset-y-0 z-50">
+      <div className="pointer-events-auto absolute inset-x-0 bottom-0 flex flex-col gap-4 rounded-t-xl bg-white p-4 text-center shadow-lg sm:m-4 sm:rounded-b-xl">
+        {isDeleting ? (
+          <>
+            <h2 className="text-2xl font-semibold">Delete Member</h2>
+            <p className="text-xl font-light text-stone-500">
+              Are you sure you want to delete{" "}
+              <span className="font-semibold text-stone-700">
+                {member.name}
+              </span>{" "}
+              and all data associated with them?
+            </p>
+            <div className="flex flex-col gap-2">
+              <Button
+                variant={ButtonVariant.Destructive}
+                onClick={() => {
+                  onDelete();
+                }}
+              >
+                Remove Permanently
+              </Button>
+              <Button
+                variant={ButtonVariant.Secondary}
+                onClick={() => {
+                  setIsDeleting(false);
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="px-4 pt-4 text-center">
+              <h2 className="text-2xl font-semibold">{member.name}</h2>
+            </div>
+            <div
+              className={cn(
+                `grid
+                max-h-96
+                gap-x-2
+                gap-y-4
+                overflow-y-auto
+                rounded
+                border
+                border-tan-400/40
+                p-4
+                text-xs
+                sm:grid-cols-5
+                md:max-h-none
+                md:bg-none`
+              )}
+            >
+              <section>
+                <h4 className="text-base font-semibold text-stone-600">ID</h4>
+                <p className="text-base font-light text-stone-500">
+                  {member.id}
+                </p>
+              </section>
+              <section>
+                <h4 className="text-base font-semibold text-stone-600">Name</h4>
+                <p className="text-base font-light text-stone-500">
+                  {member.name}
+                </p>
+              </section>
+              <section>
+                <h4 className="text-base font-semibold text-stone-600">
+                  Title
+                </h4>
+                <p className="text-base font-light text-stone-500">
+                  {member.title}
+                </p>
+              </section>
+              <section>
+                <h4 className="text-base font-semibold text-stone-600">
+                  Status
+                </h4>
+                <Tag
+                  variant={
+                    member.status === StatusEnum.APPROVED
+                      ? TagVariant.Success
+                      : member.status === StatusEnum.IN_PROGRESS
+                      ? TagVariant.NearSuccess
+                      : member.status === StatusEnum.PENDING
+                      ? TagVariant.Warn
+                      : TagVariant.Alert
+                  }
+                >
+                  {convertStringSnake(member.status)}
+                </Tag>
+              </section>
+              <section>
+                <h4 className="text-base font-semibold text-stone-600">
+                  Last Modified
+                </h4>
+                <p className="text-base font-light text-stone-500">
+                  {member.lastModified}
+                </p>
+              </section>
+              <section>
+                <h4 className="text-base font-semibold text-stone-600">
+                  Location
+                </h4>
+                <p className="text-base font-light text-stone-500">
+                  {member.location}
+                </p>
+              </section>
+              <section>
+                <h4 className="text-base font-semibold text-stone-600">
+                  Region
+                </h4>
+                <p className="text-base font-light text-stone-500">
+                  {member.region}
+                </p>
+              </section>
+              <section>
+                <h4 className="text-base font-semibold text-stone-600">
+                  Company Size
+                </h4>
+                <p className="text-base font-light text-stone-500">
+                  {member.companySize}
+                </p>
+              </section>
+              <section>
+                <h4 className="text-base font-semibold text-stone-600">
+                  Focuses
+                </h4>
+                <p>
+                  {member.focus &&
+                    member.focus.map((focus, i) => {
+                      const focusNotApproved =
+                        focus.status !== StatusEnum.APPROVED;
+                      return (
+                        <span
+                          className={cn(
+                            "text-base font-light text-stone-500",
+                            focusNotApproved && `font-medium text-violet-600`
+                          )}
+                          key={member.id + focus.id}
+                        >
+                          {focus.name}
+                          {focusNotApproved ? ` (${focus.status})` : null}
+                          {i < member.focus.length - 1 ? `, ` : null}
+                        </span>
+                      );
+                    })}
+                </p>
+              </section>
+              <section>
+                <h4 className="text-base font-semibold text-stone-600">
+                  Industries
+                </h4>
+                <p>
+                  {member.industry &&
+                    member.industry.map((industry, i) => {
+                      const industryNotApproved =
+                        industry.status !== StatusEnum.APPROVED;
+                      return (
+                        <span
+                          className={cn(
+                            "text-base font-light text-stone-500",
+                            industryNotApproved && `font-medium text-violet-600`
+                          )}
+                          key={member.id + industry.id}
+                        >
+                          {industry.name}
+                          {industryNotApproved ? (
+                            <span> ({industry.status})</span>
+                          ) : null}
+                          {i < member.industry.length - 1 ? `, ` : null}
+                        </span>
+                      );
+                    })}
+                </p>
+              </section>
+            </div>
+            <div className="flex flex-col justify-between gap-2 sm:flex-row">
+              <Button variant={ButtonVariant.Primary} onClick={onClose}>
+                Modify
+              </Button>
+              <Button
+                variant={ButtonVariant.Destructive}
+                onClick={() => {
+                  setIsDeleting(true);
+                }}
+              >
+                Remove
+              </Button>
+              <Button variant={ButtonVariant.Secondary} onClick={onClose}>
+                Close
+              </Button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};

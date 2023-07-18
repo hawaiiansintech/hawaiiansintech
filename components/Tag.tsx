@@ -24,7 +24,7 @@ export default function Tag({
       className={cn(
         `
         font-base
-        flex
+        inline-flex
         items-center
         gap-1
         rounded-full
