@@ -106,6 +106,14 @@ export default function DirectoryPage(props: {
   );
 }
 
+interface MemberDirectoryProps {
+  members?: MemberPublic[];
+}
+
+type MemberDirectoryType = FC<MemberDirectoryProps> & {
+  Card: FC<CardProps>;
+};
+
 enum DirectorySortOrder {
   Alphabetical = "Alphabetical",
   LastModified = "Last Modified",
@@ -117,7 +125,7 @@ enum DirectoryFilter {
   Pending = "Pending",
 }
 
-const Directory: FC<{ members?: MemberPublic[] }> = ({ members }) => {
+const Directory: MemberDirectoryType = ({ members }) => {
   const [tabVisible, setTabVisible] = useState<DirectoryFilter>(
     DirectoryFilter.All
   );
@@ -192,7 +200,7 @@ const Directory: FC<{ members?: MemberPublic[] }> = ({ members }) => {
         {membersFiltered && membersFiltered.length > 0 ? (
           <>
             {membersFiltered.map((m) => (
-              <MemberCard
+              <Directory.Card
                 member={m}
                 isHidden={false}
                 setIsHidden={() => {}}
@@ -208,17 +216,19 @@ const Directory: FC<{ members?: MemberPublic[] }> = ({ members }) => {
   );
 };
 
-interface MemberCardProps {
+interface CardProps {
   member: MemberPublic;
   isHidden: boolean;
   setIsHidden: (id: string) => void;
 }
 
-export function MemberCard({ member, isHidden, setIsHidden }: MemberCardProps) {
+Directory.Card = Card;
+
+function Card({ member, isHidden, setIsHidden }: CardProps) {
   const [showModal, setShowModal] = useState<ReactNode | false>(false);
 
   const handleDelete = async () => {
-    console.log("NOT ACTUALLY DELETING!!! RETURNING EARLY");
+    alert("NOT ACTUALLY DELETING!!! RETURNING EARLY");
     return;
     const references = await getReferencesToDelete(member.id);
     const memberRef = references.memberRef;
