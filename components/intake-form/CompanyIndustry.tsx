@@ -250,7 +250,7 @@ export default function CompanyIndustry({
             })}
           </div>
         </section>
-        <section className="mx-auto max-w-md">
+        <section className="mx-auto max-w-md px-4">
           <Button
             fullWidth
             onClick={handleSubmit}
