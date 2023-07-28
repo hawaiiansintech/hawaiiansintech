@@ -221,7 +221,7 @@ export default function JoinStep4({ pageTitle }) {
                   13 years of age or older
                 </strong>{" "}
                 and agree to the <Link href="/terms">Terms of Use</Link> and{" "}
-                <Link href="/terms">Privacy Policy</Link>.
+                <Link href="/privacy-policy">Privacy Policy</Link>.
                 {props.touched.ageGate && props.errors.ageGate && (
                   <p className="mt-1 text-xs text-red-600">
                     {props.errors.ageGate}
