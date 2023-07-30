@@ -146,7 +146,6 @@ export default function AboutPage({ pageTitle }) {
             board, if that's more your speed.
           </p>
         </section>
-
         <section className="flex flex-col gap-2">
           <h3 className="text-lg font-bold text-stone-800">
             How did you come up with this idea?
@@ -270,6 +269,15 @@ export default function AboutPage({ pageTitle }) {
             </Link>
             .
           </p>
+        </section>
+        <section className="flex gap-4 text-lg font-semibold">
+          {/* <Link className="" href="/terms">
+            Terms of Use
+          </Link>{" "}
+          ·{" "} */}
+          <Link className="" href="/privacy-policy">
+            Privacy Policy
+          </Link>
         </section>
       </div>
     </>
