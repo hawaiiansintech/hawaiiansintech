@@ -167,27 +167,45 @@ export default function JoinStep4({ pageTitle }) {
               .required("You must check this box to continue."),
           })}
         >
-          {(props) => (
-            <form onSubmit={props.handleSubmit} className="flex flex-col gap-4">
-              <Input
-                name="email"
-                label="What’s your email?"
-                labelTranslation="He aha kou wahi leka uila?"
-                onBlur={props.handleBlur}
-                placeholder="Email Address"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-                error={props.touched.email && props.errors.email}
-              />
-              <label className="inline-block">
-                <input
-                  type="checkbox"
-                  name="send-me-emails"
-                  checked={subscribed}
-                  onChange={() => setSubscribed(!subscribed)}
-                  className={`
+          {(props) => {
+            return (
+              <form
+                onSubmit={props.handleSubmit}
+                className="flex flex-col gap-4"
+              >
+                <div className="flex gap-4 rounded-lg bg-tan-300 p-4">
+                  <span className="text-3xl">🤫</span>
+                  <p>
+                    <strong>
+                      We treat your email address as private information
+                    </strong>
+                    . We wonʻt share it without your explicit consent. Only
+                    trusted members of our administrative hui will have access
+                    to this contact information.{" "}
+                    <Link href="/privacy-policy#joining-the-directory">
+                      Learn more
+                    </Link>
+                  </p>
+                </div>
+                <Input
+                  name="email"
+                  label="What’s your email?"
+                  labelTranslation="He aha kou wahi leka uila?"
+                  onBlur={props.handleBlur}
+                  placeholder="Email Address"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                  error={props.touched.email && props.errors.email}
+                />
+                <label className="inline-block">
+                  <input
+                    type="checkbox"
+                    name="send-me-emails"
+                    checked={subscribed}
+                    onChange={() => setSubscribed(!subscribed)}
+                    className={`
                     accent-ring
                     focus:ring-6
                     mr-2
@@ -197,16 +215,18 @@ export default function JoinStep4({ pageTitle }) {
                     accent-brown-600
                     focus:ring-opacity-50
                   `}
-                />
-                Please send occasional emails about{" "}
-                <strong className="font-semibold">features and updates</strong>{" "}
-                <span className="text-stone-500">(~once a month)</span>.
-              </label>
-              <label>
-                <Field
-                  type="checkbox"
-                  name="ageGate"
-                  className={`
+                  />
+                  Please let me know about{" "}
+                  <strong className="font-semibold">
+                    features and community updates
+                  </strong>{" "}
+                  <span className="text-stone-500">(~once a month)</span>.
+                </label>
+                <label>
+                  <Field
+                    type="checkbox"
+                    name="ageGate"
+                    className={`
                   accent-ring
                   focus:ring-6
                   mr-2
@@ -215,26 +235,27 @@ export default function JoinStep4({ pageTitle }) {
                   accent-brown-600
                   focus:ring-opacity-50
                   `}
-                />
-                I am{" "}
-                <strong className="font-semibold">
-                  13 years of age or older
-                </strong>{" "}
-                and agree to the <Link href="/terms">Terms of Use</Link> and{" "}
-                <Link href="/privacy-policy">Privacy Policy</Link>.
-                {props.touched.ageGate && props.errors.ageGate && (
-                  <p className="mt-1 text-xs text-red-600">
-                    {props.errors.ageGate}
-                  </p>
-                )}
-              </label>
-              <div className="mx-auto w-full max-w-md px-4">
-                <Button fullWidth loading={loading} type="submit">
-                  Submit
-                </Button>
-              </div>
-            </form>
-          )}
+                  />
+                  I am{" "}
+                  <strong className="font-semibold">
+                    13 years of age or older
+                  </strong>{" "}
+                  and agree to the{" "}
+                  <Link href="/privacy-policy">Privacy Policy</Link>.
+                  {props.touched.ageGate && props.errors.ageGate && (
+                    <p className="mt-1 text-xs text-red-600">
+                      {props.errors.ageGate}
+                    </p>
+                  )}
+                </label>
+                <div className="mx-auto w-full max-w-md px-4">
+                  <Button fullWidth loading={loading} type="submit">
+                    Submit
+                  </Button>
+                </div>
+              </form>
+            );
+          }}
         </Formik>
       </section>
       <ProgressBar currentCount={4} totalCount={4} width="6.4rem" />
