@@ -25,7 +25,7 @@ export default function PrivacyPolicy({ pageTitle }) {
         <title>{pageTitle}</title>
       </Head>
       <Nav backUrl="/" />
-      <section className="mx-auto max-w-4xl space-y-8 px-4">
+      <section className="mx-auto max-w-4xl px-4">
         <Heading>Privacy Policy</Heading>
         <StaggerText
           words={[
@@ -39,7 +39,7 @@ export default function PrivacyPolicy({ pageTitle }) {
             "🤙🏽",
             "🤙🏾",
           ]}
-          classNames="mx-auto max-w-2xl flex flex-wrap py-4 text-center gap-1.5 text-4xl sm:gap-4 sm:py-16 sm:text-left sm:text-8xl"
+          classNames="mx-auto max-w-2xl flex flex-wrap py-4 text-center gap-1.5 text-4xl sm:gap-4 sm:pt-8 sm:pb-16 sm:text-left sm:text-8xl"
         />
         <p>
           When you use our website, you’re trusting us with your information. We
@@ -99,14 +99,6 @@ export default function PrivacyPolicy({ pageTitle }) {
               <Link href="#children-and-privacy">Children and Privacy</Link>
             </li>
             <li>
-              <Link href="#security" className="text-xl font-bold">
-                Security
-              </Link>
-            </li>
-            <li className="pl-4">
-              <Link href="#data-retention">Data Retention</Link>
-            </li>
-            <li>
               <Link
                 href="#your-rights-and-choices"
                 className="text-xl font-bold"
@@ -126,6 +118,14 @@ export default function PrivacyPolicy({ pageTitle }) {
             </li>
             <li className="pl-4">
               <Link href="#contact-us">Contact Us</Link>
+            </li>
+            <li>
+              <Link href="#security" className="text-xl font-bold">
+                Security
+              </Link>
+            </li>
+            <li className="pl-4">
+              <Link href="#data-retention">Data Retention</Link>
             </li>
             <li>
               <p className="flex items-center gap-1 py-4 text-sm font-medium text-stone-800">
@@ -281,43 +281,6 @@ export default function PrivacyPolicy({ pageTitle }) {
               space-y-4
             `}
           >
-            <HashAnchorTarget id="security" classNames="space-y-2">
-              <h2 className="text-5xl font-semibold">Security</h2>
-            </HashAnchorTarget>
-
-            <p>
-              We take reasonable precautions to provide a{" "}
-              <strong>
-                sufficient level of security in handling your personal data
-              </strong>
-              . We employ both technical and administrative measures to
-              safeguard the personal data governed by this Policy, preventing
-              unauthorized access, destruction, loss, alteration, or misuse.
-              Nevertheless, it is important to note that no data transmission or
-              storage system can be guaranteed to be 100% secure.
-            </p>
-            <HashAnchorTarget id="data-retention" classNames="space-y-2">
-              <h3 className="text-3xl font-semibold">Data Retention</h3>
-              <p>
-                Your data will be retained while you have an active account with
-                us, or until you delete it. You can also request data removal
-                via email, and we will do our best to promptly comply. If you
-                close your account, we will keep your data for a reasonable
-                period to meet legal obligations, enforce our terms of service,
-                or handle disputes.
-              </p>
-              <p>
-                It's essential to keep your information accurate and up-to-date.
-                Please review and update your data regularly for the best
-                experience with our services.
-              </p>
-            </HashAnchorTarget>
-          </article>
-          <article
-            className={`
-              space-y-4
-            `}
-          >
             <HashAnchorTarget
               id="your-rights-and-choices"
               classNames="space-y-2"
@@ -389,6 +352,43 @@ export default function PrivacyPolicy({ pageTitle }) {
                   contact us
                 </Link>
                 .
+              </p>
+            </HashAnchorTarget>
+          </article>
+          <article
+            className={`
+              space-y-4
+            `}
+          >
+            <HashAnchorTarget id="security" classNames="space-y-2">
+              <h2 className="text-5xl font-semibold">Security</h2>
+            </HashAnchorTarget>
+
+            <p>
+              We take reasonable precautions to provide a{" "}
+              <strong>
+                sufficient level of security in handling your personal data
+              </strong>
+              . We employ both technical and administrative measures to
+              safeguard the personal data governed by this Policy, preventing
+              unauthorized access, destruction, loss, alteration, or misuse.
+              Nevertheless, it is important to note that no data transmission or
+              storage system can be guaranteed to be 100% secure.
+            </p>
+            <HashAnchorTarget id="data-retention" classNames="space-y-2">
+              <h3 className="text-3xl font-semibold">Data Retention</h3>
+              <p>
+                Your data will be retained while you have an active account with
+                us, or until you delete it. You can also request data removal
+                via email, and we will do our best to promptly comply. If you
+                close your account, we will keep your data for a reasonable
+                period to meet legal obligations, enforce our terms of service,
+                or handle disputes.
+              </p>
+              <p>
+                It's essential to keep your information accurate and up-to-date.
+                Please review and update your data regularly for the best
+                experience with our services.
               </p>
             </HashAnchorTarget>
           </article>

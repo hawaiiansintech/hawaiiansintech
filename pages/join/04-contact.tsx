@@ -182,7 +182,10 @@ export default function JoinStep4({ pageTitle }) {
                     . We wonʻt share it without your explicit consent. Only
                     trusted members of our administrative hui will have access
                     to this contact information.{" "}
-                    <Link href="/privacy-policy#joining-the-directory">
+                    <Link
+                      href="/privacy-policy#joining-the-directory"
+                      target="_blank"
+                    >
                       Learn more
                     </Link>
                   </p>
