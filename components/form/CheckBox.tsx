@@ -1,13 +1,15 @@
-import { toKebab } from "../../helpers";
+import { cn, toKebab } from "../../helpers";
 
 interface CheckBoxProps {
   checked?: boolean;
   defaultChecked?: boolean;
   description?: React.ReactNode;
+  error?: boolean | string;
   id?: string;
   label?: string;
-  onClick?: () => void;
-  small?: string;
+  name?: string;
+  onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function CheckBox(props: CheckBoxProps) {
@@ -18,16 +20,18 @@ export default function CheckBox(props: CheckBoxProps) {
         id={props.id || labelKebab}
         value={props.id || labelKebab}
         type="checkbox"
-        name={props.id || labelKebab}
+        name={props.name || props.id || labelKebab}
         checked={props.checked}
         defaultChecked={props.defaultChecked}
+        onChange={props.onChange}
         readOnly
         className="peer hidden"
         tabIndex={-1}
       />
 
       <label
-        className={`
+        className={cn(
+          `
           flex
           cursor-pointer
           items-center
@@ -49,11 +53,16 @@ export default function CheckBox(props: CheckBoxProps) {
           peer-checked:before:content-['']
           peer-checked:hover:before:border-brown-700
           sm:peer-checked:before:border-6
-        `}
+        `,
+          props.error ?? "text-red-600"
+        )}
         htmlFor={labelKebab}
       >
         {props.label ? (
           <h3 className="ml-2 font-medium">{props.label}</h3>
+        ) : null}
+        {typeof props.error === "string" ? (
+          <p className="ml-2 text-xs text-red-600">{props.error}</p>
         ) : null}
       </label>
     </div>
