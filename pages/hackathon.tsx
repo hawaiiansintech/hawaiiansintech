@@ -50,7 +50,7 @@ export default function HackathonPage({ pageTitle }) {
         <title>{pageTitle}</title>
       </Head>
       <Nav backUrl="/" />
-      <div className="background">
+      <div className="background pointer-events-none">
         <NihoShimmer animate />
       </div>
       <div className="hackathon-splash foreground">
@@ -476,16 +476,6 @@ export default function HackathonPage({ pageTitle }) {
               subHeading="Hawaiians in Tech"
             />
           </DataList>
-        </SplitSection>
-        <SplitSection title="Contact">
-          <div>
-            <h4>Interested in sponsoring? Have other ways to support us?</h4>
-            <a href="mailto:kekai@hawaiiansintech.org,kamakani@hawaiiansintech.org,andrew@hawaiiansintech.org">
-              <Button size={ButtonSize.Small} variant={ButtonVariant.Secondary}>
-                Contact Us
-              </Button>
-            </a>
-          </div>
         </SplitSection>
       </div>
       <style jsx>{`
