@@ -236,3 +236,31 @@ export const ADMIN_EMAILS = [
   "taylor@hawaiiansintech.org",
   "kamakani@hawaiiansintech.org",
 ];
+
+export interface GenerateMailToOptions {
+  subject?: string;
+  body?: string;
+}
+
+export interface GenerateMailToOptions {
+  subject?: string;
+  body?: string;
+}
+
+export const generateAdminMailToLink = (
+  options: GenerateMailToOptions = {}
+): string => {
+  const queryParams = [];
+
+  if (options.subject) {
+    queryParams.push(`subject=${encodeURIComponent(options.subject)}`);
+  }
+
+  if (options.body) {
+    queryParams.push(`body=${encodeURIComponent(options.body)}`);
+  }
+
+  const queryString = queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
+
+  return `mailto:${ADMIN_EMAILS.join(",")} ${queryString}`;
+};

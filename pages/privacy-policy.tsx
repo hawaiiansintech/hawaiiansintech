@@ -5,6 +5,7 @@ import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import Pill from "@/components/Pill";
 import Plausible from "@/components/Plausible";
+import { generateAdminMailToLink } from "@/lib/email/utils";
 import Head from "next/head";
 import Link from "next/link";
 
@@ -198,14 +199,6 @@ export default function PrivacyPolicy({ pageTitle }) {
               <p>
                 We also <strong>track metrics of visitor events</strong> related
                 to the directory, like click counts of the link you provided us.
-                Please{" "}
-                <Link
-                  href="mailto:kekai@hawaiiansintech.org,kamakani@hawaiiansintech.org"
-                  target="_blank"
-                >
-                  reach out directly
-                </Link>{" "}
-                if you'd like to access or opt out of this tracking.
               </p>
             </HashAnchorTarget>
             <HashAnchorTarget id="website-analytics" classNames="space-y-2">
@@ -299,9 +292,11 @@ export default function PrivacyPolicy({ pageTitle }) {
               <p>
                 If you{" "}
                 <strong>would like to be removed from the directory</strong>,
-                you may opt-out by logging in or by{" "}
+                you may opt-out by{" "}
                 <Link
-                  href="mailto:kekai@hawaiiansintech.org,kamakani@hawaiiansintech.org"
+                  href={generateAdminMailToLink({
+                    subject: "Hawaiians in Tech Privacy Policy",
+                  })}
                   target="_blank"
                 >
                   letting us know
@@ -346,7 +341,9 @@ export default function PrivacyPolicy({ pageTitle }) {
                 have any questions about how we handle user data and personal
                 information, feel free to{" "}
                 <Link
-                  href="mailto:kekai@hawaiiansintech.org,kamakani@hawaiiansintech.org"
+                  href={generateAdminMailToLink({
+                    subject: "Hawaiians in Tech Privacy Policy",
+                  })}
                   target="_blank"
                 >
                   contact us
