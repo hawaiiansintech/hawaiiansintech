@@ -131,7 +131,7 @@ export default function PrivacyPolicy({ pageTitle }) {
               <p className="flex items-center gap-1 py-4 text-sm font-medium text-stone-800">
                 Last updated{" "}
                 <span className="inline-flex">
-                  <Pill>August 1, 2023</Pill>
+                  <Pill>August 3, 2023</Pill>
                 </span>
               </p>
             </li>
