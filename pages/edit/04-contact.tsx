@@ -202,7 +202,7 @@ export default function JoinStep4({ pageTitle }) {
                 onChange={(e) => setOther(e.target.value)}
                 error={props.touched.other && props.errors.other}
               />
-              <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
+              <div className="mx-auto w-full max-w-md px-4">
                 <Button fullWidth loading={loading} type="submit">
                   Submit
                 </Button>
