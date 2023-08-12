@@ -49,7 +49,6 @@ export default function AboutPage({ pageTitle }) {
         `}
       >
         <Title text="Hawaiians*in&nbsp;Technology" noAnimation />
-
         <motion.div
           variants={container}
           initial="hidden"
@@ -68,14 +67,51 @@ export default function AboutPage({ pageTitle }) {
               </strong>
               .
             </motion.span>{" "}
-            <motion.span className="text-stone-800" variants={item}>
-              The goal is to connect, inspire, provide representation, and
-              promote the presence of Native Hawaiians
-            </motion.span>{" "}
-            <motion.span className="text-stone-800" variants={item}>
-              who work in the technology industry.
-            </motion.span>{" "}
           </p>
+          <div className="pt-6 text-2xl font-semibold text-stone-600">
+            <p>
+              The platform strives to{" "}
+              <strong className="font-bold text-stone-700">
+                bring Native Hawaiians together
+              </strong>{" "}
+              and provide them with a space where they can{" "}
+              <strong className="font-bold text-stone-700">
+                connect and collaborate
+              </strong>{" "}
+              with one another. Additionally, the community serves as a{" "}
+              <strong className="font-bold text-stone-700">
+                source of inspiration
+              </strong>{" "}
+              for those who want to pursue a{" "}
+              <strong className="font-bold text-stone-700">
+                career in technology
+              </strong>
+              .
+            </p>{" "}
+            <p className="pt-4">
+              By providing{" "}
+              <strong className="font-bold text-stone-700">
+                representation
+              </strong>{" "}
+              and promoting the{" "}
+              <strong className="font-bold text-stone-700">presence</strong> of
+              Native Hawaiians working in technology, Hawaiians in Technology
+              aims to create a more{" "}
+              <strong className="font-bold text-stone-700">
+                diverse and inclusive industry
+              </strong>
+              . Through its various initiatives, we seek to{" "}
+              <strong className="font-bold text-stone-700">
+                uplift and empower
+              </strong>{" "}
+              Native Hawaiians in the tech industry, while also fostering a
+              sense of{" "}
+              <strong className="font-bold text-stone-700">
+                community and belonging
+              </strong>{" "}
+              among its members.
+            </p>{" "}
+          </div>
         </motion.div>
       </div>
 
@@ -147,7 +183,7 @@ export default function AboutPage({ pageTitle }) {
           </p>
         </section>
         <section className="flex flex-col gap-2">
-          <h3 className="text-lg font-bold text-stone-800">
+          <h3 className="text-lg font-bold">
             How did you come up with this idea?
           </h3>
           <p>This project is one of many like it with similar motivations.</p>
