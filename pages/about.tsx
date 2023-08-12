@@ -49,6 +49,7 @@ export default function AboutPage({ pageTitle }) {
         `}
       >
         <Title text="Hawaiians*in&nbsp;Technology" noAnimation />
+
         <motion.div
           variants={container}
           initial="hidden"
@@ -183,7 +184,7 @@ export default function AboutPage({ pageTitle }) {
           </p>
         </section>
         <section className="flex flex-col gap-2">
-          <h3 className="text-lg font-bold">
+          <h3 className="text-lg font-bold text-stone-800">
             How did you come up with this idea?
           </h3>
           <p>This project is one of many like it with similar motivations.</p>
