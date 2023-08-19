@@ -69,49 +69,21 @@ export default function AboutPage({ pageTitle }) {
               .
             </motion.span>{" "}
           </p>
-            <p>
-              The platform strives to{" "}
-              <strong className="font-bold text-stone-700">
-                bring Native Hawaiians together
-              </strong>{" "}
-              and provide them with a space where they can{" "}
-              <strong className="font-bold text-stone-700">
-                connect and collaborate
-              </strong>{" "}
-              with one another. Additionally, the community serves as a{" "}
-              <strong className="font-bold text-stone-700">
-                source of inspiration
-              </strong>{" "}
-              for those who want to pursue a{" "}
-              <strong className="font-bold text-stone-700">
-                career in technology
-              </strong>
-              .
-            </p>{" "}
-            <p className="pt-4">
-              By providing{" "}
-              <strong className="font-bold text-stone-700">
-                representation
-              </strong>{" "}
-              and promoting the{" "}
-              <strong className="font-bold text-stone-700">presence</strong> of
-              Native Hawaiians working in technology, Hawaiians in Technology
-              aims to create a more{" "}
-              <strong className="font-bold text-stone-700">
-                diverse and inclusive industry
-              </strong>
-              . Through its various initiatives, we seek to{" "}
-              <strong className="font-bold text-stone-700">
-                uplift and empower
-              </strong>{" "}
-              Native Hawaiians in the tech industry, while also fostering a
-              sense of{" "}
-              <strong className="font-bold text-stone-700">
-                community and belonging
-              </strong>{" "}
-              among its members.
-            </p>{" "}
           <div className="my-12 max-w-7xl space-y-4 text-3xl leading-relaxed text-stone-600">
+            <motion.p variants={item}>
+              Our platform strives to bring Native Hawaiians together; to
+              provide a space to connect and collaborate with one another; to
+              serve as a source of inspiration for those who want to pursue a
+              career in technology.
+            </motion.p>
+            <motion.p variants={item}>
+              Providing representation and promoting the presence of Native
+              Hawaiians working in technology is our way of contributing to a
+              more diverse and inclusive industry. Through various initiatives,
+              we seek to uplift and empower Native Hawaiians in the tech
+              industry, while also fostering a sense of community and belonging
+              among our members.
+            </motion.p>{" "}
           </div>
         </motion.div>
       </div>
