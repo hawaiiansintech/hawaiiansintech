@@ -68,14 +68,23 @@ export default function AboutPage({ pageTitle }) {
               </strong>
               .
             </motion.span>{" "}
-            <motion.span className="text-stone-800" variants={item}>
-              The goal is to connect, inspire, provide representation, and
-              promote the presence of Native Hawaiians
-            </motion.span>{" "}
-            <motion.span className="text-stone-800" variants={item}>
-              who work in the technology industry.
-            </motion.span>{" "}
           </p>
+          <div className="my-12 max-w-7xl space-y-4 text-3xl leading-relaxed text-stone-600">
+            <motion.p variants={item}>
+              Our platform strives to bring Native Hawaiians together; to
+              provide a space to connect and collaborate with one another; to
+              serve as a source of inspiration for those who want to pursue a
+              career in technology.
+            </motion.p>
+            <motion.p variants={item}>
+              Providing representation and promoting the presence of Native
+              Hawaiians working in technology is our way of contributing to a
+              more diverse and inclusive industry. Through various initiatives,
+              we seek to uplift and empower Native Hawaiians in the tech
+              industry, while also fostering a sense of community and belonging
+              among our members.
+            </motion.p>{" "}
+          </div>
         </motion.div>
       </div>
 
@@ -83,6 +92,7 @@ export default function AboutPage({ pageTitle }) {
         className={`
           my-12
           grid
+          max-w-7xl
           grid-flow-row
           grid-cols-1
           gap-8
@@ -133,17 +143,6 @@ export default function AboutPage({ pageTitle }) {
             </Link>{" "}
             to connect with our community, get information on events, find new
             project opportunities, and more.
-          </p>
-          <p>
-            You also can post new and discuss other's ideas on this{" "}
-            <Link
-              href={`https://github.com/hawaiians/hawaiiansintech/discussions/categories/ideas`}
-              target="_blank"
-              className="font-semibold"
-            >
-              Github Discussions
-            </Link>{" "}
-            board, if that's more your speed.
           </p>
         </section>
         <section className="flex flex-col gap-2">
@@ -248,7 +247,7 @@ export default function AboutPage({ pageTitle }) {
             >
               Emmit Parubrub
             </Link>
-            <br></br>
+            <br />
             <Link
               href="https://linkedin.com/in/taylorho/?source=about"
               target="_blank"
