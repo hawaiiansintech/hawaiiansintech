@@ -285,7 +285,7 @@ export default function AboutPage({ pageTitle }) {
             >
               Emmit Parubrub
             </Link>
-            <br></br>
+            <br />
             <Link
               href="https://linkedin.com/in/taylorho/?source=about"
               target="_blank"
