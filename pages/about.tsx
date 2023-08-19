@@ -69,7 +69,6 @@ export default function AboutPage({ pageTitle }) {
               .
             </motion.span>{" "}
           </p>
-          <div className="pt-6 text-2xl font-semibold text-stone-600">
             <p>
               The platform strives to{" "}
               <strong className="font-bold text-stone-700">
@@ -112,6 +111,7 @@ export default function AboutPage({ pageTitle }) {
               </strong>{" "}
               among its members.
             </p>{" "}
+          <div className="my-12 max-w-7xl space-y-4 text-3xl leading-relaxed text-stone-600">
           </div>
         </motion.div>
       </div>
@@ -120,6 +120,7 @@ export default function AboutPage({ pageTitle }) {
         className={`
           my-12
           grid
+          max-w-7xl
           grid-flow-row
           grid-cols-1
           gap-8
