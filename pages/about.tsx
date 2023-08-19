@@ -171,17 +171,6 @@ export default function AboutPage({ pageTitle }) {
             to connect with our community, get information on events, find new
             project opportunities, and more.
           </p>
-          <p>
-            You also can post new and discuss other's ideas on this{" "}
-            <Link
-              href={`https://github.com/hawaiians/hawaiiansintech/discussions/categories/ideas`}
-              target="_blank"
-              className="font-semibold"
-            >
-              Github Discussions
-            </Link>{" "}
-            board, if that's more your speed.
-          </p>
         </section>
         <section className="flex flex-col gap-2">
           <h3 className="text-lg font-bold text-stone-800">
