@@ -10,7 +10,7 @@ export default function HitLogo({ fullWidth, inline }: HitLogoProps) {
     <>
       <img
         className="logo"
-        src={"/images/logo - hawaiians in tech.svg?312"}
+        src={"/images/logo - hawaiians in tech.svg"}
         alt="Website logo"
       />
       <style jsx>{`
