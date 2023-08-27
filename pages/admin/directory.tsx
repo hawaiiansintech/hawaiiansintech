@@ -1,4 +1,4 @@
-import AdminNav from "@/components/admin/AdminNav";
+import Admin from "@/components/admin/Admin";
 import Button, { ButtonVariant } from "@/components/Button";
 import ErrorMessage, {
   ErrorMessageProps,
@@ -83,25 +83,29 @@ export default function DirectoryPage(props: {
         <MetaTags title={props.pageTitle} />
         <title>{props.pageTitle}</title>
       </Head>
-      <AdminNav
-        handleLogOut={signOutWithGoogle}
-        handleLogIn={signInWithGoogle}
-        isAdmin={isAdmin}
-        isLoggedIn={isLoggedIn}
-        name={userData?.name}
-      />
+      <Admin>
+        <Admin.Nav
+          handleLogOut={signOutWithGoogle}
+          handleLogIn={signInWithGoogle}
+          isAdmin={isAdmin}
+          isLoggedIn={isLoggedIn}
+          name={userData?.name}
+          sticky
+        />
+        <Admin.Body>
+          {userData === null && (
+            <div className="flex w-full justify-center p-4">
+              <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
+            </div>
+          )}
 
-      {userData === null && (
-        <div className="flex w-full justify-center p-4">
-          <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
-        </div>
-      )}
-
-      {userData !== null && isLoggedIn && isAdmin && (
-        <div className="mx-auto">
-          <Directory members={props.members} />
-        </div>
-      )}
+          {userData !== null && isLoggedIn && isAdmin && (
+            <div className="mx-auto">
+              <Directory members={props.members} />
+            </div>
+          )}
+        </Admin.Body>
+      </Admin>
     </>
   );
 }

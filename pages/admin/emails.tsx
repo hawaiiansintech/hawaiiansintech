@@ -1,4 +1,4 @@
-import AdminNav from "@/components/admin/AdminNav";
+import Admin from "@/components/admin/Admin";
 import Button, { ButtonSize, ButtonVariant } from "@/components/Button";
 import CheckBox, {
   CheckBoxSize,
@@ -102,29 +102,32 @@ export default function EmailsPage(props: {
         <MetaTags title={props.pageTitle} />
         <title>{props.pageTitle}</title>
       </Head>
-      <AdminNav
-        handleLogOut={signOutWithGoogle}
-        handleLogIn={signInWithGoogle}
-        isAdmin={isAdmin}
-        isLoggedIn={isLoggedIn}
-        name={userData?.name}
-      />
-
-      {userData === null && (
-        <div className="flex w-full justify-center p-4">
-          <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
-        </div>
-      )}
-
-      {userData !== null && isAdmin && (
-        <div className="mx-auto">
-          {props.emails ? (
-            <EmailList emails={props.emails} />
-          ) : (
-            <strong>Authorized, but emails did not load.</strong>
+      <Admin>
+        <Admin.Nav
+          handleLogOut={signOutWithGoogle}
+          handleLogIn={signInWithGoogle}
+          isAdmin={isAdmin}
+          isLoggedIn={isLoggedIn}
+          name={userData?.name}
+        />
+        <Admin.Body>
+          {userData === null && (
+            <div className="flex w-full justify-center p-4">
+              <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
+            </div>
           )}
-        </div>
-      )}
+
+          {userData !== null && isAdmin && (
+            <div className="mx-auto">
+              {props.emails ? (
+                <EmailList emails={props.emails} />
+              ) : (
+                <strong>Authorized, but emails did not load.</strong>
+              )}
+            </div>
+          )}
+        </Admin.Body>
+      </Admin>
     </>
   );
 }

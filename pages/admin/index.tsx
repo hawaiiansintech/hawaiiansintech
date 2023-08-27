@@ -1,4 +1,4 @@
-import AdminNav from "@/components/admin/AdminNav";
+import Admin from "@/components/admin/Admin";
 import Button, { ButtonSize, ButtonVariant } from "@/components/Button";
 import LoadingSpinner, {
   LoadingSpinnerVariant,
@@ -92,7 +92,7 @@ export default function AdminPage(props: {
         <MetaTags title={props.pageTitle} />
         <title>{props.pageTitle}</title>
       </Head>
-      <AdminNav
+      <Admin.Nav
         handleLogOut={signOutWithGoogle}
         handleLogIn={signInWithGoogle}
         isLoggedIn={isLoggedIn}
@@ -100,7 +100,7 @@ export default function AdminPage(props: {
         name={userData?.name}
         sticky
       />
-      <div className="mx-auto max-w-3xl px-8 py-4">
+      <Admin.Body className="mx-auto max-w-3xl px-8 py-4">
         {userData === null && (
           <div className="flex w-full justify-center p-4">
             <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
@@ -125,7 +125,7 @@ export default function AdminPage(props: {
             <span>to continue.</span>
           </h4>
         )}
-      </div>
+      </Admin.Body>
     </>
   );
 }
