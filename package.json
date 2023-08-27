@@ -24,6 +24,7 @@
     "fuzzysort": "^1.1.4",
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.21",
+    "lucide-react": "^0.269.0",
     "moment": "^2.29.1",
     "next": "^13.4.4",
     "next-absolute-url": "^1.2.2",
