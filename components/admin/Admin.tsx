@@ -12,9 +12,11 @@ function Admin({ children }: { children: React.ReactNode }) {
 function AdminBody({
   children,
   className,
+  isSessionChecked,
 }: {
   children: React.ReactNode;
   className?: string;
+  isSessionChecked?: boolean;
 }) {
   return <div className={cn("w-full", className)}>{children}</div>;
 }
@@ -25,16 +27,16 @@ type AdminNavProps = {
   name?: string;
   isAdmin?: boolean;
   isLoggedIn?: boolean;
-  sticky?: boolean;
+  isSessionChecked?: boolean;
 };
 
 function AdminNav({
   handleLogOut,
   handleLogIn,
   name,
-  sticky,
   isAdmin,
   isLoggedIn,
+  isSessionChecked,
 }: AdminNavProps) {
   return (
     <nav className="sticky top-0 h-[100vh] w-72 bg-tan-300 p-2">
@@ -69,15 +71,17 @@ function AdminNav({
           {isLoggedIn && name && (
             <h1 className="text-sm leading-none">{name}</h1>
           )}
-          <Button
-            size={ButtonSize.XSmall}
-            variant={
-              isLoggedIn ? ButtonVariant.Secondary : ButtonVariant.Primary
-            }
-            onClick={isLoggedIn ? handleLogOut : handleLogIn}
-          >
-            {isLoggedIn ? "Log Out" : "Log in"}
-          </Button>
+          {isSessionChecked && (
+            <Button
+              size={ButtonSize.XSmall}
+              variant={
+                isLoggedIn ? ButtonVariant.Secondary : ButtonVariant.Primary
+              }
+              onClick={isLoggedIn ? handleLogOut : handleLogIn}
+            >
+              {isLoggedIn ? "Log Out" : "Log in"}
+            </Button>
+          )}
         </section>
       </div>
     </nav>

@@ -9,19 +9,35 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { userData, isLoggedIn, isAdmin } = useUserSession();
+  const { userData, isLoggedIn, isAdmin, isSessionChecked } = useUserSession();
 
   return (
     <Admin>
       <Admin.Nav
         handleLogOut={signOutWithGoogle}
         handleLogIn={signInWithGoogle}
-        isLoggedIn={isLoggedIn || false}
-        isAdmin={isAdmin || false}
+        isLoggedIn={isLoggedIn || null}
+        isAdmin={isAdmin || null}
         name={userData?.name || ""}
-        sticky
+        isSessionChecked={isSessionChecked}
       />
-      <Admin.Body>{isLoggedIn && isAdmin ? children : <></>}</Admin.Body>
+      <Admin.Body>
+        {isSessionChecked ? (
+          isLoggedIn ? (
+            isAdmin ? (
+              <>{children}</>
+            ) : (
+              <div className="p-4">
+                You must be an admin to access this page
+              </div>
+            )
+          ) : (
+            <div className="p-4">Please log in to continue</div>
+          )
+        ) : (
+          <div className="p-4">Checking user session...</div>
+        )}
+      </Admin.Body>
     </Admin>
   );
 }

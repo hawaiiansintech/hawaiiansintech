@@ -27,12 +27,14 @@ export default function useUserSession() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [isSessionChecked, setIsSessionChecked] = useState<boolean>(false);
 
   const fetchUserSession = useCallback(() => {
     const storedUser = sessionStorage.getItem("user") ?? "";
 
     if (!storedUser) {
       setUserData(undefined);
+      setIsSessionChecked(true);
       return;
     }
 
@@ -45,6 +47,7 @@ export default function useUserSession() {
 
     if (!userData?.uid) {
       setUserData(undefined);
+      setIsSessionChecked(true);
       return;
     }
 
@@ -53,9 +56,11 @@ export default function useUserSession() {
         setIsAdmin(isAdmin);
         setUserData(userData);
         setIsLoggedIn(true);
+        setIsSessionChecked(true);
       })
       .catch((error) => {
         console.error(error);
+        setIsSessionChecked(true);
       });
   }, []);
 
@@ -63,5 +68,5 @@ export default function useUserSession() {
     fetchUserSession();
   }, [fetchUserSession]);
 
-  return { userData, isLoggedIn, isAdmin };
+  return { userData, isLoggedIn, isAdmin, isSessionChecked };
 }
