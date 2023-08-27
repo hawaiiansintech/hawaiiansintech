@@ -3,7 +3,6 @@
 import Admin from "@/components/admin/Admin";
 import { signInWithGoogle, signOutWithGoogle } from "@/lib/firebase";
 import useUserSession from "@/lib/hooks/useUserSession";
-import { useRouter } from "next/navigation";
 
 export default function AdminLayout({
   children,
@@ -11,11 +10,6 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const { userData, isLoggedIn, isAdmin } = useUserSession();
-  const router = useRouter();
-
-  // useEffect(() => {
-  //   if (userData && isLoggedIn && isAdmin) router.push(`/admin/directory`);
-  // }, [isLoggedIn, isAdmin, userData]);
 
   return (
     <Admin>
@@ -27,7 +21,7 @@ export default function AdminLayout({
         name={userData?.name || ""}
         sticky
       />
-      <Admin.Body>{children}</Admin.Body>
+      <Admin.Body>{isLoggedIn && isAdmin ? children : <></>}</Admin.Body>
     </Admin>
   );
 }

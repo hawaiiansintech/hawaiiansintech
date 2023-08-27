@@ -41,23 +41,6 @@ export async function fetchMembers(): Promise<MemberPublic[]> {
   return members;
 }
 
-export default async function Page() {
-  const fdsa = await fetchMembers();
-  return (
-    <>
-      <Directory members={fdsa} />
-    </>
-  );
-}
-
-interface MemberDirectoryProps {
-  members?: MemberPublic[];
-}
-
-type MemberDirectoryType = FC<MemberDirectoryProps> & {
-  Card: FC<CardProps>;
-};
-
 enum DirectorySortOrder {
   Alphabetical = "Alphabetical",
   LastModified = "Last Modified",
@@ -69,7 +52,7 @@ enum DirectoryFilter {
   Pending = "Pending",
 }
 
-const Directory: MemberDirectoryType = ({ members }) => {
+export default async function Page() {
   const [tabVisible, setTabVisible] = useState<DirectoryFilter>(
     DirectoryFilter.All
   );
@@ -77,6 +60,8 @@ const Directory: MemberDirectoryType = ({ members }) => {
     DirectorySortOrder.LastModified
   );
   const [error, setError] = useState<ErrorMessageProps>(null);
+
+  const members = await fetchMembers();
 
   let membersFiltered = members
     .filter((m) => {
@@ -144,7 +129,7 @@ const Directory: MemberDirectoryType = ({ members }) => {
         {membersFiltered && membersFiltered.length > 0 ? (
           <>
             {membersFiltered.map((m) => (
-              <Directory.Card
+              <DirectoryCard
                 member={m}
                 isHidden={false}
                 setIsHidden={() => {}}
@@ -158,7 +143,7 @@ const Directory: MemberDirectoryType = ({ members }) => {
       </div>
     </>
   );
-};
+}
 
 interface CardProps {
   member: MemberPublic;
@@ -166,9 +151,7 @@ interface CardProps {
   setIsHidden: (id: string) => void;
 }
 
-Directory.Card = Card;
-
-function Card({ member, isHidden, setIsHidden }: CardProps) {
+function DirectoryCard({ member, isHidden, setIsHidden }: CardProps) {
   const [showModal, setShowModal] = useState<ReactNode | false>(false);
 
   const handleDelete = async () => {
