@@ -1,34 +1,59 @@
-import { checkUserIsAdmin } from "@/pages/admin";
 import { useEmailCloaker } from "helpers";
 import { useEffect, useState } from "react";
 
+const checkUserIsAdmin = async (user_id: string) => {
+  try {
+    const response = await fetch("/api/is-admin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ uid: user_id }),
+    });
+    const data = await response.json();
+    return data.isAdmin;
+  } catch (error) {
+    console.error("An error occurred:", error);
+    return false;
+  }
+};
+
+type UserData = {
+  name: string;
+  uid: string;
+  email: string | string[];
+  emailIsVerified: boolean;
+};
+
 export default function useUserSession() {
-  const [isLoggedIn, setIsLoggedIn] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(null);
-  const [userData, setUserData] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [userData, setUserData] = useState<UserData>();
 
   useEffect(() => {
     const fetchUserSession = async () => {
-      const storedUser = sessionStorage.getItem("user");
-      if (storedUser) {
-        const userData = {
-          name: storedUser,
-          uid: sessionStorage.getItem("uid"),
-          email: useEmailCloaker(sessionStorage.getItem("email")),
-          emailIsVerified: Boolean(sessionStorage.getItem("emailIsVerified")),
-        };
-        // wait to check if the user is an admin
-        const isAdmin = await checkUserIsAdmin(userData?.uid);
-        // set the user's admin status
-        setIsAdmin(isAdmin);
-        // set userData from session storage
-        setUserData(userData);
-        // flip the user to logged-in
-        setIsLoggedIn(true);
-      } else {
-        // set to undefined if user is not found in session storage
+      const storedUser = sessionStorage.getItem("user") ?? "";
+
+      if (!storedUser) {
         setUserData(undefined);
+        return;
       }
+
+      const userData: UserData = {
+        name: sessionStorage.getItem("user") || "",
+        uid: sessionStorage.getItem("uid") || "",
+        email: useEmailCloaker(sessionStorage.getItem("email") || ""),
+        emailIsVerified: Boolean(sessionStorage.getItem("emailIsVerified")),
+      };
+
+      if (!userData?.uid) {
+        setUserData(undefined);
+        return;
+      }
+
+      const isAdmin = await checkUserIsAdmin(userData?.uid || "");
+
+      setIsAdmin(isAdmin);
+      setUserData(userData);
+      setIsLoggedIn(true);
     };
 
     fetchUserSession();

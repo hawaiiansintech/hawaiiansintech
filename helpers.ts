@@ -3,7 +3,7 @@ add when converting helper file to typescript
 // import { clsx, type ClassValue } from "clsx";
 */
 import { clsx } from "clsx";
-import * as addrs from "email-addresses";
+import { parseOneAddress } from "email-addresses";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -68,13 +68,16 @@ export function useSessionStorage(key, initialValue) {
   return [storedValue, setValue];
 }
 
-export function useEmailCloaker(initialValue) {
-  const email = addrs.parseOneAddress(initialValue);
-  return [
-    email?.local.charAt(0),
-    email?.local.charAt(email?.local.length - 1),
-    `@${email?.domain}`,
-  ];
+export function useEmailCloaker(initialValue: string): string[] | [] {
+  const email = parseOneAddress(initialValue);
+  if (email && "local" in email && "domain" in email) {
+    return [
+      email.local.charAt(0),
+      email.local.charAt(email.local.length - 1),
+      `@${email.domain}`,
+    ];
+  }
+  return [];
 }
 
 export function cn(...inputs) {

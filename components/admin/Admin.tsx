@@ -16,7 +16,7 @@ function AdminBody({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <div className={cn(className)}>{children}</div>;
+  return <div className={cn("w-full", className)}>{children}</div>;
 }
 
 type AdminNavProps = {
@@ -54,13 +54,14 @@ function AdminNav({
               targetBlank: true,
               small: true,
             },
-          ].map((link: AdminNavLinkProps) => (
+          ].map((link: AdminNavLinkProps, i) => (
             <AdminNavLink
               label={link.label}
               url={link.url}
               icon={link.icon}
               small={link.small}
               targetBlank={link.targetBlank}
+              key={`admin-nav-link-${link.url}-${i}`}
             />
           ))}
 
@@ -105,12 +106,12 @@ function AdminNavLink({
     <Link
       href={url}
       className={cn(
-        "flex items-center gap-2 rounded-lg p-2 text-sm font-semibold text-stone-700 hover:bg-brown-600/5 hover:text-stone-900 active:bg-brown-600/10",
+        "flex items-center gap-2 rounded-lg p-2 text-sm font-semibold text-stone-700 hover:bg-tan-500/20 hover:text-stone-900 active:bg-brown-600/10",
         small && "text-xs",
         isActive &&
-          "bg-brown-600/10 text-brown-600 hover:bg-brown-600/10 hover:text-brown-600"
+          "bg-brown-600/10 text-brown-600 hover:bg-brown-600/20 hover:text-brown-600"
       )}
-      target={targetBlank && "_blank"}
+      target={targetBlank ? "_blank" : undefined}
       key={`admin-nav-link-${url}`}
     >
       {icon}
