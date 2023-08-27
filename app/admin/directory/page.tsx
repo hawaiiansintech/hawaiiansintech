@@ -3,6 +3,7 @@ import Button, { ButtonVariant } from "@/components/Button";
 import ErrorMessage, {
   ErrorMessageProps,
 } from "@/components/form/ErrorMessage";
+import Input from "@/components/form/Input";
 import Modal from "@/components/Modal";
 import Tabs from "@/components/Tabs";
 import Tag, { TagVariant } from "@/components/Tag";
@@ -180,7 +181,6 @@ function DirectoryCard({ member, isHidden, setIsHidden }: CardProps) {
         className={cn(
           `
             group
-            w-full
             border-b
           `,
           member.status === StatusEnum.APPROVED
@@ -354,8 +354,8 @@ const MemberProfileModal: FC<{
   const [isDeleting, setIsDeleting] = useState(false);
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 inset-y-0 z-50">
-      <div className="pointer-events-auto absolute inset-x-0 bottom-0 flex flex-col gap-4 rounded-t-xl bg-white p-4 text-center shadow-lg sm:m-4 sm:rounded-b-xl">
+    <div className="fixed inset-x-0 inset-y-0 z-50 flex items-center justify-center bg-white/50">
+      <div className="pointer-events-auto flex max-w-5xl flex-col gap-4 rounded-t-xl bg-white p-4 text-center shadow-lg sm:m-4 sm:rounded-b-xl">
         {isDeleting ? (
           <>
             <h2 className="text-2xl font-semibold">Delete Member</h2>
@@ -388,6 +388,7 @@ const MemberProfileModal: FC<{
         ) : (
           <>
             <div className="px-4 pt-4 text-center">
+              <Input name={"usernamef"} value={member.name} />
               <h2 className="text-2xl font-semibold">{member.name}</h2>
             </div>
             <div
