@@ -14,7 +14,10 @@ export interface TabsProps {
   size?: TabsSize;
 }
 
-export default function Tabs({ items, size = TabsSize.Default }: TabsProps) {
+export default function Tabs_old({
+  items,
+  size = TabsSize.Default,
+}: TabsProps) {
   return (
     <div className="flex items-center gap-1 rounded-full bg-tan-500/50 p-1">
       {items.map((item, i) => (

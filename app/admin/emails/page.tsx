@@ -7,7 +7,7 @@ import CheckBox, {
 import ErrorMessage, {
   ErrorMessageProps,
 } from "@/components/form/ErrorMessage";
-import Tabs from "@/components/Tabs";
+import Tabs_old from "@/components/Tabs";
 import Tag, { TagVariant } from "@/components/Tag";
 import { DocumentData, getFirebaseTable } from "@/lib/api";
 import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
@@ -154,7 +154,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-1 px-2 py-1">
           <div className="flex grow items-center gap-2">
             <h2 className="text-xl font-semibold leading-8">Emails</h2>
-            <Tabs
+            <Tabs_old
               items={[
                 {
                   label: (
