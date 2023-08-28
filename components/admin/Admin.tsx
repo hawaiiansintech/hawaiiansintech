@@ -12,11 +12,9 @@ function Admin({ children }: { children: React.ReactNode }) {
 function AdminBody({
   children,
   className,
-  isSessionChecked,
 }: {
   children: React.ReactNode;
   className?: string;
-  isSessionChecked?: boolean;
 }) {
   return <div className={cn("w-full", className)}>{children}</div>;
 }

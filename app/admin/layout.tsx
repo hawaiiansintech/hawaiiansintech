@@ -28,11 +28,11 @@ export default function AdminLayout({
               <>{children}</>
             ) : (
               <div className="p-4">
-                You must be an admin to access this page
+                You must be an admin to access this page.
               </div>
             )
           ) : (
-            <div className="p-4">Please log in to continue</div>
+            <div className="p-4">Please log in to continue.</div>
           )
         ) : (
           <div className="p-4">Checking user session...</div>

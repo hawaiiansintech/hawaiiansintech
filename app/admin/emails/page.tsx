@@ -159,7 +159,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                 {
                   label: (
                     <>
-                      🍒 Da Mail List™{" "}
+                      Subscribed{" "}
                       <span className="text-tan-700">
                         {emailSubscribed.length}
                       </span>
