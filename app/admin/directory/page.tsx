@@ -13,35 +13,36 @@ import {
   getReferencesToDelete,
 } from "@/lib/admin/directory-helpers";
 import {
-  DocumentData,
-  getFirebaseTable,
-  getMembers,
+  // getMembers,
   MemberPublic,
 } from "@/lib/api";
-import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
+import { StatusEnum } from "@/lib/enums";
+import { getMembers } from "@/lib/stubApi";
 import { cn, convertStringSnake } from "helpers";
 import { Trash } from "lucide-react";
 import moment from "moment";
 import { FC, ReactNode, useState } from "react";
 
 export async function fetchMembers(): Promise<MemberPublic[]> {
-  const focusesData: DocumentData[] = await getFirebaseTable(
-    FirebaseTablesEnum.FOCUSES
-  );
-  const industriesData: DocumentData[] = await getFirebaseTable(
-    FirebaseTablesEnum.INDUSTRIES
-  );
-  const regionsData: DocumentData[] = await getFirebaseTable(
-    FirebaseTablesEnum.REGIONS
-  );
-  const members: MemberPublic[] = await getMembers(
-    focusesData,
-    industriesData,
-    regionsData,
-    [StatusEnum.APPROVED, StatusEnum.IN_PROGRESS, StatusEnum.PENDING]
-  );
-  console.log("FORE SOME REASON THIS IS RUNNING AGAIN AND AGAIN");
-  return members;
+  console.log("fetching members");
+  return getMembers();
+  // const focusesData: DocumentData[] = await getFirebaseTable(
+  //   FirebaseTablesEnum.FOCUSES
+  // );
+  // const industriesData: DocumentData[] = await getFirebaseTable(
+  //   FirebaseTablesEnum.INDUSTRIES
+  // );
+  // const regionsData: DocumentData[] = await getFirebaseTable(
+  //   FirebaseTablesEnum.REGIONS
+  // );
+  // const members: MemberPublic[] = await getMembers(
+  //   focusesData,
+  //   industriesData,
+  //   regionsData,
+  //   [StatusEnum.APPROVED, StatusEnum.IN_PROGRESS, StatusEnum.PENDING]
+  // );
+  // console.log("FORE SOME REASON THIS IS RUNNING AGAIN AND AGAIN");
+  // return members;
 }
 
 enum DirectorySortOrder {
