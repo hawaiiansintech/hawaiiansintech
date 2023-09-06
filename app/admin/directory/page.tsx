@@ -12,37 +12,25 @@ import {
   deleteReferences,
   getReferencesToDelete,
 } from "@/lib/admin/directory-helpers";
-import {
-  // getMembers,
-  MemberPublic,
-} from "@/lib/api";
+import { MemberPublic } from "@/lib/api";
 import { StatusEnum } from "@/lib/enums";
-import { getMembers } from "@/lib/stubApi";
 import { cn, convertStringSnake } from "helpers";
 import { Trash } from "lucide-react";
 import moment from "moment";
 import { FC, ReactNode, useState } from "react";
 
-export async function fetchMembers(): Promise<MemberPublic[]> {
-  console.log("fetching members");
-  return getMembers();
-  // const focusesData: DocumentData[] = await getFirebaseTable(
-  //   FirebaseTablesEnum.FOCUSES
-  // );
-  // const industriesData: DocumentData[] = await getFirebaseTable(
-  //   FirebaseTablesEnum.INDUSTRIES
-  // );
-  // const regionsData: DocumentData[] = await getFirebaseTable(
-  //   FirebaseTablesEnum.REGIONS
-  // );
-  // const members: MemberPublic[] = await getMembers(
-  //   focusesData,
-  //   industriesData,
-  //   regionsData,
-  //   [StatusEnum.APPROVED, StatusEnum.IN_PROGRESS, StatusEnum.PENDING]
-  // );
-  // console.log("FORE SOME REASON THIS IS RUNNING AGAIN AND AGAIN");
-  // return members;
+async function fetchMembers(): Promise<MemberPublic[]> {
+  try {
+    const members = await fetch(`/admin/members`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      next: { revalidate: 6000 },
+    });
+
+    return members.json();
+  } catch (error) {
+    new Error("An error occurred:", error);
+  }
 }
 
 enum DirectorySortOrder {
@@ -69,11 +57,13 @@ export default async function Page() {
 
   let membersFiltered = members
     .filter((m) => {
-      if (tabVisible === "All") return true;
-      if (tabVisible === "Pending" && m.status === StatusEnum.PENDING)
-        return true;
-      if (tabVisible === "In Progress" && m.status === StatusEnum.IN_PROGRESS)
-        return true;
+      return (
+        tabVisible === DirectoryFilter.All ||
+        (tabVisible === DirectoryFilter.Pending &&
+          m.status === StatusEnum.PENDING) ||
+        (tabVisible === DirectoryFilter.InProgress &&
+          m.status === StatusEnum.IN_PROGRESS)
+      );
     })
     .sort((a, b) => {
       if (sortOrder === DirectorySortOrder.LastModified) {
