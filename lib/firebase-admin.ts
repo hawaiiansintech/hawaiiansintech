@@ -8,3 +8,14 @@ export const initializeAdmin = async () => {
     });
   }
 };
+
+export const setAdmin = async (uid: string) => {
+  await initializeAdmin();
+  admin.auth().setCustomUserClaims(uid, { admin: true });
+};
+
+export const getAdminByUserID = async (uid: string): Promise<boolean> => {
+  await initializeAdmin();
+  const user = await admin.auth().getUser(uid);
+  return user.customClaims?.admin ? true : false;
+};
