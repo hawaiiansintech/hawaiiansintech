@@ -714,7 +714,8 @@ const MemberEdit: FC<{
                     <span
                       className={cn(
                         "inline-block rounded-xl border px-3 py-0.5 text-sm tracking-wide text-secondary-foreground",
-                        focusNotApproved && `font-medium text-violet-600`
+                        focusNotApproved &&
+                          `bg-violet-600/20 font-medium text-violet-600`
                       )}
                       key={member.id + focus.id}
                     >
