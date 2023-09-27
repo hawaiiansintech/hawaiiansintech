@@ -98,7 +98,6 @@ export default function AdminPage(props: {
         isLoggedIn={isLoggedIn}
         isAdmin={isAdmin}
         name={userData?.name}
-        sticky
       />
       <Admin.Body className="mx-auto max-w-3xl px-8 py-4">
         {userData === null && (

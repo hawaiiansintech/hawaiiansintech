@@ -1,8 +1,8 @@
 export enum StatusEnum {
   APPROVED = "approved",
-  PENDING = "pending",
   IN_PROGRESS = "in_progress",
-  DECLINED = "declined",
+  PENDING = "pending",
+  ARCHIVED = "archived",
 }
 
 export enum CompanySizeEnum {

@@ -34,6 +34,12 @@ export interface MemberPublicEditing extends MemberPublic {
   editing?: { field: string; changeTo: string | string[] }[];
 }
 
+export interface RegionPublic {
+  name?: string;
+  id?: string;
+  count?: number;
+}
+
 export interface DocumentData {
   id: string;
   fields: any;

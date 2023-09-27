@@ -3,6 +3,7 @@ import LoadingSpinner from "./LoadingSpinner";
 
 export enum ButtonVariant {
   Primary = "primary",
+  Outline = "outline",
   Secondary = "secondary",
   Destructive = "destructive",
   Invert = "invert",
@@ -47,12 +48,12 @@ export default function Button({
       type={type}
       className={cn(
         `relative
+        h-12
         rounded-lg
         border-4
         border-transparent
         bg-brown-600
         px-4
-        py-2
         text-xl
         font-semibold
         leading-none
@@ -70,13 +71,15 @@ export default function Button({
           "cursor-progress border-transparent bg-brown-600/25 text-transparent hover:border-transparent",
         variant === ButtonVariant.Secondary &&
           " bg-tan-500/40 text-stone-700 hover:border-tan-500/30 hover:text-stone-900 focus:ring-tan-500/5",
+        variant === ButtonVariant.Outline &&
+          "border-4 border-border/50 bg-background text-stone-700 hover:border-border hover:text-stone-900 focus:ring-tan-500/5",
         variant === ButtonVariant.Invert &&
           "bg-tan-50 text-stone-600 hover:border-tan-500/20 hover:text-stone-900 focus:ring-tan-500/20",
         variant === ButtonVariant.Destructive &&
           "bg-red-500/20 text-red-600 hover:border-red-500/10 focus:ring-red-500/10",
-        size === ButtonSize.Small && "rounded-md px-2 py-1 text-sm",
+        size === ButtonSize.Small && "h-8 rounded-md px-2 text-sm",
         size === ButtonSize.XSmall &&
-          "rounded-sm border-2 px-1 py-0.5 text-xs tracking-wide focus:ring-4"
+          "h-6 rounded-sm border-2 px-1 text-xs tracking-wide focus:ring-4"
       )}
       onClick={handleOnClick}
       disabled={disabled || loading}
