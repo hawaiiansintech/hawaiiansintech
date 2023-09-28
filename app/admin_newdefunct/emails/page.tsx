@@ -62,7 +62,7 @@ export async function fetchEmails(): Promise<MemberEmail[]> {
   const filteredEmails = emails.filter((email) => {
     return (
       email !== null &&
-      email.status !== StatusEnum.DECLINED &&
+      email.status !== StatusEnum.ARCHIVED &&
       email.status !== StatusEnum.PENDING
     );
   });

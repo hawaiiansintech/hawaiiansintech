@@ -70,7 +70,7 @@ export async function getStaticProps() {
   const filteredEmails = emails.filter((email) => {
     return (
       email !== null &&
-      email.status !== StatusEnum.DECLINED &&
+      email.status !== StatusEnum.ARCHIVED &&
       email.status !== StatusEnum.PENDING
     );
   });

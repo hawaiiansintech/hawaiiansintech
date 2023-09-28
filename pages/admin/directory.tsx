@@ -500,6 +500,23 @@ const MemberEdit: FC<{
     console.log(value);
   };
 
+  const mapTabsTriggerToVariant = (
+    status: StatusEnum
+  ): "alert" | "success" | "nearSuccess" | "warn" => {
+    switch (status) {
+      case StatusEnum.APPROVED:
+        return "success";
+      case StatusEnum.IN_PROGRESS:
+        return "nearSuccess";
+      case StatusEnum.PENDING:
+        return "warn";
+      case StatusEnum.ARCHIVED:
+        return "alert";
+      default:
+        return;
+    }
+  };
+
   return (
     <div>
       {isDeleting ? (
@@ -537,12 +554,18 @@ const MemberEdit: FC<{
               // setTabVisible(value as DirectoryFilter);
             }}
             // value={tabVisible}
+            className="col-span-2"
           >
-            <TabsList loop>
+            <TabsList loop className="w-full">
               {Object.values(StatusEnum)
                 .filter((status) => status !== StatusEnum.ARCHIVED)
                 .map((status, i) => (
-                  <TabsTrigger value={status} key={`directory-status-${i}`}>
+                  <TabsTrigger
+                    value={status}
+                    key={`directory-status-${i}`}
+                    variant={mapTabsTriggerToVariant(status)}
+                    // size="sm"
+                  >
                     {convertStringSnake(status)}
                   </TabsTrigger>
                 ))}
@@ -569,19 +592,21 @@ const MemberEdit: FC<{
             </div>
             <Input name={"link"} value={member.link} />
           </div>
-          <div className="col-span-2 flex flex-col items-start gap-1">
-            <div className="flex w-full items-center">
-              <h2 className="grow text-sm font-semibold">Email</h2>
+          <div className="relative col-span-2 flex flex-col gap-1">
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="text-sm font-semibold">Email</h2>
               <h2 className="text-xs font-medium text-primary">Manage</h2>
             </div>
-            <Input name="email" disabled value={member.emailAbbr} />
-            <div className="flex gap-0.5">
-              <Badge variant="secondary">Verified</Badge>
-              {member.unsubscribed ? (
-                <Badge variant="destructive">Unsubscribed</Badge>
-              ) : (
-                <Badge variant="secondary">Subscribed</Badge>
-              )}
+            <div className="relative flex">
+              <Input name="email" disabled value={member.emailAbbr} />
+              <div className="absolute right-0 top-1/2 flex grow -translate-y-1/2 gap-0.5 pr-2 opacity-80">
+                {/* <Badge variant="secondary">Verified</Badge> */}
+                {member.unsubscribed ? (
+                  <Badge variant="destructive">Unsubscribed</Badge>
+                ) : (
+                  <Badge variant="secondary">Subscribed</Badge>
+                )}
+              </div>
             </div>
           </div>
           {/* <div className="flex items-start gap-x-2">
