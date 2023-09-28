@@ -10,6 +10,7 @@ import MetaTags from "@/components/Metatags";
 import Plausible from "@/components/Plausible";
 import Tag, { TagVariant } from "@/components/Tag";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -39,9 +40,12 @@ import {
 } from "@/lib/admin/directory-helpers";
 import {
   DocumentData,
+  getEmailById,
+  getEmails,
   getFirebaseTable,
   getMembers,
-  MemberPublic,
+  MemberEmail,
+  MemberSecure,
   RegionPublic,
 } from "@/lib/api";
 import {
@@ -60,15 +64,6 @@ import { useRouter } from "next/router";
 import { FC, ReactNode, useEffect, useState } from "react";
 import { signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
 
-interface MemberEmail {
-  id: string;
-  name: string;
-  email: string;
-  emailAbbr: string;
-  status: StatusEnum;
-  unsubscribed: boolean;
-}
-
 export async function getStaticProps() {
   const focusesData: DocumentData[] = await getFirebaseTable(
     FirebaseTablesEnum.FOCUSES
@@ -79,12 +74,14 @@ export async function getStaticProps() {
   const regionsData: DocumentData[] = await getFirebaseTable(
     FirebaseTablesEnum.REGIONS
   );
-  const members: MemberPublic[] = await getMembers(
+  const members: MemberSecure[] = await getMembers(
     focusesData,
     industriesData,
     regionsData,
     [StatusEnum.APPROVED, StatusEnum.IN_PROGRESS, StatusEnum.PENDING]
   );
+
+  const emails: MemberEmail[] = await getEmails();
 
   let regions = regionsData
     .map(
@@ -104,6 +101,7 @@ export async function getStaticProps() {
     props: {
       pageTitle: "Directory · Hawaiians in Technology",
       members: members,
+      emails: emails,
       regions: regions,
     },
     revalidate: 60,
@@ -111,8 +109,9 @@ export async function getStaticProps() {
 }
 
 export default function DirectoryPage(props: {
-  members: MemberPublic[];
+  members: MemberSecure[];
   regions: RegionPublic[];
+  emails: MemberEmail[];
   pageTitle;
 }) {
   const { userData, isLoggedIn, isAdmin } = useUserSession();
@@ -146,7 +145,11 @@ export default function DirectoryPage(props: {
 
           {userData !== null && isLoggedIn && isAdmin && (
             <div className="mx-auto">
-              <Directory members={props.members} regions={props.regions} />
+              <Directory
+                members={props.members}
+                regions={props.regions}
+                emails={props.emails}
+              />
             </div>
           )}
         </Admin.Body>
@@ -156,8 +159,9 @@ export default function DirectoryPage(props: {
 }
 
 interface MemberDirectoryProps {
-  members?: MemberPublic[];
+  members?: MemberSecure[];
   regions?: RegionPublic[];
+  emails?: MemberEmail[];
 }
 
 type MemberDirectoryType = FC<MemberDirectoryProps> & {
@@ -279,7 +283,7 @@ const Directory: MemberDirectoryType = ({ members, regions }) => {
 };
 
 interface CardProps {
-  member: MemberPublic;
+  member: MemberSecure;
   regions?: RegionPublic[];
 }
 
@@ -485,12 +489,28 @@ function Card({ member, regions }: CardProps) {
 }
 
 const MemberEdit: FC<{
-  member: MemberPublic;
+  member: MemberSecure;
   regions?: RegionPublic[];
   onClose: () => void;
   onDelete: () => void;
 }> = ({ member, regions, onClose, onDelete }) => {
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [email, setEmail] = useState<MemberEmail>(null);
+  const [loadingEmail, setLoadingEmail] = useState<boolean>(null);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  // TODO: CHECK IF ADMIN
+  const IS_ADMIN = true;
+
+  const handleManageEmail = async () => {
+    if (email === null && IS_ADMIN) {
+      setLoadingEmail(true);
+      await getEmailById(member.id).then((email) => {
+        setEmail(email);
+        setLoadingEmail(false);
+      });
+    } else {
+      setEmail(null);
+    }
+  };
 
   const handleRegionChange = (value: string) => {
     if (value === "New") {
@@ -593,20 +613,76 @@ const MemberEdit: FC<{
             <Input name={"link"} value={member.link} />
           </div>
           <div className="relative col-span-2 flex flex-col gap-1">
-            <div className="flex items-center justify-between gap-2">
-              <h2 className="text-sm font-semibold">Email</h2>
-              <h2 className="text-xs font-medium text-primary">Manage</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="grow text-sm font-semibold">Email</h2>
+              {loadingEmail && (
+                <LoadingSpinner
+                  variant={LoadingSpinnerVariant.Invert}
+                  className="h-4 w-4 border-2"
+                />
+              )}
+              {!email && IS_ADMIN && (
+                <button
+                  className="text-xs font-medium text-primary"
+                  onClick={handleManageEmail}
+                >
+                  Update
+                </button>
+              )}
             </div>
-            <div className="relative flex">
-              <Input name="email" disabled value={member.emailAbbr} />
-              <div className="absolute right-0 top-1/2 flex grow -translate-y-1/2 gap-0.5 pr-2 opacity-80">
-                {/* <Badge variant="secondary">Verified</Badge> */}
-                {member.unsubscribed ? (
-                  <Badge variant="destructive">Unsubscribed</Badge>
-                ) : (
-                  <Badge variant="secondary">Subscribed</Badge>
-                )}
-              </div>
+            <div className="relative flex flex-col gap-2">
+              <Input
+                name="email"
+                disabled={email === null}
+                value={email?.email || member.emailAbbr}
+              />
+              {email ? (
+                <>
+                  <section className="flex items-start gap-2">
+                    <Checkbox
+                      id="subscribed"
+                      checked={!member.unsubscribed}
+                      defaultChecked
+                    />
+                    <div className="text-xs leading-relaxed">
+                      <label
+                        htmlFor="subscribed"
+                        className="font-semibold peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Subscribed
+                      </label>
+                      <p className="leading-relaxed text-secondary-foreground">
+                        Members opt out of emails during sign-up and/or using
+                        unsubscribe links.
+                      </p>
+                    </div>
+                  </section>
+                  <section className="flex items-start gap-2">
+                    <Checkbox id="verified" />
+                    <div className="text-xs leading-relaxed">
+                      <label
+                        htmlFor="verified"
+                        className="font-semibold peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Verified
+                      </label>
+                      <p className="leading-relaxed text-secondary-foreground">
+                        Members verify their email address by replying or
+                        authenticating.
+                      </p>
+                    </div>
+                  </section>
+                </>
+              ) : (
+                <div className="absolute right-0 top-1/2 flex grow -translate-y-1/2 gap-0.5 pr-2 opacity-80">
+                  <Badge variant="secondary">Verified</Badge>
+                  {member.unsubscribed ? (
+                    <Badge variant="destructive">Unsubscribed</Badge>
+                  ) : (
+                    <Badge variant="secondary">Subscribed</Badge>
+                  )}
+                </div>
+              )}
             </div>
           </div>
           {/* <div className="flex items-start gap-x-2">
@@ -777,14 +853,17 @@ const MemberEdit: FC<{
                 })}
             </div>
           </div>
-          <div>
-            <section>
-              <h4 className="text-sm font-semibold">ID</h4>
-              <p className="font-light text-secondary-foreground">
-                {member.id}
-              </p>
-            </section>
-          </div>
+
+          <section>
+            <h4 className="text-sm font-semibold">ID</h4>
+            <p className="font-light text-secondary-foreground">{member.id}</p>
+          </section>
+          <section>
+            <h4 className="text-sm font-semibold">Last Modified</h4>
+            <p className="font-light text-secondary-foreground">
+              {member.lastModified}
+            </p>
+          </section>
           <div className="col-span-2 mt-2 flex flex-col gap-2 sm:flex-row">
             <div>
               <Button

@@ -1,8 +1,10 @@
 import { db } from "@/lib/firebase";
 import {
   collection,
+  doc,
   DocumentReference,
   FirestoreDataConverter,
+  getDoc,
   getDocs,
   Timestamp,
 } from "firebase/firestore";
@@ -32,6 +34,10 @@ export interface MemberPublic {
 
 export interface MemberPublicEditing extends MemberPublic {
   editing?: { field: string; changeTo: string | string[] }[];
+}
+
+export interface MemberSecure extends MemberPublic {
+  email?: MemberEmail;
 }
 
 export interface RegionPublic {
@@ -193,6 +199,60 @@ export async function getMembers(
       }
       return 0;
     });
+}
+
+export interface MemberEmail {
+  id?: string;
+  name?: string;
+  email?: string;
+  emailAbbr?: string;
+  status?: StatusEnum;
+  unsubscribed?: boolean;
+}
+
+export async function getEmails({
+  silent,
+}: {
+  silent?: boolean;
+} = {}): Promise<MemberEmail[]> {
+  const secureMemberData: DocumentData[] = await getFirebaseTable(
+    FirebaseTablesEnum.SECURE_MEMBER_DATA
+  );
+  const emails = await Promise.all(
+    secureMemberData.map(async (secM) => {
+      if (secM.fields.email === "") return null;
+      const docRef = doc(db, FirebaseTablesEnum.MEMBERS, secM.id);
+      try {
+        const docSnapshot = await getDoc(docRef);
+        if (docSnapshot.exists()) {
+          return {
+            id: secM.id,
+            email: secM.fields.email,
+            name: docSnapshot.data().name || null,
+            emailAbbr: docSnapshot.data().masked_email || null,
+            status: docSnapshot.data().status || null,
+            unsubscribed: docSnapshot.data().unsubscribed || false,
+          };
+        } else {
+          if (!silent)
+            console.warn(
+              `No data available for ${secM.id} in MEMBERS (${secM.fields.email})`
+            );
+          return null;
+        }
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
+    })
+  );
+  return emails.filter((email) => email !== null) as MemberEmail[];
+}
+
+export async function getEmailById(userId: string): Promise<MemberEmail> {
+  const emails = await getEmails({ silent: true });
+  const email = emails.find((e) => e.id === userId);
+  return email;
 }
 
 function hasApprovedMembers(

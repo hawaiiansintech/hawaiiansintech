@@ -6,10 +6,12 @@ export enum LoadingSpinnerVariant {
 }
 
 interface LoadingSpinnerProps {
+  className?: string;
   variant?: LoadingSpinnerVariant;
 }
 
 export default function LoadingSpinner({
+  className,
   variant = LoadingSpinnerVariant.Default,
 }: LoadingSpinnerProps) {
   return (
@@ -26,7 +28,8 @@ export default function LoadingSpinner({
         border-t-white
       `,
         variant === LoadingSpinnerVariant.Invert &&
-          `border-brown-600/20 border-t-brown-600`
+          `border-brown-600/20 border-t-brown-600`,
+        className
       )}
     />
   );

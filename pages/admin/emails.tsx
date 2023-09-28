@@ -14,7 +14,7 @@ import MetaTags from "@/components/Metatags";
 import Plausible from "@/components/Plausible";
 import Tabs from "@/components/Tabs";
 import Tag, { TagVariant } from "@/components/Tag";
-import { DocumentData, getFirebaseTable } from "@/lib/api";
+import { DocumentData, getFirebaseTable, MemberEmail } from "@/lib/api";
 import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
 import { useUserSession } from "@/lib/hooks";
 import { CheckIcon, PlusIcon } from "@radix-ui/react-icons";
@@ -24,15 +24,6 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { FC, useEffect, useState } from "react";
 import { db, signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
-
-interface MemberEmail {
-  id: string;
-  name: string;
-  email: string;
-  emailAbbr: string;
-  status: StatusEnum;
-  unsubscribed: boolean;
-}
 
 export async function getStaticProps() {
   const secureMemberData: DocumentData[] = await getFirebaseTable(
