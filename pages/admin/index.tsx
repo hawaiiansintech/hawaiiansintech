@@ -25,21 +25,6 @@ interface User {
   emailIsVerified: boolean;
 }
 
-export const checkUserIsAdmin = async (user_id: string) => {
-  try {
-    const response = await fetch("/api/is-admin", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ uid: user_id }),
-    });
-    const data = await response.json();
-    return data.isAdmin;
-  } catch (error) {
-    console.error("An error occurred:", error);
-    return false;
-  }
-};
-
 export async function getStaticProps() {
   const focusesData: DocumentData[] = await getFirebaseTable(
     FirebaseTablesEnum.FOCUSES
@@ -78,7 +63,7 @@ export default function AdminPage(props: {
   approvedMembers: MemberPublic[];
   pageTitle;
 }) {
-  const { userData, isLoggedIn, isAdmin } = useUserSession();
+  const { userData, isLoggedIn, isAdmin, isSessionChecked } = useUserSession();
   const router = useRouter();
 
   useEffect(() => {
@@ -95,6 +80,7 @@ export default function AdminPage(props: {
       <Admin.Nav
         handleLogOut={signOutWithGoogle}
         handleLogIn={signInWithGoogle}
+        isSessionChecked={isSessionChecked}
         isLoggedIn={isLoggedIn}
         isAdmin={isAdmin}
         name={userData?.name}

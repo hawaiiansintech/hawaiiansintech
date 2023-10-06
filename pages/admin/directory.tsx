@@ -114,7 +114,7 @@ export default function DirectoryPage(props: {
   emails: MemberEmail[];
   pageTitle;
 }) {
-  const { userData, isLoggedIn, isAdmin } = useUserSession();
+  const { userData, isLoggedIn, isAdmin, isSessionChecked } = useUserSession();
   const router = useRouter();
 
   useEffect(() => {
@@ -134,6 +134,7 @@ export default function DirectoryPage(props: {
           handleLogIn={signInWithGoogle}
           isAdmin={isAdmin}
           isLoggedIn={isLoggedIn}
+          isSessionChecked={isSessionChecked}
           name={userData?.name}
         />
         <Admin.Body>

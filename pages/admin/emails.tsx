@@ -79,7 +79,7 @@ export default function EmailsPage(props: {
   emails: MemberEmail[];
   pageTitle;
 }) {
-  const { userData, isLoggedIn, isAdmin } = useUserSession();
+  const { userData, isLoggedIn, isAdmin, isSessionChecked } = useUserSession();
   const router = useRouter();
 
   useEffect(() => {
@@ -100,6 +100,7 @@ export default function EmailsPage(props: {
           isAdmin={isAdmin}
           isLoggedIn={isLoggedIn}
           name={userData?.name}
+          isSessionChecked={isSessionChecked}
         />
         <Admin.Body>
           {userData === null && (

@@ -42,7 +42,6 @@ function AdminNav({
         <Link href={isLoggedIn ? "/admin" : "/"} className="mb-2 inline-flex">
           <Logo size={LogoSize.Small} />
         </Link>
-
         {isLoggedIn &&
           isAdmin &&
           [
@@ -64,7 +63,6 @@ function AdminNav({
               key={`admin-nav-link-${link.url}-${i}`}
             />
           ))}
-
         <section className="flex items-center gap-2">
           {isLoggedIn && name && (
             <h1 className="text-sm leading-none">{name}</h1>
