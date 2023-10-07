@@ -4,6 +4,7 @@ import BasicInformationForm from "@/components/intake-form/BasicInformation";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
+import Plausible from "@/components/Plausible";
 import { MemberPublicEditing } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
 import { FORM_LINKS } from "@/lib/utils";
@@ -46,7 +47,7 @@ export default function JoinStep1({ pageTitle }) {
       modified.location = values.location;
     if (values.website !== data.link) modified.link = values.website;
 
-    if (modified !== {}) {
+    if (Object.keys(modified).length !== 0) {
       setItem("editedData", JSON.stringify(modified));
     }
 
@@ -60,6 +61,7 @@ export default function JoinStep1({ pageTitle }) {
   return (
     <>
       <Head>
+        <Plausible />
         <MetaTags title={pageTitle} />
         <title>{pageTitle}</title>
       </Head>

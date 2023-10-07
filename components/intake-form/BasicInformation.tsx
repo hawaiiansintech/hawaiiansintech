@@ -1,6 +1,5 @@
 import { Formik } from "formik";
 import React, { useState } from "react";
-import theme from "styles/theme";
 import urlRegex from "url-regex";
 import * as Yup from "yup";
 import Button from "../Button";
@@ -25,22 +24,12 @@ export default function BasicInformationForm({
     if (!onReset) return <></>;
     if (initial.name || initial.location || initial.website)
       return (
-        // TODO remove this hardcoded css
-        <div
-          style={{
-            border: `0.125rem solid ${theme.color.border.base}`,
-            borderRadius: theme.borderRadius.sm,
-            fontSize: "0.875rem",
-            padding: "0.5rem",
-            marginBottom: "2rem",
-            display: "flex",
-            justifyContent: "center",
-            gap: "0.5rem",
-            color: theme.color.text.alt2,
-          }}
-        >
-          It looks like you might've gotten started already. Continue below or{" "}
-          <div>
+        <div className="mb-4 flex items-center rounded-lg border-2 border-tan-400 bg-tan-300 py-2 pl-3 pr-2 text-xs text-tan-800">
+          <h4 className="grow-1 w-full">
+            <strong className="font-semibold">Start over?</strong> It looks like
+            you might've gotten started already.
+          </h4>
+          <div className="shrink-0">
             <UndoButton onClick={onReset}>Clear all fields</UndoButton>
           </div>
         </div>
@@ -49,15 +38,8 @@ export default function BasicInformationForm({
 
   return (
     <>
-      <section
-        style={{
-          margin: "2rem auto 0",
-          padding: "0 2rem",
-          maxWidth: theme.layout.width.interior,
-        }}
-      >
+      <section className="mx-auto mt-8 max-w-3xl px-8">
         {renderButton()}
-
         <Formik
           enableReinitialize
           initialValues={{
@@ -90,31 +72,27 @@ export default function BasicInformationForm({
           })}
         >
           {(props) => (
-            <form onSubmit={props.handleSubmit}>
-              <div style={{ marginBottom: "2rem" }}>
-                <Input
-                  name="name"
-                  label="What’s your name?"
-                  value={props.values.name}
-                  labelTranslation="ʻO wai kou inoa?"
-                  placeholder="Full name"
-                  onBlur={props.handleBlur}
-                  onChange={props.handleChange}
-                  error={props.touched.name && props.errors.name}
-                />
-              </div>
-              <div style={{ marginBottom: "2rem" }}>
-                <Input
-                  name="location"
-                  value={props.values.location}
-                  label="Where you stay now days?"
-                  labelTranslation="Ma hea ʻoe e noho ʻana?"
-                  placeholder="Island/City, State"
-                  onBlur={props.handleBlur}
-                  onChange={props.handleChange}
-                  error={props.touched.location && props.errors.location}
-                />
-              </div>
+            <form className="space-y-6" onSubmit={props.handleSubmit}>
+              <Input
+                name="name"
+                label="What’s your name?"
+                value={props.values.name}
+                labelTranslation="ʻO wai kou inoa?"
+                placeholder="Full name"
+                onBlur={props.handleBlur}
+                onChange={props.handleChange}
+                error={props.touched.name && props.errors.name}
+              />
+              <Input
+                name="location"
+                value={props.values.location}
+                label="Where you stay now days?"
+                labelTranslation="Ma hea ʻoe e noho ʻana?"
+                placeholder="Island/City, State"
+                onBlur={props.handleBlur}
+                onChange={props.handleChange}
+                error={props.touched.location && props.errors.location}
+              />
               <Input
                 name="website"
                 value={props.values.website}
@@ -125,11 +103,11 @@ export default function BasicInformationForm({
                 error={props.touched.website && props.errors.website}
               />
 
-              <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
+              <section className="mx-auto w-full max-w-md px-4">
                 <Button fullWidth loading={loading} type="submit">
                   Continue
                 </Button>
-              </div>
+              </section>
             </form>
           )}
         </Formik>

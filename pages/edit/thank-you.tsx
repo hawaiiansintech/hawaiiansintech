@@ -1,6 +1,7 @@
 import Accordion, { AccordionProps } from "@/components/Accordion";
 import HitLogo from "@/components/HitLogo";
 import MetaTags from "@/components/Metatags";
+import Plausible from "@/components/Plausible";
 import Tag from "@/components/Tag";
 import { Subtitle } from "@/components/Title";
 import { CONTACT_METHODS } from "@/lib/contact-methods";
@@ -25,13 +26,14 @@ export default function ThankYou({ pageTitle }) {
   return (
     <>
       <Head>
+        <Plausible />
         <MetaTags title={pageTitle} />
         <title>{pageTitle}</title>
       </Head>
       <div className="thank-you">
         <header>
           <Link href="/" passHref>
-            <a>Back to home</a>
+            Back to home
           </Link>
           <HitLogo />
         </header>
@@ -78,7 +80,7 @@ export default function ThankYou({ pageTitle }) {
 
             {id ? (
               <h6>
-                <strong>Request ID</strong>: <code>{id}</code>
+                <strong>Member ID</strong>: <code>{id}</code>
               </h6>
             ) : null}
           </div>

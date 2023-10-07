@@ -7,6 +7,7 @@ import ProgressBar from "@/components/form/ProgressBar";
 import { Heading, Subheading } from "@/components/Heading";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
+import Plausible from "@/components/Plausible";
 import Tag from "@/components/Tag";
 import { MemberPublic, MemberPublicEditing } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
@@ -46,11 +47,9 @@ export default function JoinStep4({ pageTitle }) {
           userData,
           editedData,
           message: other,
-          email: userData.emailAbbr
-            ? `${userData.emailAbbr[0]}...${userData.emailAbbr[1]}${userData.emailAbbr[2]}`
-            : undefined,
+          email: userData.emailAbbr ? userData.emailAbbr : undefined,
           name: editedData.name || userData.name,
-          airtableID: userData.id || "",
+          firebaseId: userData.id || "",
           removeRequest: removeRequest,
         }),
       }).then(
@@ -115,6 +114,7 @@ export default function JoinStep4({ pageTitle }) {
   return (
     <>
       <Head>
+        <Plausible />
         <MetaTags title={pageTitle} />
         <title>{pageTitle}</title>
       </Head>
@@ -129,8 +129,7 @@ export default function JoinStep4({ pageTitle }) {
           {removeRequest
             ? "No hard feelings. We'll reach out to you at "
             : "Once you submit, expect one of us to review and confirm these changes with you at "}
-          <strong>{`${userData.emailAbbr[0]}...${userData.emailAbbr[1]}${userData.emailAbbr[2]}`}</strong>
-          . Mahalo for your patience!
+          <strong>{userData.emailAbbr}</strong>. Mahalo for your patience!
         </Subheading>
       ) : (
         <div className="email-alert">
@@ -203,7 +202,7 @@ export default function JoinStep4({ pageTitle }) {
                 onChange={(e) => setOther(e.target.value)}
                 error={props.touched.other && props.errors.other}
               />
-              <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
+              <div className="mx-auto w-full max-w-md px-4">
                 <Button fullWidth loading={loading} type="submit">
                   Submit
                 </Button>

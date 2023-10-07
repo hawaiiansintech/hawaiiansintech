@@ -3,6 +3,7 @@ import { Heading, Subheading } from "@/components/Heading";
 import BasicInformationForm from "@/components/intake-form/BasicInformation";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
+import Plausible from "@/components/Plausible";
 import { useStorage } from "@/lib/hooks";
 import { clearAllStoredFields } from "@/lib/utils";
 import Head from "next/head";
@@ -67,6 +68,7 @@ export default function JoinStep1({ pageTitle }) {
   return (
     <>
       <Head>
+        <Plausible />
         <MetaTags title={pageTitle} />
         <title>{pageTitle}</title>
       </Head>
@@ -75,8 +77,14 @@ export default function JoinStep1({ pageTitle }) {
       <Heading>Welcome to our little hui.</Heading>
       <Subheading centered>
         To join the directory, we just ask that you are{" "}
-        <strong>Native Hawaiian</strong> and work in the{" "}
-        <strong>field / industry of technology</strong>.
+        <strong className="font-semibold text-stone-700">
+          Native Hawaiian
+        </strong>{" "}
+        and work in the{" "}
+        <strong className="font-semibold text-stone-700">
+          field / industry of technology
+        </strong>
+        .
       </Subheading>
       <BasicInformationForm
         initial={{ name: name, location: location, website: website }}

@@ -3,14 +3,38 @@ import {
   RequestUpdateEmailProps,
   sendRequestUpdateEmail,
 } from "@/lib/email/request-update-email";
-import airtable from "airtable";
+import { FirebaseTablesEnum } from "@/lib/enums";
+import { initializeAdmin } from "@/lib/firebase-admin";
+import * as admin from "firebase-admin";
 
-airtable.configure({
-  endpointUrl: "https://api.airtable.com",
-  apiKey: process.env.AIRTABLE_KEY,
-});
+const addRequest = async (
+  uid: string,
+  requestData: string
+): Promise<FirebaseFirestore.WriteResult> => {
+  await initializeAdmin();
+  const docRef = admin
+    .firestore()
+    .collection(FirebaseTablesEnum.MEMBERS)
+    .doc(uid);
+  const doc = await docRef.get();
+  const currentRequestData = doc.get("request") || "";
 
-const addToAirtable = async ({
+  let updatedRequestData;
+  if (currentRequestData === "") {
+    updatedRequestData = requestData;
+  } else {
+    // Append to existing request data for now, users should be able to edit on their own later
+    updatedRequestData = currentRequestData + "\n---\n" + requestData;
+  }
+
+  const writeResult = await docRef.update({
+    request: updatedRequestData,
+    last_modified: admin.firestore.FieldValue.serverTimestamp(),
+  });
+  return writeResult;
+};
+
+const addRequestToFirebase = async ({
   editedData,
   userData,
   message,
@@ -79,26 +103,27 @@ const addToAirtable = async ({
 ${getSummary()}`,
   };
 
-  return new Promise((resolve, reject) => {
-    airtable
-      .base(process.env.AIRTABLE_BASE)("Requests")
-      .create(requestData, (err, record) => {
-        if (err) reject(err);
-        resolve(record?.getId());
-      });
+  return new Promise(async (resolve, reject) => {
+    try {
+      await addRequest(userData.id, requestData.Summary);
+      resolve(userData.id);
+    } catch (error) {
+      console.error("Error adding member:", error);
+      reject(error);
+    }
   });
 };
 
 const sendSgEmail = async ({
   email,
-  airtableID,
+  firebaseId,
   name,
   removeRequest,
 }: RequestUpdateEmailProps) => {
   return new Promise((resolve, reject) => {
     sendRequestUpdateEmail({
       email: email,
-      airtableID: airtableID,
+      firebaseId: firebaseId,
       name: name,
       removeRequest: removeRequest,
     })
@@ -116,9 +141,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Only POST requests allowed" });
   }
   try {
-    const requestID = await addToAirtable({ ...req.body })
+    const firebaseId = await addRequestToFirebase({ ...req.body })
       .then((body) => {
-        console.log("✅ added request to airtable");
+        console.log("✅ added request to firebase");
         return body;
       })
       .catch(() => {
@@ -130,14 +155,14 @@ export default async function handler(req, res) {
     await sendSgEmail({
       email: req.body.email,
       name: req.body.name,
-      airtableID: requestID,
+      firebaseId: firebaseId,
       removeRequest: req.body.removeRequest,
     }).then(() => {
       console.log("✅ sent member email via sendgrid");
     });
     return res
       .status(200)
-      .json({ message: "Successfully sent request.", id: requestID });
+      .json({ message: "Successfully sent request.", id: firebaseId });
   } catch (error) {
     return res.status(error.statusCode || 500).json({
       error: "Gonfunnit, looks like something went wrong!",

@@ -31,6 +31,7 @@ export default css.global`
     --border-radius-small: ${theme.borderRadius.sm};
     --border-radius-medium: ${theme.borderRadius.md};
     --border-radius-large: ${theme.borderRadius.lg};
+    --border-radius-rounded: ${theme.borderRadius.rounded};
 
     --width-page-interior: ${theme.layout.width.interior};
     --width-resp-small: ${theme.layout.breakPoints.small};
@@ -46,15 +47,6 @@ export default css.global`
   *:before,
   *:after {
     box-sizing: inherit;
-  }
-
-  body {
-    font-family: ${theme.fontFamily.base};
-    background: ${theme.color.background.base};
-    color: ${theme.color.text.base};
-    font-weight: 500;
-    margin: 0;
-    padding: 0;
   }
 
   .container {

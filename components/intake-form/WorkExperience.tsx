@@ -1,13 +1,12 @@
 import Button from "@/components/Button";
-import CheckBox from "@/components/form/CheckBox";
 import ErrorMessage, {
   ErrorMessageProps,
 } from "@/components/form/ErrorMessage";
 import Input from "@/components/form/Input";
-import InputBox from "@/components/form/InputBox";
 import Label from "@/components/form/Label";
 import RadioBox from "@/components/form/RadioBox";
-import { Focus } from "@/lib/api";
+import { Filter } from "@/lib/api";
+import { YearsOfExperienceEnum } from "@/lib/enums";
 import { useWindowWidth } from "@/lib/hooks";
 import { MAX_FOCUS_COUNT } from "@/lib/utils";
 import { scrollToTop } from "helpers";
@@ -19,7 +18,7 @@ import Selectable, {
 } from "../form/Selectable";
 
 export interface WorkExperienceInitialProps {
-  focuses?: Focus[];
+  focuses?: Filter[];
   deferTitle?: "true" | undefined;
   focusesSelected?: string[];
   focusSuggested?: string;
@@ -126,15 +125,9 @@ export default function WorkExperience({
 
   return (
     <>
-      <section
-        style={{
-          margin: "0 auto 1rem",
-          padding: "0 2rem",
-          maxWidth: theme.layout.width.interior,
-        }}
-      >
+      <section className="mx-auto mb-4 mt-0 max-w-3xl space-y-6 px-8">
         {error && <ErrorMessage headline={error.headline} body={error.body} />}
-        <div style={{ margin: "2rem 0 1rem" }}>
+        <section className="space-y-4">
           <Label
             label="Which of the following best describes your field of work?"
             labelTranslation="He aha kou (mau) hana ʻoi a pau?"
@@ -144,8 +137,6 @@ export default function WorkExperience({
                 : undefined
             }
           />
-        </div>
-        <div style={{ marginTop: "1rem" }}>
           <SelectableGrid columns={columnCount}>
             {initial.focuses.map((focus, i: number) => {
               const isDisabled =
@@ -174,6 +165,7 @@ export default function WorkExperience({
               {showSuggestButton ? (
                 <Selectable
                   centered
+                  variant={SelectableVariant.Blank}
                   headline={
                     focusSuggested
                       ? `${focusSuggested}`
@@ -183,7 +175,6 @@ export default function WorkExperience({
                   selected={!!focusSuggested}
                   disabled={isMaxSelected && !!!focusSuggested}
                   fullWidth
-                  variant={SelectableVariant.Alt}
                   onClear={
                     focusSuggested
                       ? () =>
@@ -194,23 +185,36 @@ export default function WorkExperience({
                   }
                 />
               ) : (
-                <InputBox
-                  fullWidth
-                  border
-                  focusedOnInit
+                <Input
+                  autoFocus
+                  name="add-field"
+                  centered
+                  fullHeight
                   onChange={(e) => {
                     setFocusSuggested(e.target.value);
                   }}
                   onBlur={() => setShowSuggestButton(true)}
-                  onEnter={() => setShowSuggestButton(true)}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") setShowSuggestButton(true);
+                  }}
                   value={focusSuggested}
                   disabled={isMaxSelected && !!!focusSuggested}
                 />
               )}
             </div>
           </SelectableGrid>
-        </div>
-        <div style={{ margin: "2rem 0" }}>
+
+          {!showSuggestButton || focusSuggested ? (
+            <ErrorMessage
+              headline="Please suggest with care 🤙🏽"
+              body={`Suggesting a new label increases the time it takes to approve your entry, as we manually review all submissions. Please consider any existing labels that might fit 
+        your situation.`}
+              warning
+            />
+          ) : null}
+        </section>
+
+        <section className="space-y-4">
           <Label
             label="How many years of experience do you have in your field?"
             labelTranslation="Ehia ka makahiki o kou hana ʻana ma kou ʻoi hana?"
@@ -218,22 +222,9 @@ export default function WorkExperience({
               showNew && initial.yearsExperience === "" ? "NEW" : undefined
             }
           />
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              margin: "1rem auto 2rem",
-            }}
-          >
-            {[
-              "Less than a year",
-              "1 – 2 years",
-              "3 – 4 years",
-              "5 – 9 years",
-              "10 – 19 years",
-              "More than 20 years",
-            ].map((dur) => (
-              <div style={{ margin: "0 0.5rem 0.5rem 0" }} key={`dur-${dur}`}>
+          <div className="mx-auto mb-8 flex flex-wrap">
+            {Object.values(YearsOfExperienceEnum).map((dur) => (
+              <div className="mb-2 mr-2">
                 <RadioBox
                   seriesOf="years-experience"
                   checked={dur === yearsExperience}
@@ -243,9 +234,9 @@ export default function WorkExperience({
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
-        <div style={{ margin: "2rem 0" }}>
+        <section className="space-y-4">
           <Input
             name="title"
             label="What’s your current title?"
@@ -256,18 +247,31 @@ export default function WorkExperience({
             onChange={(e) => setTitle(e.target.value)}
             labelTagged={showNew && initial.title === "" ? "NEW" : undefined}
           />
-          <div style={{ marginTop: "1rem", display: "inline-block" }}>
-            <CheckBox
-              checked={deferTitle === "true"}
-              label={"N/A, or Prefer not to answer"}
+
+          <label className="inline-block font-medium">
+            <input
+              type="checkbox"
               id="defer-title"
-              onClick={() =>
-                setDeferTitle(deferTitle === "true" ? undefined : "true")
-              }
+              name="defer-title"
+              checked={deferTitle === "true"}
+              onChange={() => {
+                setDeferTitle(deferTitle === "true" ? undefined : "true");
+              }}
+              className={`
+                accent-ring
+                focus:ring-6
+                mr-2
+                h-5
+                w-5
+                rounded
+                accent-brown-600
+                focus:ring-opacity-50
+              `}
             />
-          </div>
-        </div>
-        <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
+            N/A, or Prefer not to answer
+          </label>
+        </section>
+        <section className="mx-auto w-full max-w-md px-4">
           <Button
             fullWidth
             onClick={handleSubmit}
@@ -276,7 +280,7 @@ export default function WorkExperience({
           >
             Continue
           </Button>
-        </div>
+        </section>
       </section>
     </>
   );

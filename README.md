@@ -1,6 +1,6 @@
 # Hawaiians in Tech
 
-The website is built using [Airtable](https://airtable.com/), [Next.js](https://nextjs.org/) and deployed at [Vercel](https://vercel.com/).
+The website is built using [Firebase](https://console.firebase.google.com/), [Next.js](https://nextjs.org/) and deployed at [Vercel](https://vercel.com/).
 
 ## Development
 
@@ -24,9 +24,9 @@ yarn dev
 
 In your browser, open `localhost:3000`.
 
-## Airtable Access
+## Firebase Access
 
-If you are looking to access the Airtable data, please reach out to our Hawaiians In Tech website development team on our [Discord](https://discord.gg/p7338Z5MJQ).
+If you are looking to access the Firebase data, please reach out to our Hawaiians In Tech website development team on our [Discord](https://discord.gg/p7338Z5MJQ).
 
 You can also load mock data in `index.tsx` by updating the import statement to `"@/lib/stubApi"`
 

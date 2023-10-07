@@ -1,8 +1,6 @@
 import HitLogo from "@/components/HitLogo";
 import { Icon, IconAsset, IconColor } from "@/components/icon/icon";
 import Link from "next/link";
-import { cssHelperButtonReset } from "styles/global";
-import theme from "styles/theme";
 
 interface NavProps {
   backUrl?: string;
@@ -10,207 +8,73 @@ interface NavProps {
   primaryNav?: {
     show?: boolean;
   };
-  toggle?: {
-    byline?: string;
-    headline?: string;
-    onClick?: (any) => void;
-    show?: boolean;
-  };
 }
 
-export default function Nav({
-  backUrl,
-  children,
-  primaryNav,
-  toggle,
-}: NavProps) {
+export default function Nav({ backUrl, children, primaryNav }: NavProps) {
+  let logo = <HitLogo inline />;
+  if (backUrl) {
+    logo = (
+      <a
+        href={"/"}
+        className="transition-transform hover:scale-105 active:scale-95"
+      >
+        {logo}
+      </a>
+    );
+  }
   return (
-    <header className="nav">
-      <nav className="nav__menu">
-        <div style={{ display: "flex", alignItems: "center" }}>
-          {backUrl ? (
-            <Link href={backUrl} shallow={true}>
-              <a className="back-link">
-                <Icon asset={IconAsset.CaretLeft} color={IconColor.Inherit} />
-              </a>
-            </Link>
-          ) : null}
-          {primaryNav?.show ? (
-            <div className="nav__links">
-              <Link href="/about">
-                <a className="nav-link">About</a>
-              </Link>
-              <Link href="/join/01-you">
-                <a className="primary-link">Join the list</a>
-              </Link>
-              <Link href="/edit">
-                <a className="nav-link">Request Changes</a>
-              </Link>
-              <Link href="/hackathon">
-                <a className="hackathon-link">Hackathon</a>
-              </Link>
+    <header className="flex w-full items-center justify-between gap-4 p-4 sm:pl-8">
+      <nav className="flex items-center">
+        {backUrl ? (
+          <Link href={backUrl} shallow={true}>
+            <div className="transition-transform hover:scale-105 active:scale-95">
+              <Icon asset={IconAsset.CaretLeft} color={IconColor.Inherit} />
             </div>
-          ) : null}
-          {toggle?.show && (
-            <NavToggle
-              byline={toggle?.byline || "On the List?"}
-              headline={toggle?.headline || "Request Changes"}
-              toggleEdit={toggle?.onClick}
-            />
-          )}
-        </div>
+          </Link>
+        ) : null}
+        {primaryNav?.show ? (
+          <div className="flex flex-wrap items-center gap-x-4 sm:gap-x-8">
+            <Link
+              className="text-base font-medium text-stone-700"
+              href="/about"
+            >
+              About
+            </Link>
+            <Link
+              className={`
+                  rounded-lg
+                  border-4
+                  border-tan-300
+                  bg-tan-300
+                  px-2
+                  py-0.5
+                  text-base
+                  font-medium
+                  text-stone-700
+                  transition-all
+                  hover:scale-105
+                  hover:border-brown-700/80
+                  hover:bg-brown-600
+                  hover:text-white
+                  active:scale-95
+                  sm:px-4
+                  sm:py-2
+                `}
+              href="/join/01-you"
+            >
+              Join the list
+            </Link>
+            <Link className="text-base font-medium text-stone-700" href="/edit">
+              Request Changes
+            </Link>
+            <Link href="/hackathon" className="font-script text-2xl">
+              Hackathon
+            </Link>
+          </div>
+        ) : null}
       </nav>
-      {children ? <div className="nav__main">{children}</div> : null}
-      <div className="nav__logo">
-        <HitLogo inline />
-      </div>
-      <style jsx>{`
-        .nav {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          width: 100%;
-          padding: 1rem;
-          column-gap: 0.5rem;
-        }
-        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-          .nav {
-            padding-left: 2rem;
-          }
-        }
-        .nav__links {
-          display: flex;
-          align-items: center;
-          flex-wrap: wrap;
-          gap: 0.25rem 2rem;
-          padding: 0 0.5rem;
-        }
-        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-          .nav__links {
-            gap: 0 2rem;
-          }
-        }
-        .nav-link {
-          padding: 0.25rem;
-          color: ${theme.color.text.base};
-        }
-        .nav-link:hover {
-          color: ${theme.color.brand.base};
-        }
-        .nav-link span {
-          color: ${theme.color.brand.base};
-          opacity: 0.5;
-          padding: 0 0.125rem;
-        }
-        .primary-link {
-          background: ${theme.color.background.alt};
-          color: ${theme.color.text.base};
-          padding: 0.5rem 0.75rem;
-          border-radius: ${theme.borderRadius.xs};
-          border: 0.25rem solid transparent;
-          transition: all 70ms ease-out;
-        }
-        .primary-link:hover,
-        .primary-link:active {
-          transform: scale(1.05);
-          color: ${theme.color.text.overlay.base};
-          background: ${theme.color.brand.base};
-          border-color: ${theme.color.brand.alt};
-        }
-        .primary-link:active {
-          transform: scale(1);
-        }
-        .hackathon-link {
-          font-family: ${theme.fontFamily.hackathon};
-          font-size: 1.5rem;
-        }
-        .back-link {
-          display: block;
-          border-radius: ${theme.borderRadius.sm};
-          color: ${theme.color.text.alt};
-          padding: 0.25rem;
-          margin-right: 2rem;
-          transition: all 70ms ease-out;
-        }
-        .back-link:hover,
-        .back-link:focus {
-          color: ${theme.color.brand.base};
-          transform: scale(1.25);
-        }
-        .back-link:active {
-          transform: scale(1);
-          color: ${theme.color.brand.alt};
-        }
-        button {
-          ${cssHelperButtonReset}
-          background: ${theme.color.background.base};
-          border-radius: ${theme.borderRadius.lg};
-        }
-        span {
-          flex-shrink: 0;
-        }
-      `}</style>
+      {children ? <div>{children}</div> : null}
+      {logo}
     </header>
-  );
-}
-
-interface NavToggleProps {
-  headline: string;
-  byline: string;
-  toggleEdit?: (any) => void;
-}
-
-export function NavToggle({ byline, headline, toggleEdit }: NavToggleProps) {
-  return (
-    <button onClick={toggleEdit}>
-      <h4>{byline}</h4>
-      <h3>{headline}</h3>
-      <style jsx>{`
-        button {
-          ${cssHelperButtonReset}
-          display: block;
-          text-align: initial;
-          background: ${theme.color.background.alt};
-          padding: 0.5rem 1rem;
-          border-radius: ${theme.borderRadius.sm};
-          border: transparent 0.25rem solid;
-          transition: all 70ms ease-out;
-        }
-        button:hover,
-        button:active {
-          transform: scale(1.05);
-          color: ${theme.color.text.overlay};
-          background: ${theme.color.brand.base};
-          border-color: ${theme.color.brand.alt};
-        }
-        button:active {
-          transform: scale(1);
-        }
-        h3,
-        h4 {
-          margin: 0;
-          white-space: nowrap;
-          transition: color 70ms ease-out;
-        }
-        h3 {
-          font-size: 1rem;
-          color: ${theme.color.text.alt};
-        }
-        h4 {
-          font-weight: 500;
-          font-size: 0.875rem;
-          color: ${theme.color.text.alt3};
-        }
-
-        button:hover h3,
-        button:active h3 {
-          color: ${theme.color.text.overlay.base};
-        }
-        button:hover h4,
-        button:active h4 {
-          color: ${theme.color.text.overlay.alt};
-        }
-      `}</style>
-    </button>
   );
 }

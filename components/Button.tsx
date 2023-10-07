@@ -1,5 +1,4 @@
-import theme from "styles/theme";
-import { cssHelperButtonReset } from "../styles/global";
+import { cn } from "helpers";
 import LoadingSpinner from "./LoadingSpinner";
 
 export enum ButtonVariant {
@@ -16,9 +15,6 @@ interface ButtonProps {
   children?: React.ReactNode;
   disabled?: boolean;
   fullWidth?: boolean;
-  customWidth?: string;
-  customWidthSmall?: string;
-  customFontSize?: string;
   loading?: boolean;
   onClick?: (e: React.MouseEvent) => any;
   size?: ButtonSize;
@@ -30,9 +26,6 @@ export default function Button({
   children,
   disabled,
   fullWidth,
-  customWidth,
-  customWidthSmall,
-  customFontSize,
   loading,
   onClick,
   size = ButtonSize.Default,
@@ -47,101 +40,53 @@ export default function Button({
     if (onClick) onClick(e);
   };
   return (
-    <button type={type} className="button" onClick={handleOnClick}>
+    <button
+      type={type}
+      className={cn(
+        `relative
+        rounded-lg
+        border-8
+        border-transparent
+        bg-brown-600
+        px-4
+        py-2
+        text-xl
+        font-semibold
+        tracking-wide
+        text-white
+        transition-all
+        hover:border-brown-700/40
+        focus:ring-8
+        focus:ring-brown-500/30
+        active:border-transparent
+        `,
+        disabled &&
+          "cursor-not-allowed bg-tan-300 text-stone-700 opacity-50 ring-0 hover:border-transparent",
+        fullWidth && "w-full",
+        loading &&
+          "cursor-progress border-transparent bg-brown-600/25 text-transparent hover:border-transparent",
+        variant === ButtonVariant.Secondary &&
+          "bg-tan-300 text-stone-700 hover:border-tan-500/20 hover:text-stone-900 focus:ring-tan-400/20",
+        size === ButtonSize.Small &&
+          "rounded-md px-4 py-2 text-base tracking-normal"
+      )}
+      onClick={handleOnClick}
+      disabled={disabled || loading}
+    >
       {children}
       {loading && (
-        <div className="button__loading-spinner">
+        <div
+          className={`
+            absolute
+            left-1/2
+            top-1/2
+            -translate-x-1/2
+            -translate-y-1/2
+          `}
+        >
           <LoadingSpinner />
         </div>
       )}
-      <style jsx>{`
-        .button {
-          ${cssHelperButtonReset}
-          position: relative;
-          padding: ${size === ButtonSize.Default ? "1.2rem" : "0.4rem 0.8rem"};
-          width: ${fullWidth ? "100%" : customWidth ? customWidth : "initial"};
-          color: ${disabled
-            ? theme.color.text.alt2
-            : loading
-            ? "transparent"
-            : theme.color.text.overlay.base};
-          border: 0.25rem solid transparent;
-          color: ${variant === ButtonVariant.Secondary
-            ? theme.color.text.base
-            : disabled
-            ? theme.color.text.alt2
-            : loading
-            ? "transparent"
-            : theme.color.text.overlay.base};
-          border-radius: ${size === ButtonSize.Default
-            ? theme.borderRadius.md
-            : theme.borderRadius.sm};
-          font-size: ${size === ButtonSize.Default
-            ? "1rem"
-            : customFontSize
-            ? customFontSize
-            : "0.875rem"};
-          font-weight: 600;
-          background: ${variant === ButtonVariant.Secondary
-            ? theme.color.background.alt
-            : disabled
-            ? theme.color.background.disabled
-            : loading
-            ? theme.color.brand.alpha
-            : theme.color.brand.base};
-          color: ${variant === ButtonVariant.Secondary
-            ? theme.color.text.base
-            : disabled
-            ? theme.color.text.alt2
-            : loading
-            ? "transparent"
-            : theme.color.text.overlay.base};
-          cursor: ${disabled || loading ? "not-allowed" : "pointer"};
-        }
-        .button:hover {
-          border-color: ${variant === ButtonVariant.Secondary
-            ? theme.color.border.alt
-            : disabled || loading
-            ? "transparent"
-            : theme.color.brand.alt};
-          color: ${variant === ButtonVariant.Secondary
-            ? theme.color.text.base
-            : disabled
-            ? theme.color.text.alt2
-            : loading
-            ? "transparent"
-            : theme.color.text.overlay.base};
-        }
-        .button:focus {
-          border-color: ${variant === ButtonVariant.Secondary
-            ? theme.color.border.alt2
-            : loading || disabled
-            ? "transparent"
-            : theme.color.brand.alt};
-          box-shadow: ${variant === ButtonVariant.Secondary ||
-          disabled ||
-          loading
-            ? "none"
-            : theme.elevation.two.brand};
-        }
-        .button:focus:not(:focus-visible) {
-          outline: none;
-        }
-        .button:focus:not(:-moz-focusring) {
-          outline: none;
-        }
-        .button__loading-spinner {
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          transform: translate(-50%, -50%);
-        }
-        @media screen and (max-width: ${theme.layout.breakPoints.small}) {
-          .button {
-            width: ${customWidthSmall ? customWidthSmall : null};
-          }
-        }
-      `}</style>
     </button>
   );
 }
