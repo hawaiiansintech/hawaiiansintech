@@ -498,6 +498,15 @@ const MemberEdit: FC<{
   const [email, setEmail] = useState<MemberEmail>(null);
   const [loadingEmail, setLoadingEmail] = useState<boolean>(null);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [name, setName] = useState<string>(member.name);
+  const [title, setTitle] = useState<string>(member.title);
+  const [link, setLink] = useState<string>(member.link);
+  const [location, setLocation] = useState<string>(member.location);
+  const [region, setRegion] = useState<string>(member.region);
+  const [companySize, setCompanySize] = useState<string>(member.companySize);
+  const [yearsOfExperience, setYearsOfExperience] = useState<string>(
+    member.yearsExperience
+  );
   // TODO: CHECK IF ADMIN
   const IS_ADMIN = true;
 
@@ -519,6 +528,17 @@ const MemberEdit: FC<{
       return;
     }
     console.log(value);
+  };
+
+  const saveChanges = () => {
+    console.log("saving changes");
+    console.log("name: ", name);
+    console.log("title: ", title);
+    console.log("link: ", link);
+    console.log("location: ", location);
+    console.log("region: ", region);
+    console.log("companySize: ", companySize);
+    console.log("yearsOfExperience: ", yearsOfExperience);
   };
 
   const mapTabsTriggerToVariant = (
@@ -593,25 +613,60 @@ const MemberEdit: FC<{
             </TabsList>
           </Tabs>
           <div className="col-span-2 flex flex-col items-start gap-1">
-            <h2 className="text-sm font-semibold">Name</h2>
-            <Input name={"usernamef"} value={member.name} />
+            <h2
+              className={`text-sm font-semibold ${
+                name !== member.name && "text-brown-600"
+              }`}
+            >
+              Name
+            </h2>
+            <Input
+              name={"usernamef"}
+              value={name}
+              className={name !== member.name && "text-brown-600"}
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+            />
           </div>
           <div className="col-span-2 flex flex-col items-start gap-1">
-            <h2 className="text-sm font-semibold">Title</h2>
-            <Input name={"title"} value={member.title} />
+            <h2
+              className={`text-sm font-semibold ${
+                title !== member.title && "text-brown-600"
+              }`}
+            >
+              Title
+            </h2>
+            <Input
+              name={"title"}
+              value={title}
+              className={title !== member.title && "text-brown-600"}
+              onChange={(e) => {
+                setTitle(e.target.value);
+              }}
+            />
           </div>
           <div className="col-span-2 flex flex-col items-start gap-1">
             <div className="flex w-full items-center">
-              <h2 className="grow text-sm font-semibold">Website</h2>
-              <Link
-                href={member.link}
-                target="_blank"
-                referrerPolicy="no-referrer"
+              <h2
+                className={`grow text-sm font-semibold ${
+                  link !== member.link && "text-brown-600"
+                }`}
               >
+                Website / Link
+              </h2>
+              <Link href={link} target="_blank" referrerPolicy="no-referrer">
                 <ExternalLink className="h-4 w-4 text-primary" />
               </Link>
             </div>
-            <Input name={"link"} value={member.link} />
+            <Input
+              name={"link"}
+              value={link}
+              className={link !== member.link && "text-brown-600"}
+              onChange={(e) => {
+                setLink(e.target.value);
+              }}
+            />
           </div>
           <div className="relative col-span-2 flex flex-col gap-1">
             <div className="flex items-center gap-2">
@@ -734,12 +789,31 @@ const MemberEdit: FC<{
           </div> */}
 
           <div className="flex flex-col items-start gap-1">
-            <h2 className="text-sm font-semibold">Location</h2>
-            <Input name={"location"} value={member.location} />
+            <h2
+              className={`text-sm font-semibold ${
+                location !== member.location && "text-brown-600"
+              }`}
+            >
+              Location
+            </h2>
+            <Input
+              name={"location"}
+              value={location}
+              className={location !== member.location && "text-brown-600"}
+              onChange={(e) => {
+                setLocation(e.target.value);
+              }}
+            />
           </div>
           <div className="flex flex-col items-start gap-1">
             <div className="flex w-full items-center">
-              <h2 className="grow text-sm font-semibold">Region</h2>
+              <h2
+                className={`grow text-sm font-semibold ${
+                  region !== member.region && "text-brown-600"
+                }`}
+              >
+                Region
+              </h2>
               <Popover>
                 <PopoverTrigger>
                   <h2 className="text-xs font-medium text-primary">Add</h2>
@@ -756,9 +830,13 @@ const MemberEdit: FC<{
             </div>
             <Select
               defaultValue={member.region}
-              onValueChange={handleRegionChange}
+              onValueChange={(e) => {
+                setRegion(e);
+              }}
             >
-              <SelectTrigger>
+              <SelectTrigger
+                className={region !== member.region && "text-brown-600"}
+              >
                 <SelectValue placeholder="Region" />
               </SelectTrigger>
               <SelectContent className="max-h-72">
@@ -771,12 +849,25 @@ const MemberEdit: FC<{
             </Select>
           </div>
           <div className="flex flex-col items-start gap-1">
-            <h2 className="text-sm font-semibold">Years of Experience</h2>
+            <h2
+              className={`text-sm font-semibold ${
+                yearsOfExperience !== member.yearsExperience && "text-brown-600"
+              }`}
+            >
+              Years of Experience
+            </h2>
             <Select
               defaultValue={member.yearsExperience}
-              onValueChange={handleRegionChange}
+              onValueChange={(e) => {
+                setYearsOfExperience(e);
+              }}
             >
-              <SelectTrigger>
+              <SelectTrigger
+                className={
+                  yearsOfExperience !== member.yearsExperience &&
+                  "text-brown-600"
+                }
+              >
                 <SelectValue placeholder="Company Size" />
               </SelectTrigger>
               <SelectContent className="max-h-72">
@@ -789,12 +880,24 @@ const MemberEdit: FC<{
             </Select>
           </div>
           <div className="flex flex-col items-start gap-1">
-            <h2 className="text-sm font-semibold">Company Size</h2>
+            <h2
+              className={`text-sm font-semibold ${
+                companySize !== member.companySize && "text-brown-600"
+              }`}
+            >
+              Company Size
+            </h2>
             <Select
               defaultValue={member.companySize}
-              onValueChange={handleRegionChange}
+              onValueChange={(e) => {
+                setCompanySize(e);
+              }}
             >
-              <SelectTrigger>
+              <SelectTrigger
+                className={
+                  companySize !== member.companySize && "text-brown-600"
+                }
+              >
                 <SelectValue placeholder="Company Size" />
               </SelectTrigger>
               <SelectContent className="max-h-72">
@@ -881,7 +984,7 @@ const MemberEdit: FC<{
               </Button>
             </div>
             <div className="flex grow justify-end">
-              <Button disabled onClick={onClose} size={ButtonSize.Small}>
+              <Button onClick={saveChanges} size={ButtonSize.Small}>
                 Save
               </Button>
             </div>
