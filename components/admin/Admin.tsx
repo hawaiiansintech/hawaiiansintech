@@ -61,22 +61,20 @@ function AdminNav({
               key={`admin-nav-link-${link.url}-${i}`}
             />
           ))}
-        {isLoggedIn && (
-          <section className="flex items-center gap-2">
-            {displayName && (
-              <h1 className="text-sm leading-none">{displayName}</h1>
-            )}
-            <Button
-              size={ButtonSize.XSmall}
-              variant={
-                isLoggedIn ? ButtonVariant.Secondary : ButtonVariant.Primary
-              }
-              onClick={isLoggedIn ? handleLogOut : handleLogIn}
-            >
-              {isLoggedIn ? "Log Out" : "Log in"}
-            </Button>
-          </section>
-        )}
+        <section className="flex items-center gap-2">
+          {displayName && (
+            <h1 className="text-sm leading-none">{displayName}</h1>
+          )}
+          <Button
+            size={ButtonSize.XSmall}
+            variant={
+              isLoggedIn ? ButtonVariant.Secondary : ButtonVariant.Primary
+            }
+            onClick={isLoggedIn ? handleLogOut : handleLogIn}
+          >
+            {isLoggedIn ? "Log Out" : "Log in"}
+          </Button>
+        </section>
       </div>
     </nav>
   );
