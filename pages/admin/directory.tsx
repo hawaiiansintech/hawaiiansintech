@@ -1,5 +1,4 @@
 import Admin from "@/components/admin/Admin";
-import Button, { ButtonSize, ButtonVariant } from "@/components/Button";
 import ErrorMessage, {
   ErrorMessageProps,
 } from "@/components/form/ErrorMessage";
@@ -10,6 +9,7 @@ import MetaTags from "@/components/Metatags";
 import Plausible from "@/components/Plausible";
 import Tag, { TagVariant } from "@/components/Tag";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
@@ -518,7 +518,7 @@ const MemberEdit: FC<{
           </p>
           <div className="flex flex-col gap-2">
             <Button
-              variant={ButtonVariant.Destructive}
+              variant="destructive"
               onClick={() => {
                 onDelete();
               }}
@@ -526,7 +526,7 @@ const MemberEdit: FC<{
               Remove Permanently
             </Button>
             <Button
-              variant={ButtonVariant.Secondary}
+              variant="secondary"
               onClick={() => {
                 setIsDeleting(false);
               }}
@@ -718,7 +718,8 @@ const MemberEdit: FC<{
                   className="flex flex-col gap-1"
                 >
                   <Input placeholder="Region" autoFocus />
-                  <Button size={ButtonSize.Small}>Add Region</Button>
+                  {/* HERE */}
+                  <Button size="sm">Add Region</Button>
                 </PopoverContent>
               </Popover>
             </div>
@@ -836,11 +837,12 @@ const MemberEdit: FC<{
           <div className="col-span-2 mt-2 flex flex-col gap-2 sm:flex-row">
             <div>
               <Button
-                variant={ButtonVariant.Secondary}
+                variant="secondary"
                 onClick={() => {
                   setIsDeleting(true);
                 }}
-                size={ButtonSize.Small}
+                size="sm"
+                disabled
               >
                 <span className="flex items-center gap-2">
                   <Trash className="h-4 w-4" />
@@ -849,7 +851,7 @@ const MemberEdit: FC<{
               </Button>
             </div>
             <div className="flex grow justify-end">
-              <Button disabled onClick={onClose} size={ButtonSize.Small}>
+              <Button disabled onClick={onClose} size="sm">
                 Save
               </Button>
             </div>
