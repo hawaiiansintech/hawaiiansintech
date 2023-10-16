@@ -11,9 +11,8 @@ import {
   getFiltersBasic,
   getFirebaseTable,
   getMembers,
-  MemberPublic,
 } from "@/lib/api";
-import { FirebaseTablesEnum } from "@/lib/enums";
+import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
 
@@ -27,11 +26,11 @@ export async function getStaticProps() {
   const regionsData: DocumentData[] = await getFirebaseTable(
     FirebaseTablesEnum.REGIONS
   );
-  const members: MemberPublic[] = await getMembers(
-    focusesData,
-    industriesData,
-    regionsData
-  );
+
+  const [members] = await getMembers(focusesData, industriesData, regionsData, [
+    StatusEnum.APPROVED,
+  ]);
+
   const focuses: Filter[] = await getFilters(
     FirebaseTablesEnum.FOCUSES,
     true,

@@ -161,8 +161,13 @@ export async function getMembers(
   focusesData?: DocumentData[],
   industriesData?: DocumentData[],
   regionsData?: DocumentData[],
-  filterByStatus: StatusEnum[] = [StatusEnum.APPROVED]
 ): Promise<MemberPublic[]> {
+  filterByStatus: StatusEnum[] = [
+    StatusEnum.APPROVED,
+    StatusEnum.PENDING,
+    StatusEnum.IN_PROGRESS,
+    StatusEnum.ARCHIVED,
+  ]
   const members = await getFirebaseData(
     FirebaseTablesEnum.MEMBERS,
     memberConverter

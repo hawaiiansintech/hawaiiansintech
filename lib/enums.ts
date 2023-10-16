@@ -40,3 +40,15 @@ export enum FirebaseTablesEnum {
 export enum FirebaseDefaultValuesEnum {
   LAST_MODIFIED_BY = "new_member_form",
 }
+
+export enum StorageEnum {
+  PREVIOUS_PAGE = "previousPage",
+  USER_NAME = "userName",
+  USER_ID = "uid",
+  USER_EMAIL = "email",
+  PROFILE_PICTURE = "profilePicture",
+  EMAIL_IS_VERIFIED = "emailIsVerified",
+  LOGIN_TYPE_NAME = "loginTypeName",
+  LOGIN_TYPE_IMAGE = "loginTypeImage",
+  LOGIN_ERROR_MESSAGE = "loginErrorMessage",
+}
