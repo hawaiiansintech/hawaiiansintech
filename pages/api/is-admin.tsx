@@ -1,16 +1,13 @@
-import { FirebaseTablesEnum } from "@/lib/enums";
 import { initializeAdmin } from "@/lib/firebase-admin";
 const admin = require("firebase-admin");
 
-const isAdmin = async (uid: string): Promise<boolean> => {
+export const isAdmin = async (token: string): Promise<boolean> => {
   await initializeAdmin();
-  const db = admin.firestore();
-  const docRef = db.collection(FirebaseTablesEnum.ADMINS).doc(uid);
-  const docSnapshot = await docRef.get();
-  return docSnapshot.exists;
+  const decodedToken = await admin.auth().verifyIdToken(token);
+  return decodedToken.admin;
 };
 
 export default async function handler(req, res) {
-  const result: boolean = await isAdmin(req.body.uid);
+  const result: boolean = await isAdmin(req.body);
   res.status(200).json({ isAdmin: result });
 }

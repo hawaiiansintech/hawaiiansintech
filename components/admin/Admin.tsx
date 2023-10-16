@@ -22,19 +22,17 @@ function AdminBody({
 type AdminNavProps = {
   handleLogOut: () => any;
   handleLogIn: () => any;
-  name?: string;
+  displayName?: string;
   isAdmin?: boolean;
   isLoggedIn?: boolean;
-  isSessionChecked?: boolean;
 };
 
 function AdminNav({
   handleLogOut,
   handleLogIn,
-  name,
+  displayName,
   isAdmin,
   isLoggedIn,
-  isSessionChecked,
 }: AdminNavProps) {
   return (
     <nav className="sticky top-0 h-[100vh] w-72 bg-tan-300 p-2">
@@ -63,11 +61,11 @@ function AdminNav({
               key={`admin-nav-link-${link.url}-${i}`}
             />
           ))}
-        <section className="flex items-center gap-2">
-          {isLoggedIn && name && (
-            <h1 className="text-sm leading-none">{name}</h1>
-          )}
-          {isSessionChecked && (
+        {isLoggedIn && (
+          <section className="flex items-center gap-2">
+            {displayName && (
+              <h1 className="text-sm leading-none">{displayName}</h1>
+            )}
             <Button
               size={ButtonSize.XSmall}
               variant={
@@ -77,8 +75,8 @@ function AdminNav({
             >
               {isLoggedIn ? "Log Out" : "Log in"}
             </Button>
-          )}
-        </section>
+          </section>
+        )}
       </div>
     </nav>
   );

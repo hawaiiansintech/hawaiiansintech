@@ -12,10 +12,11 @@ import {
   MemberPublic,
 } from "@/lib/api";
 import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
-import { useUserSession } from "@/lib/hooks";
+import { getAuth } from "firebase/auth";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
 
 interface User {
@@ -63,12 +64,39 @@ export default function AdminPage(props: {
   approvedMembers: MemberPublic[];
   pageTitle;
 }) {
-  const { userData, isLoggedIn, isAdmin, isSessionChecked } = useUserSession();
+  const auth = getAuth();
+  const [user, loading, error] = useAuthState(auth);
+  const [isAdmin, setIsAdmin] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
-    if (userData && isLoggedIn && isAdmin) router.push(`/admin/directory`);
-  }, [isLoggedIn, isAdmin, userData]);
+    const fetchIsAdmin = async () => {
+      try {
+        const idToken = await user?.getIdToken();
+        const response = await fetch("/api/is-admin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(idToken),
+        });
+        const data = await response.json();
+        setIsAdmin(data.isAdmin);
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+    };
+
+    if (!loading) {
+      fetchIsAdmin();
+    }
+  }, [loading, user]);
+
+  // TODO: Add once /admin/directory doesn't loop back here
+  // useEffect(() => {
+  //   if (user && isAdmin) {
+  //     sessionStorage.setItem(StorageEnum.PREVIOUS_PAGE, "/admin");
+  //     router.push({ pathname: "/admin/directory" });
+  //   }
+  // }, [user, router, isAdmin]);
 
   return (
     <>
@@ -77,40 +105,42 @@ export default function AdminPage(props: {
         <MetaTags title={props.pageTitle} />
         <title>{props.pageTitle}</title>
       </Head>
-      <Admin.Nav
-        handleLogOut={signOutWithGoogle}
-        handleLogIn={signInWithGoogle}
-        isSessionChecked={isSessionChecked}
-        isLoggedIn={isLoggedIn}
-        isAdmin={isAdmin}
-        name={userData?.name}
-      />
-      <Admin.Body className="mx-auto max-w-3xl px-8 py-4">
-        {userData === null && (
-          <div className="flex w-full justify-center p-4">
-            <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
-          </div>
-        )}
-        {userData !== null && isLoggedIn && !isAdmin && (
-          <h4>
-            You cannot access this page. Please contact an administrator if you
-            believe this is an error.
-          </h4>
-        )}
-        {userData !== null && !isLoggedIn && (
-          <h4>
-            <span>You must</span>{" "}
-            <Button
-              size={ButtonSize.XSmall}
-              variant={ButtonVariant.Secondary}
-              onClick={signInWithGoogle}
-            >
-              log in
-            </Button>{" "}
-            <span>to continue.</span>
-          </h4>
-        )}
-      </Admin.Body>
+      <Admin>
+        <Admin.Nav
+          handleLogOut={signOutWithGoogle}
+          handleLogIn={signInWithGoogle}
+          isLoggedIn={!!user}
+          isAdmin={isAdmin}
+          displayName={user?.displayName}
+        />
+        <Admin.Body>
+          {loading && (
+            <div className="flex w-full justify-center p-4">
+              <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
+            </div>
+          )}
+          {!loading && !user && (
+            <h4 className="p-4">
+              <span>You must</span>{" "}
+              <Button
+                size={ButtonSize.XSmall}
+                variant={ButtonVariant.Secondary}
+                onClick={signInWithGoogle}
+              >
+                log in
+              </Button>{" "}
+              <span>to continue.</span>
+            </h4>
+          )}
+          {isAdmin === false && (
+            <h4>
+              You cannot access this page. Please contact an administrator if
+              you believe this is an error.
+            </h4>
+          )}
+          {isAdmin && <h4>Admin</h4>}
+        </Admin.Body>
+      </Admin>
     </>
   );
 }
