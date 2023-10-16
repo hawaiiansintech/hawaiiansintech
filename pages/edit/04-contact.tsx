@@ -13,6 +13,7 @@ import { MemberPublic, MemberPublicEditing } from "@/lib/api";
 import { useStorage } from "@/lib/hooks";
 import { Formik } from "formik";
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import theme from "styles/theme";
@@ -126,10 +127,26 @@ export default function JoinStep4({ pageTitle }) {
       </Heading>
       {userData.emailAbbr ? (
         <Subheading centered>
-          {removeRequest
-            ? "No hard feelings. We'll reach out to you at "
-            : "Once you submit, expect one of us to review and confirm these changes with you at "}
-          <strong>{userData.emailAbbr}</strong>. Mahalo for your patience!
+          {removeRequest ? (
+            <>
+              We are working on automating this process. For now, please reach
+              out to{" "}
+            </>
+          ) : (
+            <>
+              Once you submit, expect one of us to review and confirm these
+              changes with you at <strong>{userData.emailAbbr}</strong>. If you
+              don&rsquo;t hear soon, please reach out to{" "}
+            </>
+          )}
+          <Link href="mailto:kekai@hawaiiansintech.org" target="_blank">
+            kekai@hawaiiansintech.org
+          </Link>{" "}
+          or{" "}
+          <Link href="mailto:kekai@hawaiiansintech.org" target="_blank">
+            kamakani@hawaiiansintech.org
+          </Link>{" "}
+          and we&rsquo;ll get you sorted out.
         </Subheading>
       ) : (
         <div className="email-alert">
@@ -181,35 +198,37 @@ export default function JoinStep4({ pageTitle }) {
         )}
         <DiffTable userData={userData} editedData={editedData} />
 
-        <Formik
-          enableReinitialize
-          initialValues={{ other: other }}
-          onSubmit={(values) => {
-            handleSubmit(values);
-          }}
-          validationSchema={Yup.object().shape({
-            other: Yup.string(),
-          })}
-        >
-          {(props) => (
-            <form onSubmit={props.handleSubmit}>
-              <Input
-                name="other"
-                label="Anything else?"
-                labelTranslation="He mau manaʻo hou aku kou?"
-                onBlur={props.handleBlur}
-                value={other}
-                onChange={(e) => setOther(e.target.value)}
-                error={props.touched.other && props.errors.other}
-              />
-              <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
-                <Button fullWidth loading={loading} type="submit">
-                  Submit
-                </Button>
-              </div>
-            </form>
-          )}
-        </Formik>
+        {!removeRequest && (
+          <Formik
+            enableReinitialize
+            initialValues={{ other: other }}
+            onSubmit={(values) => {
+              handleSubmit(values);
+            }}
+            validationSchema={Yup.object().shape({
+              other: Yup.string(),
+            })}
+          >
+            {(props) => (
+              <form onSubmit={props.handleSubmit}>
+                <Input
+                  name="other"
+                  label="Anything else?"
+                  labelTranslation="He mau manaʻo hou aku kou?"
+                  onBlur={props.handleBlur}
+                  value={other}
+                  onChange={(e) => setOther(e.target.value)}
+                  error={props.touched.other && props.errors.other}
+                />
+                <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
+                  <Button fullWidth loading={loading} type="submit">
+                    Submit
+                  </Button>
+                </div>
+              </form>
+            )}
+          </Formik>
+        )}
       </section>
       {removeRequest ? (
         <></>
