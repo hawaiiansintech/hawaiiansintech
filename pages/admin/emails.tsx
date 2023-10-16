@@ -16,13 +16,15 @@ import Tabs from "@/components/Tabs";
 import Tag, { TagVariant } from "@/components/Tag";
 import { DocumentData, getFirebaseTable, MemberEmail } from "@/lib/api";
 import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
-import { useUserSession } from "@/lib/hooks";
+import { useIsAdmin } from "@/lib/hooks";
 import { CheckIcon, PlusIcon } from "@radix-ui/react-icons";
+import { getAuth } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { cn, convertStringSnake } from "helpers";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { FC, useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { db, signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
 
 export async function getStaticProps() {
@@ -79,12 +81,14 @@ export default function EmailsPage(props: {
   emails: MemberEmail[];
   pageTitle;
 }) {
-  const { userData, isLoggedIn, isAdmin, isSessionChecked } = useUserSession();
+  const auth = getAuth();
+  const [user, loading, error] = useAuthState(auth);
+  const [isAdmin, isAdminLoading] = useIsAdmin(user, loading);
   const router = useRouter();
 
   useEffect(() => {
-    if (userData !== null && !isAdmin) router.push(`/admin`);
-  }, [isLoggedIn, isAdmin, userData]);
+    if (!isAdminLoading && !isAdmin) router.push(`/admin`);
+  }, [isAdmin, isAdminLoading, router]);
 
   return (
     <>
@@ -97,19 +101,18 @@ export default function EmailsPage(props: {
         <Admin.Nav
           handleLogOut={signOutWithGoogle}
           handleLogIn={signInWithGoogle}
+          isLoggedIn={!!user}
           isAdmin={isAdmin}
-          isLoggedIn={isLoggedIn}
-          name={userData?.name}
-          isSessionChecked={isSessionChecked}
+          displayName={user?.displayName}
         />
         <Admin.Body>
-          {userData === null && (
+          {isAdminLoading && (
             <div className="flex w-full justify-center p-4">
               <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
             </div>
           )}
 
-          {userData !== null && isAdmin && (
+          {isAdmin && (
             <div className="mx-auto">
               {props.emails ? (
                 <EmailList emails={props.emails} />

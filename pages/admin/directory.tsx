@@ -241,7 +241,7 @@ const Directory: MemberDirectoryType = ({ members, regions }) => {
             ))}
           </>
         ) : (
-          <>no members</>
+          <>no members loaded</>
         )}
       </div>
     </>
