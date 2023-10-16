@@ -161,13 +161,21 @@ export async function getMembers(
   focusesData?: DocumentData[],
   industriesData?: DocumentData[],
   regionsData?: DocumentData[],
-): Promise<MemberPublic[]> {
   filterByStatus: StatusEnum[] = [
     StatusEnum.APPROVED,
     StatusEnum.PENDING,
     StatusEnum.IN_PROGRESS,
     StatusEnum.ARCHIVED,
   ]
+): Promise<
+  [
+    MemberPublic[],
+    RegionPublic[]
+    // TODO - add back in when we have a use case for it
+    // DocumentData[],
+    // DocumentData[]
+  ]
+> {
   const members = await getFirebaseData(
     FirebaseTablesEnum.MEMBERS,
     memberConverter
@@ -178,7 +186,7 @@ export async function getMembers(
     industriesData || (await getFirebaseTable(FirebaseTablesEnum.INDUSTRIES));
   const regionsFb =
     regionsData || (await getFirebaseTable(FirebaseTablesEnum.REGIONS));
-  return members
+  const result = members
     .map((member) => {
       const { regions, industries, focuses, lastModifiedBy, ...rest } = member;
       return filterByStatus.includes(member.status)
@@ -204,6 +212,19 @@ export async function getMembers(
       }
       return 0;
     });
+
+  return [
+    result,
+    regionsFb.map((region) => {
+      return {
+        id: region.id,
+        name: region.fields.name,
+      };
+    }),
+    // TODO - add back in when we have a use case for it
+    // industriesFb,
+    // focusesFb,
+  ];
 }
 
 export interface MemberEmail {

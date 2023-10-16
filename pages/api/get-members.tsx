@@ -6,10 +6,21 @@ export default async function handler(req, res) {
   }
 
   try {
-    const members = await getMembers();
-    return res
-      .status(200)
-      .json({ message: "Successfully fetched members.", members: members });
+    const [
+      members,
+      regions,
+      // TODO add back in when we have a use case for it
+      // industries,
+      // focuses
+    ] = await getMembers();
+    return res.status(200).json({
+      message: "Successfully fetched members.",
+      members: members,
+      regions: regions,
+      // TODO add back in when we have a use case for it
+      // industries: industries,
+      // focuses: focuses,
+    });
   } catch (error) {
     return res.status(error.statusCode || 500).json({ error: error.message });
   }
