@@ -12,10 +12,10 @@ import {
   MemberPublic,
 } from "@/lib/api";
 import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
+import { useIsAdmin } from "@/lib/hooks";
 import { getAuth } from "firebase/auth";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
 
@@ -66,29 +66,8 @@ export default function AdminPage(props: {
 }) {
   const auth = getAuth();
   const [user, loading, error] = useAuthState(auth);
-  const [isAdmin, setIsAdmin] = useState(null);
+  const isAdmin = useIsAdmin(user, loading);
   const router = useRouter();
-
-  useEffect(() => {
-    const fetchIsAdmin = async () => {
-      try {
-        const idToken = await user?.getIdToken();
-        const response = await fetch("/api/is-admin", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(idToken),
-        });
-        const data = await response.json();
-        setIsAdmin(data.isAdmin);
-      } catch (error) {
-        console.error("An error occurred:", error);
-      }
-    };
-
-    if (!loading) {
-      fetchIsAdmin();
-    }
-  }, [loading, user]);
 
   // TODO: Add once /admin/directory doesn't loop back here
   // useEffect(() => {
@@ -132,8 +111,8 @@ export default function AdminPage(props: {
               <span>to continue.</span>
             </h4>
           )}
-          {isAdmin === false && (
-            <h4>
+          {!loading && user && !isAdmin && (
+            <h4 className="p-4">
               You cannot access this page. Please contact an administrator if
               you believe this is an error.
             </h4>
