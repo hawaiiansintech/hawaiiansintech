@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 export default function useIsAdmin(user: User | null, loading: boolean) {
   const [isAdmin, setIsAdmin] = useState<boolean>(null);
+  const [isAdminLoading, setIsAdminLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchIsAdmin = async () => {
@@ -15,8 +16,10 @@ export default function useIsAdmin(user: User | null, loading: boolean) {
         });
         const data = await response.json();
         setIsAdmin(data.isAdmin);
+        setIsAdminLoading(false);
       } catch (error) {
         console.error("An error occurred:", error);
+        setIsAdminLoading(false);
       }
     };
 
@@ -25,5 +28,5 @@ export default function useIsAdmin(user: User | null, loading: boolean) {
     }
   }, [loading, user]);
 
-  return isAdmin;
+  return [isAdmin, isAdminLoading];
 }

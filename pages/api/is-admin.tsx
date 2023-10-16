@@ -3,8 +3,11 @@ const admin = require("firebase-admin");
 
 export const isAdmin = async (token: string): Promise<boolean> => {
   await initializeAdmin();
-  const decodedToken = await admin.auth().verifyIdToken(token);
-  return decodedToken.admin;
+  if (!token || Object.keys(token).length > 0) {
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    return decodedToken.admin;
+  }
+  return false;
 };
 
 export default async function handler(req, res) {

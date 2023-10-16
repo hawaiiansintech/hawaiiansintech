@@ -5,13 +5,6 @@ import LoadingSpinner, {
 } from "@/components/LoadingSpinner";
 import MetaTags from "@/components/Metatags";
 import Plausible from "@/components/Plausible";
-import {
-  DocumentData,
-  getFirebaseTable,
-  getMembers,
-  MemberPublic,
-} from "@/lib/api";
-import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
 import { useIsAdmin } from "@/lib/hooks";
 import { getAuth } from "firebase/auth";
 import Head from "next/head";
@@ -27,46 +20,18 @@ interface User {
 }
 
 export async function getStaticProps() {
-  const focusesData: DocumentData[] = await getFirebaseTable(
-    FirebaseTablesEnum.FOCUSES
-  );
-  const industriesData: DocumentData[] = await getFirebaseTable(
-    FirebaseTablesEnum.INDUSTRIES
-  );
-  const regionsData: DocumentData[] = await getFirebaseTable(
-    FirebaseTablesEnum.REGIONS
-  );
-  const nonApprovedmembers: MemberPublic[] = await getMembers(
-    focusesData,
-    industriesData,
-    regionsData,
-    [StatusEnum.IN_PROGRESS, StatusEnum.PENDING]
-  );
-  const approvedmembers: MemberPublic[] = await getMembers(
-    focusesData,
-    industriesData,
-    regionsData,
-    [StatusEnum.APPROVED]
-  );
-
   return {
     props: {
       pageTitle: "Admin Panel · Hawaiians in Technology",
-      nonApprovedMembers: nonApprovedmembers,
-      approvedMembers: approvedmembers,
     },
     revalidate: 60,
   };
 }
 
-export default function AdminPage(props: {
-  nonApprovedMembers: MemberPublic[];
-  approvedMembers: MemberPublic[];
-  pageTitle;
-}) {
+export default function AdminPage(props: { pageTitle }) {
   const auth = getAuth();
   const [user, loading, error] = useAuthState(auth);
-  const isAdmin = useIsAdmin(user, loading);
+  const [isAdmin, isAdminLoading] = useIsAdmin(user, loading);
   const router = useRouter();
 
   // TODO: Add once /admin/directory doesn't loop back here
@@ -93,12 +58,13 @@ export default function AdminPage(props: {
           displayName={user?.displayName}
         />
         <Admin.Body>
-          {loading && (
-            <div className="flex w-full justify-center p-4">
-              <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
-            </div>
-          )}
-          {!loading && !user && (
+          {loading ||
+            (isAdminLoading && (
+              <div className="flex w-full justify-center p-4">
+                <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
+              </div>
+            ))}
+          {!loading && !isAdminLoading && !user && (
             <h4 className="p-4">
               <span>You must</span>{" "}
               <Button
@@ -111,13 +77,7 @@ export default function AdminPage(props: {
               <span>to continue.</span>
             </h4>
           )}
-          {!loading && user && !isAdmin && (
-            <h4 className="p-4">
-              You cannot access this page. Please contact an administrator if
-              you believe this is an error.
-            </h4>
-          )}
-          {isAdmin && <h4>Admin</h4>}
+          {user && isAdmin && <h4>Admin</h4>}
         </Admin.Body>
       </Admin>
     </>

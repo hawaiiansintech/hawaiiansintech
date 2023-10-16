@@ -39,22 +39,18 @@ import {
   getReferencesToDelete,
 } from "@/lib/admin/directory-helpers";
 import {
-  DocumentData,
   getEmailById,
-  getEmails,
-  getFirebaseTable,
-  getMembers,
   MemberEmail,
   MemberSecure,
   RegionPublic,
 } from "@/lib/api";
 import {
   CompanySizeEnum,
-  FirebaseTablesEnum,
   StatusEnum,
   YearsOfExperienceEnum,
 } from "@/lib/enums";
-import { useUserSession } from "@/lib/hooks";
+import { useIsAdmin } from "@/lib/hooks";
+import { getAuth } from "firebase/auth";
 import { cn, convertStringSnake } from "helpers";
 import { ExternalLink, Trash } from "lucide-react";
 import moment from "moment";
@@ -62,64 +58,40 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FC, ReactNode, useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
 
 export async function getStaticProps() {
-  const focusesData: DocumentData[] = await getFirebaseTable(
-    FirebaseTablesEnum.FOCUSES
-  );
-  const industriesData: DocumentData[] = await getFirebaseTable(
-    FirebaseTablesEnum.INDUSTRIES
-  );
-  const regionsData: DocumentData[] = await getFirebaseTable(
-    FirebaseTablesEnum.REGIONS
-  );
-  const members: MemberSecure[] = await getMembers(
-    focusesData,
-    industriesData,
-    regionsData,
-    [StatusEnum.APPROVED, StatusEnum.IN_PROGRESS, StatusEnum.PENDING]
-  );
-
-  const emails: MemberEmail[] = await getEmails();
-
-  let regions = regionsData
-    .map(
-      (r): RegionPublic => ({
-        name: r.fields.name,
-        id: r.id,
-        count: r.fields.members.length,
-      })
-    )
-    .sort((a, b) => {
-      if (a.name > b.name) return 1;
-      if (a.name < b.name) return -1;
-      return 0;
-    });
-
   return {
     props: {
       pageTitle: "Directory · Hawaiians in Technology",
-      members: members,
-      emails: emails,
-      regions: regions,
     },
     revalidate: 60,
   };
 }
 
-export default function DirectoryPage(props: {
-  members: MemberSecure[];
-  regions: RegionPublic[];
-  emails: MemberEmail[];
-  pageTitle;
-}) {
-  const { userData, isLoggedIn, isAdmin, isSessionChecked } = useUserSession();
+export default function DirectoryPage(props: { pageTitle }) {
+  const auth = getAuth();
+  const [members, setMembers] = useState<MemberSecure[]>([]);
+  const [regions, setRegions] = useState<RegionPublic[]>([]);
+  const [user, loading, error] = useAuthState(auth);
+  const [isAdmin, isAdminLoading] = useIsAdmin(user, loading);
   const router = useRouter();
 
   useEffect(() => {
-    if (userData !== null && !isAdmin) router.push(`/admin`);
-  }, [isLoggedIn, isAdmin, userData]);
+    if (isAdmin) {
+      fetch("/api/get-members")
+        .then((res) => res.json())
+        .then((data) => {
+          setMembers(data.members);
+          setRegions(data.regions);
+        });
+    }
+  }, [isAdmin]);
+
+  useEffect(() => {
+    if (!isAdminLoading && !isAdmin) router.push(`/admin`);
+  }, [isAdmin, isAdminLoading, router]);
 
   return (
     <>
@@ -132,25 +104,19 @@ export default function DirectoryPage(props: {
         <Admin.Nav
           handleLogOut={signOutWithGoogle}
           handleLogIn={signInWithGoogle}
+          isLoggedIn={!!user}
           isAdmin={isAdmin}
-          isLoggedIn={isLoggedIn}
-          isSessionChecked={isSessionChecked}
-          name={userData?.name}
+          displayName={user?.displayName}
         />
         <Admin.Body>
-          {userData === null && (
+          {isAdminLoading && (
             <div className="flex w-full justify-center p-4">
               <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
             </div>
           )}
-
-          {userData !== null && isLoggedIn && isAdmin && (
+          {isAdmin && (
             <div className="mx-auto">
-              <Directory
-                members={props.members}
-                regions={props.regions}
-                emails={props.emails}
-              />
+              <Directory members={members} regions={regions} />
             </div>
           )}
         </Admin.Body>
@@ -162,7 +128,6 @@ export default function DirectoryPage(props: {
 interface MemberDirectoryProps {
   members?: MemberSecure[];
   regions?: RegionPublic[];
-  emails?: MemberEmail[];
 }
 
 type MemberDirectoryType = FC<MemberDirectoryProps> & {
@@ -298,10 +263,13 @@ function Card({ member, regions }: CardProps) {
     return;
     const references = await getReferencesToDelete(member.id);
     const memberRef = references.memberRef;
+    // CONFIRM THAT THIS CHECKS IF OTHER MEMBERS USE THE SAME FOCUSES
     console.log("removing focuses references");
     await deleteReferences(memberRef, references.focuses);
+    // CONFIRM THAT THIS CHECKS IF OTHER MEMBERS USE THE SAME INDUSTRY
     console.log("removing industries references");
     await deleteReferences(memberRef, references.industries);
+    // CONFIRM THAT THIS CHECKS IF OTHER MEMBERS USE THE SAME REGION
     console.log("removing regions references");
     await deleteReferences(memberRef, references.regions);
     console.log("removing secureMemberData document");
