@@ -171,7 +171,7 @@ const Directory: MemberDirectoryType = ({ members, regions }) => {
         case DirectoryFilter.InProgress:
           return m.status === StatusEnum.IN_PROGRESS;
         case DirectoryFilter.Archived:
-          return m.status === StatusEnum.ARCHIVED;
+          return m.status === StatusEnum.DECLINED;
         default:
           return false;
       }
@@ -505,7 +505,7 @@ const MemberEdit: FC<{
         return "nearSuccess";
       case StatusEnum.PENDING:
         return "warn";
-      case StatusEnum.ARCHIVED:
+      case StatusEnum.DECLINED:
         return "alert";
       default:
         return;
@@ -553,7 +553,7 @@ const MemberEdit: FC<{
           >
             <TabsList loop className="w-full">
               {Object.values(StatusEnum)
-                .filter((status) => status !== StatusEnum.ARCHIVED)
+                .filter((status) => status !== StatusEnum.DECLINED)
                 .map((status, i) => (
                   <TabsTrigger
                     value={status}

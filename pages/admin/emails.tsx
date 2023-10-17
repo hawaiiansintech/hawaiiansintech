@@ -63,8 +63,9 @@ export async function getStaticProps() {
   const filteredEmails = emails.filter((email) => {
     return (
       email !== null &&
-      email.status !== StatusEnum.ARCHIVED &&
-      email.status !== StatusEnum.PENDING
+      // email.status !== StatusEnum.ARCHIVED &&
+      email.status !== StatusEnum.PENDING &&
+      email.status !== StatusEnum.DECLINED
     );
   });
 
@@ -129,7 +130,8 @@ export default function EmailsPage(props: {
 
 const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
   const [error, setError] = useState<ErrorMessageProps>(null);
-  const [copiedToClipboard, setCopiedToClipboard] = useState<boolean>(false);
+  const [showCopiedNotification, setShowCopiedNotification] =
+    useState<boolean>(false);
   const [showUnsubscribed, setShowUnsubscribed] = useState<boolean>(false);
   const [emailsShown, setEmailsShown] = useState<MemberEmail[]>(emails);
   const [revealEmail, setRevealEmail] = useState<boolean>(false);
@@ -142,11 +144,12 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
         selectedEmails.filter((selectedEm) => em.id !== selectedEm.id)
       );
     } else {
+      const nameSanitized = em.name.replace(/[,()]/g, "");
       setSelectedEmails([
         ...selectedEmails,
         {
           id: em.id,
-          name: em.name,
+          name: nameSanitized,
           email: em.email,
           emailAbbr: em.emailAbbr,
           status: em.status,
@@ -157,6 +160,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
   };
 
   const emailSubscribed = emails
+    .map((em) => ({ ...em, name: em.name.replace(/[,()]/g, "") }))
     .filter((em) => !em.unsubscribed)
     .sort((a, b) => a.name.localeCompare(b.name));
   const emailUnsubscribed = emails
@@ -177,10 +181,10 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
     navigator.clipboard
       .writeText(emailListText)
       .then(() => {
-        setCopiedToClipboard(true);
+        setShowCopiedNotification(true);
 
         const timeout = setTimeout(() => {
-          setCopiedToClipboard(false);
+          setShowCopiedNotification(false);
           clearTimeout(timeout);
         }, 2000);
       })
@@ -212,7 +216,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                 {
                   label: (
                     <>
-                      🍒 Da Mail List™{" "}
+                      Newsletter{" "}
                       <span className="text-tan-700">
                         {emailSubscribed.length}
                       </span>
@@ -282,7 +286,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
               size={ButtonSize.XSmall}
               variant={ButtonVariant.Invert}
             >
-              {copiedToClipboard
+              {showCopiedNotification
                 ? "Copied! ✔️"
                 : selectedEmails.length > 0
                 ? `Copy Selected (${selectedEmails.length})`
@@ -296,15 +300,16 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
           <div className="mx-auto flex max-w-5xl justify-between gap-4 p-2">
             {!showUnsubscribed ? (
               <p className="text-xs text-stone-500">
-                Includes all email addresses we send to.{" "}
-                <span className="text-stone-400">(no unsubscribers)</span>
+                This list includes all email addresses that will receive our
+                newsletter.{" "}
+                <span className="text-stone-400">
+                  (Excludes unsubscribed members)
+                </span>
               </p>
             ) : (
               <p className="flex flex-wrap gap-x-1 text-xs text-stone-500">
-                Includes all emails, including unsubscribed. No marketing or
-                newsletter emails to{" "}
-                <Tag variant={TagVariant.Alert}>UNSUBSCRIBED</Tag> members on
-                this list.
+                This list includes all email addresses, including unsubscribed
+                members. Do not send marketing or newsletter emails.
               </p>
             )}
             <div className="flex shrink-0 gap-4">

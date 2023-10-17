@@ -2,7 +2,9 @@ export enum StatusEnum {
   APPROVED = "approved",
   IN_PROGRESS = "in_progress",
   PENDING = "pending",
-  ARCHIVED = "archived",
+  // TODO: Rename enum to Archived and update all references
+  // ARCHIVED = "archived",
+  DECLINED = "declined",
 }
 
 export enum CompanySizeEnum {
