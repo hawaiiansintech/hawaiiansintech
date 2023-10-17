@@ -50,11 +50,12 @@ export default function CheckBox({
       <label
         className={cn(
           `
+          sm:peer-checked:before:border-6
           flex
           cursor-pointer
           select-none
-          items-center
-          gap-2 
+          items-center 
+          gap-2
           text-stone-600
           before:block
           before:h-4
@@ -71,7 +72,6 @@ export default function CheckBox({
           peer-checked:before:bg-white
           peer-checked:before:content-['']
           peer-checked:hover:before:border-brown-700
-          sm:peer-checked:before:border-6
         `,
           size === CheckBoxSize.Small && `gap-1`,
           variant === CheckBoxVariant.Darker &&

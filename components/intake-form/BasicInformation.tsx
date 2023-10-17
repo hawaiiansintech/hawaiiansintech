@@ -103,7 +103,7 @@ export default function BasicInformationForm({
                 error={props.touched.website && props.errors.website}
               />
 
-              <section className="mx-auto max-w-md">
+              <section className="mx-auto w-full max-w-md px-4">
                 <Button fullWidth loading={loading} type="submit">
                   Continue
                 </Button>

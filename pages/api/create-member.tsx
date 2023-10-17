@@ -106,7 +106,7 @@ const addMember = async (member: MemberFields): Promise<DocumentReference> => {
     masked_email: maskedEmailString,
     requests: "",
     status: StatusEnum.PENDING,
-    unsubscribed: false,
+    unsubscribed: member.unsubscribed,
   };
   delete data.email; // Don't store email in the member record
   const docRef = await addDoc(collectionRef, data);
@@ -163,6 +163,7 @@ interface MemberFields {
   industrySuggested?: string;
   companySize?: string;
   recordID?: string;
+  unsubscribed?: boolean;
 }
 
 const addToFirebase = async (
@@ -179,6 +180,7 @@ const addToFirebase = async (
     regions: [],
     title: fields.title,
     years_experience: fields.yearsExperience,
+    unsubscribed: fields.unsubscribed,
   };
 
   // Handle focuses

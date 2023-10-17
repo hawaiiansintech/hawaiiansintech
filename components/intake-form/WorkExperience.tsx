@@ -1,5 +1,4 @@
 import Button from "@/components/Button";
-import CheckBox from "@/components/form/CheckBox";
 import ErrorMessage, {
   ErrorMessageProps,
 } from "@/components/form/ErrorMessage";
@@ -249,16 +248,30 @@ export default function WorkExperience({
             labelTagged={showNew && initial.title === "" ? "NEW" : undefined}
           />
 
-          <CheckBox
-            checked={deferTitle === "true"}
-            label={"N/A, or Prefer not to answer"}
-            id="defer-title"
-            onClick={() =>
-              setDeferTitle(deferTitle === "true" ? undefined : "true")
-            }
-          />
+          <label className="inline-block font-medium">
+            <input
+              type="checkbox"
+              id="defer-title"
+              name="defer-title"
+              checked={deferTitle === "true"}
+              onChange={() => {
+                setDeferTitle(deferTitle === "true" ? undefined : "true");
+              }}
+              className={`
+                accent-ring
+                focus:ring-6
+                mr-2
+                h-5
+                w-5
+                rounded
+                accent-brown-600
+                focus:ring-opacity-50
+              `}
+            />
+            N/A, or Prefer not to answer
+          </label>
         </section>
-        <section className="mx-auto max-w-md">
+        <section className="mx-auto w-full max-w-md px-4">
           <Button
             fullWidth
             onClick={handleSubmit}

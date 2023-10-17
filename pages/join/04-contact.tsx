@@ -4,17 +4,17 @@ import ErrorMessage, {
 } from "@/components/form/ErrorMessage";
 import Input from "@/components/form/Input";
 import ProgressBar from "@/components/form/ProgressBar";
-import { Heading, Subheading } from "@/components/Heading";
+import { Heading } from "@/components/Heading";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
 import Plausible from "@/components/Plausible";
 import { useStorage } from "@/lib/hooks";
 import { clearAllStoredFields, useInvalid } from "@/lib/utils";
-import { Formik } from "formik";
+import { Field, Formik } from "formik";
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import theme from "styles/theme";
 import * as Yup from "yup";
 
 export async function getStaticProps() {
@@ -29,6 +29,7 @@ export default function JoinStep4({ pageTitle }) {
   const router = useRouter();
   const { getItem, setItem, removeItem } = useStorage();
   const [email, setEmail] = useState<string>("");
+  const [ageGateAccepted, setAgeGateAccepted] = useState<boolean>(false);
 
   const [name, setName] = useState<string>("");
   const [location, setLocation] = useState<string>("");
@@ -40,6 +41,7 @@ export default function JoinStep4({ pageTitle }) {
   const [industrySuggested, setIndustrySuggested] = useState("");
   const [companySize, setCompanySize] = useState("");
   const [yearsExperience, setYearsExperience] = useState<string>();
+  const [subscribed, setSubscribed] = useState<boolean>(true);
 
   const [validateAfterSubmit, setValidateAfterSubmit] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -64,6 +66,7 @@ export default function JoinStep4({ pageTitle }) {
           industrySuggested,
           companySize,
           email,
+          unsubscribed: !subscribed,
         }),
       }).then(
         (response: Response) => {
@@ -137,18 +140,8 @@ export default function JoinStep4({ pageTitle }) {
       <Nav backUrl="03-company" />
 
       <Heading>Welcome to our little hui.</Heading>
-      <Subheading>
-        This email will be used to confirm any changes to your profile going
-        forward. We <strong>will not</strong> share your contact information
-        without your permission.
-      </Subheading>
-      <section
-        style={{
-          margin: "2rem auto 0",
-          padding: "0 2rem",
-          maxWidth: theme.layout.width.interior,
-        }}
-      >
+
+      <section className="mx-auto mb-4 max-w-3xl px-8">
         {error && (
           <div style={{ marginBottom: "1rem" }}>
             <ErrorMessage headline={error.headline} body={error.body} />
@@ -156,7 +149,7 @@ export default function JoinStep4({ pageTitle }) {
         )}
         <Formik
           enableReinitialize
-          initialValues={{ email: email }}
+          initialValues={{ email: email, ageGate: false }}
           validateOnBlur={validateAfterSubmit}
           validateOnChange={validateAfterSubmit}
           validate={() => setValidateAfterSubmit(true)}
@@ -169,31 +162,106 @@ export default function JoinStep4({ pageTitle }) {
               .required(
                 "It's important that we can reach you. Email is required."
               ),
+            ageGate: Yup.boolean()
+              .oneOf([true], "You must check this box to continue.")
+              .required("You must check this box to continue."),
           })}
         >
-          {(props) => (
-            <form onSubmit={props.handleSubmit}>
-              <Input
-                name="email"
-                label="What’s your email?"
-                labelTranslation="He aha kou wahi leka uila?"
-                onBlur={props.handleBlur}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                error={props.touched.email && props.errors.email}
-              />
-              <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
-                <Button fullWidth loading={loading} type="submit">
-                  Submit
-                </Button>
-              </div>
-            </form>
-          )}
+          {(props) => {
+            return (
+              <form
+                onSubmit={props.handleSubmit}
+                className="flex flex-col gap-4"
+              >
+                <div className="flex gap-4 rounded-lg bg-tan-300 p-4">
+                  <span className="text-3xl">🤫</span>
+                  <p>
+                    <strong>
+                      We treat your email address as private information
+                    </strong>
+                    . We wonʻt share it without your explicit consent. Only
+                    trusted members of our administrative hui will have access
+                    to this contact information.{" "}
+                    <Link
+                      href="/privacy-policy#joining-the-directory"
+                      target="_blank"
+                    >
+                      Learn more
+                    </Link>
+                  </p>
+                </div>
+                <Input
+                  name="email"
+                  label="What’s your email?"
+                  labelTranslation="He aha kou wahi leka uila?"
+                  onBlur={props.handleBlur}
+                  placeholder="Email Address"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                  error={props.touched.email && props.errors.email}
+                />
+                <label className="inline-block">
+                  <input
+                    type="checkbox"
+                    name="send-me-emails"
+                    checked={subscribed}
+                    onChange={() => setSubscribed(!subscribed)}
+                    className={`
+                    accent-ring
+                    focus:ring-6
+                    mr-2
+                    h-5
+                    w-5
+                    rounded
+                    accent-brown-600
+                    focus:ring-opacity-50
+                  `}
+                  />
+                  Please let me know about{" "}
+                  <strong className="font-semibold">
+                    features and community updates
+                  </strong>{" "}
+                  <span className="text-stone-500">(~once a month)</span>.
+                </label>
+                <label>
+                  <Field
+                    type="checkbox"
+                    name="ageGate"
+                    className={`
+                  accent-ring
+                  focus:ring-6
+                  mr-2
+                  h-5
+                  w-5
+                  accent-brown-600
+                  focus:ring-opacity-50
+                  `}
+                  />
+                  I am{" "}
+                  <strong className="font-semibold">
+                    13 years of age or older
+                  </strong>{" "}
+                  and agree to the{" "}
+                  <Link href="/privacy-policy">Privacy Policy</Link>.
+                  {props.touched.ageGate && props.errors.ageGate && (
+                    <p className="mt-1 text-xs text-red-600">
+                      {props.errors.ageGate}
+                    </p>
+                  )}
+                </label>
+                <div className="mx-auto w-full max-w-md px-4">
+                  <Button fullWidth loading={loading} type="submit">
+                    Submit
+                  </Button>
+                </div>
+              </form>
+            );
+          }}
         </Formik>
       </section>
-      <div style={{ margin: "1rem 0 4rem" }}>
-        <ProgressBar currentCount={4} totalCount={4} width="6.4rem" />
-      </div>
+      <ProgressBar currentCount={4} totalCount={4} width="6.4rem" />
     </>
   );
 }
