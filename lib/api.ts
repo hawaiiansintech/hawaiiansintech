@@ -165,7 +165,7 @@ export async function getMembers(
     StatusEnum.APPROVED,
     StatusEnum.PENDING,
     StatusEnum.IN_PROGRESS,
-    StatusEnum.ARCHIVED,
+    StatusEnum.DECLINED,
   ]
 ): Promise<
   [
