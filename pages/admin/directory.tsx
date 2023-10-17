@@ -34,6 +34,12 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   deleteDocument,
   deleteReferences,
   getReferencesToDelete,
@@ -84,7 +90,7 @@ export default function DirectoryPage(props: { pageTitle }) {
         .then((res) => res.json())
         .then((data) => {
           setMembers(data.members);
-          setRegions(data.regions);
+          setRegions(data.regions.sort((a, b) => a.name.localeCompare(b.name)));
         });
     }
   }, [isAdmin]);
@@ -835,25 +841,41 @@ const MemberEdit: FC<{
             </p>
           </section>
           <div className="col-span-2 mt-2 flex flex-col gap-2 sm:flex-row">
-            <div>
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setIsDeleting(true);
-                }}
-                size="sm"
-                disabled
-              >
-                <span className="flex items-center gap-2">
-                  <Trash className="h-4 w-4" />
-                  Archive
-                </span>
-              </Button>
-            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setIsDeleting(true);
+                    }}
+                    size="sm"
+                    disabled
+                  >
+                    <span className="flex items-center gap-2">
+                      <Trash className="h-4 w-4" />
+                      Archive
+                    </span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Disabled · Read-only</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <div className="flex grow justify-end">
-              <Button disabled onClick={onClose} size="sm">
-                Save
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button disabled onClick={onClose} size="sm">
+                      Save
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Disabled · Read-only</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
         </div>
