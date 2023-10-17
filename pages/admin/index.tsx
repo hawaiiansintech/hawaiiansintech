@@ -5,10 +5,12 @@ import LoadingSpinner, {
 } from "@/components/LoadingSpinner";
 import MetaTags from "@/components/Metatags";
 import Plausible from "@/components/Plausible";
+import { StorageEnum } from "@/lib/enums";
 import { useIsAdmin } from "@/lib/hooks";
 import { getAuth } from "firebase/auth";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
 
@@ -35,12 +37,12 @@ export default function AdminPage(props: { pageTitle }) {
   const router = useRouter();
 
   // TODO: Add once /admin/directory doesn't loop back here
-  // useEffect(() => {
-  //   if (user && isAdmin) {
-  //     sessionStorage.setItem(StorageEnum.PREVIOUS_PAGE, "/admin");
-  //     router.push({ pathname: "/admin/directory" });
-  //   }
-  // }, [user, router, isAdmin]);
+  useEffect(() => {
+    if (user && isAdmin) {
+      sessionStorage.setItem(StorageEnum.PREVIOUS_PAGE, "/admin");
+      router.push({ pathname: "/admin/directory" });
+    }
+  }, [user, router, isAdmin]);
 
   return (
     <>

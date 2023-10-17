@@ -1,9 +1,5 @@
 import Admin from "@/components/admin/Admin";
 import Button, { ButtonSize, ButtonVariant } from "@/components/Button";
-import CheckBox, {
-  CheckBoxSize,
-  CheckBoxVariant,
-} from "@/components/form/CheckBox";
 import ErrorMessage, {
   ErrorMessageProps,
 } from "@/components/form/ErrorMessage";
@@ -12,8 +8,9 @@ import LoadingSpinner, {
 } from "@/components/LoadingSpinner";
 import MetaTags from "@/components/Metatags";
 import Plausible from "@/components/Plausible";
-import Tabs from "@/components/Tabs";
 import Tag, { TagVariant } from "@/components/Tag";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DocumentData, getFirebaseTable, MemberEmail } from "@/lib/api";
 import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
 import { useIsAdmin } from "@/lib/hooks";
@@ -128,10 +125,18 @@ export default function EmailsPage(props: {
   );
 }
 
+enum EmailDirectoryFilter {
+  Newsletter = "Newsletter",
+  All = "All",
+}
+
 const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
   const [error, setError] = useState<ErrorMessageProps>(null);
   const [showCopiedNotification, setShowCopiedNotification] =
     useState<boolean>(false);
+  const [tabVisible, setTabVisible] = useState<EmailDirectoryFilter>(
+    EmailDirectoryFilter.Newsletter
+  );
   const [showUnsubscribed, setShowUnsubscribed] = useState<boolean>(false);
   const [emailsShown, setEmailsShown] = useState<MemberEmail[]>(emails);
   const [revealEmail, setRevealEmail] = useState<boolean>(false);
@@ -198,12 +203,12 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
   };
 
   useEffect(() => {
-    if (showUnsubscribed) {
+    if (tabVisible === EmailDirectoryFilter.All) {
       setEmailsShown([...emailUnsubscribed, ...emailSubscribed]);
     } else {
       setEmailsShown(emailSubscribed);
     }
-  }, [showUnsubscribed]);
+  }, [tabVisible]);
 
   return (
     <>
@@ -212,37 +217,23 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
           <div className="flex grow items-center gap-2">
             <h2 className="text-xl font-semibold leading-8">Emails</h2>
             <Tabs
-              items={[
-                {
-                  label: (
-                    <>
-                      Newsletter{" "}
-                      <span className="text-tan-700">
-                        {emailSubscribed.length}
-                      </span>
-                    </>
-                  ),
-                  onClick: () => {
-                    setShowUnsubscribed(!showUnsubscribed);
-                    setSelectedEmails(
-                      selectedEmails.filter((em) => !em.unsubscribed)
-                    );
-                  },
-                  selected: !showUnsubscribed,
-                },
-                {
-                  label: (
-                    <>
-                      All <span className="text-tan-700">{emails.length}</span>
-                    </>
-                  ),
-                  onClick: () => {
-                    setShowUnsubscribed(!showUnsubscribed);
-                  },
-                  selected: showUnsubscribed,
-                },
-              ]}
-            />
+              defaultValue={Object.values(EmailDirectoryFilter)[0]}
+              onValueChange={(value) =>
+                setTabVisible(value as EmailDirectoryFilter)
+              }
+              value={tabVisible}
+            >
+              <TabsList loop>
+                {Object.values(EmailDirectoryFilter).map((filter, i) => (
+                  <TabsTrigger
+                    value={filter}
+                    key={`email-directory-filter-${i}`}
+                  >
+                    {filter}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
           </div>
           <div className="flex items-center gap-2">
             {selectedEmails.length > 0 ? (
@@ -313,24 +304,36 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
               </p>
             )}
             <div className="flex shrink-0 gap-4">
-              <CheckBox
-                label="Obscure Email"
-                checked={!revealEmail}
-                onChange={() => {
-                  setRevealEmail(!revealEmail);
-                }}
-                size={CheckBoxSize.Small}
-                variant={CheckBoxVariant.Darker}
-              />
-              <CheckBox
-                label={`Prepend Name`}
-                checked={includeName}
-                onChange={() => {
-                  setIncludeName(!includeName);
-                }}
-                size={CheckBoxSize.Small}
-                variant={CheckBoxVariant.Darker}
-              />
+              <div className="flex gap-x-2">
+                <Checkbox
+                  checked={!revealEmail}
+                  onCheckedChange={() => {
+                    setRevealEmail(!revealEmail);
+                  }}
+                  id="obscure-email"
+                />
+                <label
+                  htmlFor="obscure-email"
+                  className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Obscure Email
+                </label>
+              </div>
+              <div className="flex gap-x-2">
+                <Checkbox
+                  checked={includeName}
+                  onCheckedChange={() => {
+                    setIncludeName(!includeName);
+                  }}
+                  id="include-name"
+                />
+                <label
+                  htmlFor="include-name"
+                  className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Prepend Name
+                </label>
+              </div>
             </div>
           </div>
         </div>

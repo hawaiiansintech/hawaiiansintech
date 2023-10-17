@@ -443,22 +443,6 @@ function Card({ member, regions }: CardProps) {
           />
         </DialogContent>
       </Dialog>
-      {/* {showModal && <Modal>{showModal}</Modal>}
-      <button
-        key={`member-${member.id}`}
-        onClick={() => {
-          setShowModal(
-            <MemberEdit
-              member={member}
-              onClose={() => setShowModal(false)}
-              onDelete={handleDelete}
-            />
-          );
-        }}
-        title={member.id}
-      >
-        
-      </button> */}
     </>
   );
 }

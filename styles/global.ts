@@ -297,17 +297,17 @@ const styles = css.global`
 `;
 
 export const cssHelperButtonReset = `
-display: block;
-border: none;
-overflow: visible;
-outline: none;
-font: inherit;
-cursor: pointer;
-background: transparent;
-line-height: normal;
--webkit-font-smoothing: inherit;
--moz-osx-font-smoothing: inherit;
--webkit-appearance: none;
-text-align: center;`;
+  display: block;
+  border: none;
+  overflow: visible;
+  outline: none;
+  font: inherit;
+  cursor: pointer;
+  background: transparent;
+  line-height: normal;
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+  -webkit-appearance: none;
+  text-align: center;`;
 
 export default styles;

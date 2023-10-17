@@ -16,6 +16,7 @@ import Selectable, {
   SelectableGrid,
   SelectableVariant,
 } from "../form/Selectable";
+import { Checkbox } from "../ui/checkbox";
 
 export interface WorkExperienceInitialProps {
   focuses?: Filter[];
@@ -248,28 +249,21 @@ export default function WorkExperience({
             labelTagged={showNew && initial.title === "" ? "NEW" : undefined}
           />
 
-          <label className="inline-block font-medium">
-            <input
-              type="checkbox"
-              id="defer-title"
-              name="defer-title"
+          <div className="flex gap-x-2">
+            <Checkbox
               checked={deferTitle === "true"}
-              onChange={() => {
+              onCheckedChange={() => {
                 setDeferTitle(deferTitle === "true" ? undefined : "true");
               }}
-              className={`
-                accent-ring
-                focus:ring-6
-                mr-2
-                h-5
-                w-5
-                rounded
-                accent-brown-600
-                focus:ring-opacity-50
-              `}
+              id="defer-title"
             />
-            N/A, or Prefer not to answer
-          </label>
+            <label
+              htmlFor="defer-title"
+              className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              N/A, or Prefer not to answer
+            </label>
+          </div>
         </section>
         <section className="mx-auto w-full max-w-md px-4">
           <Button
