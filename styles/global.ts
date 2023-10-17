@@ -1,7 +1,7 @@
 import css from "styled-jsx/css";
 import theme from "./theme";
 
-export default css.global`
+const styles = css.global`
   :root {
     --color-brand: ${theme.color.brand.base};
     --color-brand-alpha: ${theme.color.brand.alpha};
@@ -297,15 +297,17 @@ export default css.global`
 `;
 
 export const cssHelperButtonReset = `
-  display: block;
-  border: none;
-  overflow: visible;
-  outline: none;
-  font: inherit;
-  cursor: pointer;
-  background: transparent;
-  line-height: normal;
-  -webkit-font-smoothing: inherit;
-  -moz-osx-font-smoothing: inherit;
-  -webkit-appearance: none;
-  text-align: center;`;
+display: block;
+border: none;
+overflow: visible;
+outline: none;
+font: inherit;
+cursor: pointer;
+background: transparent;
+line-height: normal;
+-webkit-font-smoothing: inherit;
+-moz-osx-font-smoothing: inherit;
+-webkit-appearance: none;
+text-align: center;`;
+
+export default styles;
