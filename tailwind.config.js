@@ -15,6 +15,9 @@ module.exports = {
         "2xl": "1400px",
       },
     },
+    fontFamily: {
+      script: ["Permanent Marker"],
+    },
     extend: {
       colors: {
         border: "hsl(var(--border))",
