@@ -160,30 +160,35 @@ const Directory: MemberDirectoryType = ({ members, regions }) => {
     DirectorySortOrder.LastModified
   );
   const [error, setError] = useState<ErrorMessageProps>(null);
+  const [membersFiltered, setMembersFiltered] = useState<MemberSecure[]>();
 
-  let membersFiltered = members
-    .filter((m) => {
-      switch (tabVisible) {
-        case DirectoryFilter.All:
-          return true;
-        case DirectoryFilter.Pending:
-          return m.status === StatusEnum.PENDING;
-        case DirectoryFilter.InProgress:
-          return m.status === StatusEnum.IN_PROGRESS;
-        case DirectoryFilter.Archived:
-          return m.status === StatusEnum.DECLINED;
-        default:
-          return false;
-      }
-    })
-    .sort((a, b) => {
-      if (sortOrder === DirectorySortOrder.LastModified) {
-        if (moment(a.lastModified) > moment(b.lastModified)) return -1;
-        if (moment(a.lastModified) < moment(b.lastModified)) return 1;
-        return 0;
-      }
-      return 0;
-    });
+  useEffect(() => {
+    setMembersFiltered(
+      members
+        .filter((m) => {
+          switch (tabVisible) {
+            case DirectoryFilter.All:
+              return true;
+            case DirectoryFilter.Pending:
+              return m.status === StatusEnum.PENDING;
+            case DirectoryFilter.InProgress:
+              return m.status === StatusEnum.IN_PROGRESS;
+            case DirectoryFilter.Archived:
+              return m.status === StatusEnum.DECLINED;
+            default:
+              return false;
+          }
+        })
+        .sort((a, b) => {
+          if (sortOrder === DirectorySortOrder.LastModified) {
+            if (moment(a.lastModified) > moment(b.lastModified)) return -1;
+            if (moment(a.lastModified) < moment(b.lastModified)) return 1;
+            return 0;
+          }
+          return 0;
+        })
+    );
+  }, [members, tabVisible]);
 
   return (
     <>
@@ -247,7 +252,9 @@ const Directory: MemberDirectoryType = ({ members, regions }) => {
             ))}
           </>
         ) : (
-          <>no members loaded</>
+          <div className="flex w-full justify-center p-4">
+            <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
+          </div>
         )}
       </div>
     </>
