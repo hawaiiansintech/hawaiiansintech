@@ -11,78 +11,43 @@ import Plausible from "@/components/Plausible";
 import Tag, { TagVariant } from "@/components/Tag";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DocumentData, getFirebaseTable, MemberEmail } from "@/lib/api";
-import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
+import { getEmails, MemberEmail } from "@/lib/api";
+import { StatusEnum } from "@/lib/enums";
 import { useIsAdmin } from "@/lib/hooks";
 import { CheckIcon, PlusIcon } from "@radix-ui/react-icons";
 import { getAuth } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
 import { cn, convertStringSnake } from "helpers";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { FC, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { db, signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
+import { signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
 
 export async function getStaticProps() {
-  const secureMemberData: DocumentData[] = await getFirebaseTable(
-    FirebaseTablesEnum.SECURE_MEMBER_DATA
-  );
-
-  const getEmails = secureMemberData.map((secM) => {
-    if (secM.fields.email === "") return null;
-    const docRef = doc(db, FirebaseTablesEnum.MEMBERS, secM.id);
-    return getDoc(docRef)
-      .then((docSnapshot) => {
-        if (docSnapshot.exists()) {
-          return {
-            id: secM.id,
-            email: secM.fields.email,
-            name: docSnapshot.data().name || null,
-            emailAbbr: docSnapshot.data().masked_email || null,
-            status: docSnapshot.data().status || null,
-            unsubscribed: docSnapshot.data().unsubscribed || false,
-          };
-        } else {
-          console.warn(
-            `No data available for ${secM.id} in MEMBERS (${secM.fields.email})`
-          );
-          return null;
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        return null;
-      });
-  });
-
-  const emails: MemberEmail[] = await Promise.all(getEmails);
-  const filteredEmails = emails.filter((email) => {
-    return (
-      email !== null &&
-      // email.status !== StatusEnum.ARCHIVED &&
-      email.status !== StatusEnum.PENDING &&
-      email.status !== StatusEnum.DECLINED
-    );
-  });
-
   return {
     props: {
       pageTitle: "Admin Panel · Hawaiians in Technology",
-      emails: filteredEmails,
     },
-    revalidate: 60,
   };
 }
 
-export default function EmailsPage(props: {
-  emails: MemberEmail[];
-  pageTitle;
-}) {
+export default function EmailsPage(props: { pageTitle }) {
   const auth = getAuth();
   const [user, loading, error] = useAuthState(auth);
   const [isAdmin, isAdminLoading] = useIsAdmin(user, loading);
   const router = useRouter();
+  const [emails, setEmails] = useState<MemberEmail[]>([]);
+
+  const fetchEmails = async () => {
+    const emails = await getEmails();
+    setEmails(emails);
+  };
+
+  useEffect(() => {
+    if (isAdmin) {
+      fetchEmails();
+    }
+  }, [isAdmin]);
 
   useEffect(() => {
     if (!isAdminLoading && !isAdmin) router.push(`/admin`);
@@ -112,8 +77,8 @@ export default function EmailsPage(props: {
 
           {isAdmin && (
             <div className="mx-auto">
-              {props.emails ? (
-                <EmailList emails={props.emails} />
+              {emails ? (
+                <EmailList emails={emails} />
               ) : (
                 <strong>Authorized, but emails did not load.</strong>
               )}
@@ -143,6 +108,27 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
   const [includeName, setIncludeName] = useState<boolean>(true);
   const [selectedEmails, setSelectedEmails] = useState<MemberEmail[]>([]);
 
+  useEffect(() => {
+    setEmailsShown(
+      emails
+        .filter((email) => {
+          switch (tabVisible) {
+            case EmailDirectoryFilter.All:
+              return true;
+            case EmailDirectoryFilter.Newsletter:
+              return !email.unsubscribed;
+            default:
+              return false;
+          }
+        })
+        .sort((a, b) => {
+          if (a.unsubscribed && !b.unsubscribed) return -1;
+          if (!a.unsubscribed && b.unsubscribed) return 1;
+          return 0;
+        })
+    );
+  }, [emails, tabVisible]);
+
   const handleEmailSelection = (em: MemberEmail) => {
     if (selectedEmails.find((selectedEm) => em.id === selectedEm.id)) {
       setSelectedEmails(
@@ -163,14 +149,6 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
       ]);
     }
   };
-
-  const emailSubscribed = emails
-    .map((em) => ({ ...em, name: em.name.replace(/[,()]/g, "") }))
-    .filter((em) => !em.unsubscribed)
-    .sort((a, b) => a.name.localeCompare(b.name));
-  const emailUnsubscribed = emails
-    .filter((em) => em.unsubscribed)
-    .sort((a, b) => a.name.localeCompare(b.name));
 
   const handleCopyToClipboard = (emailList: MemberEmail[]) => {
     setError(null);
@@ -201,14 +179,6 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
         });
       });
   };
-
-  useEffect(() => {
-    if (tabVisible === EmailDirectoryFilter.All) {
-      setEmailsShown([...emailUnsubscribed, ...emailSubscribed]);
-    } else {
-      setEmailsShown(emailSubscribed);
-    }
-  }, [tabVisible]);
 
   return (
     <>
@@ -348,16 +318,21 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
             />
           </div>
         )}
-        {emailsShown.map((em) => {
-          const selected = selectedEmails.find(
-            (selectedEm) => em.id === selectedEm.id
-          );
+        {emailsShown.length === 0 ? (
+          <div className="flex w-full justify-center p-4">
+            <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
+          </div>
+        ) : (
+          emailsShown.map((em) => {
+            const selected = selectedEmails.find(
+              (selectedEm) => em.id === selectedEm.id
+            );
 
-          return (
-            <button
-              key={`email-${em.email}-${em.id}`}
-              className={cn(
-                `
+            return (
+              <button
+                key={`email-${em.email}-${em.id}`}
+                className={cn(
+                  `
                   group
                   w-full
                   border-b
@@ -366,27 +341,27 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                   hover:bg-tan-600/5
                   active:bg-brown-600/10
                 `,
-                selected &&
-                  "border-brown-600/40 bg-brown-600/10 text-stone-800 hover:bg-brown-600/20 active:bg-brown-600/10",
-                em.unsubscribed &&
-                  `border-red-400/50 bg-red-400/5 text-red-600 hover:border-red-400 hover:bg-red-400/20  active:bg-red-400/30`,
-                em.unsubscribed &&
                   selected &&
-                  `border-red-400 bg-red-400/20 text-red-600 hover:bg-red-400/30  active:bg-red-400/20`
-              )}
-              onClick={() => {
-                handleEmailSelection({
-                  id: em.id,
-                  name: em.name,
-                  email: em.email,
-                  emailAbbr: em.emailAbbr,
-                  status: em.status,
-                  unsubscribed: em.unsubscribed,
-                });
-              }}
-            >
-              <div
-                className={cn(`
+                    "border-brown-600/40 bg-brown-600/10 text-stone-800 hover:bg-brown-600/20 active:bg-brown-600/10",
+                  em.unsubscribed &&
+                    `border-red-400/50 bg-red-400/5 text-red-600 hover:border-red-400 hover:bg-red-400/20  active:bg-red-400/30`,
+                  em.unsubscribed &&
+                    selected &&
+                    `border-red-400 bg-red-400/20 text-red-600 hover:bg-red-400/30  active:bg-red-400/20`
+                )}
+                onClick={() => {
+                  handleEmailSelection({
+                    id: em.id,
+                    name: em.name,
+                    email: em.email,
+                    emailAbbr: em.emailAbbr,
+                    status: em.status,
+                    unsubscribed: em.unsubscribed,
+                  });
+                }}
+              >
+                <div
+                  className={cn(`
                   mx-auto
                   flex
                   w-full
@@ -394,70 +369,70 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                   items-center
                   gap-2
                 `)}
-              >
-                <div
-                  className={cn(
-                    `mx-auto
+                >
+                  <div
+                    className={cn(
+                      `mx-auto
                     flex
                     w-full
                     flex-col
                     gap-0.5
                     p-2
                     text-left`
-                  )}
-                >
-                  <div className="flex grow flex-col items-start gap-1">
-                    {em.status && (
-                      <Tag
-                        variant={
-                          em.status === StatusEnum.APPROVED
-                            ? TagVariant.Success
-                            : em.status === StatusEnum.IN_PROGRESS
-                            ? TagVariant.NearSuccess
-                            : em.status === StatusEnum.PENDING
-                            ? TagVariant.Warn
-                            : TagVariant.Alert
-                        }
-                      >
-                        {convertStringSnake(em.status)}
-                      </Tag>
-                    )}
-                    <h3 className="text-xl font-semibold">{em.name}</h3>
-                  </div>
-                  <h5
-                    className={cn(
-                      "inline-flex items-center gap-1 rounded bg-tan-500/10 px-2 py-1 text-xs",
-                      em.unsubscribed && "bg-red-400/10 text-red-600"
                     )}
                   >
-                    {em.unsubscribed && (
-                      <span className="font-medium">UNSUBSCRIBER</span>
-                    )}
-                    {includeName && (
+                    <div className="flex grow flex-col items-start gap-1">
+                      {em.status && (
+                        <Tag
+                          variant={
+                            em.status === StatusEnum.APPROVED
+                              ? TagVariant.Success
+                              : em.status === StatusEnum.IN_PROGRESS
+                              ? TagVariant.NearSuccess
+                              : em.status === StatusEnum.PENDING
+                              ? TagVariant.Warn
+                              : TagVariant.Alert
+                          }
+                        >
+                          {convertStringSnake(em.status)}
+                        </Tag>
+                      )}
+                      <h3 className="text-xl font-semibold">{em.name}</h3>
+                    </div>
+                    <h5
+                      className={cn(
+                        "inline-flex items-center gap-1 rounded bg-tan-500/10 px-2 py-1 text-xs",
+                        em.unsubscribed && "bg-red-400/10 text-red-600"
+                      )}
+                    >
+                      {em.unsubscribed && (
+                        <span className="font-medium">UNSUBSCRIBER</span>
+                      )}
+                      {includeName && (
+                        <span
+                          className={cn(
+                            `inline-flex shrink-0 cursor-text select-text text-stone-500`,
+                            selected && "text-stone-600",
+                            em.unsubscribed && `text-red-600/60`
+                          )}
+                        >
+                          {em.name}
+                        </span>
+                      )}
                       <span
                         className={cn(
-                          `inline-flex shrink-0 cursor-text select-text text-stone-500`,
+                          `flex-grow cursor-text select-text overflow-hidden overflow-ellipsis whitespace-nowrap text-stone-500`,
                           selected && "text-stone-600",
                           em.unsubscribed && `text-red-600/60`
                         )}
                       >
-                        {em.name}
-                      </span>
-                    )}
-                    <span
-                      className={cn(
-                        `flex-grow cursor-text select-text overflow-hidden overflow-ellipsis whitespace-nowrap text-stone-500`,
-                        selected && "text-stone-600",
-                        em.unsubscribed && `text-red-600/60`
-                      )}
-                    >
-                      {includeName && `<`}
-                      {revealEmail ? em.email : em.emailAbbr}
-                      {includeName && `>`}
-                    </span>{" "}
-                    {em.unsubscribed && (
-                      <>
-                        {/* <span
+                        {includeName && `<`}
+                        {revealEmail ? em.email : em.emailAbbr}
+                        {includeName && `>`}
+                      </span>{" "}
+                      {em.unsubscribed && (
+                        <>
+                          {/* <span
                     className={cn(
                       `shrink-0 text-stone-400`,
                       em.unsubscribed && `text-red-600/30`
@@ -465,32 +440,33 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                       >
                       ·
                     </span> */}
-                        <span
-                          className={cn("shrink-0 text-xs text-red-600/60")}
-                        >
-                          Transactional / urgent emails only
-                        </span>
-                      </>
+                          <span
+                            className={cn("shrink-0 text-xs text-red-600/60")}
+                          >
+                            Transactional / urgent emails only
+                          </span>
+                        </>
+                      )}
+                    </h5>
+                  </div>
+                  <div
+                    className={cn(
+                      `pr-4 text-stone-500 opacity-50 group-hover:opacity-100`,
+                      selected && `text-brown-600 opacity-100`,
+                      em.unsubscribed && `text-red-600`
                     )}
-                  </h5>
+                  >
+                    {selected ? (
+                      <CheckIcon width={20} height={20} />
+                    ) : (
+                      <PlusIcon width={20} height={20} />
+                    )}
+                  </div>
                 </div>
-                <div
-                  className={cn(
-                    `pr-4 text-stone-500 opacity-50 group-hover:opacity-100`,
-                    selected && `text-brown-600 opacity-100`,
-                    em.unsubscribed && `text-red-600`
-                  )}
-                >
-                  {selected ? (
-                    <CheckIcon width={20} height={20} />
-                  ) : (
-                    <PlusIcon width={20} height={20} />
-                  )}
-                </div>
-              </div>
-            </button>
-          );
-        })}
+              </button>
+            );
+          })
+        )}
       </div>
     </>
   );
