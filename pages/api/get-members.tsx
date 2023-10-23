@@ -10,8 +10,7 @@ export default async function handler(req, res) {
     req.query.status &&
     !Object.values(StatusEnum).includes(req.query.status)
   ) {
-    res.status(400).json({ error: "Invalid status parameter" });
-    return;
+    return res.status(400).json({ error: "Invalid status parameter" });
   }
 
   try {
