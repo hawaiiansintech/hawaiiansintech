@@ -55,6 +55,7 @@ import {
   YearsOfExperienceEnum,
 } from "@/lib/enums";
 import { useUserSession } from "@/lib/hooks";
+import { getAuth } from "firebase/auth";
 import { cn, convertStringSnake } from "helpers";
 import { ExternalLink, Trash } from "lucide-react";
 import moment from "moment";
@@ -62,6 +63,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FC, ReactNode, useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
 
 export async function getStaticProps() {
@@ -507,6 +509,7 @@ const MemberEdit: FC<{
   const [yearsOfExperience, setYearsOfExperience] = useState<string>(
     member.yearsExperience
   );
+  const [user, authLoading, authStateError] = useAuthState(getAuth());
   // TODO: CHECK IF ADMIN
   const IS_ADMIN = true;
 
@@ -522,23 +525,54 @@ const MemberEdit: FC<{
     }
   };
 
-  const handleRegionChange = (value: string) => {
-    if (value === "New") {
-      console.log("create new region");
-      return;
+  const updateMemberField = async (
+    uid: string,
+    fieldName: string,
+    newData: any
+  ) => {
+    const response = await fetch("/api/update-member", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await user.getIdToken()}`,
+      },
+      body: JSON.stringify({
+        uid: uid,
+        fieldName: fieldName,
+        newData: newData,
+      }),
+    });
+    if (response.status !== 200) {
+      throw new Error(`Error updating ${fieldName}`);
     }
-    console.log(value);
+    console.log(`✅ updated ${fieldName} in firebase`);
+    return response;
   };
 
   const saveChanges = () => {
-    console.log("saving changes");
-    console.log("name: ", name);
-    console.log("title: ", title);
-    console.log("link: ", link);
-    console.log("location: ", location);
-    console.log("region: ", region);
-    console.log("companySize: ", companySize);
-    console.log("yearsOfExperience: ", yearsOfExperience);
+    if (name !== member.name) {
+      updateMemberField(member.id, "name", name);
+    }
+    if (title !== member.title) {
+      updateMemberField(member.id, "title", title);
+    }
+    if (link !== member.link) {
+      updateMemberField(member.id, "link", link);
+    }
+    if (location !== member.location) {
+      updateMemberField(member.id, "location", location);
+    }
+    // TODO: add region ref to member list and member ref to region list
+    // if (region !== member.region) {
+    //   updateMemberField(member.id, "region", region);
+    // }
+    if (companySize !== member.companySize) {
+      updateMemberField(member.id, "company_size", companySize);
+    }
+    if (yearsOfExperience !== member.yearsExperience) {
+      updateMemberField(member.id, "years_experience", yearsOfExperience);
+    }
+    window.location.reload();
   };
 
   const mapTabsTriggerToVariant = (

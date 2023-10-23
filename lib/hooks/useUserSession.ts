@@ -21,6 +21,7 @@ export type UserData = {
   uid: string;
   email: string | string[];
   emailIsVerified: boolean;
+  token: string;
 };
 
 export default function useUserSession() {
@@ -43,6 +44,7 @@ export default function useUserSession() {
       uid: sessionStorage.getItem("uid") || "",
       email: useEmailCloaker(sessionStorage.getItem("email") || ""),
       emailIsVerified: Boolean(sessionStorage.getItem("emailIsVerified")),
+      token: sessionStorage.getItem("token") || "",
     };
 
     if (!userData?.uid) {
