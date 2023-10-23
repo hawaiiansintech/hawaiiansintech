@@ -44,19 +44,14 @@ import {
   deleteReferences,
   getReferencesToDelete,
 } from "@/lib/admin/directory-helpers";
-import {
-  getEmailById,
-  MemberEmail,
-  MemberSecure,
-  RegionPublic,
-} from "@/lib/api";
+import { MemberEmail, MemberSecure, RegionPublic } from "@/lib/api";
 import {
   CompanySizeEnum,
   StatusEnum,
   YearsOfExperienceEnum,
 } from "@/lib/enums";
 import { useIsAdmin } from "@/lib/hooks";
-import { getAuth } from "firebase/auth";
+import { getAuth, User } from "firebase/auth";
 import { cn, convertStringSnake } from "helpers";
 import { ExternalLink, Trash } from "lucide-react";
 import moment from "moment";
@@ -122,7 +117,7 @@ export default function DirectoryPage(props: { pageTitle }) {
           )}
           {isAdmin && (
             <div className="mx-auto">
-              <Directory members={members} regions={regions} />
+              <Directory members={members} regions={regions} user={user} />
             </div>
           )}
         </Admin.Body>
@@ -134,6 +129,7 @@ export default function DirectoryPage(props: { pageTitle }) {
 interface MemberDirectoryProps {
   members?: MemberSecure[];
   regions?: RegionPublic[];
+  user?: User;
 }
 
 type MemberDirectoryType = FC<MemberDirectoryProps> & {
@@ -152,7 +148,7 @@ enum DirectoryFilter {
   Archived = "Archived",
 }
 
-const Directory: MemberDirectoryType = ({ members, regions }) => {
+const Directory: MemberDirectoryType = ({ members, regions, user }) => {
   const [tabVisible, setTabVisible] = useState<DirectoryFilter>(
     DirectoryFilter.All
   );
@@ -248,6 +244,7 @@ const Directory: MemberDirectoryType = ({ members, regions }) => {
                 member={m}
                 key={`member-card-${m.id}`}
                 regions={regions}
+                user={user}
               />
             ))}
           </>
@@ -264,11 +261,12 @@ const Directory: MemberDirectoryType = ({ members, regions }) => {
 interface CardProps {
   member: MemberSecure;
   regions?: RegionPublic[];
+  user?: User;
 }
 
 Directory.Card = Card;
 
-function Card({ member, regions }: CardProps) {
+function Card({ member, regions, user }: CardProps) {
   const [showModal, setShowModal] = useState<ReactNode | false>(false);
 
   const handleDelete = async () => {
@@ -447,6 +445,7 @@ function Card({ member, regions }: CardProps) {
             onClose={() => setShowModal(false)}
             onDelete={handleDelete}
             regions={regions}
+            user={user}
           />
         </DialogContent>
       </Dialog>
@@ -459,17 +458,34 @@ const MemberEdit: FC<{
   regions?: RegionPublic[];
   onClose: () => void;
   onDelete: () => void;
-}> = ({ member, regions, onClose, onDelete }) => {
+  user?: User;
+}> = ({ member, regions, onClose, onDelete, user }) => {
   const [email, setEmail] = useState<MemberEmail>(null);
   const [loadingEmail, setLoadingEmail] = useState<boolean>(null);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  // TODO: CHECK IF ADMIN
-  const IS_ADMIN = true;
+
+  const fetchEmailById = async () => {
+    const response = await fetch(`/api/get-email-by-id?id=${member.id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await user.getIdToken()}`,
+      },
+    });
+    const data = await response.json();
+    return data.email;
+  };
 
   const handleManageEmail = async () => {
-    if (email === null && IS_ADMIN) {
+    if (email === null) {
       setLoadingEmail(true);
-      await getEmailById(member.id).then((email) => {
+      await fetchEmailById().then((email) => {
+        if (!email) {
+          // TODO: handle error
+          // this seems to fire occasionally when the email is not found
+          setLoadingEmail(false);
+          return;
+        }
         setEmail(email);
         setLoadingEmail(false);
       });
@@ -587,7 +603,7 @@ const MemberEdit: FC<{
                   className="h-4 w-4 border-2"
                 />
               )}
-              {!email && IS_ADMIN && (
+              {!email && (
                 <button
                   className="text-xs font-medium text-primary"
                   onClick={handleManageEmail}

@@ -4,7 +4,7 @@ import { FirebaseTablesEnum } from "@/lib/enums";
 import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 
-async function getEmails(): Promise<MemberEmail[]> {
+async function getEmailById(userId: string): Promise<MemberEmail> {
   const secureMemberData: DocumentData[] = await getFirebaseTable(
     FirebaseTablesEnum.SECURE_MEMBER_DATA
   );
@@ -32,12 +32,20 @@ async function getEmails(): Promise<MemberEmail[]> {
       })
       .filter((email) => email !== null)
   );
-  return emails as MemberEmail[];
+  const email = emails.find((e) => e.id === userId);
+  return email;
 }
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({ message: "Only GET requests allowed" });
+  }
+
+  if (req.query === null) {
+    return res.status(422).json({ error: "Missing query" });
+  }
+  if (req.query.id === undefined) {
+    return res.status(422).json({ error: "Missing id parameter" });
   }
 
   try {
@@ -51,8 +59,8 @@ export default async function handler(req, res) {
       return res.status(401).json({ message: "Not authorized" });
     }
 
-    const emails = await getEmails();
-    return res.status(200).send({ emails });
+    const email = await getEmailById(req.query.id);
+    return res.status(200).send({ email });
   } catch (error) {
     return res.status(error.statusCode || 500).json({ error: error.message });
   }

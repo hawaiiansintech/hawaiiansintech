@@ -11,7 +11,7 @@ import Plausible from "@/components/Plausible";
 import Tag, { TagVariant } from "@/components/Tag";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getEmails, MemberEmail } from "@/lib/api";
+import { MemberEmail } from "@/lib/api";
 import { StatusEnum } from "@/lib/enums";
 import { useIsAdmin } from "@/lib/hooks";
 import { CheckIcon, PlusIcon } from "@radix-ui/react-icons";
@@ -39,7 +39,15 @@ export default function EmailsPage(props: { pageTitle }) {
   const [emails, setEmails] = useState<MemberEmail[]>([]);
 
   const fetchEmails = async () => {
-    const emails = await getEmails();
+    const response = await fetch("/api/get-emails", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await user.getIdToken()}`,
+      },
+    });
+    const data = await response.json();
+    const emails = data.emails.filter((e) => e !== null) as MemberEmail[];
     setEmails(emails);
   };
 
