@@ -150,10 +150,10 @@ enum DirectoryFilter {
 
 const Directory: MemberDirectoryType = ({ members, regions, user }) => {
   const [tabVisible, setTabVisible] = useState<DirectoryFilter>(
-    DirectoryFilter.All
+    DirectoryFilter.All,
   );
   const [sortOrder, setSortOrder] = useState<DirectorySortOrder>(
-    DirectorySortOrder.LastModified
+    DirectorySortOrder.LastModified,
   );
   const [error, setError] = useState<ErrorMessageProps>(null);
   const [membersFiltered, setMembersFiltered] = useState<MemberSecure[]>();
@@ -182,9 +182,9 @@ const Directory: MemberDirectoryType = ({ members, regions, user }) => {
             return 0;
           }
           return 0;
-        })
+        }),
     );
-  }, [members, tabVisible]);
+  }, [members, tabVisible, sortOrder]);
 
   return (
     <>
@@ -301,12 +301,12 @@ function Card({ member, regions, user }: CardProps) {
               ? "border-violet-500/30 bg-violet-500/5 hover:bg-violet-500/10 active:bg-violet-500/20"
               : member.status === StatusEnum.PENDING
               ? "border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 active:bg-amber-500/20"
-              : "border-red-500/30 bg-red-500/5 hover:bg-red-500/10 active:bg-red-500/20"
+              : "border-red-500/30 bg-red-500/5 hover:bg-red-500/10 active:bg-red-500/20",
           )}
         >
           <div
             className={cn(
-              "mx-auto flex w-full max-w-5xl items-center gap-2 px-2 py-4"
+              "mx-auto flex w-full max-w-5xl items-center gap-2 px-2 py-4",
             )}
           >
             <div
@@ -316,7 +316,7 @@ function Card({ member, regions, user }: CardProps) {
               w-full
               flex-col
               gap-3
-              text-left`
+              text-left`,
               )}
             >
               <div className="flex flex-col items-start gap-1">
@@ -361,7 +361,8 @@ function Card({ member, regions, user }: CardProps) {
               <div
                 className={cn(
                   "grid grid-flow-col grid-cols-5 items-start gap-2 rounded bg-tan-500/10 px-4 py-2 text-xs",
-                  member.status === StatusEnum.IN_PROGRESS && "bg-violet-500/10"
+                  member.status === StatusEnum.IN_PROGRESS &&
+                    "bg-violet-500/10",
                 )}
               >
                 <section>
@@ -393,7 +394,7 @@ function Card({ member, regions, user }: CardProps) {
                           <span
                             className={cn(
                               "font-light text-secondary-foreground",
-                              focusNotApproved && `font-medium text-violet-600`
+                              focusNotApproved && `font-medium text-violet-600`,
                             )}
                             key={member.id + focus.id}
                           >
@@ -417,7 +418,7 @@ function Card({ member, regions, user }: CardProps) {
                             className={cn(
                               "font-light text-secondary-foreground",
                               industryNotApproved &&
-                                `font-medium text-violet-600`
+                                `font-medium text-violet-600`,
                             )}
                             key={member.id + industry.id}
                           >
@@ -503,7 +504,7 @@ const MemberEdit: FC<{
   };
 
   const mapTabsTriggerToVariant = (
-    status: StatusEnum
+    status: StatusEnum,
   ): "alert" | "success" | "nearSuccess" | "warn" => {
     switch (status) {
       case StatusEnum.APPROVED:
@@ -799,7 +800,7 @@ const MemberEdit: FC<{
                       className={cn(
                         "inline-block rounded-xl border px-3 py-0.5 text-sm tracking-wide text-secondary-foreground",
                         focusNotApproved &&
-                          `bg-violet-600/20 font-medium text-violet-600`
+                          `bg-violet-600/20 font-medium text-violet-600`,
                       )}
                       key={member.id + focus.id}
                     >
@@ -823,7 +824,7 @@ const MemberEdit: FC<{
                       className={cn(
                         "inline-block rounded-xl border px-3 py-0.5 text-sm tracking-wide text-secondary-foreground",
                         industryNotApproved &&
-                          `bg-violet-600/20 font-medium text-violet-600`
+                          `bg-violet-600/20 font-medium text-violet-600`,
                       )}
                       key={member.id + industry.id}
                     >
