@@ -48,19 +48,20 @@ export default function EmailsPage(props: { pageTitle }) {
       },
     });
     const data = await response.json();
-    const emails = data.emails.filter((e) => e !== null) as MemberEmail[];
-    setEmails(emails);
+    if (data) {
+      setEmails(data.emails);
+    }
   };
+
+  useEffect(() => {
+    if (!isAdminLoading && !isAdmin) router.push(`/admin`);
+  }, [isAdmin, isAdminLoading, router]);
 
   useEffect(() => {
     if (isAdmin) {
       fetchEmails();
     }
   }, [isAdmin]);
-
-  useEffect(() => {
-    if (!isAdminLoading && !isAdmin) router.push(`/admin`);
-  }, [isAdmin, isAdminLoading, router]);
 
   return (
     <>
@@ -121,39 +122,41 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
     setEmailsShown(
       emails
         .filter((email) => {
+          if (email?.name === undefined || email?.email === undefined)
+            return false;
           switch (tabVisible) {
             case EmailDirectoryFilter.All:
               return true;
             case EmailDirectoryFilter.Newsletter:
-              return !email.unsubscribed;
+              return !email?.unsubscribed;
             default:
               return false;
           }
         })
         .sort((a, b) => {
-          if (a.unsubscribed && !b.unsubscribed) return -1;
-          if (!a.unsubscribed && b.unsubscribed) return 1;
+          if (a?.unsubscribed && !b?.unsubscribed) return -1;
+          if (!a?.unsubscribed && b?.unsubscribed) return 1;
           return 0;
         }),
     );
   }, [emails, tabVisible]);
 
   const handleEmailSelection = (em: MemberEmail) => {
-    if (selectedEmails.find((selectedEm) => em.id === selectedEm.id)) {
+    if (selectedEmails.find((selectedEm) => em?.id === selectedEm?.id)) {
       setSelectedEmails(
-        selectedEmails.filter((selectedEm) => em.id !== selectedEm.id),
+        selectedEmails.filter((selectedEm) => em?.id !== selectedEm?.id),
       );
     } else {
-      const nameSanitized = em.name.replace(/[,()]/g, "");
+      const nameSanitized = em?.name.replace(/[,()]/g, "");
       setSelectedEmails([
         ...selectedEmails,
         {
-          id: em.id,
+          id: em?.id,
           name: nameSanitized,
-          email: em.email,
-          emailAbbr: em.emailAbbr,
-          status: em.status,
-          unsubscribed: em.unsubscribed,
+          email: em?.email,
+          emailAbbr: em?.emailAbbr,
+          status: em?.status,
+          unsubscribed: em?.unsubscribed,
         },
       ]);
     }
@@ -164,9 +167,9 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
     const emailListText = emailList
       .map((em) => {
         if (includeName) {
-          return `${em.name} <${em.email}>`;
+          return `${em?.name} <${em?.email}>`;
         }
-        return `${em.email}`;
+        return `${em?.email}`;
       })
       .join("\n");
 
@@ -268,18 +271,18 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
       <div className="mx-auto flex w-full flex-col">
         <div className="w-full border-b border-tan-400 bg-tan-100">
           <div className="mx-auto flex max-w-5xl justify-between gap-4 p-2">
-            {!showUnsubscribed ? (
+            {tabVisible === EmailDirectoryFilter.All ? (
+              <p className="flex flex-wrap gap-x-1 text-xs text-stone-500">
+                This list includes all email addresses, including unsubscribed
+                members. Do not send marketing or newsletter emails.
+              </p>
+            ) : (
               <p className="text-xs text-stone-500">
                 This list includes all email addresses that will receive our
                 newsletter.{" "}
                 <span className="text-stone-400">
                   (Excludes unsubscribed members)
                 </span>
-              </p>
-            ) : (
-              <p className="flex flex-wrap gap-x-1 text-xs text-stone-500">
-                This list includes all email addresses, including unsubscribed
-                members. Do not send marketing or newsletter emails.
               </p>
             )}
             <div className="flex shrink-0 gap-4">
@@ -334,12 +337,12 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
         ) : (
           emailsShown.map((em) => {
             const selected = selectedEmails.find(
-              (selectedEm) => em.id === selectedEm.id,
+              (selectedEm) => em?.id === selectedEm?.id,
             );
 
             return (
               <button
-                key={`email-${em.email}-${em.id}`}
+                key={`email-${em?.email}-${em?.id}`}
                 className={cn(
                   `
                   group
@@ -352,20 +355,20 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                 `,
                   selected &&
                     "border-brown-600/40 bg-brown-600/10 text-stone-800 hover:bg-brown-600/20 active:bg-brown-600/10",
-                  em.unsubscribed &&
+                  em?.unsubscribed &&
                     `border-red-400/50 bg-red-400/5 text-red-600 hover:border-red-400 hover:bg-red-400/20  active:bg-red-400/30`,
-                  em.unsubscribed &&
+                  em?.unsubscribed &&
                     selected &&
                     `border-red-400 bg-red-400/20 text-red-600 hover:bg-red-400/30  active:bg-red-400/20`,
                 )}
                 onClick={() => {
                   handleEmailSelection({
-                    id: em.id,
-                    name: em.name,
-                    email: em.email,
-                    emailAbbr: em.emailAbbr,
-                    status: em.status,
-                    unsubscribed: em.unsubscribed,
+                    id: em?.id,
+                    name: em?.name,
+                    email: em?.email,
+                    emailAbbr: em?.emailAbbr,
+                    status: em?.status,
+                    unsubscribed: em?.unsubscribed,
                   });
                 }}
               >
@@ -391,30 +394,30 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                     )}
                   >
                     <div className="flex grow flex-col items-start gap-1">
-                      {em.status && (
+                      {em?.status && (
                         <Tag
                           variant={
-                            em.status === StatusEnum.APPROVED
+                            em?.status === StatusEnum.APPROVED
                               ? TagVariant.Success
-                              : em.status === StatusEnum.IN_PROGRESS
+                              : em?.status === StatusEnum.IN_PROGRESS
                               ? TagVariant.NearSuccess
-                              : em.status === StatusEnum.PENDING
+                              : em?.status === StatusEnum.PENDING
                               ? TagVariant.Warn
                               : TagVariant.Alert
                           }
                         >
-                          {convertStringSnake(em.status)}
+                          {convertStringSnake(em?.status)}
                         </Tag>
                       )}
-                      <h3 className="text-xl font-semibold">{em.name}</h3>
+                      <h3 className="text-xl font-semibold">{em?.name}</h3>
                     </div>
                     <h5
                       className={cn(
                         "inline-flex items-center gap-1 rounded bg-tan-500/10 px-2 py-1 text-xs",
-                        em.unsubscribed && "bg-red-400/10 text-red-600",
+                        em?.unsubscribed && "bg-red-400/10 text-red-600",
                       )}
                     >
-                      {em.unsubscribed && (
+                      {em?.unsubscribed && (
                         <span className="font-medium">UNSUBSCRIBER</span>
                       )}
                       {includeName && (
@@ -422,29 +425,29 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                           className={cn(
                             `inline-flex shrink-0 cursor-text select-text text-stone-500`,
                             selected && "text-stone-600",
-                            em.unsubscribed && `text-red-600/60`,
+                            em?.unsubscribed && `text-red-600/60`,
                           )}
                         >
-                          {em.name}
+                          {em?.name}
                         </span>
                       )}
                       <span
                         className={cn(
                           `flex-grow cursor-text select-text overflow-hidden overflow-ellipsis whitespace-nowrap text-stone-500`,
                           selected && "text-stone-600",
-                          em.unsubscribed && `text-red-600/60`,
+                          em?.unsubscribed && `text-red-600/60`,
                         )}
                       >
                         {includeName && `<`}
-                        {revealEmail ? em.email : em.emailAbbr}
+                        {revealEmail ? em?.email : em?.emailAbbr}
                         {includeName && `>`}
                       </span>{" "}
-                      {em.unsubscribed && (
+                      {em?.unsubscribed && (
                         <>
                           {/* <span
                     className={cn(
                       `shrink-0 text-stone-400`,
-                      em.unsubscribed && `text-red-600/30`
+                      em?.unsubscribed && `text-red-600/30`
                       )}
                       >
                       ·
@@ -462,7 +465,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                     className={cn(
                       `pr-4 text-stone-500 opacity-50 group-hover:opacity-100`,
                       selected && `text-brown-600 opacity-100`,
-                      em.unsubscribed && `text-red-600`,
+                      em?.unsubscribed && `text-red-600`,
                     )}
                   >
                     {selected ? (

@@ -4,34 +4,54 @@ import { FirebaseTablesEnum } from "@/lib/enums";
 import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 
-async function getEmails(): Promise<MemberEmail[]> {
+interface getEmailsProps {
+  /**
+   * Required check if the user is admin via verifyAdminToken(token)
+   *  - If the user is an admin, returns secured emails
+   */
+  token?: string;
+}
+
+async function getEmails({ token }: getEmailsProps): Promise<MemberEmail[]> {
+  if (!token) {
+    throw new Error("Missing token");
+  }
+
+  const isAdmin = await verifyAdminToken(token);
+  if (!isAdmin) {
+    throw new Error("Unauthorized");
+  }
+
   const secureMemberData: DocumentData[] = await getFirebaseTable(
-    FirebaseTablesEnum.SECURE_MEMBER_DATA
+    FirebaseTablesEnum.SECURE_MEMBER_DATA,
   );
+
   const emails = await Promise.all(
     secureMemberData
-      .filter((secM) => secM.fields.email !== "")
-      .map(async (secM) => {
-        const docRef = doc(db, FirebaseTablesEnum.MEMBERS, secM.id);
+      .filter((data) => data.fields.email)
+      .map(async (data) => {
+        const docRef = doc(db, FirebaseTablesEnum.MEMBERS, data.id);
         try {
           const docSnapshot = await getDoc(docRef);
-          if (docSnapshot.exists()) {
+          if (docSnapshot?.exists()) {
+            const { name, masked_email, status, unsubscribed } =
+              docSnapshot.data();
             return {
-              id: secM.id,
-              email: secM.fields.email,
-              name: docSnapshot.data().name || null,
-              emailAbbr: docSnapshot.data().masked_email || null,
-              status: docSnapshot.data().status || null,
-              unsubscribed: docSnapshot.data().unsubscribed || false,
+              id: data.id,
+              email: data.fields.email,
+              name: name || null,
+              emailAbbr: masked_email || null,
+              status: status || null,
+              unsubscribed: unsubscribed || false,
             };
           }
         } catch (error) {
           console.error(error);
+          throw error;
         }
-        return null;
-      })
-      .filter((email) => email !== null)
+      }),
   );
+
   return emails as MemberEmail[];
 }
 
@@ -46,12 +66,7 @@ export default async function handler(req, res) {
       return res.status(401).json({ message: "Authorization header missing" });
     }
     const token = authHeader.split(" ")[1];
-    const isAdmin = await verifyAdminToken(token);
-    if (!isAdmin) {
-      return res.status(401).json({ message: "Not authorized" });
-    }
-
-    const emails = await getEmails();
+    const emails = await getEmails({ token: token });
     return res.status(200).send({ emails });
   } catch (error) {
     return res.status(error.statusCode || 500).json({ error: error.message });
