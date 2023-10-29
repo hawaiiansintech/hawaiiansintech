@@ -14,6 +14,9 @@ export interface TabsProps {
   size?: TabsSize;
 }
 
+/**
+ * @deprecated Use /ui/tabs instead
+ */
 export default function Tabs_old({
   items,
   size = TabsSize.Default,
@@ -34,7 +37,7 @@ export default function Tabs_old({
             transition-all
             hover:bg-tan-400/70`,
             item.selected && "bg-white text-stone-900 hover:bg-white",
-            size === TabsSize.Large && "px-4 text-base"
+            size === TabsSize.Large && "px-4 text-base",
           )}
           onClick={items[i].onClick}
         >
