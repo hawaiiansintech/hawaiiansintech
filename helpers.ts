@@ -62,16 +62,27 @@ export function useSessionStorage(key, initialValue) {
   return [storedValue, setValue];
 }
 
-export function useEmailCloaker(initialValue: string): string[] | [] {
+export function validateEmail(email: string): boolean {
+  // Regular expression to match email addresses
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  return emailRegex.test(email);
+}
+
+export function useEmailCloaker(initialValue: string): string {
   const email = parseOneAddress(initialValue);
-  if (email && "local" in email && "domain" in email) {
-    return [
-      email.local.charAt(0),
-      email.local.charAt(email.local.length - 1),
-      `@${email.domain}`,
-    ];
+  if (
+    !validateEmail(initialValue) ||
+    !email ||
+    !("local" in email) ||
+    !("domain" in email)
+  ) {
+    throw new Error("Invalid email");
   }
-  return [];
+
+  return `${email.local.charAt(0)}...${email.local.charAt(
+    email.local.length - 1,
+  )}@${email.domain}`;
 }
 
 export function convertStringSnake(str) {
