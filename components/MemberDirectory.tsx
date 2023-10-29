@@ -1,5 +1,5 @@
 import { MemberPublic } from "@/lib/api";
-import { cn } from "helpers";
+import { cn } from "@/lib/utils";
 
 export interface DirectoryMember extends MemberPublic {
   focus: { active?: boolean; id: string; name: string }[];
@@ -20,7 +20,7 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
           .concat(mem.industry)
           .concat(mem.experienceFilter)
           .concat(mem.regionFilter)
-          ?.filter((foc) => foc.active).length > 0
+          ?.filter((foc) => foc.active).length > 0,
     ).length > 0;
   return (
     <section
@@ -68,7 +68,7 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
                 ? "border-brown-600/50 bg-brown-600/10 hover:border-brown-600/30 hover:bg-brown-600/30"
                 : isFiltered
                 ? "opacity-50 hover:opacity-100"
-                : ""
+                : "",
             )}
             key={`member-${member.id}`}
             href={member.link}
@@ -80,7 +80,7 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
                 text-2xl
               text-stone-800
               `,
-                isSelected && "text-stone-900"
+                isSelected && "text-stone-900",
               )}
             >
               {member.name}
@@ -95,7 +95,7 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
                   leading-tight
                   text-brown-600
                 `,
-                    isSelected && "text-stone-700"
+                    isSelected && "text-stone-700",
                   )}
                 >
                   {member.title}
@@ -119,7 +119,7 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
                             leading-snug
                             text-stone-900
                           `,
-                          fil.active && "text-brown-600"
+                          fil.active && "text-brown-600",
                         )}
                         key={`member-meta-${fil.id}`}
                       >
@@ -143,7 +143,7 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
                             font-semibold
                             text-stone-900
                           `,
-                            fil.active && "text-brown-600"
+                            fil.active && "text-brown-600",
                           )}
                           key={`member-meta-${fil.id}`}
                         >
@@ -162,7 +162,7 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
                           text-sm
                           font-medium
                           text-stone-600
-                        `
+                        `,
                       )}
                     >
                       Years of Experience
@@ -178,7 +178,7 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
                             text-stone-900
                             `,
                             member.experienceFilter[0]?.active &&
-                              "text-brown-600"
+                              "text-brown-600",
                           )}
                           key={`member-meta-${fil.id}`}
                         >
@@ -196,7 +196,7 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
                       text-sm
                       font-medium
                       text-stone-600
-                    `
+                    `,
                     )}
                   >
                     Location
@@ -209,7 +209,7 @@ export default function MemberDirectory({ members }: MemberDirectoryProps) {
                     leading-snug
                     text-stone-900
                   `,
-                      member.regionFilter[0]?.active && "text-brown-600"
+                      member.regionFilter[0]?.active && "text-brown-600",
                     )}
                   >
                     {member.location ? member.location + ", " : ""}

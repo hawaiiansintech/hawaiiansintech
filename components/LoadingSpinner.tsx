@@ -1,4 +1,4 @@
-import { cn } from "helpers";
+import { cn } from "@/lib/utils";
 
 export enum LoadingSpinnerVariant {
   Default = "default",
@@ -29,7 +29,7 @@ export default function LoadingSpinner({
       `,
         variant === LoadingSpinnerVariant.Invert &&
           `border-brown-600/20 border-t-brown-600`,
-        className
+        className,
       )}
     />
   );

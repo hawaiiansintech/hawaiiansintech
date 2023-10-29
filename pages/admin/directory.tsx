@@ -52,7 +52,8 @@ import {
 } from "@/lib/enums";
 import { useIsAdmin } from "@/lib/hooks";
 import { getAuth, User } from "firebase/auth";
-import { cn, convertStringSnake } from "helpers";
+import { convertStringSnake } from "helpers";
+import { cn } from "@/lib/utils";
 import { ExternalLink, Trash } from "lucide-react";
 import moment from "moment";
 import Head from "next/head";

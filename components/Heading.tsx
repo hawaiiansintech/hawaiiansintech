@@ -1,4 +1,4 @@
-import { cn } from "helpers";
+import { cn } from "@/lib/utils";
 
 interface HeadingProps {
   children: React.ReactNode;
@@ -23,7 +23,7 @@ export function Subheading(props: SubheadingProps) {
     <p
       className={cn(
         { "text-center": props.centered, "text-left": !props.centered },
-        "mx-auto mb-8 mt-0 max-w-3xl px-8 text-2xl font-normal text-stone-600 "
+        "mx-auto mb-8 mt-0 max-w-3xl px-8 text-2xl font-normal text-stone-600 ",
       )}
     >
       {props.children}

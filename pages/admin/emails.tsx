@@ -16,7 +16,8 @@ import { StatusEnum } from "@/lib/enums";
 import { useIsAdmin } from "@/lib/hooks";
 import { CheckIcon, PlusIcon } from "@radix-ui/react-icons";
 import { getAuth } from "firebase/auth";
-import { cn, convertStringSnake } from "helpers";
+import { convertStringSnake } from "helpers";
+import { cn } from "@/lib/utils";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { FC, useEffect, useState } from "react";
@@ -108,7 +109,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
   const [showCopiedNotification, setShowCopiedNotification] =
     useState<boolean>(false);
   const [tabVisible, setTabVisible] = useState<EmailDirectoryFilter>(
-    EmailDirectoryFilter.Newsletter
+    EmailDirectoryFilter.Newsletter,
   );
   const [showUnsubscribed, setShowUnsubscribed] = useState<boolean>(false);
   const [emailsShown, setEmailsShown] = useState<MemberEmail[]>(emails);
@@ -133,14 +134,14 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
           if (a.unsubscribed && !b.unsubscribed) return -1;
           if (!a.unsubscribed && b.unsubscribed) return 1;
           return 0;
-        })
+        }),
     );
   }, [emails, tabVisible]);
 
   const handleEmailSelection = (em: MemberEmail) => {
     if (selectedEmails.find((selectedEm) => em.id === selectedEm.id)) {
       setSelectedEmails(
-        selectedEmails.filter((selectedEm) => em.id !== selectedEm.id)
+        selectedEmails.filter((selectedEm) => em.id !== selectedEm.id),
       );
     } else {
       const nameSanitized = em.name.replace(/[,()]/g, "");
@@ -221,7 +222,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                 onClick={() => {
                   if (selectedEmails.length >= 5) {
                     const confirmDelete = window.confirm(
-                      `Are you sure you want to deselect all ${selectedEmails.length} members?`
+                      `Are you sure you want to deselect all ${selectedEmails.length} members?`,
                     );
                     if (confirmDelete) {
                       setSelectedEmails([]);
@@ -333,7 +334,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
         ) : (
           emailsShown.map((em) => {
             const selected = selectedEmails.find(
-              (selectedEm) => em.id === selectedEm.id
+              (selectedEm) => em.id === selectedEm.id,
             );
 
             return (
@@ -355,7 +356,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                     `border-red-400/50 bg-red-400/5 text-red-600 hover:border-red-400 hover:bg-red-400/20  active:bg-red-400/30`,
                   em.unsubscribed &&
                     selected &&
-                    `border-red-400 bg-red-400/20 text-red-600 hover:bg-red-400/30  active:bg-red-400/20`
+                    `border-red-400 bg-red-400/20 text-red-600 hover:bg-red-400/30  active:bg-red-400/20`,
                 )}
                 onClick={() => {
                   handleEmailSelection({
@@ -386,7 +387,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                     flex-col
                     gap-0.5
                     p-2
-                    text-left`
+                    text-left`,
                     )}
                   >
                     <div className="flex grow flex-col items-start gap-1">
@@ -410,7 +411,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                     <h5
                       className={cn(
                         "inline-flex items-center gap-1 rounded bg-tan-500/10 px-2 py-1 text-xs",
-                        em.unsubscribed && "bg-red-400/10 text-red-600"
+                        em.unsubscribed && "bg-red-400/10 text-red-600",
                       )}
                     >
                       {em.unsubscribed && (
@@ -421,7 +422,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                           className={cn(
                             `inline-flex shrink-0 cursor-text select-text text-stone-500`,
                             selected && "text-stone-600",
-                            em.unsubscribed && `text-red-600/60`
+                            em.unsubscribed && `text-red-600/60`,
                           )}
                         >
                           {em.name}
@@ -431,7 +432,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                         className={cn(
                           `flex-grow cursor-text select-text overflow-hidden overflow-ellipsis whitespace-nowrap text-stone-500`,
                           selected && "text-stone-600",
-                          em.unsubscribed && `text-red-600/60`
+                          em.unsubscribed && `text-red-600/60`,
                         )}
                       >
                         {includeName && `<`}
@@ -461,7 +462,7 @@ const EmailList: FC<{ emails: MemberEmail[] }> = ({ emails }) => {
                     className={cn(
                       `pr-4 text-stone-500 opacity-50 group-hover:opacity-100`,
                       selected && `text-brown-600 opacity-100`,
-                      em.unsubscribed && `text-red-600`
+                      em.unsubscribed && `text-red-600`,
                     )}
                   >
                     {selected ? (

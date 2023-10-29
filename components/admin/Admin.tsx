@@ -1,4 +1,4 @@
-import { cn } from "helpers";
+import { cn } from "@/lib/utils";
 import { ExternalLink, Mails, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -105,7 +105,7 @@ function AdminNavLink({
         "flex items-center gap-2 rounded-lg p-2 text-sm font-semibold text-stone-700 hover:bg-tan-500/20 hover:text-stone-900 active:bg-brown-600/10",
         small && "text-xs",
         isActive &&
-          "bg-brown-600/10 text-brown-600 hover:bg-brown-600/20 hover:text-brown-600"
+          "bg-brown-600/10 text-brown-600 hover:bg-brown-600/20 hover:text-brown-600",
       )}
       target={targetBlank ? "_blank" : undefined}
       key={`admin-nav-link-${url}`}

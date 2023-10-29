@@ -1,11 +1,5 @@
-/*
-add when converting helper file to typescript
-// import { clsx, type ClassValue } from "clsx";
-*/
-import { clsx } from "clsx";
 import { parseOneAddress } from "email-addresses";
 import { useState } from "react";
-import { twMerge } from "tailwind-merge";
 
 export function scrollToTop() {
   window.scrollTo({
@@ -78,10 +72,6 @@ export function useEmailCloaker(initialValue: string): string[] | [] {
     ];
   }
   return [];
-}
-
-export function cn(...inputs) {
-  return twMerge(clsx(inputs));
 }
 
 export function convertStringSnake(str) {

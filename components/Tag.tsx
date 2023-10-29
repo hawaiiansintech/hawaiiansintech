@@ -1,4 +1,4 @@
-import { cn } from "helpers";
+import { cn } from "@/lib/utils";
 
 export enum TagVariant {
   Primary = "primary",
@@ -43,7 +43,7 @@ export default function Tag({
         variant === TagVariant.NearSuccess &&
           `bg-violet-500/10 bg-gradient-to-br from-violet-500/10 to-violet-500/60 text-violet-700`,
         variant === TagVariant.Warn &&
-          `bg-amber-500/10 bg-gradient-to-br from-amber-500/10 to-amber-500/60 text-amber-700`
+          `bg-amber-500/10 bg-gradient-to-br from-amber-500/10 to-amber-500/60 text-amber-700`,
       )}
     >
       {children ? children : null}

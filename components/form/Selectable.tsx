@@ -1,4 +1,5 @@
-import { cn, toKebab } from "../../helpers";
+import { toKebab } from "../../helpers";
+import { cn } from "@/lib/utils";
 
 export enum SelectableVariant {
   Checkbox = "checkbox",
@@ -92,7 +93,7 @@ export default function Selectable({
         disabled &&
           "cursor-not-allowed opacity-50 ring-0 hover:border-transparent",
         variant === SelectableVariant.Blank && "before:hidden after:hidden",
-        size === SelectableSize.Large && "px-3 py-2"
+        size === SelectableSize.Large && "px-3 py-2",
       )}
       style={gridSpan ? { gridColumn: `span ${gridSpan}` } : {}}
       disabled={disabled}
@@ -103,7 +104,7 @@ export default function Selectable({
           grow
           font-semibold
           transition-all`,
-          selected && "text-white"
+          selected && "text-white",
         )}
       >
         {headline}
@@ -122,7 +123,7 @@ export default function Selectable({
             text-stone-700
             transition-all
           `,
-            selected && "bg-brown-700 text-white"
+            selected && "bg-brown-700 text-white",
           )}
         >
           {count}
