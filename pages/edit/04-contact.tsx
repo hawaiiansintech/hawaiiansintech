@@ -59,7 +59,7 @@ export default function JoinStep4({ pageTitle }) {
         },
         (error: Response) => {
           reject(error);
-        }
+        },
       );
     });
   };
@@ -143,7 +143,7 @@ export default function JoinStep4({ pageTitle }) {
             kekai@hawaiiansintech.org
           </Link>{" "}
           or{" "}
-          <Link href="mailto:kekai@hawaiiansintech.org" target="_blank">
+          <Link href="mailto:kamakani@hawaiiansintech.org" target="_blank">
             kamakani@hawaiiansintech.org
           </Link>{" "}
           and we&rsquo;ll get you sorted out.
@@ -300,7 +300,7 @@ const DiffTable = ({
             </span>
             <span>
               {[...editedData.focus, editedData.focusSuggested].filter(
-                (foc) => !!!foc
+                (foc) => !!!foc,
               ).length > 0 && <>Updated</>}
             </span>
           </div>
@@ -339,7 +339,7 @@ const DiffTable = ({
             </span>
             <span>
               {[...editedData.industry, editedData.industrySuggested].filter(
-                (foc) => !!!foc
+                (foc) => !!!foc,
               ).length > 0 && <>Updated</>}
             </span>
           </div>
