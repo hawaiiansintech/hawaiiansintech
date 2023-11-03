@@ -44,9 +44,16 @@ import {
   deleteReferences,
   getReferencesToDelete,
 } from "@/lib/admin/directory-helpers";
-import { MemberEmail, MemberSecure, RegionPublic } from "@/lib/api";
+import {
+  DocumentData,
+  MemberEmail,
+  MemberSecure,
+  RegionPublic,
+  getFirebaseTable,
+} from "@/lib/api";
 import {
   CompanySizeEnum,
+  FirebaseTablesEnum,
   StatusEnum,
   YearsOfExperienceEnum,
 } from "@/lib/enums";
@@ -72,35 +79,48 @@ export async function getStaticProps() {
   };
 }
 
-export default function DirectoryPage(props: { pageTitle }) {
+export default function DirectoryPage(props) {
+  const { pageTitle } = props;
   const auth = getAuth();
   const [members, setMembers] = useState<MemberSecure[]>([]);
-  const [regions, setRegions] = useState<RegionPublic[]>([]);
+  const [regions, setRegions] = useState<DocumentData[]>([]);
   const [user, loading, error] = useAuthState(auth);
   const [isAdmin, isAdminLoading] = useIsAdmin(user, loading);
   const router = useRouter();
 
   useEffect(() => {
-    if (isAdmin) {
-      fetch("/api/get-members")
-        .then((res) => res.json())
-        .then((data) => {
-          setMembers(data.members);
-          setRegions(data.regions.sort((a, b) => a.name.localeCompare(b.name)));
-        });
-    }
-  }, [isAdmin]);
-
-  useEffect(() => {
     if (!isAdminLoading && !isAdmin) router.push(`/admin`);
   }, [isAdmin, isAdminLoading, router]);
+
+  const fetchMembers = async () => {
+    const response = await fetch("/api/get-members", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await user.getIdToken()}`,
+      },
+    });
+    const data = await response.json();
+    if (data) {
+      setMembers(data.members);
+      setRegions(
+        data.regions.sort((a, b) => a.fields.name.localeCompare(b.fields.name)),
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (isAdmin) {
+      fetchMembers();
+    }
+  }, [isAdmin]);
 
   return (
     <>
       <Head>
         <Plausible />
-        <MetaTags title={props.pageTitle} />
-        <title>{props.pageTitle}</title>
+        <MetaTags title={pageTitle} />
+        <title>{pageTitle}</title>
       </Head>
       <Admin>
         <Admin.Nav
@@ -129,7 +149,7 @@ export default function DirectoryPage(props: { pageTitle }) {
 
 interface MemberDirectoryProps {
   members?: MemberSecure[];
-  regions?: RegionPublic[];
+  regions?: DocumentData[];
   user?: User;
 }
 
@@ -157,12 +177,12 @@ const Directory: MemberDirectoryType = ({ members, regions, user }) => {
     DirectorySortOrder.LastModified,
   );
   const [error, setError] = useState<ErrorMessageProps>(null);
-  const [membersFiltered, setMembersFiltered] = useState<MemberSecure[]>();
+  const [filteredMembers, setFilteredMembers] = useState<MemberSecure[]>();
 
   useEffect(() => {
-    setMembersFiltered(
+    setFilteredMembers(
       members
-        .filter((m) => {
+        ?.filter((m) => {
           switch (tabVisible) {
             case DirectoryFilter.All:
               return true;
@@ -238,9 +258,9 @@ const Directory: MemberDirectoryType = ({ members, regions, user }) => {
             />
           </div>
         )}
-        {membersFiltered && membersFiltered.length > 0 ? (
+        {filteredMembers && filteredMembers.length > 0 ? (
           <>
-            {membersFiltered.map((m) => (
+            {filteredMembers.map((m) => (
               <Directory.Card
                 member={m}
                 key={`member-card-${m.id}`}
@@ -261,7 +281,7 @@ const Directory: MemberDirectoryType = ({ members, regions, user }) => {
 
 interface CardProps {
   member: MemberSecure;
-  regions?: RegionPublic[];
+  regions?: DocumentData[];
   user?: User;
 }
 
@@ -457,7 +477,7 @@ function Card({ member, regions, user }: CardProps) {
 
 const MemberEdit: FC<{
   member: MemberSecure;
-  regions?: RegionPublic[];
+  regions?: DocumentData[];
   onClose: () => void;
   onDelete: () => void;
   user?: User;
@@ -747,8 +767,8 @@ const MemberEdit: FC<{
               </SelectTrigger>
               <SelectContent className="max-h-72">
                 {regions?.map((region) => (
-                  <SelectItem value={region.name} key={region.id}>
-                    {region.name}
+                  <SelectItem value={region.fields.name} key={region.fields.id}>
+                    {region.fields.name}
                   </SelectItem>
                 ))}
               </SelectContent>
