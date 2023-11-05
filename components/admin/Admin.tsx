@@ -1,4 +1,4 @@
-import { cn } from "helpers";
+import { cn } from "@/lib/utils";
 import { ExternalLink, Mails, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -22,19 +22,17 @@ function AdminBody({
 type AdminNavProps = {
   handleLogOut: () => any;
   handleLogIn: () => any;
-  name?: string;
+  displayName?: string;
   isAdmin?: boolean;
   isLoggedIn?: boolean;
-  isSessionChecked?: boolean;
 };
 
 function AdminNav({
   handleLogOut,
   handleLogIn,
-  name,
+  displayName,
   isAdmin,
   isLoggedIn,
-  isSessionChecked,
 }: AdminNavProps) {
   return (
     <nav className="sticky top-0 h-[100vh] w-72 bg-tan-300 p-2">
@@ -64,20 +62,18 @@ function AdminNav({
             />
           ))}
         <section className="flex items-center gap-2">
-          {isLoggedIn && name && (
-            <h1 className="text-sm leading-none">{name}</h1>
+          {displayName && (
+            <h1 className="text-sm leading-none">{displayName}</h1>
           )}
-          {isSessionChecked && (
-            <Button
-              size={ButtonSize.XSmall}
-              variant={
-                isLoggedIn ? ButtonVariant.Secondary : ButtonVariant.Primary
-              }
-              onClick={isLoggedIn ? handleLogOut : handleLogIn}
-            >
-              {isLoggedIn ? "Log Out" : "Log in"}
-            </Button>
-          )}
+          <Button
+            size={ButtonSize.XSmall}
+            variant={
+              isLoggedIn ? ButtonVariant.Secondary : ButtonVariant.Primary
+            }
+            onClick={isLoggedIn ? handleLogOut : handleLogIn}
+          >
+            {isLoggedIn ? "Log Out" : "Log in"}
+          </Button>
         </section>
       </div>
     </nav>
@@ -109,7 +105,7 @@ function AdminNavLink({
         "flex items-center gap-2 rounded-lg p-2 text-sm font-semibold text-stone-700 hover:bg-tan-500/20 hover:text-stone-900 active:bg-brown-600/10",
         small && "text-xs",
         isActive &&
-          "bg-brown-600/10 text-brown-600 hover:bg-brown-600/20 hover:text-brown-600"
+          "bg-brown-600/10 text-brown-600 hover:bg-brown-600/20 hover:text-brown-600",
       )}
       target={targetBlank ? "_blank" : undefined}
       key={`admin-nav-link-${url}`}

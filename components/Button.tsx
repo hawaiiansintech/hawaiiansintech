@@ -1,4 +1,4 @@
-import { cn } from "helpers";
+import { cn } from "@/lib/utils";
 import LoadingSpinner from "./LoadingSpinner";
 
 export enum ButtonVariant {
@@ -79,7 +79,7 @@ export default function Button({
           "bg-red-500/20 text-red-600 hover:border-red-500/10 focus:ring-red-500/10",
         size === ButtonSize.Small && "h-8 rounded-md px-2 text-sm",
         size === ButtonSize.XSmall &&
-          "h-6 rounded-sm border-2 px-1 text-xs tracking-wide focus:ring-4"
+          "h-6 rounded-sm border-2 px-1 text-xs tracking-wide focus:ring-4",
       )}
       onClick={handleOnClick}
       disabled={disabled || loading}

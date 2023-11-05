@@ -1,5 +1,4 @@
 import Admin from "@/components/admin/Admin";
-import Button, { ButtonSize, ButtonVariant } from "@/components/Button";
 import ErrorMessage, {
   ErrorMessageProps,
 } from "@/components/form/ErrorMessage";
@@ -10,6 +9,7 @@ import MetaTags from "@/components/Metatags";
 import Plausible from "@/components/Plausible";
 import Tag, { TagVariant } from "@/components/Tag";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
@@ -34,19 +34,22 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   deleteDocument,
   deleteReferences,
   getReferencesToDelete,
 } from "@/lib/admin/directory-helpers";
 import {
   DocumentData,
-  getEmailById,
-  getEmails,
-  getFirebaseTable,
-  getMembers,
   MemberEmail,
   MemberSecure,
   RegionPublic,
+  getFirebaseTable,
 } from "@/lib/api";
 import {
   CompanySizeEnum,
@@ -54,9 +57,10 @@ import {
   StatusEnum,
   YearsOfExperienceEnum,
 } from "@/lib/enums";
-import { useUserSession } from "@/lib/hooks";
-import { getAuth } from "firebase/auth";
-import { cn, convertStringSnake } from "helpers";
+import { useIsAdmin } from "@/lib/hooks";
+import { getAuth, User } from "firebase/auth";
+import { convertStringSnake } from "helpers";
+import { cn } from "@/lib/utils";
 import { ExternalLink, Trash } from "lucide-react";
 import moment from "moment";
 import Head from "next/head";
@@ -67,92 +71,74 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
 
 export async function getStaticProps() {
-  const focusesData: DocumentData[] = await getFirebaseTable(
-    FirebaseTablesEnum.FOCUSES
-  );
-  const industriesData: DocumentData[] = await getFirebaseTable(
-    FirebaseTablesEnum.INDUSTRIES
-  );
-  const regionsData: DocumentData[] = await getFirebaseTable(
-    FirebaseTablesEnum.REGIONS
-  );
-  const members: MemberSecure[] = await getMembers(
-    focusesData,
-    industriesData,
-    regionsData,
-    [StatusEnum.APPROVED, StatusEnum.IN_PROGRESS, StatusEnum.PENDING]
-  );
-
-  const emails: MemberEmail[] = await getEmails();
-
-  let regions = regionsData
-    .map(
-      (r): RegionPublic => ({
-        name: r.fields.name,
-        id: r.id,
-        count: r.fields.members.length,
-      })
-    )
-    .sort((a, b) => {
-      if (a.name > b.name) return 1;
-      if (a.name < b.name) return -1;
-      return 0;
-    });
-
   return {
     props: {
       pageTitle: "Directory · Hawaiians in Technology",
-      members: members,
-      emails: emails,
-      regions: regions,
     },
     revalidate: 60,
   };
 }
 
-export default function DirectoryPage(props: {
-  members: MemberSecure[];
-  regions: RegionPublic[];
-  emails: MemberEmail[];
-  pageTitle;
-}) {
-  const { userData, isLoggedIn, isAdmin, isSessionChecked } = useUserSession();
+export default function DirectoryPage(props) {
+  const { pageTitle } = props;
+  const auth = getAuth();
+  const [members, setMembers] = useState<MemberSecure[]>([]);
+  const [regions, setRegions] = useState<DocumentData[]>([]);
+  const [user, loading, error] = useAuthState(auth);
+  const [isAdmin, isAdminLoading] = useIsAdmin(user, loading);
   const router = useRouter();
 
   useEffect(() => {
-    if (userData !== null && !isAdmin) router.push(`/admin`);
-  }, [isLoggedIn, isAdmin, userData]);
+    if (!isAdminLoading && !isAdmin) router.push(`/admin`);
+  }, [isAdmin, isAdminLoading, router]);
+
+  const fetchMembers = async () => {
+    const response = await fetch("/api/get-members", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await user.getIdToken()}`,
+      },
+    });
+    const data = await response.json();
+    if (data) {
+      setMembers(data.members);
+      setRegions(
+        data.regions.sort((a, b) => a.fields.name.localeCompare(b.fields.name)),
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (isAdmin) {
+      fetchMembers();
+    }
+  }, [isAdmin]);
 
   return (
     <>
       <Head>
         <Plausible />
-        <MetaTags title={props.pageTitle} />
-        <title>{props.pageTitle}</title>
+        <MetaTags title={pageTitle} />
+        <title>{pageTitle}</title>
       </Head>
       <Admin>
         <Admin.Nav
           handleLogOut={signOutWithGoogle}
           handleLogIn={signInWithGoogle}
+          isLoggedIn={!!user}
           isAdmin={isAdmin}
-          isLoggedIn={isLoggedIn}
-          isSessionChecked={isSessionChecked}
-          name={userData?.name}
+          displayName={user?.displayName}
         />
         <Admin.Body>
-          {userData === null && (
+          {isAdminLoading && (
             <div className="flex w-full justify-center p-4">
               <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
             </div>
           )}
-
-          {userData !== null && isLoggedIn && isAdmin && (
+          {isAdmin && (
             <div className="mx-auto">
-              <Directory
-                members={props.members}
-                regions={props.regions}
-                emails={props.emails}
-              />
+              <Directory members={members} regions={regions} user={user} />
             </div>
           )}
         </Admin.Body>
@@ -163,8 +149,8 @@ export default function DirectoryPage(props: {
 
 interface MemberDirectoryProps {
   members?: MemberSecure[];
-  regions?: RegionPublic[];
-  emails?: MemberEmail[];
+  regions?: DocumentData[];
+  user?: User;
 }
 
 type MemberDirectoryType = FC<MemberDirectoryProps> & {
@@ -183,38 +169,43 @@ enum DirectoryFilter {
   Archived = "Archived",
 }
 
-const Directory: MemberDirectoryType = ({ members, regions }) => {
+const Directory: MemberDirectoryType = ({ members, regions, user }) => {
   const [tabVisible, setTabVisible] = useState<DirectoryFilter>(
-    DirectoryFilter.All
+    DirectoryFilter.All,
   );
   const [sortOrder, setSortOrder] = useState<DirectorySortOrder>(
-    DirectorySortOrder.LastModified
+    DirectorySortOrder.LastModified,
   );
   const [error, setError] = useState<ErrorMessageProps>(null);
+  const [filteredMembers, setFilteredMembers] = useState<MemberSecure[]>();
 
-  let membersFiltered = members
-    .filter((m) => {
-      switch (tabVisible) {
-        case DirectoryFilter.All:
-          return true;
-        case DirectoryFilter.Pending:
-          return m.status === StatusEnum.PENDING;
-        case DirectoryFilter.InProgress:
-          return m.status === StatusEnum.IN_PROGRESS;
-        case DirectoryFilter.Archived:
-          return m.status === StatusEnum.ARCHIVED;
-        default:
-          return false;
-      }
-    })
-    .sort((a, b) => {
-      if (sortOrder === DirectorySortOrder.LastModified) {
-        if (moment(a.lastModified) > moment(b.lastModified)) return -1;
-        if (moment(a.lastModified) < moment(b.lastModified)) return 1;
-        return 0;
-      }
-      return 0;
-    });
+  useEffect(() => {
+    setFilteredMembers(
+      members
+        ?.filter((m) => {
+          switch (tabVisible) {
+            case DirectoryFilter.All:
+              return true;
+            case DirectoryFilter.Pending:
+              return m.status === StatusEnum.PENDING;
+            case DirectoryFilter.InProgress:
+              return m.status === StatusEnum.IN_PROGRESS;
+            case DirectoryFilter.Archived:
+              return m.status === StatusEnum.DECLINED;
+            default:
+              return false;
+          }
+        })
+        .sort((a, b) => {
+          if (sortOrder === DirectorySortOrder.LastModified) {
+            if (moment(a.lastModified) > moment(b.lastModified)) return -1;
+            if (moment(a.lastModified) < moment(b.lastModified)) return 1;
+            return 0;
+          }
+          return 0;
+        }),
+    );
+  }, [members, tabVisible, sortOrder]);
 
   return (
     <>
@@ -267,18 +258,21 @@ const Directory: MemberDirectoryType = ({ members, regions }) => {
             />
           </div>
         )}
-        {membersFiltered && membersFiltered.length > 0 ? (
+        {filteredMembers && filteredMembers.length > 0 ? (
           <>
-            {membersFiltered.map((m) => (
+            {filteredMembers.map((m) => (
               <Directory.Card
                 member={m}
                 key={`member-card-${m.id}`}
                 regions={regions}
+                user={user}
               />
             ))}
           </>
         ) : (
-          <>no members</>
+          <div className="flex w-full justify-center p-4">
+            <LoadingSpinner variant={LoadingSpinnerVariant.Invert} />
+          </div>
         )}
       </div>
     </>
@@ -287,12 +281,13 @@ const Directory: MemberDirectoryType = ({ members, regions }) => {
 
 interface CardProps {
   member: MemberSecure;
-  regions?: RegionPublic[];
+  regions?: DocumentData[];
+  user?: User;
 }
 
 Directory.Card = Card;
 
-function Card({ member, regions }: CardProps) {
+function Card({ member, regions, user }: CardProps) {
   const [showModal, setShowModal] = useState<ReactNode | false>(false);
 
   const handleDelete = async () => {
@@ -300,10 +295,13 @@ function Card({ member, regions }: CardProps) {
     return;
     const references = await getReferencesToDelete(member.id);
     const memberRef = references.memberRef;
+    // CONFIRM THAT THIS CHECKS IF OTHER MEMBERS USE THE SAME FOCUSES
     console.log("removing focuses references");
     await deleteReferences(memberRef, references.focuses);
+    // CONFIRM THAT THIS CHECKS IF OTHER MEMBERS USE THE SAME INDUSTRY
     console.log("removing industries references");
     await deleteReferences(memberRef, references.industries);
+    // CONFIRM THAT THIS CHECKS IF OTHER MEMBERS USE THE SAME REGION
     console.log("removing regions references");
     await deleteReferences(memberRef, references.regions);
     console.log("removing secureMemberData document");
@@ -324,12 +322,12 @@ function Card({ member, regions }: CardProps) {
               ? "border-violet-500/30 bg-violet-500/5 hover:bg-violet-500/10 active:bg-violet-500/20"
               : member.status === StatusEnum.PENDING
               ? "border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 active:bg-amber-500/20"
-              : "border-red-500/30 bg-red-500/5 hover:bg-red-500/10 active:bg-red-500/20"
+              : "border-red-500/30 bg-red-500/5 hover:bg-red-500/10 active:bg-red-500/20",
           )}
         >
           <div
             className={cn(
-              "mx-auto flex w-full max-w-5xl items-center gap-2 px-2 py-4"
+              "mx-auto flex w-full max-w-5xl items-center gap-2 px-2 py-4",
             )}
           >
             <div
@@ -339,7 +337,7 @@ function Card({ member, regions }: CardProps) {
               w-full
               flex-col
               gap-3
-              text-left`
+              text-left`,
               )}
             >
               <div className="flex flex-col items-start gap-1">
@@ -384,7 +382,8 @@ function Card({ member, regions }: CardProps) {
               <div
                 className={cn(
                   "grid grid-flow-col grid-cols-5 items-start gap-2 rounded bg-tan-500/10 px-4 py-2 text-xs",
-                  member.status === StatusEnum.IN_PROGRESS && "bg-violet-500/10"
+                  member.status === StatusEnum.IN_PROGRESS &&
+                    "bg-violet-500/10",
                 )}
               >
                 <section>
@@ -416,7 +415,7 @@ function Card({ member, regions }: CardProps) {
                           <span
                             className={cn(
                               "font-light text-secondary-foreground",
-                              focusNotApproved && `font-medium text-violet-600`
+                              focusNotApproved && `font-medium text-violet-600`,
                             )}
                             key={member.id + focus.id}
                           >
@@ -440,7 +439,7 @@ function Card({ member, regions }: CardProps) {
                             className={cn(
                               "font-light text-secondary-foreground",
                               industryNotApproved &&
-                                `font-medium text-violet-600`
+                                `font-medium text-violet-600`,
                             )}
                             key={member.id + industry.id}
                           >
@@ -468,35 +467,21 @@ function Card({ member, regions }: CardProps) {
             onClose={() => setShowModal(false)}
             onDelete={handleDelete}
             regions={regions}
+            user={user}
           />
         </DialogContent>
       </Dialog>
-      {/* {showModal && <Modal>{showModal}</Modal>}
-      <button
-        key={`member-${member.id}`}
-        onClick={() => {
-          setShowModal(
-            <MemberEdit
-              member={member}
-              onClose={() => setShowModal(false)}
-              onDelete={handleDelete}
-            />
-          );
-        }}
-        title={member.id}
-      >
-        
-      </button> */}
     </>
   );
 }
 
 const MemberEdit: FC<{
   member: MemberSecure;
-  regions?: RegionPublic[];
+  regions?: DocumentData[];
   onClose: () => void;
   onDelete: () => void;
-}> = ({ member, regions, onClose, onDelete }) => {
+  user?: User;
+}> = ({ member, regions, onClose, onDelete, user }) => {
   const [email, setEmail] = useState<MemberEmail>(null);
   const [loadingEmail, setLoadingEmail] = useState<boolean>(null);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
@@ -507,16 +492,31 @@ const MemberEdit: FC<{
   const [region, setRegion] = useState<string>(member.region);
   const [companySize, setCompanySize] = useState<string>(member.companySize);
   const [yearsOfExperience, setYearsOfExperience] = useState<string>(
-    member.yearsExperience
+    member.yearsExperience,
   );
-  const [user, authLoading, authStateError] = useAuthState(getAuth());
-  // TODO: CHECK IF ADMIN
-  const IS_ADMIN = true;
+
+  const fetchEmailById = async () => {
+    const response = await fetch(`/api/get-email-by-id?id=${member.id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await user.getIdToken()}`,
+      },
+    });
+    const data = await response.json();
+    return data.email;
+  };
 
   const handleManageEmail = async () => {
-    if (email === null && IS_ADMIN) {
+    if (email === null) {
       setLoadingEmail(true);
-      await getEmailById(member.id).then((email) => {
+      await fetchEmailById().then((email) => {
+        if (!email) {
+          // TODO: handle error
+          // this seems to fire occasionally when the email is not found
+          setLoadingEmail(false);
+          return;
+        }
         setEmail(email);
         setLoadingEmail(false);
       });
@@ -528,7 +528,7 @@ const MemberEdit: FC<{
   const updateMemberField = async (
     uid: string,
     fieldName: string,
-    newData: any
+    newData: any,
   ) => {
     const response = await fetch("/api/update-member", {
       method: "PUT",
@@ -576,7 +576,7 @@ const MemberEdit: FC<{
   };
 
   const mapTabsTriggerToVariant = (
-    status: StatusEnum
+    status: StatusEnum,
   ): "alert" | "success" | "nearSuccess" | "warn" => {
     switch (status) {
       case StatusEnum.APPROVED:
@@ -585,7 +585,7 @@ const MemberEdit: FC<{
         return "nearSuccess";
       case StatusEnum.PENDING:
         return "warn";
-      case StatusEnum.ARCHIVED:
+      case StatusEnum.DECLINED:
         return "alert";
       default:
         return;
@@ -604,7 +604,7 @@ const MemberEdit: FC<{
           </p>
           <div className="flex flex-col gap-2">
             <Button
-              variant={ButtonVariant.Destructive}
+              variant="destructive"
               onClick={() => {
                 onDelete();
               }}
@@ -612,7 +612,7 @@ const MemberEdit: FC<{
               Remove Permanently
             </Button>
             <Button
-              variant={ButtonVariant.Secondary}
+              variant="secondary"
               onClick={() => {
                 setIsDeleting(false);
               }}
@@ -633,7 +633,7 @@ const MemberEdit: FC<{
           >
             <TabsList loop className="w-full">
               {Object.values(StatusEnum)
-                .filter((status) => status !== StatusEnum.ARCHIVED)
+                .filter((status) => status !== StatusEnum.DECLINED)
                 .map((status, i) => (
                   <TabsTrigger
                     value={status}
@@ -711,7 +711,7 @@ const MemberEdit: FC<{
                   className="h-4 w-4 border-2"
                 />
               )}
-              {!email && IS_ADMIN && (
+              {!email && (
                 <button
                   className="text-xs font-medium text-primary"
                   onClick={handleManageEmail}
@@ -858,7 +858,8 @@ const MemberEdit: FC<{
                   className="flex flex-col gap-1"
                 >
                   <Input placeholder="Region" autoFocus />
-                  <Button size={ButtonSize.Small}>Add Region</Button>
+                  {/* HERE */}
+                  <Button size="sm">Add Region</Button>
                 </PopoverContent>
               </Popover>
             </div>
@@ -875,8 +876,8 @@ const MemberEdit: FC<{
               </SelectTrigger>
               <SelectContent className="max-h-72">
                 {regions?.map((region) => (
-                  <SelectItem value={region.name} key={region.id}>
-                    {region.name}
+                  <SelectItem value={region.fields.name} key={region.fields.id}>
+                    {region.fields.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -954,7 +955,7 @@ const MemberEdit: FC<{
                       className={cn(
                         "inline-block rounded-xl border px-3 py-0.5 text-sm tracking-wide text-secondary-foreground",
                         focusNotApproved &&
-                          `bg-violet-600/20 font-medium text-violet-600`
+                          `bg-violet-600/20 font-medium text-violet-600`,
                       )}
                       key={member.id + focus.id}
                     >
@@ -978,7 +979,7 @@ const MemberEdit: FC<{
                       className={cn(
                         "inline-block rounded-xl border px-3 py-0.5 text-sm tracking-wide text-secondary-foreground",
                         industryNotApproved &&
-                          `bg-violet-600/20 font-medium text-violet-600`
+                          `bg-violet-600/20 font-medium text-violet-600`,
                       )}
                       key={member.id + industry.id}
                     >
@@ -1003,24 +1004,41 @@ const MemberEdit: FC<{
             </p>
           </section>
           <div className="col-span-2 mt-2 flex flex-col gap-2 sm:flex-row">
-            <div>
-              <Button
-                variant={ButtonVariant.Secondary}
-                onClick={() => {
-                  setIsDeleting(true);
-                }}
-                size={ButtonSize.Small}
-              >
-                <span className="flex items-center gap-2">
-                  <Trash className="h-4 w-4" />
-                  Archive
-                </span>
-              </Button>
-            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setIsDeleting(true);
+                    }}
+                    size="sm"
+                    disabled
+                  >
+                    <span className="flex items-center gap-2">
+                      <Trash className="h-4 w-4" />
+                      Archive
+                    </span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Disabled · Read-only</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <div className="flex grow justify-end">
-              <Button onClick={saveChanges} size={ButtonSize.Small}>
-                Save
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button disabled onClick={onClose} size="sm">
+                      Save
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Disabled · Read-only</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
         </div>

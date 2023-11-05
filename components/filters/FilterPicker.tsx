@@ -1,5 +1,5 @@
 import { Filter } from "@/lib/api";
-import { cn } from "helpers";
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import BigPill from "../BigPill";
 import Selectable, { SelectableSize } from "../form/Selectable";
@@ -90,7 +90,7 @@ export default function FilterPicker({
           <h4
             className={cn(
               `grow text-right text-sm text-stone-600 sm:text-lg`,
-              filterIsSelected && "text-brown-600"
+              filterIsSelected && "text-brown-600",
             )}
           >{`${
             filterIsSelected

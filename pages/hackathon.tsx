@@ -50,7 +50,7 @@ export default function HackathonPage({ pageTitle }) {
         <title>{pageTitle}</title>
       </Head>
       <Nav backUrl="/" />
-      <div className="background">
+      <div className="background pointer-events-none">
         <NihoShimmer animate />
       </div>
       <div className="hackathon-splash foreground">
@@ -68,7 +68,7 @@ export default function HackathonPage({ pageTitle }) {
           <h1 className="f1 extend">
             <motion.span variants={item}>& Purple Maiʻa</motion.span>
           </h1>
-          <p className="hackathon-title">
+          <p className="hackathon-title font-script">
             <motion.span variants={item}>HACKATHON 2022</motion.span>
           </p>
         </motion.div>
@@ -477,16 +477,6 @@ export default function HackathonPage({ pageTitle }) {
             />
           </DataList>
         </SplitSection>
-        <SplitSection title="Contact">
-          <div>
-            <h4>Interested in sponsoring? Have other ways to support us?</h4>
-            <a href="mailto:kekai@hawaiiansintech.org,kamakani@hawaiiansintech.org,andrew@hawaiiansintech.org">
-              <Button size={ButtonSize.Small} variant={ButtonVariant.Secondary}>
-                Contact Us
-              </Button>
-            </a>
-          </div>
-        </SplitSection>
       </div>
       <style jsx>{`
         .imgLink {
@@ -593,7 +583,6 @@ export default function HackathonPage({ pageTitle }) {
         }
 
         .hackathon-title {
-          font-family: ${theme.fontFamily.hackathon};
           font-size: 2.4rem;
           margin: 0.5rem 0 0 0;
           color: ${theme.color.brand.base};

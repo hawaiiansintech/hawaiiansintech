@@ -5,6 +5,7 @@ import Nav from "@/components/Nav";
 import Plausible from "@/components/Plausible";
 import Tag from "@/components/Tag";
 import { MemberPublic } from "@/lib/api";
+import { StatusEnum } from "@/lib/enums";
 import { useStorage } from "@/lib/hooks";
 import { FORM_LINKS } from "@/lib/utils";
 import Head from "next/head";
@@ -62,10 +63,13 @@ function RequestForm() {
   useEffect(() => {
     removeItem("userData");
     removeItem("editedData");
-    fetch("/api/get-members")
+    fetch(`/api/get-members?status=${StatusEnum.APPROVED}`)
       .then((res) => res.json())
       .then((data) => {
         setMembers(data.members);
+      })
+      .catch((err) => {
+        console.error(err);
       });
   }, []);
 

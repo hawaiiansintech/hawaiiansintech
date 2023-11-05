@@ -1,5 +1,6 @@
 import React from "react";
-import { cn, toKebab } from "../../helpers";
+import { toKebab } from "../../helpers";
+import { cn } from "@/lib/utils";
 import Label from "./Label";
 
 interface InputProps {
@@ -70,7 +71,7 @@ export default function Input({
           disabled:opacity-50`,
           { "ring-8": error, "ring-red-500/50": error },
           centered && "text-center",
-          fullHeight && "h-full"
+          fullHeight && "h-full",
         )}
         defaultValue={defaultValue}
         id={nameKebab}

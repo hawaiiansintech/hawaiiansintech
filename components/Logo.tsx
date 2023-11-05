@@ -1,4 +1,4 @@
-import { cn } from "helpers";
+import { cn } from "@/lib/utils";
 
 export enum LogoSize {
   Default = "default",
@@ -19,7 +19,7 @@ export default function Logo({ size = LogoSize.Default }: LogoProps) {
           w-16
           sm:w-24
         `,
-          size === LogoSize.Small && "w-10 sm:w-10"
+          size === LogoSize.Small && "w-10 sm:w-10",
         )}
         src={"/images/HitLogoNoBackground.png"}
         alt="Hawaiians in Tech logo"

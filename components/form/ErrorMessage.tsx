@@ -1,4 +1,4 @@
-import { cn } from "helpers";
+import { cn } from "@/lib/utils";
 import { ErrorSVG } from "../icon/ErrorSVG";
 import { Icon, IconAsset, IconColor } from "../icon/icon";
 

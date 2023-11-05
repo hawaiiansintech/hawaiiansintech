@@ -31,7 +31,7 @@ Client.setApiKey(process.env.SENDGRID_API_KEY);
 
 const addPendingReviewRecord = async (
   docReviewRef: DocumentReference,
-  collectionName: string
+  collectionName: string,
 ) => {
   const collectionRef = collection(db, "review");
   const docRef = doc(collectionRef, collectionName);
@@ -43,7 +43,7 @@ const addPendingReviewRecord = async (
 
 const addLabelRef = async (
   label: string,
-  collectionName: string
+  collectionName: string,
 ): Promise<DocumentReference> => {
   const collectionRef = collection(db, collectionName);
   const q = query(collectionRef, where("name", "==", label));
@@ -66,7 +66,7 @@ const addLabelRef = async (
 
 const addMemberToLabels = async (
   labelReferences: DocumentReference[],
-  memberRef: DocumentReference
+  memberRef: DocumentReference,
 ) => {
   for (const labelRef of labelReferences) {
     await updateDoc(labelRef, {
@@ -78,7 +78,7 @@ const addMemberToLabels = async (
 
 const addSecureEmail = async (
   email: string,
-  memberDocRef: DocumentReference
+  memberDocRef: DocumentReference,
 ) => {
   await initializeAdmin();
   const collectionRef = admin
@@ -96,23 +96,27 @@ const addSecureEmail = async (
 };
 
 const addMember = async (member: MemberFields): Promise<DocumentReference> => {
-  const collectionRef = collection(db, FirebaseTablesEnum.MEMBERS);
-  const maskedEmail = useEmailCloaker(member.email);
-  const maskedEmailString = `${maskedEmail[0]}...${maskedEmail[1]}${maskedEmail[2]}`;
-  const data = {
-    ...member,
-    last_modified: serverTimestamp(),
-    last_modified_by: FirebaseDefaultValuesEnum.LAST_MODIFIED_BY,
-    masked_email: maskedEmailString,
-    requests: "",
-    status: StatusEnum.PENDING,
-    unsubscribed: false,
-  };
-  delete data.email; // Don't store email in the member record
-  const docRef = await addDoc(collectionRef, data);
-  addPendingReviewRecord(docRef, FirebaseTablesEnum.MEMBERS);
-  addSecureEmail(member.email, docRef);
-  return docRef;
+  try {
+    const collectionRef = collection(db, FirebaseTablesEnum.MEMBERS);
+    const maskedEmail = useEmailCloaker(member.email);
+    const data = {
+      ...member,
+      last_modified: serverTimestamp(),
+      last_modified_by: FirebaseDefaultValuesEnum.LAST_MODIFIED_BY,
+      masked_email: maskedEmail,
+      requests: "",
+      status: StatusEnum.PENDING,
+      unsubscribed: member.unsubscribed,
+    };
+    delete data.email; // Don't store email in the member record
+    const docRef = await addDoc(collectionRef, data);
+    addPendingReviewRecord(docRef, FirebaseTablesEnum.MEMBERS);
+    addSecureEmail(member.email, docRef);
+    return docRef;
+  } catch (error) {
+    console.error("Error adding member: ", error);
+    throw error;
+  }
 };
 
 const emailExists = async (email: string): Promise<boolean> => {
@@ -127,7 +131,7 @@ const emailExists = async (email: string): Promise<boolean> => {
 
 const idToRef = async (
   labelId: string,
-  collectionName: string
+  collectionName: string,
 ): Promise<DocumentReference> => {
   const collectionRef = collection(db, collectionName);
   const docRef = doc(collectionRef, labelId);
@@ -136,7 +140,7 @@ const idToRef = async (
 
 const idsToRefs = async (
   labelIds: string | string[],
-  collectionName: string
+  collectionName: string,
 ): Promise<DocumentReference[]> => {
   if (typeof labelIds === "string") {
     labelIds = [labelIds];
@@ -163,10 +167,11 @@ interface MemberFields {
   industrySuggested?: string;
   companySize?: string;
   recordID?: string;
+  unsubscribed?: boolean;
 }
 
 const addToFirebase = async (
-  fields: MemberFields
+  fields: MemberFields,
 ): Promise<DocumentReference> => {
   let member = {
     company_size: fields.companySize,
@@ -179,6 +184,7 @@ const addToFirebase = async (
     regions: [],
     title: fields.title,
     years_experience: fields.yearsExperience,
+    unsubscribed: fields.unsubscribed,
   };
 
   // Handle focuses
@@ -186,7 +192,7 @@ const addToFirebase = async (
   if (fields.focusesSelected) {
     const selectedFocusesRefs = await idsToRefs(
       fields.focusesSelected,
-      "focuses"
+      "focuses",
     );
     focuses = [...focuses, ...selectedFocusesRefs];
   }
@@ -201,14 +207,14 @@ const addToFirebase = async (
   if (fields.industriesSelected) {
     const selectedIndustriesRefs = await idsToRefs(
       fields.industriesSelected,
-      "industries"
+      "industries",
     );
     industries = [...industries, ...selectedIndustriesRefs];
   }
   if (fields.industrySuggested) {
     const industryRef = await addLabelRef(
       fields.industrySuggested,
-      "industries"
+      "industries",
     );
     industries = [...industries, industryRef];
   }

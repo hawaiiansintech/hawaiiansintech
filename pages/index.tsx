@@ -10,49 +10,40 @@ import {
   getFilters,
   getFiltersBasic,
   getFirebaseTable,
-  getMembers,
-  MemberPublic,
 } from "@/lib/api";
-import { FirebaseTablesEnum } from "@/lib/enums";
+import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
+import { getMembers } from "./api/get-members";
 
 export async function getStaticProps() {
-  const focusesData: DocumentData[] = await getFirebaseTable(
-    FirebaseTablesEnum.FOCUSES
-  );
-  const industriesData: DocumentData[] = await getFirebaseTable(
-    FirebaseTablesEnum.INDUSTRIES
-  );
-  const regionsData: DocumentData[] = await getFirebaseTable(
-    FirebaseTablesEnum.REGIONS
-  );
-  const members: MemberPublic[] = await getMembers(
-    focusesData,
-    industriesData,
-    regionsData
-  );
+  const data = await getMembers();
+
   const focuses: Filter[] = await getFilters(
     FirebaseTablesEnum.FOCUSES,
     true,
-    members.map((member) => member.id),
-    focusesData
+    data.members.map((member) => member.id),
+    data.focuses,
   );
   const industries: Filter[] = await getFilters(
     FirebaseTablesEnum.INDUSTRIES,
     true,
-    members.map((member) => member.id),
-    industriesData
+    data.members.map((member) => member.id),
+    data.industries,
   );
-  const experiences: Filter[] = await getFiltersBasic(members, "experience");
+  const experiences: Filter[] = await getFiltersBasic(
+    data.members,
+    "experience",
+  );
   const regions: Filter[] = await getFiltersBasic(
-    members,
+    data.members,
     FirebaseTablesEnum.REGIONS,
-    regionsData
+    data.regions,
   );
+
   return {
     props: {
-      fetchedMembers: members,
+      fetchedMembers: data.members,
       fetchedFocuses: focuses,
       fetchedIndustries: industries,
       fetchedExperiences: experiences,
@@ -90,22 +81,23 @@ export default function HomePage({
     regions: fetchedRegions.filter((region) => region.count > 0),
   };
   const [members, setMembers] = useState<DirectoryMember[]>(
-    initialState.members
+    initialState.members,
   );
+
   const [activeFilters, setActiveFilters] = useState<PickerFilter[]>([]);
   const [filtersList, setFiltersList] = useState<PickerFilter[]>(
-    initialState.focuses.slice(0, 6)
+    initialState.focuses.slice(0, 6),
   );
   const [focuses, setFocuses] = useState<PickerFilter[]>(initialState.focuses);
   const [industries, setIndustries] = useState<PickerFilter[]>(
-    initialState.industries
+    initialState.industries,
   );
   const [experiences, setExperiences] = useState<PickerFilter[]>(
-    initialState.experiences
+    initialState.experiences,
   );
   const [regions, setRegions] = useState<PickerFilter[]>(initialState.regions);
   const [membersCount, setMembersCount] = useState<number>(
-    initialState.members.length
+    initialState.members.length,
   );
   const [viewAll, setViewAll] = useState<boolean>(true);
 
@@ -131,15 +123,15 @@ export default function HomePage({
           ? [
               {
                 id: experiences.find(
-                  (item) => item.name === mem.yearsExperience
+                  (item) => item.name === mem.yearsExperience,
                 ).id,
                 name: mem.yearsExperience,
                 active: activeFilters
                   .map((item) => item.id)
                   .includes(
                     experiences.find(
-                      (item) => item.name === mem.yearsExperience
-                    ).id
+                      (item) => item.name === mem.yearsExperience,
+                    ).id,
                   ),
               },
             ]
@@ -152,7 +144,7 @@ export default function HomePage({
                 active: activeFilters
                   .map((item) => item.id)
                   .includes(
-                    regions.find((item) => item.name === mem.region).id
+                    regions.find((item) => item.name === mem.region).id,
                   ),
               },
             ]
@@ -193,7 +185,7 @@ export default function HomePage({
         mem.focus.filter((fil) => fil.active).length > 0 ||
         mem.industry.filter((fil) => fil.active).length > 0 ||
         mem.experienceFilter.filter((fil) => fil.active).length > 0 ||
-        mem.regionFilter.filter((fil) => fil.active).length > 0
+        mem.regionFilter.filter((fil) => fil.active).length > 0,
     ).length;
     setMembersCount(selectedMemberCount ? selectedMemberCount : members.length);
     setMembers(membersWithFilters);
@@ -202,25 +194,25 @@ export default function HomePage({
   const setListItemActive = (
     list?: PickerFilter[],
     setList?: Function,
-    id?: string
+    id?: string,
   ) => {
     setList(
       list.map((fil) => ({
         ...fil,
-        active: id ? (id === fil.id ? !fil.active : fil.active) : false,
-      }))
+        active: id ? (id === fil.id ? !fil?.active : fil?.active) : false,
+      })),
     );
   };
 
   const handleFilter = (id?: string) => {
-    let filter = filtersList.filter((foc) => id === foc.id)[0];
+    let filter = filtersList.filter((foc) => id === foc?.id)[0];
     setListItemActive(filtersList, setFiltersList, id);
     setListItemActive(focuses, setFocuses, id);
     setListItemActive(industries, setIndustries, id);
     setListItemActive(experiences, setExperiences, id);
     setListItemActive(regions, setRegions, id);
     if (activeFilters.find((item) => item.id === id)) {
-      setActiveFilters(activeFilters.filter((item) => item.id !== id));
+      setActiveFilters(activeFilters.filter((item) => item?.id !== id));
     } else {
       setActiveFilters([...activeFilters, filter]);
     }
