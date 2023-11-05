@@ -1027,18 +1027,9 @@ const MemberEdit: FC<{
               </Tooltip>
             </TooltipProvider>
             <div className="flex grow justify-end">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Button disabled onClick={onClose} size="sm">
-                      Save
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Disabled · Read-only</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Button onClick={saveChanges} size="sm">
+                Save
+              </Button>
             </div>
           </div>
         </div>
