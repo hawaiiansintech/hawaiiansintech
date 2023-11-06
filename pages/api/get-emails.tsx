@@ -16,6 +16,9 @@ async function getEmails({ token }: getEmailsProps): Promise<MemberEmail[]> {
   if (!token) {
     throw new Error("Missing token");
   }
+  if (typeof window !== "undefined") {
+    throw new Error("This function can only be called on the server");
+  }
 
   const isAdmin = await verifyAdminToken(token);
   if (!isAdmin) {
