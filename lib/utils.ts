@@ -1,5 +1,5 @@
 import { useStorage } from "@/lib/hooks";
-import { ClassValue, clsx } from "clsx";
+import { type ClassValue, clsx } from "clsx";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { twMerge } from "tailwind-merge";

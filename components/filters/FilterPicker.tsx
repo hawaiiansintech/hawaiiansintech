@@ -1,9 +1,9 @@
 import { Filter } from "@/lib/api";
-import { cn } from "helpers";
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import BigPill from "../BigPill";
 import Selectable, { SelectableSize } from "../form/Selectable";
-import FilterPickerCategory from "./FilterPickerCategory";
+import Tabs, { TabsSize } from "../Tabs";
 
 export interface PickerFilter extends Filter {
   active?: boolean;
@@ -61,32 +61,36 @@ export default function FilterPicker({
           ))}
         </ul>
         <div className="mb-4 flex items-center">
-          <div className="inline-flex gap-2 rounded-full bg-tan-400 p-1">
-            <FilterPickerCategory
-              category="Focus"
-              active={focusActive}
-              onClick={() => activateFilter(setFocusActive, "focus")}
-            />
-            <FilterPickerCategory
-              category="Industry"
-              active={industryActive}
-              onClick={() => activateFilter(setIndustryActive, "industry")}
-            />
-            <FilterPickerCategory
-              category="Experience"
-              active={experienceActive}
-              onClick={() => activateFilter(setExperienceActive, "experience")}
-            />
-            <FilterPickerCategory
-              category="Location"
-              active={regionActive}
-              onClick={() => activateFilter(setRegionActive, "region")}
-            />
-          </div>
+          <Tabs
+            size={TabsSize.Large}
+            items={[
+              {
+                label: "Focus",
+                selected: focusActive,
+                onClick: () => activateFilter(setFocusActive, "focus"),
+              },
+              {
+                label: "Industry",
+                selected: industryActive,
+                onClick: () => activateFilter(setIndustryActive, "industry"),
+              },
+              {
+                label: "Experience",
+                selected: experienceActive,
+                onClick: () =>
+                  activateFilter(setExperienceActive, "experience"),
+              },
+              {
+                label: "Location",
+                selected: regionActive,
+                onClick: () => activateFilter(setRegionActive, "region"),
+              },
+            ]}
+          />
           <h4
             className={cn(
               `grow text-right text-sm text-stone-600 sm:text-lg`,
-              filterIsSelected && "text-brown-600"
+              filterIsSelected && "text-brown-600",
             )}
           >{`${
             filterIsSelected

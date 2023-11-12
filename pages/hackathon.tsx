@@ -68,7 +68,7 @@ export default function HackathonPage({ pageTitle }) {
           <h1 className="f1 extend">
             <motion.span variants={item}>& Purple Maiʻa</motion.span>
           </h1>
-          <p className="hackathon-title">
+          <p className="hackathon-title font-script">
             <motion.span variants={item}>HACKATHON 2022</motion.span>
           </p>
         </motion.div>
@@ -554,6 +554,7 @@ export default function HackathonPage({ pageTitle }) {
           right: 0;
           padding: 0 1rem;
           opacity: 0.5;
+          pointer-events: none;
           z-index: ${theme.layout.zIndex.below};
         }
 
@@ -582,7 +583,6 @@ export default function HackathonPage({ pageTitle }) {
         }
 
         .hackathon-title {
-          font-family: ${theme.fontFamily.hackathon};
           font-size: 2.4rem;
           margin: 0.5rem 0 0 0;
           color: ${theme.color.brand.base};

@@ -1,7 +1,7 @@
 import css from "styled-jsx/css";
 import theme from "./theme";
 
-export default css.global`
+const styles = css.global`
   :root {
     --color-brand: ${theme.color.brand.base};
     --color-brand-alpha: ${theme.color.brand.alpha};
@@ -309,3 +309,5 @@ export const cssHelperButtonReset = `
   -moz-osx-font-smoothing: inherit;
   -webkit-appearance: none;
   text-align: center;`;
+
+export default styles;

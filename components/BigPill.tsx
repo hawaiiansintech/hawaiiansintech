@@ -1,4 +1,4 @@
-import { cn } from "helpers";
+import { cn } from "@/lib/utils";
 
 interface BigPillProps {
   children?: React.ReactNode;

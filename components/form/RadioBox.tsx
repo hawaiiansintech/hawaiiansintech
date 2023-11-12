@@ -1,4 +1,5 @@
-import { cn, toKebab } from "../../helpers";
+import { toKebab } from "../../helpers";
+import { cn } from "@/lib/utils";
 
 interface RadioBoxProps {
   checked?: boolean;
@@ -66,7 +67,7 @@ export default function RadioBox(props: RadioBoxProps) {
             hover:border-brown-700
             hover:before:border-brown-800
             sm:before:border-6
-            `
+            `,
           // props.fullHeight && "h-full"
         )}
         htmlFor={props.id || labelKebab}

@@ -4,6 +4,7 @@ import {
   DocumentReference,
   FirestoreDataConverter,
   getDocs,
+  Timestamp,
 } from "firebase/firestore";
 import { FirebaseTablesEnum, StatusEnum, YearsOfExperienceEnum } from "./enums";
 import { memberConverter } from "./firestore-converters/member";
@@ -22,12 +23,25 @@ export interface MemberPublic {
   link?: string;
   location?: string;
   region?: string;
+  status?: StatusEnum;
   title?: string;
   yearsExperience?: string;
+  lastModified?: Timestamp;
+  unsubscribed?: boolean;
 }
 
 export interface MemberPublicEditing extends MemberPublic {
   editing?: { field: string; changeTo: string | string[] }[];
+}
+
+export interface MemberSecure extends MemberPublic {
+  email?: MemberEmail;
+}
+
+export interface RegionPublic {
+  name?: string;
+  id?: string;
+  count?: number;
 }
 
 export interface DocumentData {
@@ -42,7 +56,7 @@ export interface FilterData {
 }
 
 export async function getFirebaseTable(
-  table: FirebaseTablesEnum
+  table: FirebaseTablesEnum,
 ): Promise<DocumentData[]> {
   const documentsCollection = collection(db, table);
   const documentsSnapshot = await getDocs(documentsCollection);
@@ -55,7 +69,7 @@ export async function getFirebaseTable(
 
 export async function getFirebaseData(
   table: FirebaseTablesEnum,
-  converter: FirestoreDataConverter<any>
+  converter: FirestoreDataConverter<any>,
 ): Promise<any[]> {
   const documentsCollection = collection(db, table).withConverter(converter);
   const documentsSnapshot = await getDocs(documentsCollection);
@@ -64,7 +78,7 @@ export async function getFirebaseData(
 
 export function regionLookup(
   regions: DocumentData[],
-  memberRegionData: DocumentReference[]
+  memberRegionData: DocumentReference[],
 ): FilterData {
   return (
     regions.find((region) => {
@@ -81,7 +95,7 @@ export function regionLookup(
 
 export function focusLookup(
   focuses: DocumentData[],
-  memberFocusData?: DocumentReference[]
+  memberFocusData?: DocumentReference[],
 ): FilterData[] {
   if (
     memberFocusData &&
@@ -112,7 +126,7 @@ export function focusLookup(
 
 export function industryLookup(
   industries: DocumentData[],
-  memberIndustryData: DocumentReference[]
+  memberIndustryData: DocumentReference[],
 ): FilterData[] {
   if (
     memberIndustryData &&
@@ -141,53 +155,18 @@ export function industryLookup(
   return null;
 }
 
-export async function getMembers(
-  focusesData?: DocumentData[],
-  industriesData?: DocumentData[],
-  regionsData?: DocumentData[],
-  filterByStatus: StatusEnum[] = [StatusEnum.APPROVED]
-): Promise<MemberPublic[]> {
-  const members = await getFirebaseData(
-    FirebaseTablesEnum.MEMBERS,
-    memberConverter
-  );
-  const focusesFb =
-    focusesData || (await getFirebaseTable(FirebaseTablesEnum.FOCUSES));
-  const industriesFb =
-    industriesData || (await getFirebaseTable(FirebaseTablesEnum.INDUSTRIES));
-  const regionsFb =
-    regionsData || (await getFirebaseTable(FirebaseTablesEnum.REGIONS));
-  return members
-    .map((member) => {
-      const { regions, industries, focuses, lastModifiedBy, ...rest } = member;
-      return filterByStatus.includes(member.status)
-        ? {
-            ...rest,
-            lastModified: member.lastModified.toDate().toLocaleString(),
-            emailAbbr: member.maskedEmail,
-            region: regionLookup(regionsFb, member.regions),
-            industry: industryLookup(industriesFb, member.industries),
-            focus: focusLookup(focusesFb, member.focuses),
-          }
-        : null;
-    })
-    .filter(function (value) {
-      return value !== null;
-    })
-    .sort((a, b) => {
-      if (a.name < b.name) {
-        return -1;
-      }
-      if (a.name > b.name) {
-        return 1;
-      }
-      return 0;
-    });
+export interface MemberEmail {
+  id?: string;
+  name?: string;
+  email?: string;
+  emailAbbr?: string;
+  status?: StatusEnum;
+  unsubscribed?: boolean;
 }
 
 function hasApprovedMembers(
   approvedMemberIds: string[],
-  memberList: DocumentData
+  memberList: DocumentData,
 ): boolean {
   for (const member in memberList) {
     if (approvedMemberIds.includes(memberList[member])) {
@@ -210,7 +189,7 @@ export async function getFilters(
   filterType: FirebaseTablesEnum,
   limitByMembers?: boolean,
   approvedMemberIds?: string[],
-  filterData?: DocumentData[]
+  filterData?: DocumentData[],
 ): Promise<Filter[]> {
   const filters = filterData || (await getFirebaseTable(filterType));
   return filters
@@ -221,9 +200,9 @@ export async function getFilters(
         (limitByMembers
           ? hasApprovedMembers(
               approvedMemberIds,
-              role.fields["members"].map((member) => member.id)
+              role.fields["members"].map((member) => member.id),
             )
-          : true)
+          : true),
     )
     .map((role) => {
       const member_ids = role.fields["members"].map((member) => member.id);
@@ -256,7 +235,7 @@ export function getExperienceData(): FilterData[] {
 export async function getFiltersBasic(
   members: MemberPublic[],
   filterType: FirebaseTablesEnum | "experience",
-  filterData?: DocumentData[]
+  filterData?: DocumentData[],
 ): Promise<Filter[]> {
   const filterList = [];
   const filters =
@@ -282,13 +261,13 @@ export async function getFiltersBasic(
     });
   });
   const memFil = members.filter((member) =>
-    filterType == "experience" ? member.yearsExperience : member.region
+    filterType == "experience" ? member.yearsExperience : member.region,
   );
   memFil.forEach((member) => {
     let expIndex = filterList.findIndex(
       (exp) =>
         exp.name ===
-        (filterType == "experience" ? member.yearsExperience : member.region)
+        (filterType == "experience" ? member.yearsExperience : member.region),
     );
     if (!filterList[expIndex].hasApprovedMembers)
       filterList[expIndex].hasApprovedMembers = true;
