@@ -1,10 +1,6 @@
 import Admin from "@/components/admin/Admin";
-import ErrorMessage, {
-  ErrorMessageProps,
-} from "@/components/form/ErrorMessage";
-import LoadingSpinner, {
-  LoadingSpinnerVariant,
-} from "@/components/LoadingSpinner";
+import ErrorMessage, { ErrorMessageProps } from "@/components/form/ErrorMessage";
+import LoadingSpinner, { LoadingSpinnerVariant } from "@/components/LoadingSpinner";
 import MetaTags from "@/components/Metatags";
 import Plausible from "@/components/Plausible";
 import Tag, { TagVariant } from "@/components/Tag";
@@ -20,43 +16,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   deleteDocument,
   deleteReferences,
-  getReferencesToDelete,
-} from "@/lib/admin/directory-helpers";
-import {
-  DocumentData,
-  MemberEmail,
-  MemberSecure,
-  RegionPublic,
-  getFirebaseTable,
-} from "@/lib/api";
-import {
-  CompanySizeEnum,
-  FirebaseTablesEnum,
-  StatusEnum,
-  YearsOfExperienceEnum,
-} from "@/lib/enums";
+  getAllMemberReferencesToDelete,
+} from "@/lib/firebase-helpers/public/directory";
+import { DocumentData, MemberEmail, MemberSecure, RegionPublic, getFirebaseTable } from "@/lib/api";
+import { CompanySizeEnum, FirebaseTablesEnum, StatusEnum, YearsOfExperienceEnum } from "@/lib/enums";
 import { useIsAdmin } from "@/lib/hooks";
 import { getAuth, User } from "firebase/auth";
 import { convertStringSnake } from "helpers";
@@ -69,7 +39,7 @@ import { useRouter } from "next/router";
 import { FC, ReactNode, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
-
+import { FirebaseMemberFieldsEnum as mFields } from "@/lib/enums";
 export async function getStaticProps() {
   return {
     props: {
@@ -103,9 +73,7 @@ export default function DirectoryPage(props) {
     const data = await response.json();
     if (data) {
       setMembers(data.members);
-      setRegions(
-        data.regions.sort((a, b) => a.fields.name.localeCompare(b.fields.name)),
-      );
+      setRegions(data.regions.sort((a, b) => a.fields.name.localeCompare(b.fields.name)));
     }
   };
 
@@ -170,12 +138,8 @@ enum DirectoryFilter {
 }
 
 const Directory: MemberDirectoryType = ({ members, regions, user }) => {
-  const [tabVisible, setTabVisible] = useState<DirectoryFilter>(
-    DirectoryFilter.All,
-  );
-  const [sortOrder, setSortOrder] = useState<DirectorySortOrder>(
-    DirectorySortOrder.LastModified,
-  );
+  const [tabVisible, setTabVisible] = useState<DirectoryFilter>(DirectoryFilter.All);
+  const [sortOrder, setSortOrder] = useState<DirectorySortOrder>(DirectorySortOrder.LastModified);
   const [error, setError] = useState<ErrorMessageProps>(null);
   const [filteredMembers, setFilteredMembers] = useState<MemberSecure[]>();
 
@@ -232,9 +196,7 @@ const Directory: MemberDirectoryType = ({ members, regions, user }) => {
               <select
                 className="rounded px-1 py-0.5 text-sm"
                 value={sortOrder}
-                onChange={(e) =>
-                  setSortOrder(e.target.value as DirectorySortOrder)
-                }
+                onChange={(e) => setSortOrder(e.target.value as DirectorySortOrder)}
               >
                 {Object.values(DirectorySortOrder).map((option) => (
                   <option key={`sort-order-${option}`} value={option}>
@@ -261,12 +223,7 @@ const Directory: MemberDirectoryType = ({ members, regions, user }) => {
         {filteredMembers && filteredMembers.length > 0 ? (
           <>
             {filteredMembers.map((m) => (
-              <Directory.Card
-                member={m}
-                key={`member-card-${m.id}`}
-                regions={regions}
-                user={user}
-              />
+              <Directory.Card member={m} key={`member-card-${m.id}`} regions={regions} user={user} />
             ))}
           </>
         ) : (
@@ -293,7 +250,7 @@ function Card({ member, regions, user }: CardProps) {
   const handleDelete = async () => {
     alert("NOT ACTUALLY DELETING!!! RETURNING EARLY");
     return;
-    const references = await getReferencesToDelete(member.id);
+    const references = await getAllMemberReferencesToDelete(member.id);
     const memberRef = references.memberRef;
     // CONFIRM THAT THIS CHECKS IF OTHER MEMBERS USE THE SAME FOCUSES
     console.log("removing focuses references");
@@ -325,11 +282,7 @@ function Card({ member, regions, user }: CardProps) {
               : "border-red-500/30 bg-red-500/5 hover:bg-red-500/10 active:bg-red-500/20",
           )}
         >
-          <div
-            className={cn(
-              "mx-auto flex w-full max-w-5xl items-center gap-2 px-2 py-4",
-            )}
-          >
+          <div className={cn("mx-auto flex w-full max-w-5xl items-center gap-2 px-2 py-4")}>
             <div
               className={cn(
                 `mx-auto
@@ -362,9 +315,7 @@ function Card({ member, regions, user }: CardProps) {
                 </div>
                 <div className="flex flex-col">
                   <h3 className="text-xl font-semibold">{member.name}</h3>
-                  <h3 className="text-sm text-secondary-foreground">
-                    {member.title}
-                  </h3>
+                  <h3 className="text-sm text-secondary-foreground">{member.title}</h3>
                   {/* <h3 className="text-sm font-light text-secondary-foreground">
                   {member.id}
                 </h3> */}
@@ -382,35 +333,27 @@ function Card({ member, regions, user }: CardProps) {
               <div
                 className={cn(
                   "grid grid-flow-col grid-cols-5 items-start gap-2 rounded bg-tan-500/10 px-4 py-2 text-xs",
-                  member.status === StatusEnum.IN_PROGRESS &&
-                    "bg-violet-500/10",
+                  member.status === StatusEnum.IN_PROGRESS && "bg-violet-500/10",
                 )}
               >
                 <section>
                   <h4 className="font-medium">Location</h4>
-                  <p className="break-words font-light text-secondary-foreground">
-                    {member.location}
-                  </p>
+                  <p className="break-words font-light text-secondary-foreground">{member.location}</p>
                 </section>
                 <section>
                   <h4 className="font-medium">Region</h4>
-                  <p className="break-words font-light text-secondary-foreground">
-                    {member.region}
-                  </p>
+                  <p className="break-words font-light text-secondary-foreground">{member.region}</p>
                 </section>
                 <section>
                   <h4 className="font-medium">Company Size</h4>
-                  <p className="break-words font-light text-secondary-foreground">
-                    {member.companySize}
-                  </p>
+                  <p className="break-words font-light text-secondary-foreground">{member.companySize}</p>
                 </section>
                 <section>
                   <h4 className="font-medium">Focuses</h4>
                   <p>
                     {member.focus &&
                       member.focus.map((focus, i) => {
-                        const focusNotApproved =
-                          focus.status !== StatusEnum.APPROVED;
+                        const focusNotApproved = focus.status !== StatusEnum.APPROVED;
                         return (
                           <span
                             className={cn(
@@ -432,21 +375,17 @@ function Card({ member, regions, user }: CardProps) {
                   <p>
                     {member.industry &&
                       member.industry.map((industry, i) => {
-                        const industryNotApproved =
-                          industry.status !== StatusEnum.APPROVED;
+                        const industryNotApproved = industry.status !== StatusEnum.APPROVED;
                         return (
                           <span
                             className={cn(
                               "font-light text-secondary-foreground",
-                              industryNotApproved &&
-                                `font-medium text-violet-600`,
+                              industryNotApproved && `font-medium text-violet-600`,
                             )}
                             key={member.id + industry.id}
                           >
                             {industry.name}
-                            {industryNotApproved ? (
-                              <span> ({industry.status})</span>
-                            ) : null}
+                            {industryNotApproved ? <span> ({industry.status})</span> : null}
                             {i < member.industry.length - 1 ? `, ` : null}
                           </span>
                         );
@@ -491,9 +430,15 @@ const MemberEdit: FC<{
   const [location, setLocation] = useState<string>(member.location);
   const [region, setRegion] = useState<string>(member.region);
   const [companySize, setCompanySize] = useState<string>(member.companySize);
-  const [yearsOfExperience, setYearsOfExperience] = useState<string>(
-    member.yearsExperience,
-  );
+  const [yearsOfExperience, setYearsOfExperience] = useState<string>(member.yearsExperience);
+
+  const getRegionIdFromName = (name: string): string => {
+    const region = regions.find((r) => r.fields.name === name);
+    if (!region) {
+      return null;
+    }
+    return region.id;
+  };
 
   const fetchEmailById = async () => {
     const response = await fetch(`/api/get-email-by-id?id=${member.id}`, {
@@ -525,11 +470,7 @@ const MemberEdit: FC<{
     }
   };
 
-  const updateMemberField = async (
-    uid: string,
-    fieldName: string,
-    newData: any,
-  ) => {
+  const updateMemberField = async (uid: string, fieldName: string, newData: any) => {
     const response = await fetch("/api/update-member", {
       method: "PUT",
       headers: {
@@ -540,6 +481,7 @@ const MemberEdit: FC<{
         uid: uid,
         fieldName: fieldName,
         newData: newData,
+        currentUser: user.displayName || user.uid,
       }),
     });
     if (response.status !== 200) {
@@ -551,33 +493,31 @@ const MemberEdit: FC<{
 
   const saveChanges = () => {
     if (name !== member.name) {
-      updateMemberField(member.id, "name", name);
+      updateMemberField(member.id, mFields.NAME, name);
     }
     if (title !== member.title) {
-      updateMemberField(member.id, "title", title);
+      updateMemberField(member.id, mFields.TITLE, title);
     }
     if (link !== member.link) {
-      updateMemberField(member.id, "link", link);
+      updateMemberField(member.id, mFields.LINK, link);
     }
     if (location !== member.location) {
-      updateMemberField(member.id, "location", location);
+      updateMemberField(member.id, mFields.LOCATION, location);
     }
     // TODO: add region ref to member list and member ref to region list
-    // if (region !== member.region) {
-    //   updateMemberField(member.id, "region", region);
-    // }
+    if (region !== member.region) {
+      updateMemberField(member.id, mFields.REGIONS, [region]);
+    }
     if (companySize !== member.companySize) {
-      updateMemberField(member.id, "company_size", companySize);
+      updateMemberField(member.id, mFields.COMPANY_SIZE, companySize);
     }
     if (yearsOfExperience !== member.yearsExperience) {
-      updateMemberField(member.id, "years_experience", yearsOfExperience);
+      updateMemberField(member.id, mFields.YEARS_EXPERIENCE, yearsOfExperience);
     }
     window.location.reload();
   };
 
-  const mapTabsTriggerToVariant = (
-    status: StatusEnum,
-  ): "alert" | "success" | "nearSuccess" | "warn" => {
+  const mapTabsTriggerToVariant = (status: StatusEnum): "alert" | "success" | "nearSuccess" | "warn" => {
     switch (status) {
       case StatusEnum.APPROVED:
         return "success";
@@ -598,9 +538,8 @@ const MemberEdit: FC<{
         <>
           <h2 className="text-2xl font-semibold">Delete Member</h2>
           <p className="text-xl font-light text-secondary-foreground">
-            Are you sure you want to delete{" "}
-            <span className="font-semibold text-stone-700">{member.name}</span>{" "}
-            and all data associated with them?
+            Are you sure you want to delete <span className="font-semibold text-stone-700">{member.name}</span> and all
+            data associated with them?
           </p>
           <div className="flex flex-col gap-2">
             <Button
@@ -647,13 +586,7 @@ const MemberEdit: FC<{
             </TabsList>
           </Tabs>
           <div className="col-span-2 flex flex-col items-start gap-1">
-            <h2
-              className={`text-sm font-semibold ${
-                name !== member.name && "text-brown-600"
-              }`}
-            >
-              Name
-            </h2>
+            <h2 className={`text-sm font-semibold ${name !== member.name && "text-brown-600"}`}>Name</h2>
             <Input
               name={"usernamef"}
               value={name}
@@ -664,13 +597,7 @@ const MemberEdit: FC<{
             />
           </div>
           <div className="col-span-2 flex flex-col items-start gap-1">
-            <h2
-              className={`text-sm font-semibold ${
-                title !== member.title && "text-brown-600"
-              }`}
-            >
-              Title
-            </h2>
+            <h2 className={`text-sm font-semibold ${title !== member.title && "text-brown-600"}`}>Title</h2>
             <Input
               name={"title"}
               value={title}
@@ -682,11 +609,7 @@ const MemberEdit: FC<{
           </div>
           <div className="col-span-2 flex flex-col items-start gap-1">
             <div className="flex w-full items-center">
-              <h2
-                className={`grow text-sm font-semibold ${
-                  link !== member.link && "text-brown-600"
-                }`}
-              >
+              <h2 className={`grow text-sm font-semibold ${link !== member.link && "text-brown-600"}`}>
                 Website / Link
               </h2>
               <Link href={link} target="_blank" referrerPolicy="no-referrer">
@@ -705,35 +628,19 @@ const MemberEdit: FC<{
           <div className="relative col-span-2 flex flex-col gap-1">
             <div className="flex items-center gap-2">
               <h2 className="grow text-sm font-semibold">Email</h2>
-              {loadingEmail && (
-                <LoadingSpinner
-                  variant={LoadingSpinnerVariant.Invert}
-                  className="h-4 w-4 border-2"
-                />
-              )}
+              {loadingEmail && <LoadingSpinner variant={LoadingSpinnerVariant.Invert} className="h-4 w-4 border-2" />}
               {!email && (
-                <button
-                  className="text-xs font-medium text-primary"
-                  onClick={handleManageEmail}
-                >
+                <button className="text-xs font-medium text-primary" onClick={handleManageEmail}>
                   Update
                 </button>
               )}
             </div>
             <div className="relative flex flex-col gap-2">
-              <Input
-                name="email"
-                disabled={email === null}
-                value={email?.email || member.emailAbbr}
-              />
+              <Input name="email" disabled={email === null} value={email?.email || member.emailAbbr} />
               {email ? (
                 <>
                   <section className="flex items-start gap-2">
-                    <Checkbox
-                      id="subscribed"
-                      checked={!member.unsubscribed}
-                      defaultChecked
-                    />
+                    <Checkbox id="subscribed" checked={!member.unsubscribed} defaultChecked />
                     <div className="text-xs leading-relaxed">
                       <label
                         htmlFor="subscribed"
@@ -742,8 +649,7 @@ const MemberEdit: FC<{
                         Subscribed
                       </label>
                       <p className="leading-relaxed text-secondary-foreground">
-                        Members opt out of emails during sign-up and/or using
-                        unsubscribe links.
+                        Members opt out of emails during sign-up and/or using unsubscribe links.
                       </p>
                     </div>
                   </section>
@@ -757,8 +663,7 @@ const MemberEdit: FC<{
                         Verified
                       </label>
                       <p className="leading-relaxed text-secondary-foreground">
-                        Members verify their email address by replying or
-                        authenticating.
+                        Members verify their email address by replying or authenticating.
                       </p>
                     </div>
                   </section>
@@ -823,13 +728,7 @@ const MemberEdit: FC<{
           </div> */}
 
           <div className="flex flex-col items-start gap-1">
-            <h2
-              className={`text-sm font-semibold ${
-                location !== member.location && "text-brown-600"
-              }`}
-            >
-              Location
-            </h2>
+            <h2 className={`text-sm font-semibold ${location !== member.location && "text-brown-600"}`}>Location</h2>
             <Input
               name={"location"}
               value={location}
@@ -841,22 +740,12 @@ const MemberEdit: FC<{
           </div>
           <div className="flex flex-col items-start gap-1">
             <div className="flex w-full items-center">
-              <h2
-                className={`grow text-sm font-semibold ${
-                  region !== member.region && "text-brown-600"
-                }`}
-              >
-                Region
-              </h2>
+              <h2 className={`grow text-sm font-semibold ${region !== member.region && "text-brown-600"}`}>Region</h2>
               <Popover>
                 <PopoverTrigger>
                   <h2 className="text-xs font-medium text-primary">Add</h2>
                 </PopoverTrigger>
-                <PopoverContent
-                  side="bottom"
-                  align="end"
-                  className="flex flex-col gap-1"
-                >
+                <PopoverContent side="bottom" align="end" className="flex flex-col gap-1">
                   <Input placeholder="Region" autoFocus />
                   {/* HERE */}
                   <Button size="sm">Add Region</Button>
@@ -864,19 +753,17 @@ const MemberEdit: FC<{
               </Popover>
             </div>
             <Select
-              defaultValue={member.region}
+              defaultValue={getRegionIdFromName(member.region)}
               onValueChange={(e) => {
                 setRegion(e);
               }}
             >
-              <SelectTrigger
-                className={region !== member.region && "text-brown-600"}
-              >
+              <SelectTrigger className={region !== member.region && "text-brown-600"}>
                 <SelectValue placeholder="Region" />
               </SelectTrigger>
               <SelectContent className="max-h-72">
                 {regions?.map((region) => (
-                  <SelectItem value={region.fields.name} key={region.fields.id}>
+                  <SelectItem value={region.id} key={region.fields.id}>
                     {region.fields.name}
                   </SelectItem>
                 ))}
@@ -884,11 +771,7 @@ const MemberEdit: FC<{
             </Select>
           </div>
           <div className="flex flex-col items-start gap-1">
-            <h2
-              className={`text-sm font-semibold ${
-                yearsOfExperience !== member.yearsExperience && "text-brown-600"
-              }`}
-            >
+            <h2 className={`text-sm font-semibold ${yearsOfExperience !== member.yearsExperience && "text-brown-600"}`}>
               Years of Experience
             </h2>
             <Select
@@ -897,12 +780,7 @@ const MemberEdit: FC<{
                 setYearsOfExperience(e);
               }}
             >
-              <SelectTrigger
-                className={
-                  yearsOfExperience !== member.yearsExperience &&
-                  "text-brown-600"
-                }
-              >
+              <SelectTrigger className={yearsOfExperience !== member.yearsExperience && "text-brown-600"}>
                 <SelectValue placeholder="Company Size" />
               </SelectTrigger>
               <SelectContent className="max-h-72">
@@ -915,11 +793,7 @@ const MemberEdit: FC<{
             </Select>
           </div>
           <div className="flex flex-col items-start gap-1">
-            <h2
-              className={`text-sm font-semibold ${
-                companySize !== member.companySize && "text-brown-600"
-              }`}
-            >
+            <h2 className={`text-sm font-semibold ${companySize !== member.companySize && "text-brown-600"}`}>
               Company Size
             </h2>
             <Select
@@ -928,11 +802,7 @@ const MemberEdit: FC<{
                 setCompanySize(e);
               }}
             >
-              <SelectTrigger
-                className={
-                  companySize !== member.companySize && "text-brown-600"
-                }
-              >
+              <SelectTrigger className={companySize !== member.companySize && "text-brown-600"}>
                 <SelectValue placeholder="Company Size" />
               </SelectTrigger>
               <SelectContent className="max-h-72">
@@ -954,8 +824,7 @@ const MemberEdit: FC<{
                     <span
                       className={cn(
                         "inline-block rounded-xl border px-3 py-0.5 text-sm tracking-wide text-secondary-foreground",
-                        focusNotApproved &&
-                          `bg-violet-600/20 font-medium text-violet-600`,
+                        focusNotApproved && `bg-violet-600/20 font-medium text-violet-600`,
                       )}
                       key={member.id + focus.id}
                     >
@@ -972,21 +841,17 @@ const MemberEdit: FC<{
             <div className="flex flex-wrap gap-1">
               {member.industry &&
                 member.industry.map((industry, i) => {
-                  const industryNotApproved =
-                    industry.status !== StatusEnum.APPROVED;
+                  const industryNotApproved = industry.status !== StatusEnum.APPROVED;
                   return (
                     <span
                       className={cn(
                         "inline-block rounded-xl border px-3 py-0.5 text-sm tracking-wide text-secondary-foreground",
-                        industryNotApproved &&
-                          `bg-violet-600/20 font-medium text-violet-600`,
+                        industryNotApproved && `bg-violet-600/20 font-medium text-violet-600`,
                       )}
                       key={member.id + industry.id}
                     >
                       {industry.name}
-                      {industryNotApproved ? (
-                        <span> ({industry.status})</span>
-                      ) : null}
+                      {industryNotApproved ? <span> ({industry.status})</span> : null}
                     </span>
                   );
                 })}
@@ -999,9 +864,7 @@ const MemberEdit: FC<{
           </section>
           <section>
             <h4 className="text-sm font-semibold">Last Modified</h4>
-            <p className="font-light text-secondary-foreground">
-              {member.lastModified}
-            </p>
+            <p className="font-light text-secondary-foreground">{member.lastModified}</p>
           </section>
           <div className="col-span-2 mt-2 flex flex-col gap-2 sm:flex-row">
             <TooltipProvider>
