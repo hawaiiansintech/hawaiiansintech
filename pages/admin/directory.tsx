@@ -40,6 +40,7 @@ import { FC, ReactNode, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
 import { FirebaseMemberFieldsEnum as mFields } from "@/lib/enums";
+import { set } from "lodash";
 export async function getStaticProps() {
   return {
     props: {
@@ -431,6 +432,7 @@ const MemberEdit: FC<{
   const [region, setRegion] = useState<string>(member.region);
   const [companySize, setCompanySize] = useState<string>(member.companySize);
   const [yearsOfExperience, setYearsOfExperience] = useState<string>(member.yearsExperience);
+  const [status, setStatus] = useState<StatusEnum>(member.status);
 
   const getRegionIdFromName = (name: string): string => {
     const region = regions.find((r) => r.fields.name === name);
@@ -504,7 +506,6 @@ const MemberEdit: FC<{
     if (location !== member.location) {
       updateMemberField(member.id, mFields.LOCATION, location);
     }
-    // TODO: add region ref to member list and member ref to region list
     if (region !== member.region) {
       updateMemberField(member.id, mFields.REGIONS, [region]);
     }
@@ -513,6 +514,9 @@ const MemberEdit: FC<{
     }
     if (yearsOfExperience !== member.yearsExperience) {
       updateMemberField(member.id, mFields.YEARS_EXPERIENCE, yearsOfExperience);
+    }
+    if (status !== member.status) {
+      updateMemberField(member.id, mFields.STATUS, status);
     }
     window.location.reload();
   };
@@ -565,7 +569,7 @@ const MemberEdit: FC<{
           <Tabs
             defaultValue={member.status}
             onValueChange={(value) => {
-              // setTabVisible(value as DirectoryFilter);
+              setStatus(value as StatusEnum);
             }}
             // value={tabVisible}
             className="col-span-2"
