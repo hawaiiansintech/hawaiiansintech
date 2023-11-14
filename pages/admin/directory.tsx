@@ -424,6 +424,7 @@ const MemberEdit: FC<{
 }> = ({ member, regions, onClose, onDelete, user }) => {
   const [email, setEmail] = useState<MemberEmail>(null);
   const [loadingEmail, setLoadingEmail] = useState<boolean>(null);
+  const [originalEmail, setOriginalEmail] = useState<string>(null);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [name, setName] = useState<string>(member.name);
   const [title, setTitle] = useState<string>(member.title);
@@ -433,6 +434,7 @@ const MemberEdit: FC<{
   const [companySize, setCompanySize] = useState<string>(member.companySize);
   const [yearsOfExperience, setYearsOfExperience] = useState<string>(member.yearsExperience);
   const [status, setStatus] = useState<StatusEnum>(member.status);
+  const [unsubscribed, setUnsubscribed] = useState<boolean>(member.unsubscribed);
 
   const getRegionIdFromName = (name: string): string => {
     const region = regions.find((r) => r.fields.name === name);
@@ -494,6 +496,11 @@ const MemberEdit: FC<{
   };
 
   const saveChanges = () => {
+    if (email !== null && email.email !== null && email.email !== originalEmail) {
+      window.alert("email update not implemented");
+      return;
+      // updateMemberField(member.id, mFields.EMAIL, email);
+    }
     if (name !== member.name) {
       updateMemberField(member.id, mFields.NAME, name);
     }
@@ -517,6 +524,9 @@ const MemberEdit: FC<{
     }
     if (status !== member.status) {
       updateMemberField(member.id, mFields.STATUS, status);
+    }
+    if (unsubscribed !== member.unsubscribed) {
+      updateMemberField(member.id, mFields.UNSUBSCRIBED, unsubscribed);
     }
     window.location.reload();
   };
@@ -640,11 +650,28 @@ const MemberEdit: FC<{
               )}
             </div>
             <div className="relative flex flex-col gap-2">
-              <Input name="email" disabled={email === null} value={email?.email || member.emailAbbr} />
+              <Input
+                name="email"
+                disabled={email === null}
+                value={email?.email || member.emailAbbr}
+                onChange={(e) => {
+                  originalEmail === null && setOriginalEmail(email.email);
+                  let newEmail = { ...email };
+                  newEmail.email = e.target.value;
+                  setEmail(newEmail);
+                }}
+              />
               {email ? (
                 <>
                   <section className="flex items-start gap-2">
-                    <Checkbox id="subscribed" checked={!member.unsubscribed} defaultChecked />
+                    <Checkbox
+                      id="subscribed"
+                      checked={!unsubscribed}
+                      onCheckedChange={(e) => {
+                        setUnsubscribed(!e);
+                      }}
+                      defaultChecked
+                    />
                     <div className="text-xs leading-relaxed">
                       <label
                         htmlFor="subscribed"
@@ -658,15 +685,15 @@ const MemberEdit: FC<{
                     </div>
                   </section>
                   <section className="flex items-start gap-2">
-                    <Checkbox id="verified" />
+                    <Checkbox disabled id="verified" />
                     <div className="text-xs leading-relaxed">
                       <label
                         htmlFor="verified"
-                        className="font-semibold peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        className="font-semibold peer-disabled:cursor-not-allowed peer-disabled:opacity-70 opacity-40"
                       >
-                        Verified
+                        Verified (to be implemented)
                       </label>
-                      <p className="leading-relaxed text-secondary-foreground">
+                      <p className="leading-relaxed text-secondary-foreground opacity-50">
                         Members verify their email address by replying or authenticating.
                       </p>
                     </div>

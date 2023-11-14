@@ -96,13 +96,13 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Only PUT requests allowed" });
   }
   try {
-    if (!req.body.uid) {
+    if (req.body.uid === undefined) {
       return res.status(400).json({ message: "Missing uid" });
-    } else if (!req.body.fieldName) {
+    } else if (req.body.fieldName === undefined) {
       return res.status(400).json({ message: "Missing fieldName" });
-    } else if (!req.body.newData) {
+    } else if (req.body.newData === undefined) {
       return res.status(400).json({ message: "Missing newData" });
-    } else if (!req.body.currentUser) {
+    } else if (req.body.currentUser === undefined) {
       return res.status(400).json({ message: "Missing currentUser" });
     }
     const authHeader = req.headers.authorization;
