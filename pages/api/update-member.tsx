@@ -61,14 +61,6 @@ export const updateMemberField = async (
     const adminReferencesToDelete = referencesToDelete.map((ref) => admin.firestore().doc(ref.path));
     const oldData = doc.get(fieldName);
     let writeResult = null;
-    if (adminReferencesToAdd.length !== 0) {
-      let writeResult = await docRef.update({
-        [fieldName]: admin.firestore.FieldValue.arrayUnion(...adminReferencesToAdd),
-        last_modified: admin.firestore.FieldValue.serverTimestamp(),
-        last_modified_by: currentUser || "admin edit",
-      });
-      console.log(`Added references ${adminReferencesToAdd} to ${fieldName} for ${uid}: ${writeResult}`);
-    }
     if (adminReferencesToDelete.length !== 0) {
       let writeResult = await docRef.update({
         [fieldName]: admin.firestore.FieldValue.arrayRemove(...adminReferencesToDelete),
@@ -76,6 +68,14 @@ export const updateMemberField = async (
         last_modified_by: currentUser || "admin edit",
       });
       console.log(`Deleted references ${adminReferencesToDelete} from ${fieldName} for ${uid}: ${writeResult}`);
+      if (adminReferencesToAdd.length !== 0) {
+        let writeResult = await docRef.update({
+          [fieldName]: admin.firestore.FieldValue.arrayUnion(...adminReferencesToAdd),
+          last_modified: admin.firestore.FieldValue.serverTimestamp(),
+          last_modified_by: currentUser || "admin edit",
+        });
+        console.log(`Added references ${adminReferencesToAdd} to ${fieldName} for ${uid}: ${writeResult}`);
+      }
     }
     console.log(`Updated ${fieldName} from ${oldData} to ${newData} for ${uid}`);
     return writeResult;

@@ -435,6 +435,8 @@ const MemberEdit: FC<{
   const [yearsOfExperience, setYearsOfExperience] = useState<string>(member.yearsExperience);
   const [status, setStatus] = useState<StatusEnum>(member.status);
   const [unsubscribed, setUnsubscribed] = useState<boolean>(member.unsubscribed);
+  const [focuses, setFocuses] = useState<{ name: string; id: string }[] | string[]>(member.focus);
+  const [industries, setIndustries] = useState<{ name: string; id: string }[] | string[]>(member.industry);
 
   const getRegionIdFromName = (name: string): string => {
     const region = regions.find((r) => r.fields.name === name);
@@ -515,37 +517,20 @@ const MemberEdit: FC<{
     return response;
   };
 
-  const saveChanges = () => {
+  const saveChanges = async () => {
+    name !== member.name && (await updateMemberField(member.id, mFields.NAME, name));
+    title !== member.title && (await updateMemberField(member.id, mFields.TITLE, title));
+    link !== member.link && (await updateMemberField(member.id, mFields.LINK, link));
+    location !== member.location && (await updateMemberField(member.id, mFields.LOCATION, location));
+    region !== member.region && (await updateMemberField(member.id, mFields.REGIONS, [region]));
+    companySize !== member.companySize && (await updateMemberField(member.id, mFields.COMPANY_SIZE, companySize));
+    status !== member.status && (await updateMemberField(member.id, mFields.STATUS, status));
+    unsubscribed !== member.unsubscribed && (await updateMemberField(member.id, mFields.UNSUBSCRIBED, unsubscribed));
+    yearsOfExperience !== member.yearsExperience &&
+      (await updateMemberField(member.id, mFields.YEARS_EXPERIENCE, yearsOfExperience));
     if (email !== null && email.email !== null && email.email !== originalEmail) {
-      updateSecureEmail(member.id, email.email);
-      updateMemberField(member.id, mFields.MASKED_EMAIL, useEmailCloaker(email.email));
-    }
-    if (name !== member.name) {
-      updateMemberField(member.id, mFields.NAME, name);
-    }
-    if (title !== member.title) {
-      updateMemberField(member.id, mFields.TITLE, title);
-    }
-    if (link !== member.link) {
-      updateMemberField(member.id, mFields.LINK, link);
-    }
-    if (location !== member.location) {
-      updateMemberField(member.id, mFields.LOCATION, location);
-    }
-    if (region !== member.region) {
-      updateMemberField(member.id, mFields.REGIONS, [region]);
-    }
-    if (companySize !== member.companySize) {
-      updateMemberField(member.id, mFields.COMPANY_SIZE, companySize);
-    }
-    if (yearsOfExperience !== member.yearsExperience) {
-      updateMemberField(member.id, mFields.YEARS_EXPERIENCE, yearsOfExperience);
-    }
-    if (status !== member.status) {
-      updateMemberField(member.id, mFields.STATUS, status);
-    }
-    if (unsubscribed !== member.unsubscribed) {
-      updateMemberField(member.id, mFields.UNSUBSCRIBED, unsubscribed);
+      await updateSecureEmail(member.id, email.email);
+      await updateMemberField(member.id, mFields.MASKED_EMAIL, useEmailCloaker(email.email));
     }
     window.location.reload();
   };
@@ -866,21 +851,44 @@ const MemberEdit: FC<{
           </div>
           <div className="col-span-2">
             <h4 className="text-sm font-semibold">Focuses</h4>
-            <div className="flex flex-wrap gap-1">
-              {member.focus &&
-                member.focus.map((focus, i) => {
+            <div className="flex flex-wrap gap-1 py-3">
+              {focuses &&
+                focuses.map((focus, i) => {
                   const focusNotApproved = focus.status !== StatusEnum.APPROVED;
                   return (
-                    <span
-                      className={cn(
-                        "inline-block rounded-xl border px-3 py-0.5 text-sm tracking-wide text-secondary-foreground",
-                        focusNotApproved && `bg-violet-600/20 font-medium text-violet-600`,
-                      )}
-                      key={member.id + focus.id}
+                    <div
+                      className="
+                        relative 
+                        inline-block 
+                        rounded-xl 
+                        border 
+                        px-3 
+                        py-0.5 
+                        text-sm 
+                        tracking-wide 
+                        text-secondary-foreground
+                        mr-3
+                        my-1
+                      "
                     >
-                      {focus.name}
-                      {focusNotApproved ? ` (${focus.status})` : null}
-                    </span>
+                      <span
+                        className={cn(focusNotApproved && `bg-violet-600/20 font-medium text-violet-600`)}
+                        key={member.id + focus.id}
+                      >
+                        {focus.name}
+                        {focusNotApproved ? ` (${focus.status})` : null}
+                      </span>
+                      <Button
+                        className="absolute right-4 bottom-3 transform translate-x-full rounded-full h-6 px-3"
+                        variant="secondary"
+                        onClick={() => {
+                          const newFocuses = focuses.filter((f) => (f as { id: string }).id !== focus.id);
+                          setFocuses(newFocuses as { name: string; id: string }[]);
+                        }}
+                      >
+                        x
+                      </Button>
+                    </div>
                   );
                 })}
             </div>
@@ -889,20 +897,43 @@ const MemberEdit: FC<{
           <div className="col-span-2">
             <h4 className="text-sm font-semibold">Industries</h4>
             <div className="flex flex-wrap gap-1">
-              {member.industry &&
-                member.industry.map((industry, i) => {
+              {industries &&
+                industries.map((industry, i) => {
                   const industryNotApproved = industry.status !== StatusEnum.APPROVED;
                   return (
-                    <span
-                      className={cn(
-                        "inline-block rounded-xl border px-3 py-0.5 text-sm tracking-wide text-secondary-foreground",
-                        industryNotApproved && `bg-violet-600/20 font-medium text-violet-600`,
-                      )}
-                      key={member.id + industry.id}
+                    <div
+                      className="
+                        relative 
+                        inline-block 
+                        rounded-xl 
+                        border 
+                        px-3 
+                        py-0.5 
+                        text-sm 
+                        tracking-wide 
+                        text-secondary-foreground
+                        mr-3
+                        my-1
+                      "
                     >
-                      {industry.name}
-                      {industryNotApproved ? <span> ({industry.status})</span> : null}
-                    </span>
+                      <span
+                        className={cn(industryNotApproved && `bg-violet-600/20 font-medium text-violet-600`)}
+                        key={member.id + industry.id}
+                      >
+                        {industry.name}
+                        {industryNotApproved ? <span> ({industry.status})</span> : null}
+                      </span>
+                      <Button
+                        className="absolute right-4 bottom-3 transform translate-x-full rounded-full h-6 px-3"
+                        variant="secondary"
+                        onClick={() => {
+                          const newIndustries = industries.filter((f) => (f as { id: string }).id !== industry.id);
+                          setIndustries(newIndustries as { name: string; id: string }[]);
+                        }}
+                      >
+                        x
+                      </Button>
+                    </div>
                   );
                 })}
             </div>
