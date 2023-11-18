@@ -29,7 +29,7 @@ import { DocumentData, MemberEmail, MemberSecure, RegionPublic, getFirebaseTable
 import { CompanySizeEnum, FirebaseTablesEnum, StatusEnum, YearsOfExperienceEnum } from "@/lib/enums";
 import { useIsAdmin } from "@/lib/hooks";
 import { getAuth, User } from "firebase/auth";
-import { convertStringSnake } from "helpers";
+import { convertStringSnake, useEmailCloaker } from "helpers";
 import { cn } from "@/lib/utils";
 import { ExternalLink, Trash } from "lucide-react";
 import moment from "moment";
@@ -489,17 +489,36 @@ const MemberEdit: FC<{
       }),
     });
     if (response.status !== 200) {
-      throw new Error(`Error updating ${fieldName}`);
+      throw new Error(`Error updating ${fieldName} for ${uid}`);
     }
-    console.log(`✅ updated ${fieldName} in firebase`);
+    console.log(`✅ updated ${fieldName} in firebase for ${uid}`);
+    return response;
+  };
+
+  const updateSecureEmail = async (uid: string, email: string) => {
+    const response = await fetch("/api/update-email-by-id", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await user.getIdToken()}`,
+      },
+      body: JSON.stringify({
+        uid: uid,
+        email: email,
+        currentUser: user.displayName || user.uid,
+      }),
+    });
+    if (response.status !== 200) {
+      throw new Error(`Error updating email for ${uid}`);
+    }
+    console.log(`✅ updated email in firebase for ${uid}`);
     return response;
   };
 
   const saveChanges = () => {
     if (email !== null && email.email !== null && email.email !== originalEmail) {
-      window.alert("email update not implemented");
-      return;
-      // updateMemberField(member.id, mFields.EMAIL, email);
+      updateSecureEmail(member.id, email.email);
+      updateMemberField(member.id, mFields.MASKED_EMAIL, useEmailCloaker(email.email));
     }
     if (name !== member.name) {
       updateMemberField(member.id, mFields.NAME, name);
