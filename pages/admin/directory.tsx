@@ -41,6 +41,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
 import { FirebaseMemberFieldsEnum as mFields } from "@/lib/enums";
 import { set } from "lodash";
+import AdminFilter from "@/components/admin/AdminFilter";
 export async function getStaticProps() {
   return {
     props: {
@@ -849,95 +850,18 @@ const MemberEdit: FC<{
               </SelectContent>
             </Select>
           </div>
-          <div className="col-span-2">
-            <h4 className="text-sm font-semibold">Focuses</h4>
-            <div className="flex flex-wrap gap-1 py-3">
-              {focuses &&
-                focuses.map((focus, i) => {
-                  const focusNotApproved = focus.status !== StatusEnum.APPROVED;
-                  return (
-                    <div
-                      className="
-                        relative 
-                        inline-block 
-                        rounded-xl 
-                        border 
-                        px-3 
-                        py-0.5 
-                        text-sm 
-                        tracking-wide 
-                        text-secondary-foreground
-                        mr-3
-                        my-1
-                      "
-                    >
-                      <span
-                        className={cn(focusNotApproved && `bg-violet-600/20 font-medium text-violet-600`)}
-                        key={member.id + focus.id}
-                      >
-                        {focus.name}
-                        {focusNotApproved ? ` (${focus.status})` : null}
-                      </span>
-                      <Button
-                        className="absolute right-4 bottom-3 transform translate-x-full rounded-full h-6 px-3"
-                        variant="secondary"
-                        onClick={() => {
-                          const newFocuses = focuses.filter((f) => (f as { id: string }).id !== focus.id);
-                          setFocuses(newFocuses as { name: string; id: string }[]);
-                        }}
-                      >
-                        x
-                      </Button>
-                    </div>
-                  );
-                })}
-            </div>
-          </div>
-
-          <div className="col-span-2">
-            <h4 className="text-sm font-semibold">Industries</h4>
-            <div className="flex flex-wrap gap-1">
-              {industries &&
-                industries.map((industry, i) => {
-                  const industryNotApproved = industry.status !== StatusEnum.APPROVED;
-                  return (
-                    <div
-                      className="
-                        relative 
-                        inline-block 
-                        rounded-xl 
-                        border 
-                        px-3 
-                        py-0.5 
-                        text-sm 
-                        tracking-wide 
-                        text-secondary-foreground
-                        mr-3
-                        my-1
-                      "
-                    >
-                      <span
-                        className={cn(industryNotApproved && `bg-violet-600/20 font-medium text-violet-600`)}
-                        key={member.id + industry.id}
-                      >
-                        {industry.name}
-                        {industryNotApproved ? <span> ({industry.status})</span> : null}
-                      </span>
-                      <Button
-                        className="absolute right-4 bottom-3 transform translate-x-full rounded-full h-6 px-3"
-                        variant="secondary"
-                        onClick={() => {
-                          const newIndustries = industries.filter((f) => (f as { id: string }).id !== industry.id);
-                          setIndustries(newIndustries as { name: string; id: string }[]);
-                        }}
-                      >
-                        x
-                      </Button>
-                    </div>
-                  );
-                })}
-            </div>
-          </div>
+          <AdminFilter
+            filterType="Focuses"
+            memberId={member.id}
+            filters={focuses as { name: string; id: string; status: string }[]}
+            setFilters={setFocuses}
+          />
+          <AdminFilter
+            filterType="Industries"
+            memberId={member.id}
+            filters={industries as { name: string; id: string; status: string }[]}
+            setFilters={setIndustries}
+          />
 
           <section>
             <h4 className="text-sm font-semibold">ID</h4>
