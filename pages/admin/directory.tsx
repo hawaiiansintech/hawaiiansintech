@@ -437,7 +437,9 @@ const MemberEdit: FC<{
   const [status, setStatus] = useState<StatusEnum>(member.status);
   const [unsubscribed, setUnsubscribed] = useState<boolean>(member.unsubscribed);
   const [focuses, setFocuses] = useState<{ name: string; id: string }[] | string[]>(member.focus);
+  const [suggestedFocus, setSuggestedFocus] = useState<string>(null);
   const [industries, setIndustries] = useState<{ name: string; id: string }[] | string[]>(member.industry);
+  const [suggestedIndustry, setSuggestedIndustry] = useState<string>(null);
 
   const getRegionIdFromName = (name: string): string => {
     const region = regions.find((r) => r.fields.name === name);
@@ -851,16 +853,26 @@ const MemberEdit: FC<{
             </Select>
           </div>
           <AdminFilter
-            filterType="Focuses"
+            filterTypeSingular="Focus"
+            filterTypePlural="Focuses"
+            filterTable={FirebaseTablesEnum.FOCUSES}
             memberId={member.id}
             filters={focuses as { name: string; id: string; status: string }[]}
             setFilters={setFocuses}
+            emoji="🧑‍🏭"
+            suggestedFilter={suggestedFocus}
+            setSuggestedFilter={setSuggestedFocus}
           />
           <AdminFilter
-            filterType="Industries"
+            filterTypeSingular="Industry"
+            filterTypePlural="Industries"
+            filterTable={FirebaseTablesEnum.INDUSTRIES}
             memberId={member.id}
             filters={industries as { name: string; id: string; status: string }[]}
             setFilters={setIndustries}
+            emoji="🏭"
+            suggestedFilter={suggestedIndustry}
+            setSuggestedFilter={setSuggestedIndustry}
           />
 
           <section>
