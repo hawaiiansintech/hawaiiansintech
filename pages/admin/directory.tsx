@@ -479,7 +479,7 @@ const MemberEdit: FC<{
     }
   };
 
-  const updateMemberField = async (uid: string, fieldName: string, newData: any) => {
+  const updateMemberField = async (uid: string, fieldName: string, newData: any, suggestedFilter?: boolean) => {
     const response = await fetch("/api/update-member", {
       method: "PUT",
       headers: {
@@ -491,6 +491,7 @@ const MemberEdit: FC<{
         fieldName: fieldName,
         newData: newData,
         currentUser: user.displayName || user.uid,
+        suggestedFilter: suggestedFilter,
       }),
     });
     if (response.status !== 200) {
@@ -534,6 +535,26 @@ const MemberEdit: FC<{
     if (email !== null && email.email !== null && email.email !== originalEmail) {
       await updateSecureEmail(member.id, email.email);
       await updateMemberField(member.id, mFields.MASKED_EMAIL, useEmailCloaker(email.email));
+    }
+    focuses !== member.focus &&
+      (await updateMemberField(
+        member.id,
+        mFields.FOCUSES,
+        focuses.map((f) => f.id),
+      ));
+    industries !== member.industry &&
+      (await updateMemberField(
+        member.id,
+        mFields.INDUSTRIES,
+        industries.map((i) => i.id),
+      ));
+    if (suggestedFocus && !focuses.map((f) => f.id).includes(suggestedFocus)) {
+      await updateMemberField(member.id, mFields.FOCUSES, [suggestedFocus], true);
+      setSuggestedFocus(null);
+    }
+    if (suggestedIndustry && !industries.map((i) => i.id).includes(suggestedIndustry)) {
+      await updateMemberField(member.id, mFields.INDUSTRIES, [suggestedIndustry], true);
+      setSuggestedIndustry(null);
     }
     window.location.reload();
   };

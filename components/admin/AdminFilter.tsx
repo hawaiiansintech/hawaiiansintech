@@ -35,17 +35,24 @@ export default function AdminFilter({
   const [allFilters, setAllFilters] = useState<Filter[]>([]);
   const [selectedFilters, setSelectedFilters] = useState<string[]>(filters.map((f) => f.id));
   const [suggestOpen, setSuggestOpen] = useState(false);
+  const unnapprovedFilters = filters.filter((f) => f.status !== StatusEnum.APPROVED).map((f) => f.name);
 
-  const filterClass = "inline-block rounded-xl border px-3 py-0.5 text-sm tracking-wide text-secondary-foreground";
+  const filterClass =
+    "inline-block rounded-xl border px-3 py-0.5 my-0.5 text-sm tracking-wide text-secondary-foreground";
 
   const handleOpen = async () => {
     setOpen(!open);
-    (suggestedFilter === "" || suggestedFilter === null) && setSuggestOpen(false);
+
+    if (unnapprovedFilters.length > 0) {
+      setSuggestedFilter(unnapprovedFilters[0]);
+      setSuggestOpen(true);
+    } else if (suggestedFilter === "" || suggestedFilter === null) {
+      setSuggestOpen(false);
+    }
     allFilters.length === 0 && setAllFilters(await getFilters(filterTable));
   };
 
   const handleSelect = (filter: Filter) => {
-    console.log(selectedFilters.includes(filter.id) ? "true" : "false");
     if (selectedFilters.includes(filter.id)) {
       setSelectedFilters(selectedFilters.filter((f) => f !== filter.id));
       setFilters(filters.filter((f) => f.id !== filter.id));
@@ -58,7 +65,7 @@ export default function AdminFilter({
   return (
     <div className="col-span-2">
       <h4 className="text-sm font-semibold">{filterTypePlural}</h4>
-      <div className="flex flex-wrap gap-1 py-3">
+      <div className="flex flex-wrap gap-1 py-3 pr-9">
         {filters &&
           filters.map((filter, i) => {
             const focusNotApproved = filter.status !== StatusEnum.APPROVED;
@@ -74,14 +81,14 @@ export default function AdminFilter({
               </div>
             );
           })}
-        {suggestedFilter && (
+        {suggestedFilter && !unnapprovedFilters.includes(suggestedFilter) && (
           <div className={filterClass}>
             <span className={cn(`bg-violet-600/20 font-medium text-violet-600`)} key={suggestedFilter}>
               {suggestedFilter} (pending approval)
             </span>
           </div>
         )}
-        <Button className="absolute right-10" variant="secondary" size="sm" onClick={handleOpen}>
+        <Button className="absolute right-10 p-2" variant="secondary" size="sm" onClick={handleOpen}>
           ✏️
         </Button>
         <Dialog open={open} onOpenChange={setOpen}>

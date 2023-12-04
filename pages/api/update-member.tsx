@@ -9,6 +9,8 @@ import {
   deleteReferences as deleteReferencesPublic,
   addMemberToReferences as addMemberToReferencesPublic,
   getReferences as getReferencesPublic,
+  addLabelRef as addLabelRefPublic,
+  addMemberToLabels as addMemberToLabelsPublic,
 } from "@/lib/firebase-helpers/public/directory";
 
 export const updateMemberField = async (
@@ -16,6 +18,7 @@ export const updateMemberField = async (
   fieldName: string,
   newData: string | string[],
   currentUser: string,
+  suggestedFilter: boolean,
 ): Promise<FirebaseFirestore.WriteResult | null> => {
   await initializeAdmin();
   const docRef = admin.firestore().collection(FirebaseTablesEnum.MEMBERS).doc(uid);
@@ -34,16 +37,21 @@ export const updateMemberField = async (
   }
 
   const arrayFields = [mFields.INDUSTRIES.toString(), mFields.FOCUSES.toString(), mFields.REGIONS.toString()];
+  const fieldNameToTable = {
+    [mFields.INDUSTRIES]: FirebaseTablesEnum.INDUSTRIES,
+    [mFields.FOCUSES]: FirebaseTablesEnum.FOCUSES,
+    [mFields.REGIONS]: FirebaseTablesEnum.REGIONS,
+  };
 
-  if (arrayFields.includes(fieldName)) {
+  if (suggestedFilter && !arrayFields.includes(fieldName)) {
+    throw new Error(`Field ${fieldName} is not a suggested filter`);
+  }
+
+  if (!suggestedFilter && arrayFields.includes(fieldName)) {
     if (typeof newData === "string") {
       throw new Error(`Field ${fieldName} is supposed to be a string array, but newData is a string`);
     }
-    const fieldNameToTable = {
-      [mFields.INDUSTRIES]: FirebaseTablesEnum.INDUSTRIES,
-      [mFields.FOCUSES]: FirebaseTablesEnum.FOCUSES,
-      [mFields.REGIONS]: FirebaseTablesEnum.REGIONS,
-    };
+
     const data = doc.data();
 
     // Deal with filter references (change publicly since we have the functions available) before updating the member
@@ -77,9 +85,23 @@ export const updateMemberField = async (
       });
       console.log(`Added references ${adminReferencesToAdd} to ${fieldName} for ${uid}: ${writeResult}`);
     }
-
     console.log(`Updated ${fieldName} from ${oldData} to ${newData} for ${uid}`);
     return writeResult;
+  } else if (suggestedFilter && arrayFields.includes(fieldName)) {
+    for (const newFitler of newData) {
+      if (typeof newFitler !== "string") {
+        throw new Error(`Field ${fieldName} is supposed to be a string array, but newData contains a non-string`);
+      }
+      const memberRefPublic = await getMemberRefPublic(uid);
+      const newLabelRef = await addLabelRefPublic(newFitler, fieldNameToTable[fieldName]);
+      await addMemberToLabelsPublic([newLabelRef], memberRefPublic);
+      const writeResult = await docRef.update({
+        [fieldName]: admin.firestore.FieldValue.arrayUnion(...[admin.firestore().doc(newLabelRef.path)]),
+        last_modified: admin.firestore.FieldValue.serverTimestamp(),
+        last_modified_by: currentUser || "admin edit",
+      });
+      console.log(writeResult);
+    }
   } else {
     const oldData = doc.get(fieldName);
     const writeResult = await docRef.update({
@@ -115,11 +137,18 @@ export default async function handler(req, res) {
     if (!isAdmin) {
       return res.status(403).json({ message: "Not authorized" });
     }
-    await updateMemberField(req.body.uid, req.body.fieldName, req.body.newData, req.body.currentUser).then(
-      (writeResult) => {
-        console.debug("writeResult for /update-member:", writeResult);
-      },
-    );
+
+    const suggestedFilter: boolean = req.body.suggestedFilter === undefined ? false : true;
+
+    await updateMemberField(
+      req.body.uid,
+      req.body.fieldName,
+      req.body.newData,
+      req.body.currentUser,
+      suggestedFilter,
+    ).then((writeResult) => {
+      console.debug("writeResult for /update-member:", writeResult);
+    });
     return res.status(200).json({
       message: `Successfully updated ${req.body.fieldName}`,
     });

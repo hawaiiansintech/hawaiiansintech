@@ -1,5 +1,18 @@
-import { FirebaseTablesEnum } from "@/lib/enums";
-import { deleteDoc, doc, DocumentReference, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  deleteDoc,
+  doc,
+  DocumentReference,
+  getDoc,
+  getDocs,
+  query,
+  serverTimestamp,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { db } from "../../firebase";
 import { memberConverter } from "../../firestore-converters/member";
 import { FirebaseMemberFieldsEnum } from "@/lib/enums";
@@ -83,7 +96,6 @@ export async function addMemberToReferences(
     const documentSnapshot = await getDoc(reference);
     const memberRefs = documentSnapshot.data().members;
     const updatedMemberRefs = memberRefs ? memberRefs.concat(memberDoc) : [memberDoc];
-    console.log("Adding member to:", reference.id);
     await updateDoc(reference, {
       members: updatedMemberRefs,
       last_modified: serverTimestamp(),
@@ -91,3 +103,46 @@ export async function addMemberToReferences(
     });
   }
 }
+
+export const addPendingReviewRecord = async (docReviewRef: DocumentReference, collectionName: string) => {
+  const collectionRef = collection(db, "review");
+  const docRef = doc(collectionRef, collectionName);
+  await updateDoc(docRef, {
+    [collectionName]: arrayUnion(docReviewRef),
+    last_modified: serverTimestamp(),
+  });
+};
+
+export const addLabelRef = async (
+  label: string,
+  collectionName: string,
+  currentUser?: string,
+): Promise<DocumentReference> => {
+  const collectionRef = collection(db, collectionName);
+  const q = query(collectionRef, where("name", "==", label));
+  const querySnapshot = await getDocs(q);
+  let docRef: DocumentReference;
+  if (!querySnapshot.empty) {
+    // Catches the case where the label already exists but it's pending review
+    docRef = querySnapshot.docs[0].ref;
+  } else {
+    docRef = await addDoc(collectionRef, {
+      name: label,
+      status: StatusEnum.PENDING,
+      last_modified: serverTimestamp(),
+      last_modified_by: currentUser || "backend default",
+      members: [],
+    });
+  }
+  addPendingReviewRecord(docRef, collectionName);
+  return docRef;
+};
+
+export const addMemberToLabels = async (labelReferences: DocumentReference[], memberRef: DocumentReference) => {
+  for (const labelRef of labelReferences) {
+    await updateDoc(labelRef, {
+      members: arrayUnion(memberRef),
+      last_modified: serverTimestamp(),
+    });
+  }
+};
