@@ -33,9 +33,9 @@ export default function AdminFilter({
 }: AdminFilterProps) {
   const [open, setOpen] = useState(false);
   const [allFilters, setAllFilters] = useState<Filter[]>([]);
-  const [selectedFilters, setSelectedFilters] = useState<string[]>(filters.map((f) => f.id));
+  const [selectedFilters, setSelectedFilters] = useState<string[]>(filters ? filters.map((f) => f.id) : []);
   const [suggestOpen, setSuggestOpen] = useState(false);
-  const unnapprovedFilters = filters.filter((f) => f.status !== StatusEnum.APPROVED).map((f) => f.name);
+  const unnapprovedFilters = filters ? filters.filter((f) => f.status !== StatusEnum.APPROVED).map((f) => f.name) : [];
 
   const filterClass =
     "inline-block rounded-xl border px-3 py-0.5 my-0.5 text-sm tracking-wide text-secondary-foreground";
@@ -55,10 +55,11 @@ export default function AdminFilter({
   const handleSelect = (filter: Filter) => {
     if (selectedFilters.includes(filter.id)) {
       setSelectedFilters(selectedFilters.filter((f) => f !== filter.id));
-      setFilters(filters.filter((f) => f.id !== filter.id));
+      setFilters(filters ? filters.filter((f) => f.id !== filter.id) : []);
     } else {
       setSelectedFilters([...selectedFilters, filter.id]);
-      setFilters([...filters, { name: filter.name, id: filter.id, status: StatusEnum.APPROVED }]);
+      const selected = { name: filter.name, id: filter.id, status: StatusEnum.APPROVED };
+      setFilters(filters ? [...filters, selected] : [selected]);
     }
   };
 
