@@ -120,13 +120,13 @@ export default async function handler(req, res) {
   }
   try {
     if (req.body.uid === undefined) {
-      return res.status(400).json({ message: "Missing uid" });
+      return res.status(422).json({ message: "Missing uid" });
     } else if (req.body.fieldName === undefined) {
-      return res.status(400).json({ message: "Missing fieldName" });
+      return res.status(422).json({ message: "Missing fieldName" });
     } else if (req.body.newData === undefined) {
-      return res.status(400).json({ message: "Missing newData" });
+      return res.status(422).json({ message: "Missing newData" });
     } else if (req.body.currentUser === undefined) {
-      return res.status(400).json({ message: "Missing currentUser" });
+      return res.status(422).json({ message: "Missing currentUser" });
     }
     const authHeader = req.headers.authorization;
     if (!authHeader) {
