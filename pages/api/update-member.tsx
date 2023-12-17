@@ -13,7 +13,7 @@ import {
   addMemberToLabels as addMemberToLabelsPublic,
 } from "@/lib/firebase-helpers/public/directory";
 
-export const updateMemberField = async (
+const updateMemberField = async (
   uid: string,
   fieldName: string,
   newData: string | string[],

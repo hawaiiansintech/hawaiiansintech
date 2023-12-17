@@ -3,7 +3,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { CheckIcon } from "@radix-ui/react-icons";
 import {
-  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -13,11 +12,10 @@ import {
 } from "@/components/ui/command";
 import { useState } from "react";
 import { Filter, getFilters } from "@/lib/api";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Pencil } from "lucide-react";
 
-interface AdminFilterProps {
+interface FilterEditorProps {
   labels: { singular: string; plural: string };
   filterTable: FirebaseTablesEnum;
   memberId: string;
@@ -27,7 +25,7 @@ interface AdminFilterProps {
   setSuggestedFilter: (suggestedFilter: string) => void;
 }
 
-export default function AdminFilter({
+export default function FilterEditor({
   labels,
   filterTable,
   memberId,
@@ -35,7 +33,7 @@ export default function AdminFilter({
   setFilters,
   suggestedFilter,
   setSuggestedFilter,
-}: AdminFilterProps) {
+}: FilterEditorProps) {
   const [open, setOpen] = useState(false);
   const [allFilters, setAllFilters] = useState<Filter[]>([]);
   const [selectedFilters, setSelectedFilters] = useState<string[]>(filters ? filters.map((f) => f.id) : []);
@@ -62,6 +60,10 @@ export default function AdminFilter({
       setSelectedFilters(selectedFilters.filter((f) => f !== filter.id));
       setFilters(filters ? filters.filter((f) => f.id !== filter.id) : []);
     } else {
+      if (selectedFilters.length === 3) {
+        alert(`You can only select up to 3 ${labels.plural}.`);
+        return;
+      }
       setSelectedFilters([...selectedFilters, filter.id]);
       const selected = { name: filter.name, id: filter.id, status: StatusEnum.APPROVED };
       setFilters(filters ? [...filters, selected] : [selected]);

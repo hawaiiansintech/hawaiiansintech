@@ -1,7 +1,8 @@
 import * as admin from "firebase-admin";
 
 export const initializeAdmin = async () => {
-  if (!admin.apps.length) {
+  const isBrowser: boolean = ((): boolean => typeof window !== "undefined")();
+  if (!admin.apps.length && !isBrowser) {
     if (!process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
       throw new Error("The FIREBASE_SERVICE_ACCOUNT_KEY environment variable is not set.");
     }

@@ -41,7 +41,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
 import { FirebaseMemberFieldsEnum as mFields } from "@/lib/enums";
 import { set } from "lodash";
-import AdminFilter from "@/components/admin/AdminFilter";
+import AdminFilter from "@/components/admin/FilterEditor";
 export async function getStaticProps() {
   return {
     props: {
