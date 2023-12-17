@@ -874,24 +874,20 @@ const MemberEdit: FC<{
             </Select>
           </div>
           <AdminFilter
-            filterTypeSingular="Focus"
-            filterTypePlural="Focuses"
+            labels={{ singular: "Focus", plural: "Focuses" }}
             filterTable={FirebaseTablesEnum.FOCUSES}
             memberId={member.id}
             filters={focuses as { name: string; id: string; status: string }[]}
             setFilters={setFocuses}
-            emoji="🧑‍🏭"
             suggestedFilter={suggestedFocus}
             setSuggestedFilter={setSuggestedFocus}
           />
           <AdminFilter
-            filterTypeSingular="Industry"
-            filterTypePlural="Industries"
+            labels={{ singular: "Industry", plural: "Industries" }}
             filterTable={FirebaseTablesEnum.INDUSTRIES}
             memberId={member.id}
             filters={industries as { name: string; id: string; status: string }[]}
             setFilters={setIndustries}
-            emoji="🏭"
             suggestedFilter={suggestedIndustry}
             setSuggestedFilter={setSuggestedIndustry}
           />
