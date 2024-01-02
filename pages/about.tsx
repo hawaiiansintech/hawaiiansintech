@@ -1,10 +1,10 @@
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
+import Plausible from "@/components/Plausible";
 import { Title } from "@/components/Title.js";
 import { motion } from "framer-motion";
 import Head from "next/head";
 import Link from "next/link";
-import theme from "styles/theme";
 
 const item = {
   hidden: { opacity: 0, y: "15%" },
@@ -35,17 +35,20 @@ export default function AboutPage({ pageTitle }) {
   return (
     <>
       <Head>
+        <Plausible />
         <MetaTags title={pageTitle} />
         <title>{pageTitle}</title>
       </Head>
       <Nav backUrl="/" />
 
-      <div className="about-splash">
-        <Title
-          className="m0 p0"
-          text="Hawaiians*in&nbsp;Technology"
-          noAnimation
-        />
+      <div
+        className={`
+          px-4
+          pt-[26vh]
+          lg:px-8
+        `}
+      >
+        <Title text="Hawaiians*in&nbsp;Technology" noAnimation />
 
         <motion.div
           variants={container}
@@ -54,33 +57,69 @@ export default function AboutPage({ pageTitle }) {
           exit="hidden"
         >
           <p className="f1 extend">
-            <motion.span variants={item}>
-              is a directory and community of <strong>Native Hawaiians</strong>{" "}
-              in the
-            </motion.span>{" "}
-            <motion.span variants={item}>
-              <strong>technology industry</strong>. The goal is to connect,
-              inspire, provide
-            </motion.span>{" "}
-            <motion.span variants={item}>
-              representation, and promote the presence of Native Hawaiians
-            </motion.span>{" "}
-            <motion.span variants={item}>
-              who work in the technology industry.
+            <motion.span className="text-stone-800" variants={item}>
+              is a directory and community of{" "}
+              <strong className="font-semibold text-stone-900">
+                Native Hawaiians
+              </strong>{" "}
+              in the{" "}
+              <strong className="font-semibold text-stone-900">
+                technology industry
+              </strong>
+              .
             </motion.span>{" "}
           </p>
+          <div className="my-12 max-w-7xl space-y-4 text-3xl leading-relaxed text-stone-600">
+            <motion.p variants={item}>
+              Our platform strives to bring Native Hawaiians together; to
+              provide a space to connect and collaborate with one another; to
+              serve as a source of inspiration for those who want to pursue a
+              career in technology.
+            </motion.p>
+            <motion.p variants={item}>
+              Providing representation and promoting the presence of Native
+              Hawaiians working in technology is our way of contributing to a
+              more diverse and inclusive industry. Through various initiatives,
+              we seek to uplift and empower Native Hawaiians in the tech
+              industry, while also fostering a sense of community and belonging
+              among our members.
+            </motion.p>{" "}
+          </div>
         </motion.div>
       </div>
 
-      <div className="moreabout">
-        <div className="col-left">
-          <h3>How can I add myself?</h3>
+      <div
+        className={`
+          my-12
+          grid
+          max-w-7xl
+          grid-flow-row
+          grid-cols-1
+          gap-8
+          px-4
+          text-2xl
+          leading-normal
+          text-stone-600
+          sm:grid-cols-2
+          lg:px-8
+        `}
+      >
+        <section className="flex flex-col gap-2">
+          <h3 className="text-lg font-bold text-stone-800">
+            How can I add myself?
+          </h3>
           <p>
-            If you are <strong>Native Hawaiian</strong>, work in{" "}
-            <strong>the field / industry of technology</strong>, and want to be
-            part of this directory and community, simply complete this{" "}
-            <Link href="/join/01-you">
-              <a>Join form</a>
+            If you are{" "}
+            <strong className="font-semibold text-stone-800">
+              Native Hawaiian
+            </strong>{" "}
+            and work in{" "}
+            <strong className="font-semibold text-stone-800">
+              the field / industry of technology,
+            </strong>{" "}
+            you can{" "}
+            <Link href="/join/01-you" className="font-semibold">
+              join here
             </Link>
             .
           </p>
@@ -88,229 +127,158 @@ export default function AboutPage({ pageTitle }) {
             Most could just stop there. But reach out to the community! Meet
             your fellow kanaka. No shame!
           </p>
-          <h3>How did you build this?</h3>
-          <p>
-            You can learn more about how this project was built on our
-            open-source{" "}
-            <a
-              target="_blank"
-              href="https://github.com/hawaiians/hawaiiansintech"
-            >
-              Github
-            </a>{" "}
-            repo.
-          </p>
-          <h3>How did you come up with this idea?</h3>
-          <p>This project is one of many like it with similar motivations.</p>
-          <p>
-            This website was originally a fork of{" "}
-            <a href="https://brazilianswho.design/">Brazillians Who Design</a>'s
-            repo. There are many more that continue to inspire us, including:
-          </p>
-          <p>
-            <ul className="link-list">
-              <li className="link-list__item">
-                <a href="https://nativesintech.org/">Natives in Tech</a>
-              </li>
-              <li className="link-list__item">
-                <a href="https://womenwho.design/">Women Who Design</a>
-              </li>
-              <li className="link-list__item">
-                <a target="_blank" href="https://www.womenwhodraw.com/">
-                  Women Who Draw
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a target="_blank" href="http://www.28blacks.com/">
-                  28 Black Designers
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a target="_blank" href="https://www.latinxswhodesign.com/">
-                  Latinx Who Design
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a target="_blank" href="https://queerdesign.club/">
-                  Queer Design Club
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a
-                  target="_blank"
-                  href="https://filipinos-who-design.webflow.io/"
-                >
-                  Filipinos Who Design
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a target="_blank" href="https://www.apiwho.design/">
-                  Asian & Pacific Islanders Who Design
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a
-                  target="_blank"
-                  href="https://filipinos-who-design.webflow.io/"
-                >
-                  People Of Craft
-                </a>
-              </li>
-              <li className="link-list__item">
-                <a target="_blank" href="https://indianswhodesign.in/">
-                  Indians Who Design
-                </a>
-              </li>
-            </ul>
-          </p>
-          <h3>Who’s behind this?</h3>
-          <p>
-            <a href="https://www.linkedin.com/in/emmit-parubrub/">
-              Emmit Parubrub
-            </a>
-            <br></br>
-            <a href="https://twitter.com/tellaho">Taylor Ho</a>
-          </p>
-        </div>
-        <div className="col-right">
-          <h3>How can I get more involved with the community?</h3>
+        </section>
+        <section className="flex flex-col gap-2">
+          <h3 className="text-lg font-bold text-stone-800">
+            How can I get more involved with the community?
+          </h3>
           <p>
             You can join our{" "}
-            <a href={`${DISCORD_URL}`} target="_blank">
+            <Link
+              href={`${DISCORD_URL}`}
+              target="_blank"
+              className="font-semibold"
+            >
               Discord
-            </a>{" "}
+            </Link>{" "}
             to connect with our community, get information on events, find new
             project opportunities, and more.
           </p>
+        </section>
+        <section className="flex flex-col gap-2">
+          <h3 className="text-lg font-bold text-stone-800">
+            How did you come up with this idea?
+          </h3>
+          <p>This project is one of many like it with similar motivations.</p>
           <p>
-            You also can post new and discuss other's ideas on this board on{" "}
-            <a
-              href={`https://github.com/hawaiians/hawaiiansintech/discussions/categories/ideas`}
+            This website was originally a fork of{" "}
+            <Link
+              href="https://brazilianswho.design/"
+              className="font-semibold"
               target="_blank"
             >
-              Github Discussions
-            </a>
-            , if that's more your speed.
-          </p>
-          <p>You should feel encouraged to come forward with new ideas.</p>
-          <h3>How can I update my profile? Or remove myself altogether?</h3>
-          <p>
-            Changes, including removal from the list, can be{" "}
-            <Link href="/edit">
-              <a>requested here</a>
+              Brazillians Who Design
+            </Link>
+            's repo. There are many more that continue to inspire us, including:{" "}
+            <Link
+              className="font-semibold"
+              target="_blank"
+              href="https://nativesintech.org/"
+            >
+              Natives in Tech
+            </Link>
+            ,{" "}
+            <Link
+              className="font-semibold"
+              target="_blank"
+              href="https://womenwho.design/"
+            >
+              Women Who Design
+            </Link>
+            ,{" "}
+            <Link
+              className="font-semibold"
+              target="_blank"
+              href="https://www.womenwhodraw.com/"
+            >
+              Women Who Draw
+            </Link>
+            ,{" "}
+            <Link
+              className="font-semibold"
+              target="_blank"
+              href="https://www.latinxswhodesign.com/"
+            >
+              Latinx Who Design
+            </Link>
+            ,{" "}
+            <Link
+              className="font-semibold"
+              target="_blank"
+              href="https://queerdesign.club/"
+            >
+              Queer Design Club
+            </Link>
+            ,{" "}
+            <Link
+              className="font-semibold"
+              target="_blank"
+              href="https://www.apiwho.design/"
+            >
+              Asian & Pacific Islanders Who Design
+            </Link>
+            , and{" "}
+            <Link
+              className="font-semibold"
+              target="_blank"
+              href="https://indianswhodesign.in/"
+            >
+              Indians Who Design
             </Link>
             .
           </p>
-        </div>
+        </section>
+        <section className="flex flex-col gap-2">
+          <h3 className="text-lg font-bold text-stone-800">
+            How did you build this?
+          </h3>
+          <p>
+            You can learn more about how this project was built on our
+            open-source{" "}
+            <Link
+              target="_blank"
+              href="https://github.com/hawaiians/hawaiiansintech"
+              className="font-semibold"
+            >
+              Github
+            </Link>{" "}
+            repo.
+          </p>
+        </section>
+        <section className="flex flex-col gap-2">
+          <h3 className="text-lg font-bold text-stone-800">
+            Who’s behind this?
+          </h3>
+          <p>
+            <Link
+              href="https://www.linkedin.com/in/emmit-parubrub/?source=about"
+              target="_blank"
+              className="font-semibold"
+            >
+              Emmit Parubrub
+            </Link>
+            <br />
+            <Link
+              href="https://linkedin.com/in/taylorho/?source=about"
+              target="_blank"
+              className="font-semibold"
+            >
+              Taylor Ho
+            </Link>
+          </p>
+        </section>
+        <section className="flex flex-col gap-2">
+          <h3 className="text-lg font-bold text-stone-800">
+            How can I update my profile? Or remove myself altogether?
+          </h3>
+          <p>
+            Changes, including removal from the list, can be{" "}
+            <Link href="/edit" className="font-semibold">
+              requested here
+            </Link>
+            .
+          </p>
+        </section>
+        <section className="flex gap-4 text-lg font-semibold">
+          {/* <Link className="" href="/terms">
+            Terms of Use
+          </Link>{" "}
+          ·{" "} */}
+          <Link className="" href="/privacy-policy">
+            Privacy Policy
+          </Link>
+        </section>
       </div>
-
-      <style jsx>{`
-        .about-splash {
-          margin: 0 1rem;
-          padding-top: 26vh;
-        }
-        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-          .about-splash {
-            margin: 0 2rem;
-          }
-        }
-
-        .extend {
-          margin: 0;
-          max-width: 24ch;
-        }
-
-        .moreabout {
-          font-weight: normal;
-          font-size: 1.5rem;
-          line-height: 140%;
-          letter-spacing: 0.01em;
-          display: flex;
-          margin: 8rem 1rem 0;
-        }
-        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-          .moreabout {
-            margin: 0 2rem;
-          }
-        }
-
-        .moreabout > div {
-          width: 50%;
-          max-width: 50ch;
-        }
-        .moreabout strong {
-          font-weight: 600;
-          color: ${theme.color.text.alt};
-        }
-
-        .col-right {
-          padding-left: 3rem;
-        }
-        .col-left {
-          padding-right: 3rem;
-        }
-
-        .moreabout p {
-          margin: 0;
-          padding: 0;
-        }
-
-        .moreabout p ~ p {
-          margin-top: 1rem;
-        }
-
-        .moreabout h3 {
-          padding: 0;
-          margin: 0;
-          font-size: 1.5rem;
-        }
-
-        .moreabout h3 {
-          margin: 4rem 0 0.5rem 0;
-        }
-        a {
-          font-weight: 600;
-          text-decoration: underline;
-        }
-        a:hover {
-          text-decoration: none;
-        }
-
-        .link-list,
-        .link-list__item {
-          padding: 0;
-          margin: 0;
-          list-style: none;
-        }
-        .link-list {
-          display: grid;
-          grid-auto-flow: row;
-          grid-template-columns: 1fr 1fr 1fr;
-          gap: 0.5rem;
-        }
-        .link-list__item {
-          text-align: center;
-        }
-        .link-list__item a {
-          display: inline-block;
-          padding: 0.5rem;
-          line-height: 1.2;
-          font-size: 1.125rem;
-        }
-
-        @media (max-width: 480px) {
-          .moreabout {
-            display: block;
-          }
-
-          .moreabout > div {
-            width: 100%;
-            max-width: 100%;
-            display: block;
-            padding: 0;
-          }
-        }
-      `}</style>
     </>
   );
 }

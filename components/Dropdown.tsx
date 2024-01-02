@@ -7,7 +7,7 @@ interface DropdownProps {
 }
 
 export default function Dropdown({ links, button }: DropdownProps) {
-  const [showDropdown, setShow] = useState<Boolean>(false);
+  const [showDropdown, setShow] = useState<boolean>(false);
 
   return (
     <div

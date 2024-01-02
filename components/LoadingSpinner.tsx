@@ -1,39 +1,36 @@
-export enum LoadingSpinnerColor {
-  Brand = "var(--color-brand)",
-  Black = "var(--color-text-alt)",
-  Overlay = "var(--color-text-overlay)",
-}
+import { cn } from "@/lib/utils";
 
-export enum LoadingSpinnerSize {
-  Small = "1rem",
-  Medium = "2rem",
-  Large = "4rem",
+export enum LoadingSpinnerVariant {
+  Default = "default",
+  Invert = "invert",
 }
 
 interface LoadingSpinnerProps {
-  color?: LoadingSpinnerColor;
-  size?: LoadingSpinnerSize;
+  className?: string;
+  variant?: LoadingSpinnerVariant;
 }
 
 export default function LoadingSpinner({
-  color = LoadingSpinnerColor.Overlay,
-  size = LoadingSpinnerSize.Medium,
+  className,
+  variant = LoadingSpinnerVariant.Default,
 }: LoadingSpinnerProps) {
   return (
-    <figure className="loading-spinner">
-      <style jsx>{`
-        figure {
-          display: inline-block;
-          width: ${size};
-          height: ${size};
-          margin: 0;
-          border: calc(${size} / 8) solid rgba(255, 255, 255, 0.5);
-          border-radius: 50%;
-          border-top-color: ${color};
-          animation: spin 1s ease-in-out infinite;
-          -webkit-animation: spin 1s ease-in-out infinite;
-        }
-      `}</style>
-    </figure>
+    <figure
+      className={cn(
+        `
+        inline-block
+        h-6
+        w-6
+        animate-spin
+        rounded-full
+        border-4
+        border-white/50
+        border-t-white
+      `,
+        variant === LoadingSpinnerVariant.Invert &&
+          `border-brown-600/20 border-t-brown-600`,
+        className,
+      )}
+    />
   );
 }

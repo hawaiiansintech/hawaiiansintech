@@ -5,7 +5,9 @@ import WorkExperience, {
 } from "@/components/intake-form/WorkExperience";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
-import { getFocuses, MemberPublicEditing } from "@/lib/api";
+import Plausible from "@/components/Plausible";
+import { getFilters, MemberPublicEditing } from "@/lib/api";
+import { FirebaseTablesEnum } from "@/lib/enums";
 import { useStorage } from "@/lib/hooks";
 import { FORM_LINKS } from "@/lib/utils";
 import lodash from "lodash";
@@ -14,7 +16,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export async function getStaticProps() {
-  let focuses = (await getFocuses()) ?? [];
+  let focuses = (await getFilters(FirebaseTablesEnum.FOCUSES)) ?? [];
   return {
     props: {
       focuses: focuses,
@@ -86,7 +88,7 @@ export default function JoinStep2({ focuses, pageTitle }) {
     }
     if (values.deferTitle) modified.title = "";
 
-    if (modified && modified !== {}) updateEdited(modified);
+    if (modified && Object.keys(modified).length !== 0) updateEdited(modified);
     router.push({ pathname: FORM_LINKS[2], query: router.query });
   };
 
@@ -95,6 +97,7 @@ export default function JoinStep2({ focuses, pageTitle }) {
   return (
     <>
       <Head>
+        <Plausible />
         <MetaTags title={pageTitle} />
         <title>{pageTitle}</title>
       </Head>

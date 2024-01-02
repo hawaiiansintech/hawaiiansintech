@@ -2,14 +2,15 @@ import Button from "@/components/Button";
 import ErrorMessage, {
   ErrorMessageProps,
 } from "@/components/form/ErrorMessage";
-import InputBox from "@/components/form/InputBox";
 import Label from "@/components/form/Label";
 import RadioBox from "@/components/form/RadioBox";
-import { Industry } from "@/lib/api";
+import { Filter } from "@/lib/api";
+import { CompanySizeEnum } from "@/lib/enums";
 import { useWindowWidth } from "@/lib/hooks";
 import { scrollToTop } from "helpers";
 import React, { useEffect, useState } from "react";
 import theme from "styles/theme";
+import Input from "../form/Input";
 import Selectable, {
   SelectableGrid,
   SelectableVariant,
@@ -19,7 +20,7 @@ const MAX_COUNT = 3;
 const TECHNOLOGY_LABEL = "Internet / Technology";
 
 export interface CompanyIndustryInitialProps {
-  industries?: Industry[];
+  industries?: Filter[];
   industriesSelected?: string[];
   industrySuggested?: string;
   deferIndustry?: "true" | undefined;
@@ -38,7 +39,7 @@ export default function CompanyIndustry({
   showNew,
 }: CompanyIndustryProps) {
   const width = useWindowWidth();
-  let industries: Industry[] = initial.industries;
+  let industries: Filter[] = initial.industries;
   const [industriesSelected, setIndustriesSelected] = useState<string[]>(
     initial.industriesSelected
   );
@@ -113,16 +114,9 @@ export default function CompanyIndustry({
 
   return (
     <>
-      <section
-        style={{
-          margin: "0 auto 1rem",
-          padding: "0 2rem",
-          maxWidth: theme.layout.width.interior,
-        }}
-      >
+      <section className="mx-auto mb-4 mt-0 max-w-3xl space-y-6 px-8">
         {error && <ErrorMessage headline={error.headline} body={error.body} />}
-
-        <div style={{ marginBottom: "2rem" }}>
+        <section className="space-y-4">
           <Label
             label="Which of the following best describes the industrie(s) that you work within?"
             labelTranslation="Ehia ka poʻe e hana ma kou wahi hana?"
@@ -132,144 +126,131 @@ export default function CompanyIndustry({
                 : undefined
             }
           />
-          <div style={{ margin: "1rem auto 2rem" }}>
-            <SelectableGrid columns={columnCount}>
-              {technologyInd && (
+          <SelectableGrid columns={columnCount}>
+            {technologyInd && (
+              <Selectable
+                headline={technologyInd.name}
+                gridSpan={columnCount}
+                disabled={
+                  (isMaxSelected &&
+                    !industriesSelected.includes(technologyInd.id)) ||
+                  deferIndustry === "true"
+                }
+                selected={
+                  industriesSelected.includes(technologyInd.id) &&
+                  !deferIndustry
+                }
+                onClick={() => handleSelect(technologyInd.id)}
+                fullWidth
+              />
+            )}
+            {industries.map((industry, i: number) => {
+              const isDisabled =
+                isMaxSelected && !industriesSelected.includes(industry.id);
+              const isSelected = industriesSelected.includes(industry.id);
+
+              return (
                 <Selectable
-                  headline={technologyInd.name}
-                  gridSpan={columnCount}
+                  headline={industry.name}
+                  disabled={isDisabled || deferIndustry === "true"}
+                  selected={isSelected && !deferIndustry}
+                  onClick={(e) => handleSelect(industry.id)}
+                  key={`ind-${i}`}
+                />
+              );
+            })}
+            <div
+              className="grid auto-rows-fr grid-cols-1 gap-2"
+              style={{
+                gridTemplateColumns: "1fr 1fr",
+                gridColumn: `span ${columnCount}`,
+              }}
+            >
+              <Selectable
+                headline={"N/A, or Prefer Not to Answer"}
+                fullWidth
+                disabled={isMaxSelected && !deferIndustry}
+                selected={deferIndustry === "true"}
+                onClick={() =>
+                  setDeferIndustry(
+                    deferIndustry === "true" ? undefined : "true"
+                  )
+                }
+              />
+              {showSuggestButton ? (
+                <Selectable
+                  headline={
+                    industrySuggested
+                      ? `${industrySuggested}`
+                      : "+ Add industry"
+                  }
+                  onClick={() => setShowSuggestButton(false)}
+                  selected={!!industrySuggested && !deferIndustry}
                   disabled={
-                    (isMaxSelected &&
-                      !industriesSelected.includes(technologyInd.id)) ||
+                    (isMaxSelected && !!!industrySuggested) ||
                     deferIndustry === "true"
                   }
-                  selected={
-                    industriesSelected.includes(technologyInd.id) &&
-                    !deferIndustry
-                  }
-                  onClick={() => handleSelect(technologyInd.id)}
                   fullWidth
+                  centered
+                  variant={SelectableVariant.Blank}
+                  onClear={
+                    industrySuggested && !deferIndustry
+                      ? () =>
+                          window.confirm(
+                            "Are you sure you want to clear this field?"
+                          ) && setIndustrySuggested("")
+                      : undefined
+                  }
+                />
+              ) : (
+                <Input
+                  autoFocus
+                  name="add-field"
+                  centered
+                  fullHeight
+                  onChange={(e) => {
+                    setIndustrySuggested(e.target.value);
+                  }}
+                  onBlur={() => setShowSuggestButton(true)}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") setShowSuggestButton(true);
+                  }}
+                  value={industrySuggested}
+                  disabled={isMaxSelected && !!!industrySuggested}
                 />
               )}
-              {industries.map((industry, i: number) => {
-                const isDisabled =
-                  isMaxSelected && !industriesSelected.includes(industry.id);
-                const isSelected = industriesSelected.includes(industry.id);
-
-                return (
-                  <Selectable
-                    headline={industry.name}
-                    disabled={isDisabled || deferIndustry === "true"}
-                    selected={isSelected && !deferIndustry}
-                    onClick={(e) => handleSelect(industry.id)}
-                    key={`ind-${i}`}
-                  />
-                );
-              })}
-              <div
-                style={{
-                  display: "grid",
-
-                  gridTemplateColumns: "1fr 1fr",
-                  gridAutoRows: "1fr",
-                  columnGap: "0.5rem",
-                  rowGap: "0.5rem",
-                  gridColumn: `span ${columnCount}`,
-                }}
-              >
-                <Selectable
-                  headline={"N/A, or Prefer Not to Answer"}
-                  fullWidth
-                  disabled={isMaxSelected && !deferIndustry}
-                  selected={deferIndustry === "true"}
-                  onClick={() =>
-                    setDeferIndustry(
-                      deferIndustry === "true" ? undefined : "true"
-                    )
-                  }
-                />
-                {showSuggestButton ? (
-                  <Selectable
-                    headline={
-                      industrySuggested
-                        ? `${industrySuggested}`
-                        : "+ Add industry"
-                    }
-                    onClick={() => setShowSuggestButton(false)}
-                    selected={!!industrySuggested && !deferIndustry}
-                    disabled={
-                      (isMaxSelected && !!!industrySuggested) ||
-                      deferIndustry === "true"
-                    }
-                    fullWidth
-                    centered
-                    variant={SelectableVariant.Alt}
-                    onClear={
-                      industrySuggested && !deferIndustry
-                        ? () =>
-                            window.confirm(
-                              "Are you sure you want to clear this field?"
-                            ) && setIndustrySuggested("")
-                        : undefined
-                    }
-                  />
-                ) : (
-                  <InputBox
-                    fullWidth
-                    border
-                    focusedOnInit
-                    onChange={(e) => setIndustrySuggested(e.target.value)}
-                    onBlur={() => setShowSuggestButton(true)}
-                    onEnter={() => setShowSuggestButton(true)}
-                    value={industrySuggested}
-                    disabled={isMaxSelected && !!!industrySuggested}
-                  />
-                )}
-              </div>
-            </SelectableGrid>
-          </div>
-
+            </div>
+          </SelectableGrid>
+          {!showSuggestButton || industrySuggested ? (
+            <ErrorMessage
+              headline="Please suggest with care 🤙🏽"
+              body={`Suggesting a new label increases the time it takes to approve your entry, as we manually review all submissions. Please consider any existing labels that might fit 
+                  your situation.`}
+              warning
+            />
+          ) : null}
+        </section>
+        <section className="space-y-4">
           <Label
             label="How many employees work at your company?"
             labelTranslation="Ehia ka poʻe e hana ma kou wahi hana?"
             tagged={showNew && initial.companySize === "" ? "NEW" : undefined}
           />
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              margin: "1rem auto 2rem",
-            }}
-          >
-            {[
-              "1",
-              "2 – 9",
-              "10 – 19",
-              "20 – 49",
-              "50 – 99",
-              "100 – 999",
-              "1000 – 4999",
-              "5000 – 10000",
-              "More than 10000",
-              "N/A",
-            ].map((size, i) => {
+          <div className={`flex flex-wrap gap-2`}>
+            {Object.values(CompanySizeEnum).map((size, i) => {
               return (
-                <div
-                  style={{ margin: "0 0.5rem 0.5rem 0", marginRight: "0.5rem" }}
+                <RadioBox
+                  seriesOf="company-size"
+                  checked={size === companySize}
+                  label={size}
+                  onChange={() => setCompanySize(size)}
                   key={`size-${i}`}
-                >
-                  <RadioBox
-                    seriesOf="company-size"
-                    checked={size === companySize}
-                    label={size}
-                    onChange={() => setCompanySize(size)}
-                  />
-                </div>
+                />
               );
             })}
           </div>
-        </div>
-        <div style={{ margin: "2rem auto 0", maxWidth: "24rem" }}>
+        </section>
+        <section className="mx-auto max-w-md px-4">
           <Button
             fullWidth
             onClick={handleSubmit}
@@ -278,7 +259,7 @@ export default function CompanyIndustry({
           >
             Continue
           </Button>
-        </div>
+        </section>
       </section>
     </>
   );

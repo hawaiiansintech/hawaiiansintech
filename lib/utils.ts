@@ -1,6 +1,12 @@
 import { useStorage } from "@/lib/hooks";
+import { type ClassValue, clsx } from "clsx";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export const FORM_LINKS = [`01-you`, `02-work`, `03-company`, `04-contact`];
 

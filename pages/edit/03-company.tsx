@@ -5,7 +5,9 @@ import CompanyIndustry, {
 } from "@/components/intake-form/CompanyIndustry";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
-import { getIndustries, MemberPublicEditing } from "@/lib/api";
+import Plausible from "@/components/Plausible";
+import { getFilters, MemberPublicEditing } from "@/lib/api";
+import { FirebaseTablesEnum } from "@/lib/enums";
 import { useStorage } from "@/lib/hooks";
 import { FORM_LINKS } from "@/lib/utils";
 import lodash from "lodash";
@@ -16,7 +18,7 @@ import { useEffect, useState } from "react";
 const NEXT_PAGE = "04-contact";
 
 export async function getStaticProps() {
-  let industries = (await getIndustries()) ?? [];
+  let industries = (await getFilters(FirebaseTablesEnum.INDUSTRIES)) ?? [];
   return {
     props: {
       industries: industries,
@@ -83,7 +85,7 @@ export default function JoinStep3({ industries, pageTitle }) {
       modified.industrySuggested = values.industrySuggested;
     }
 
-    if (modified && modified !== {}) updateEdited(modified);
+    if (modified && Object.keys(modified).length !== 0) updateEdited(modified);
 
     setTimeout(() => {
       router.push({ pathname: FORM_LINKS[3] });
@@ -92,6 +94,7 @@ export default function JoinStep3({ industries, pageTitle }) {
   return (
     <>
       <Head>
+        <Plausible />
         <MetaTags title={pageTitle} />
         <title>{pageTitle}</title>
       </Head>

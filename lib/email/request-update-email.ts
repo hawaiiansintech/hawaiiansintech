@@ -3,21 +3,21 @@ import { ADMIN_EMAILS, getEmailTemplate, REPLY_EMAIL } from "./utils";
 SendGrid.setApiKey(process.env.SENDGRID_API_KEY);
 
 export interface RequestUpdateEmailProps {
-  airtableID: string;
+  firebaseId: string;
   name: string;
   email: string;
   removeRequest?: boolean;
 }
 
 export async function sendRequestUpdateEmail({
-  airtableID,
+  firebaseId,
   name,
   email,
   removeRequest,
 }: RequestUpdateEmailProps) {
-  const airtableUrl = `https://airtable.com/${process.env.AIRTABLE_BASE}/tblQkhLLpdJ7YYsx2/viwEoQhI4rY1uliJg/${airtableID}`;
+  const firebaseUrl = `https://console.firebase.google.com/project/${process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID}/firestore/data/~2Fmembers~2F${firebaseId}`;
   const MESSAGE_BODY = `
-  <p>Get started by opening up the <a href="${airtableUrl}">Request</a> on Airtable.</p>
+  <p>Get started by opening up the <a href="${firebaseUrl}"> user</a> on Firebase and navigate to the requests.</p>
   <p><strong>1. Check the "Anything else?" field first${
     removeRequest ? ", beyond the request to remove." : "."
   }</strong> Just in case there are special requests or instructions.</p>
@@ -36,8 +36,8 @@ export async function sendRequestUpdateEmail({
       : " move the member's status to Pending.</strong> Make the requested changes.</p><ul><li>If there were any updates to Location, we'll need to manually look over and the relevant Region (which is an indexed/searchable field).</li><li>If any freeform fields (location/title/suggested/etc.) were changed, check for misspelling. Remember to try use proper diacriticals (wehewehe.org is your friend).</li><li>If their URL was updated, make sure it works.</li></ul><p>Then move Status to Approved!"
   }</p>
   ${
-    airtableID
-      ? `<p><em><strong>Request ID:</strong> ${airtableID}</em></p>`
+    firebaseId
+      ? `<p><em><strong>Member ID:</strong> ${firebaseId}</em></p>`
       : ""
   }
   `;

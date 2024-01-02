@@ -1,4 +1,4 @@
-import theme from "styles/theme";
+import { cn } from "@/lib/utils";
 
 interface HeadingProps {
   children: React.ReactNode;
@@ -7,18 +7,8 @@ interface HeadingProps {
 
 export function Heading(props: HeadingProps) {
   return (
-    <h1 className="heading">
+    <h1 className="mx-auto mb-8 mt-0 max-w-3xl px-8 text-center text-4xl font-medium text-stone-800">
       {props.children}
-      <style jsx>{`
-        .heading {
-          max-width: ${theme.layout.width.interior};
-          margin: 0 auto 2rem;
-          padding: 0 2rem;
-          font-size: ${props.small ? "1.2rem" : "2.4rem"};
-          font-weight: 500;
-          text-align: center;
-        }
-      `}</style>
     </h1>
   );
 }
@@ -31,28 +21,12 @@ interface SubheadingProps {
 export function Subheading(props: SubheadingProps) {
   return (
     <p
-      className={`header-description ${
-        props.centered && "header-description--centered"
-      }`}
+      className={cn(
+        { "text-center": props.centered, "text-left": !props.centered },
+        "mx-auto mb-8 mt-0 max-w-3xl px-8 text-2xl font-normal text-stone-600 ",
+      )}
     >
       {props.children}
-      <style jsx>{`
-        .header-description {
-          max-width: ${theme.layout.width.interior};
-          color: ${theme.color.text.alt};
-          margin: 0 auto;
-          padding: 0 2rem;
-          text-align: center;
-          font-size: 1.4rem;
-          font-weight: 400;
-          line-height: 150%;
-          text-align: left;
-        }
-
-        .header-description--centered {
-          text-align: center;
-        }
-      `}</style>
     </p>
   );
 }

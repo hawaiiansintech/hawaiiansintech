@@ -6,7 +6,7 @@ interface ImageExpandProps {
 }
 
 export default function ImageExpand({ imagePath }: ImageExpandProps) {
-  const [expandImage, setExpand] = useState<Boolean>(false);
+  const [expandImage, setExpand] = useState<boolean>(false);
   return (
     <>
       <img

@@ -1,19 +1,22 @@
 import React from "react";
-import theme from "styles/theme";
 import { toKebab } from "../../helpers";
+import { cn } from "@/lib/utils";
 import Label from "./Label";
 
 interface InputProps {
+  autoFocus?: boolean;
+  centered?: boolean;
   defaultValue?: string;
   disabled?: boolean;
   error?: string;
-  fullWidth?: boolean;
+  fullHeight?: boolean;
   label?: string;
   labelTagged?: string;
   labelTranslation?: string;
   name: string;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => any;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => any;
+  onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => any;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => any;
   placeholder?: string;
   value?: string;
@@ -21,10 +24,12 @@ interface InputProps {
 }
 
 export default function Input({
+  autoFocus,
   defaultValue,
+  centered,
   disabled,
   error,
-  fullWidth,
+  fullHeight,
   label,
   labelTagged,
   labelTranslation,
@@ -32,89 +37,66 @@ export default function Input({
   onBlur,
   onChange,
   onFocus,
+  onKeyPress,
   placeholder,
   tabIndex,
   value,
 }: InputProps) {
   const nameKebab = toKebab(name);
   return (
-    <div className={`input ${fullWidth ? "input--full-width" : ""}`}>
+    <div className={cn(`w-full space-y-4`, fullHeight && "h-full")}>
       {label && labelTranslation && (
-        <div className="input__label">
-          <Label
-            htmlFor={nameKebab}
-            label={label}
-            labelTranslation={labelTranslation}
-            tagged={labelTagged}
-          />
-        </div>
+        <Label
+          htmlFor={nameKebab}
+          label={label}
+          labelTranslation={labelTranslation}
+          tagged={labelTagged}
+        />
       )}
       <input
+        className={cn(
+          `w-full
+          rounded
+          border-transparent
+          bg-tan-100
+          px-4
+          py-3
+          text-xl
+          first-letter:py-3
+          placeholder:font-normal
+          placeholder:text-stone-400
+          focus:ring-8
+          focus:ring-brown-500/30
+          disabled:cursor-not-allowed
+          disabled:opacity-50`,
+          { "ring-8": error, "ring-red-500/50": error },
+          centered && "text-center",
+          fullHeight && "h-full",
+        )}
         defaultValue={defaultValue}
         id={nameKebab}
         placeholder={placeholder}
         name={name}
         type="text"
         tabIndex={tabIndex}
+        aria-invalid="true"
         onBlur={onBlur}
         onChange={onChange}
         onFocus={onFocus}
+        onKeyPress={onKeyPress}
+        autoFocus={autoFocus}
         value={value}
         disabled={disabled}
       />
-      {error && <FieldError>{error}</FieldError>}
-
-      <style jsx>{`
-        input {
-          width: 100%;
-          padding: 0.5rem 0.75rem;
-          font-size: 1.4rem;
-          border-radius: ${theme.borderRadius.sm};
-          border: 0.2rem solid transparent;
-          border-color: ${error ? "red" : "transparent"};
-          opacity: ${disabled ? "0.5" : "1"};
-          background: ${theme.color.background.alt};
-        }
-        input::placeholder {
-          color: ${theme.color.text.alt2};
-        }
-        input:disabled {
-          border-color: ${theme.color.border.alt};
-          background: none;
-          cursor: not-allowed;
-        }
-        input:focus {
-          border-color: ${theme.color.brand.base};
-          box-shadow: ${theme.elevation.two.brand};
-          background: white;
-        }
-        input:focus::placeholder {
-          color: ${theme.color.text.alt3};
-        }
-        .input--full-width {
-          width: 100%;
-        }
-        .input__label {
-          display: inline-block;
-          margin-bottom: 1rem;
-        }
-      `}</style>
+      {error && <InputError>{error}</InputError>}
     </div>
   );
 }
 
-export function FieldError({ children }: { children: React.ReactNode }) {
+export function InputError({ children }: { children: React.ReactNode }) {
   return (
-    <span>
+    <span className="mt-8 block text-xs font-normal text-red-500">
       {children}
-      <style jsx>{`
-        span {
-          display: block;
-          margin-top: 0.25rem;
-          font-size: 0.9rem;
-          color: ${theme.color.text.error};
-        }
-      `}</style>
     </span>
   );
 }

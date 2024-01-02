@@ -2,66 +2,163 @@ import {
   SendConfirmationEmailProps,
   sendConfirmationEmails,
 } from "@/lib/email/confirmation-email";
+import {
+  FirebaseDefaultValuesEnum,
+  FirebaseTablesEnum,
+  StatusEnum,
+} from "@/lib/enums";
+import { db } from "@/lib/firebase";
+import { initializeAdmin } from "@/lib/firebase-admin";
 import Client from "@sendgrid/client";
 import SendGrid from "@sendgrid/mail";
-import airtable from "airtable";
-
-airtable.configure({
-  endpointUrl: "https://api.airtable.com",
-  apiKey: process.env.AIRTABLE_KEY,
-});
+import * as admin from "firebase-admin";
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  doc,
+  DocumentReference,
+  getDocs,
+  query,
+  serverTimestamp,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { useEmailCloaker } from "helpers";
 
 SendGrid.setApiKey(process.env.SENDGRID_API_KEY);
 Client.setApiKey(process.env.SENDGRID_API_KEY);
 
-export interface RecordFields {
-  name: string;
-  table: string;
-}
-
-const findRecord = async ({
-  name,
-  table,
-}: RecordFields): Promise<string | boolean> => {
-  return new Promise((resolve, reject) => {
-    airtable
-      .base(process.env.AIRTABLE_BASE)(table)
-      .select({
-        view: "All",
-        filterByFormula: `{Name} = "${name}"`,
-      })
-      .firstPage((error, records) => {
-        if (error) reject(error);
-        resolve(records?.length >= 1 ? records[0].getId() : false);
-      });
+const addPendingReviewRecord = async (
+  docReviewRef: DocumentReference,
+  collectionName: string,
+) => {
+  const collectionRef = collection(db, "review");
+  const docRef = doc(collectionRef, collectionName);
+  await updateDoc(docRef, {
+    [collectionName]: arrayUnion(docReviewRef),
+    last_modified: serverTimestamp(),
   });
 };
 
-const addPendingRecord = async ({
-  name,
-  table,
-}: RecordFields): Promise<string> => {
-  let focus = {
-    Name: name,
-    Status: "Pending",
+const addLabelRef = async (
+  label: string,
+  collectionName: string,
+): Promise<DocumentReference> => {
+  const collectionRef = collection(db, collectionName);
+  const q = query(collectionRef, where("name", "==", label));
+  const querySnapshot = await getDocs(q);
+  let docRef: DocumentReference;
+  if (!querySnapshot.empty) {
+    // Catches the case where the label already exists but it's pending review
+    docRef = querySnapshot.docs[0].ref;
+  } else {
+    docRef = await addDoc(collectionRef, {
+      name: label,
+      status: StatusEnum.PENDING,
+      last_modified: serverTimestamp(),
+      members: [],
+    });
+  }
+  addPendingReviewRecord(docRef, collectionName);
+  return docRef;
+};
+
+const addMemberToLabels = async (
+  labelReferences: DocumentReference[],
+  memberRef: DocumentReference,
+) => {
+  for (const labelRef of labelReferences) {
+    await updateDoc(labelRef, {
+      members: arrayUnion(memberRef),
+      last_modified: serverTimestamp(),
+    });
+  }
+};
+
+const addSecureEmail = async (
+  email: string,
+  memberDocRef: DocumentReference,
+) => {
+  await initializeAdmin();
+  const collectionRef = admin
+    .firestore()
+    .collection(FirebaseTablesEnum.SECURE_MEMBER_DATA);
+  const docRef = collectionRef.doc(memberDocRef.id); // Use memberDocRef ID as new doc ID
+  const data = {
+    last_modified: admin.firestore.FieldValue.serverTimestamp(),
+    last_modified_by: FirebaseDefaultValuesEnum.LAST_MODIFIED_BY,
+    email: email,
+    member: memberDocRef.path,
   };
-  return new Promise((resolve, reject) => {
-    airtable
-      .base(process.env.AIRTABLE_BASE)(table)
-      .create(focus, (err, record) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(record?.getId());
-      });
-  });
+  await docRef.set(data);
+  return docRef;
+};
+
+const addMember = async (member: MemberFields): Promise<DocumentReference> => {
+  try {
+    const collectionRef = collection(db, FirebaseTablesEnum.MEMBERS);
+    const maskedEmail = useEmailCloaker(member.email);
+    const data = {
+      ...member,
+      last_modified: serverTimestamp(),
+      last_modified_by: FirebaseDefaultValuesEnum.LAST_MODIFIED_BY,
+      masked_email: maskedEmail,
+      requests: "",
+      status: StatusEnum.PENDING,
+      unsubscribed: member.unsubscribed,
+    };
+    delete data.email; // Don't store email in the member record
+    const docRef = await addDoc(collectionRef, data);
+    addPendingReviewRecord(docRef, FirebaseTablesEnum.MEMBERS);
+    addSecureEmail(member.email, docRef);
+    return docRef;
+  } catch (error) {
+    console.error("Error adding member: ", error);
+    throw error;
+  }
+};
+
+const emailExists = async (email: string): Promise<boolean> => {
+  const collectionRef = collection(db, FirebaseTablesEnum.MEMBERS);
+  const q = query(collectionRef, where("email", "==", email));
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.empty) {
+    return false;
+  }
+  return true;
+};
+
+const idToRef = async (
+  labelId: string,
+  collectionName: string,
+): Promise<DocumentReference> => {
+  const collectionRef = collection(db, collectionName);
+  const docRef = doc(collectionRef, labelId);
+  return docRef;
+};
+
+const idsToRefs = async (
+  labelIds: string | string[],
+  collectionName: string,
+): Promise<DocumentReference[]> => {
+  if (typeof labelIds === "string") {
+    labelIds = [labelIds];
+  }
+  const refs = [];
+  for (const labelId of labelIds) {
+    const labelRef = await idToRef(labelId, collectionName);
+    refs.push(labelRef);
+  }
+  return refs;
 };
 
 interface MemberFields {
   name: string;
   email: string;
   location: string;
-  website: string;
+  website?: string;
+  link?: string;
   focusesSelected?: string | string[];
   focusSuggested?: string;
   title?: string;
@@ -70,76 +167,83 @@ interface MemberFields {
   industrySuggested?: string;
   companySize?: string;
   recordID?: string;
+  unsubscribed?: boolean;
 }
 
-const addToAirtable = async (fields: MemberFields): Promise<string> => {
+const addToFirebase = async (
+  fields: MemberFields,
+): Promise<DocumentReference> => {
   let member = {
-    Name: fields.name,
-    Email: fields.email,
-    Location: fields.location,
-    Link: fields.website,
-    "Company Size": fields.companySize,
-    "Years of Experience": fields.yearsExperience,
-    Status: "Pending",
+    company_size: fields.companySize,
+    email: fields.email,
+    focuses: [],
+    industries: [],
+    link: fields.website, //TODO: Remove "website" input param and replace with "link"
+    location: fields.location,
+    name: fields.name,
+    regions: [],
+    title: fields.title,
+    years_experience: fields.yearsExperience,
+    unsubscribed: fields.unsubscribed,
   };
 
-  let focuses;
-  if (fields.focusesSelected) focuses = fields.focusesSelected;
+  // Handle focuses
+  let focuses: DocumentReference[] = [];
+  if (fields.focusesSelected) {
+    const selectedFocusesRefs = await idsToRefs(
+      fields.focusesSelected,
+      "focuses",
+    );
+    focuses = [...focuses, ...selectedFocusesRefs];
+  }
   if (fields.focusSuggested) {
-    const focusID = await findRecord({
-      name: fields.focusSuggested,
-      table: "Focuses",
-    });
-    if (focusID) {
-      focuses = [...focuses, focusID];
-    } else {
-      const newFocusID = await addPendingRecord({
-        name: fields.focusSuggested,
-        table: "Focuses",
-      });
-      focuses = [...focuses, newFocusID];
-    }
+    const focusRef = await addLabelRef(fields.focusSuggested, "focuses");
+    focuses = [...focuses, focusRef];
   }
-  if (focuses) member["Focus"] = focuses;
+  if (focuses) member.focuses = focuses;
 
-  let industries;
-  if (fields.industriesSelected) industries = fields.industriesSelected;
+  // Handle industries
+  let industries: DocumentReference[] = [];
+  if (fields.industriesSelected) {
+    const selectedIndustriesRefs = await idsToRefs(
+      fields.industriesSelected,
+      "industries",
+    );
+    industries = [...industries, ...selectedIndustriesRefs];
+  }
   if (fields.industrySuggested) {
-    const industryID = await findRecord({
-      name: fields.industrySuggested,
-      table: "Industries",
-    });
-    if (industryID) {
-      industries = [...industries, industryID];
-    } else {
-      const newIndustryID = await addPendingRecord({
-        name: fields.industrySuggested,
-        table: "Industries",
-      });
-      industries = [...industries, newIndustryID];
-    }
+    const industryRef = await addLabelRef(
+      fields.industrySuggested,
+      "industries",
+    );
+    industries = [...industries, industryRef];
   }
-  if (industries) member["Industry"] = industries;
+  if (industries) member.industries = industries;
 
-  if (fields.title) member["Title"] = fields.title;
-
-  return new Promise((resolve, reject) => {
-    airtable
-      .base(process.env.AIRTABLE_BASE)("Members")
-      .create(member, (err, record) => {
-        if (err) reject(err);
-        resolve(record?.getId());
-      });
+  return new Promise(async (resolve, reject) => {
+    try {
+      const docRef = await addMember(member);
+      await addMemberToLabels(focuses, docRef);
+      await addMemberToLabels(industries, docRef);
+      resolve(docRef);
+    } catch (error) {
+      console.error("Error adding member:", error);
+      reject(error);
+    }
   });
 };
 
 const sendSgEmail = async ({
   email,
-  airtableID,
+  firebaseId,
   name,
 }: SendConfirmationEmailProps) => {
   return new Promise((resolve, reject) => {
-    sendConfirmationEmails({ email: email, airtableID: airtableID, name: name })
+    sendConfirmationEmails({
+      email: email,
+      firebaseId: firebaseId,
+      name: name,
+    })
       .then((response) => {
         resolve(response);
       })
@@ -149,39 +253,23 @@ const sendSgEmail = async ({
   });
 };
 
-export const findEmail = async (email: string): Promise<boolean> => {
-  return new Promise((resolve, reject) => {
-    airtable
-      .base(process.env.AIRTABLE_BASE)("Members")
-      .select({
-        view: "Approved",
-        filterByFormula: `{Email} = "${email}"`,
-      })
-      .firstPage((error, records) => {
-        if (error) reject(error);
-        resolve(records?.length >= 1);
-      });
-  });
-};
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Only POST requests allowed" });
   }
-
   try {
-    const isEmailUsed = await findEmail(req.body.email);
+    const isEmailUsed = await emailExists(req.body.email);
     if (!isEmailUsed) {
-      const recordID: string = await addToAirtable({ ...req.body }).then(
-        (body) => {
-          console.log("✅ added member to airtable");
-          return body;
-        }
-      );
+      const docRef: DocumentReference = await addToFirebase({
+        ...req.body,
+      }).then((body) => {
+        console.log("✅ added member to firebase");
+        return body;
+      });
       await sendSgEmail({
         email: req.body.email,
+        firebaseId: docRef.id,
         name: req.body.name,
-        airtableID: recordID,
       }).then(() => {
         console.log("✅ sent member email via sendgrid");
       });
