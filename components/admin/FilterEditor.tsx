@@ -36,12 +36,24 @@ export default function FilterEditor({
 }: FilterEditorProps) {
   const [open, setOpen] = useState(false);
   const [allFilters, setAllFilters] = useState<Filter[]>([]);
-  const [selectedFilters, setSelectedFilters] = useState<string[]>(filters ? filters.map((f) => f.id) : []);
+  const [selectedFilters, setSelectedFilters] = useState<string[]>(
+    filters ? filters.map((f) => f.id) : [],
+  );
   const [suggestOpen, setSuggestOpen] = useState(false);
-  const unnapprovedFilters = filters ? filters.filter((f) => f.status !== StatusEnum.APPROVED).map((f) => f.name) : [];
+  const unnapprovedFilters = filters
+    ? filters.filter((f) => f.status !== StatusEnum.APPROVED).map((f) => f.name)
+    : [];
 
   const filterClass =
-    "inline-block rounded-xl border px-3 py-0.5 my-0.5 text-sm tracking-wide text-secondary-foreground";
+    "inline-block " +
+    "rounded-xl " +
+    "border " +
+    "px-3 " +
+    "py-0.5 " +
+    "my-0.5 " +
+    "text-sm " +
+    "tracking-wide " +
+    "text-secondary-foreground";
 
   const handleOpen = async () => {
     setOpen(!open);
@@ -65,7 +77,11 @@ export default function FilterEditor({
         return;
       }
       setSelectedFilters([...selectedFilters, filter.id]);
-      const selected = { name: filter.name, id: filter.id, status: StatusEnum.APPROVED };
+      const selected = {
+        name: filter.name,
+        id: filter.id,
+        status: StatusEnum.APPROVED,
+      };
       setFilters(filters ? [...filters, selected] : [selected]);
     }
   };
@@ -81,7 +97,10 @@ export default function FilterEditor({
               return (
                 <div className={filterClass}>
                   <span
-                    className={cn(focusNotApproved && `bg-violet-600/20 font-medium text-violet-600`)}
+                    className={cn(
+                      focusNotApproved &&
+                        `bg-violet-600/20 font-medium text-violet-600`,
+                    )}
                     key={memberId + filter.id}
                   >
                     {filter.name}
@@ -92,13 +111,25 @@ export default function FilterEditor({
             })}
           {suggestedFilter && !unnapprovedFilters.includes(suggestedFilter) && (
             <div className={filterClass}>
-              <span className={cn(`bg-violet-600/20 font-medium text-violet-600`)} key={suggestedFilter}>
+              <span
+                className={cn(`
+                  bg-violet-600/20 
+                  font-medium 
+                  text-violet-600
+                `)}
+                key={suggestedFilter}
+              >
                 {suggestedFilter} (pending approval)
               </span>
             </div>
           )}
         </div>
-        <Button className="p-2 shrink-0" variant="outline" size="icon" onClick={handleOpen}>
+        <Button
+          className="p-2 shrink-0"
+          variant="outline"
+          size="icon"
+          onClick={handleOpen}
+        >
           <Pencil />
         </Button>
         <CommandDialog open={open} onOpenChange={setOpen}>
@@ -107,10 +138,19 @@ export default function FilterEditor({
           <CommandList>
             <CommandGroup className="overflow-auto">
               {allFilters.map((filter) => (
-                <CommandItem key={filter.id} value={filter.name} onSelect={() => handleSelect(filter)}>
+                <CommandItem
+                  key={filter.id}
+                  value={filter.name}
+                  onSelect={() => handleSelect(filter)}
+                >
                   {filter.name}
                   <CheckIcon
-                    className={cn("ml-auto h-4 w-4", selectedFilters.includes(filter.id) ? "opacity-100" : "opacity-0")}
+                    className={cn(
+                      "ml-auto h-4 w-4",
+                      selectedFilters.includes(filter.id)
+                        ? "opacity-100"
+                        : "opacity-0",
+                    )}
                   />
                 </CommandItem>
               ))}
@@ -120,7 +160,11 @@ export default function FilterEditor({
           <div className="p-2 border-t">
             {!suggestOpen ? (
               <>
-                <Button variant="secondary" size="sm" onClick={() => setSuggestOpen(true)}>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setSuggestOpen(true)}
+                >
                   Suggest a new {labels.singular}
                 </Button>
               </>
@@ -128,13 +172,14 @@ export default function FilterEditor({
               <>
                 <h4 className="text-sm">Please suggest with care 🤙🏽</h4>
                 <p className="text-xs pb-2">
-                  Suggesting a new label increases the time it takes to approve your entry, as we manually review all
-                  submissions. Please consider any existing labels that might fit your situation.
+                  Suggesting a new label increases the time it takes to approve
+                  your entry, as we manually review all submissions. Please
+                  consider any existing labels that might fit your situation.
                 </p>
                 <Input
                   name={"usernamef"}
                   placeholder={"New " + labels.singular}
-                  className={suggestedFilter ? " bg-brown-600/20" : "bg-white"}
+                  className={suggestedFilter ? "bg-brown-600/20" : "bg-white"}
                   value={suggestedFilter}
                   onChange={(e) => {
                     setSuggestedFilter(e.target.value);

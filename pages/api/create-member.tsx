@@ -1,8 +1,19 @@
-import { SendConfirmationEmailProps, sendConfirmationEmails } from "@/lib/email/confirmation-email";
-import { FirebaseDefaultValuesEnum, FirebaseTablesEnum, StatusEnum } from "@/lib/enums";
+import {
+  SendConfirmationEmailProps,
+  sendConfirmationEmails,
+} from "@/lib/email/confirmation-email";
+import {
+  FirebaseDefaultValuesEnum,
+  FirebaseTablesEnum,
+  StatusEnum,
+} from "@/lib/enums";
 import { db } from "@/lib/firebase";
 import { initializeAdmin } from "@/lib/firebase-admin";
-import { addLabelRef, addMemberToLabels, addPendingReviewRecord } from "@/lib/firebase-helpers/public/directory";
+import {
+  addLabelRef,
+  addMemberToLabels,
+  addPendingReviewRecord,
+} from "@/lib/firebase-helpers/public/directory";
 import Client from "@sendgrid/client";
 import SendGrid from "@sendgrid/mail";
 import * as admin from "firebase-admin";
@@ -23,9 +34,14 @@ import { useEmailCloaker } from "helpers";
 SendGrid.setApiKey(process.env.SENDGRID_API_KEY);
 Client.setApiKey(process.env.SENDGRID_API_KEY);
 
-const addSecureEmail = async (email: string, memberDocRef: DocumentReference) => {
+const addSecureEmail = async (
+  email: string,
+  memberDocRef: DocumentReference,
+) => {
   await initializeAdmin();
-  const collectionRef = admin.firestore().collection(FirebaseTablesEnum.SECURE_MEMBER_DATA);
+  const collectionRef = admin
+    .firestore()
+    .collection(FirebaseTablesEnum.SECURE_MEMBER_DATA);
   const docRef = collectionRef.doc(memberDocRef.id); // Use memberDocRef ID as new doc ID
   const data = {
     last_modified: admin.firestore.FieldValue.serverTimestamp(),
@@ -71,13 +87,19 @@ const emailExists = async (email: string): Promise<boolean> => {
   return true;
 };
 
-const idToRef = async (labelId: string, collectionName: string): Promise<DocumentReference> => {
+const idToRef = async (
+  labelId: string,
+  collectionName: string,
+): Promise<DocumentReference> => {
   const collectionRef = collection(db, collectionName);
   const docRef = doc(collectionRef, labelId);
   return docRef;
 };
 
-const idsToRefs = async (labelIds: string | string[], collectionName: string): Promise<DocumentReference[]> => {
+const idsToRefs = async (
+  labelIds: string | string[],
+  collectionName: string,
+): Promise<DocumentReference[]> => {
   if (typeof labelIds === "string") {
     labelIds = [labelIds];
   }
@@ -106,7 +128,9 @@ interface MemberFields {
   unsubscribed?: boolean;
 }
 
-const addToFirebase = async (fields: MemberFields): Promise<DocumentReference> => {
+const addToFirebase = async (
+  fields: MemberFields,
+): Promise<DocumentReference> => {
   let member = {
     company_size: fields.companySize,
     email: fields.email,
@@ -124,7 +148,10 @@ const addToFirebase = async (fields: MemberFields): Promise<DocumentReference> =
   // Handle focuses
   let focuses: DocumentReference[] = [];
   if (fields.focusesSelected) {
-    const selectedFocusesRefs = await idsToRefs(fields.focusesSelected, "focuses");
+    const selectedFocusesRefs = await idsToRefs(
+      fields.focusesSelected,
+      "focuses",
+    );
     focuses = [...focuses, ...selectedFocusesRefs];
   }
   if (fields.focusSuggested) {
@@ -136,11 +163,17 @@ const addToFirebase = async (fields: MemberFields): Promise<DocumentReference> =
   // Handle industries
   let industries: DocumentReference[] = [];
   if (fields.industriesSelected) {
-    const selectedIndustriesRefs = await idsToRefs(fields.industriesSelected, "industries");
+    const selectedIndustriesRefs = await idsToRefs(
+      fields.industriesSelected,
+      "industries",
+    );
     industries = [...industries, ...selectedIndustriesRefs];
   }
   if (fields.industrySuggested) {
-    const industryRef = await addLabelRef(fields.industrySuggested, "industries");
+    const industryRef = await addLabelRef(
+      fields.industrySuggested,
+      "industries",
+    );
     industries = [...industries, industryRef];
   }
   if (industries) member.industries = industries;
@@ -158,7 +191,11 @@ const addToFirebase = async (fields: MemberFields): Promise<DocumentReference> =
   });
 };
 
-const sendSgEmail = async ({ email, firebaseId, name }: SendConfirmationEmailProps) => {
+const sendSgEmail = async ({
+  email,
+  firebaseId,
+  name,
+}: SendConfirmationEmailProps) => {
   return new Promise((resolve, reject) => {
     sendConfirmationEmails({
       email: email,

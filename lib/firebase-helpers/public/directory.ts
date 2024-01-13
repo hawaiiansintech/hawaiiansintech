@@ -25,8 +25,12 @@ export interface referencesToDelete {
   secureMemberData: DocumentReference;
 }
 
-export async function getAllMemberReferencesToDelete(uid: string): Promise<referencesToDelete> {
-  const documentRef = doc(db, FirebaseTablesEnum.MEMBERS, uid).withConverter(memberConverter);
+export async function getAllMemberReferencesToDelete(
+  uid: string,
+): Promise<referencesToDelete> {
+  const documentRef = doc(db, FirebaseTablesEnum.MEMBERS, uid).withConverter(
+    memberConverter,
+  );
   const documentSnapshot = await getDoc(documentRef);
   if (!documentSnapshot.exists()) {
     return null;
@@ -51,7 +55,9 @@ export async function deleteReferences(
     const documentSnapshot = await getDoc(reference);
     const memberRefs = documentSnapshot.data().members;
     const memberRefToDelete = memberRef.id;
-    const updatedMemberRefs = memberRefs.filter((ref) => ref.id !== memberRefToDelete);
+    const updatedMemberRefs = memberRefs.filter(
+      (ref) => ref.id !== memberRefToDelete,
+    );
     console.log("Removing member from:", reference.id);
     await updateDoc(reference, {
       members: updatedMemberRefs,
@@ -74,11 +80,16 @@ export async function deleteDocument(docRef: DocumentReference) {
 }
 
 export async function getMemberRef(uid: string): Promise<DocumentReference> {
-  const memberRef = doc(db, FirebaseTablesEnum.MEMBERS, uid).withConverter(memberConverter);
+  const memberRef = doc(db, FirebaseTablesEnum.MEMBERS, uid).withConverter(
+    memberConverter,
+  );
   return memberRef;
 }
 
-export async function getReferences(referenceIds: string[], table: FirebaseTablesEnum): Promise<DocumentReference[]> {
+export async function getReferences(
+  referenceIds: string[],
+  table: FirebaseTablesEnum,
+): Promise<DocumentReference[]> {
   const references = [];
   for (const referenceId of referenceIds) {
     const reference = doc(db, table, referenceId);
@@ -95,7 +106,9 @@ export async function addMemberToReferences(
   for (const reference of references) {
     const documentSnapshot = await getDoc(reference);
     const memberRefs = documentSnapshot.data().members;
-    const updatedMemberRefs = memberRefs ? memberRefs.concat(memberDoc) : [memberDoc];
+    const updatedMemberRefs = memberRefs
+      ? memberRefs.concat(memberDoc)
+      : [memberDoc];
     await updateDoc(reference, {
       members: updatedMemberRefs,
       last_modified: serverTimestamp(),
@@ -104,7 +117,10 @@ export async function addMemberToReferences(
   }
 }
 
-export const addPendingReviewRecord = async (docReviewRef: DocumentReference, collectionName: string) => {
+export const addPendingReviewRecord = async (
+  docReviewRef: DocumentReference,
+  collectionName: string,
+) => {
   const collectionRef = collection(db, "review");
   const docRef = doc(collectionRef, collectionName);
   await updateDoc(docRef, {
@@ -138,7 +154,10 @@ export const addLabelRef = async (
   return docRef;
 };
 
-export const addMemberToLabels = async (labelReferences: DocumentReference[], memberRef: DocumentReference) => {
+export const addMemberToLabels = async (
+  labelReferences: DocumentReference[],
+  memberRef: DocumentReference,
+) => {
   for (const labelRef of labelReferences) {
     await updateDoc(labelRef, {
       members: arrayUnion(memberRef),

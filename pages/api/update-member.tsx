@@ -21,7 +21,10 @@ const updateMemberField = async (
   suggestedFilter: boolean,
 ): Promise<FirebaseFirestore.WriteResult | null> => {
   await initializeAdmin();
-  const docRef = admin.firestore().collection(FirebaseTablesEnum.MEMBERS).doc(uid);
+  const docRef = admin
+    .firestore()
+    .collection(FirebaseTablesEnum.MEMBERS)
+    .doc(uid);
   const doc = await docRef.get();
 
   if (!doc.exists) {
@@ -29,14 +32,20 @@ const updateMemberField = async (
   }
 
   if (!Object.values(mFields).includes(fieldName as mFields)) {
-    throw new Error(`Field ${fieldName} does not exist in the FirebaseMemberFieldsEnum`);
+    throw new Error(
+      `Field ${fieldName} does not exist in the FirebaseMemberFieldsEnum`,
+    );
   }
 
   if (doc.get(fieldName) === undefined) {
     throw new Error(`Field ${fieldName} does not exist for user ${uid}`);
   }
 
-  const arrayFields = [mFields.INDUSTRIES.toString(), mFields.FOCUSES.toString(), mFields.REGIONS.toString()];
+  const arrayFields = [
+    mFields.INDUSTRIES.toString(),
+    mFields.FOCUSES.toString(),
+    mFields.REGIONS.toString(),
+  ];
   const fieldNameToTable = {
     [mFields.INDUSTRIES]: FirebaseTablesEnum.INDUSTRIES,
     [mFields.FOCUSES]: FirebaseTablesEnum.FOCUSES,
@@ -49,54 +58,91 @@ const updateMemberField = async (
 
   if (!suggestedFilter && arrayFields.includes(fieldName)) {
     if (typeof newData === "string") {
-      throw new Error(`Field ${fieldName} is supposed to be a string array, but newData is a string`);
+      throw new Error(
+        `Field ${fieldName} is supposed to be a string array, but newData is a string`,
+      );
     }
 
     const data = doc.data();
 
     // Deal with filter references (change publicly since we have the functions available) before updating the member
     const oldReferenceIds = data[fieldName].map((ref) => ref.id);
-    const newReferences: DocumentReference[] = await getReferencesPublic(newData, fieldNameToTable[fieldName]);
-    const oldReferences = await getReferencesPublic(oldReferenceIds, fieldNameToTable[fieldName]);
-    const referencesToDelete: DocumentReference[] = oldReferences.filter((ref) => !newReferences.includes(ref));
-    const referencesToAdd: DocumentReference[] = newReferences.filter((ref) => !oldReferences.includes(ref));
+    const newReferences: DocumentReference[] = await getReferencesPublic(
+      newData,
+      fieldNameToTable[fieldName],
+    );
+    const oldReferences = await getReferencesPublic(
+      oldReferenceIds,
+      fieldNameToTable[fieldName],
+    );
+    const referencesToDelete: DocumentReference[] = oldReferences.filter(
+      (ref) => !newReferences.includes(ref),
+    );
+    const referencesToAdd: DocumentReference[] = newReferences.filter(
+      (ref) => !oldReferences.includes(ref),
+    );
     const memberRefPublic = await getMemberRefPublic(uid);
     await deleteReferencesPublic(memberRefPublic, referencesToDelete);
-    await addMemberToReferencesPublic(memberRefPublic, referencesToAdd, currentUser);
+    await addMemberToReferencesPublic(
+      memberRefPublic,
+      referencesToAdd,
+      currentUser,
+    );
 
     // Need to convert to admin.firestore.DocumentReference, difference in how they're handled
-    const adminReferencesToAdd = referencesToAdd.map((ref) => admin.firestore().doc(ref.path));
-    const adminReferencesToDelete = referencesToDelete.map((ref) => admin.firestore().doc(ref.path));
+    const adminReferencesToAdd = referencesToAdd.map((ref) =>
+      admin.firestore().doc(ref.path),
+    );
+    const adminReferencesToDelete = referencesToDelete.map((ref) =>
+      admin.firestore().doc(ref.path),
+    );
     const oldData = doc.get(fieldName);
     let writeResult = null;
     if (adminReferencesToDelete.length !== 0) {
       let writeResult = await docRef.update({
-        [fieldName]: admin.firestore.FieldValue.arrayRemove(...adminReferencesToDelete),
+        [fieldName]: admin.firestore.FieldValue.arrayRemove(
+          ...adminReferencesToDelete,
+        ),
         last_modified: admin.firestore.FieldValue.serverTimestamp(),
         last_modified_by: currentUser || "admin edit",
       });
-      console.log(`Deleted references ${adminReferencesToDelete} from ${fieldName} for ${uid}: ${writeResult}`);
+      console.log(
+        `Deleted references ${adminReferencesToDelete} from ${fieldName} for ${uid}: ${writeResult}`,
+      );
     }
     if (adminReferencesToAdd.length !== 0) {
       let writeResult = await docRef.update({
-        [fieldName]: admin.firestore.FieldValue.arrayUnion(...adminReferencesToAdd),
+        [fieldName]: admin.firestore.FieldValue.arrayUnion(
+          ...adminReferencesToAdd,
+        ),
         last_modified: admin.firestore.FieldValue.serverTimestamp(),
         last_modified_by: currentUser || "admin edit",
       });
-      console.log(`Added references ${adminReferencesToAdd} to ${fieldName} for ${uid}: ${writeResult}`);
+      console.log(
+        `Added references ${adminReferencesToAdd} to ${fieldName} for ${uid}: ${writeResult}`,
+      );
     }
-    console.log(`Updated ${fieldName} from ${oldData} to ${newData} for ${uid}`);
+    console.log(
+      `Updated ${fieldName} from ${oldData} to ${newData} for ${uid}`,
+    );
     return writeResult;
   } else if (suggestedFilter && arrayFields.includes(fieldName)) {
     for (const newFitler of newData) {
       if (typeof newFitler !== "string") {
-        throw new Error(`Field ${fieldName} is supposed to be a string array, but newData contains a non-string`);
+        throw new Error(
+          `Field ${fieldName} is supposed to be a string array, but newData contains a non-string`,
+        );
       }
       const memberRefPublic = await getMemberRefPublic(uid);
-      const newLabelRef = await addLabelRefPublic(newFitler, fieldNameToTable[fieldName]);
+      const newLabelRef = await addLabelRefPublic(
+        newFitler,
+        fieldNameToTable[fieldName],
+      );
       await addMemberToLabelsPublic([newLabelRef], memberRefPublic);
       const writeResult = await docRef.update({
-        [fieldName]: admin.firestore.FieldValue.arrayUnion(...[admin.firestore().doc(newLabelRef.path)]),
+        [fieldName]: admin.firestore.FieldValue.arrayUnion(
+          ...[admin.firestore().doc(newLabelRef.path)],
+        ),
         last_modified: admin.firestore.FieldValue.serverTimestamp(),
         last_modified_by: currentUser || "admin edit",
       });
@@ -109,7 +155,9 @@ const updateMemberField = async (
       last_modified: admin.firestore.FieldValue.serverTimestamp(),
       last_modified_by: currentUser || "admin edit",
     });
-    console.log(`Updated ${fieldName} from ${oldData} to ${newData} for ${uid}`);
+    console.log(
+      `Updated ${fieldName} from ${oldData} to ${newData} for ${uid}`,
+    );
     return writeResult;
   }
 };
@@ -138,7 +186,8 @@ export default async function handler(req, res) {
       return res.status(403).json({ message: "Not authorized" });
     }
 
-    const suggestedFilter: boolean = req.body.suggestedFilter === undefined ? false : true;
+    const suggestedFilter: boolean =
+      req.body.suggestedFilter === undefined ? false : true;
 
     await updateMemberField(
       req.body.uid,

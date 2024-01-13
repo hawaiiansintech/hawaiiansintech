@@ -9,7 +9,10 @@ async function updateEmailById(
   currentUser: string,
 ): Promise<FirebaseFirestore.WriteResult> {
   await initializeAdmin();
-  const docRef = admin.firestore().collection(FirebaseTablesEnum.SECURE_MEMBER_DATA).doc(uid);
+  const docRef = admin
+    .firestore()
+    .collection(FirebaseTablesEnum.SECURE_MEMBER_DATA)
+    .doc(uid);
   const doc = await docRef.get();
   if (!doc.exists) {
     throw new Error(`Member with uid ${uid} does not exist`);
