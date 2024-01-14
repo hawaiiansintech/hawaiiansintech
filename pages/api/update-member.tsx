@@ -1,5 +1,5 @@
 import { verifyAdminToken, verifyAuthHeader } from "@/lib/auth";
-import { FirebaseTablesEnum } from "@/lib/enums";
+import { FirebaseMemberFieldsEnum, FirebaseTablesEnum } from "@/lib/enums";
 import { initializeAdmin } from "@/lib/firebase-admin";
 import * as admin from "firebase-admin";
 import { FirebaseMemberFieldsEnum as mFields } from "@/lib/enums";
@@ -14,32 +14,39 @@ import {
 } from "@/lib/firebase-helpers/public/directory";
 import { NextApiRequest, NextApiResponse } from "next";
 
+type UpdateMemberRequest = {
+  uid: string;
+  fieldName: FirebaseMemberFieldsEnum;
+  newData: string | string[];
+  currentUser: string;
+  suggestedFilter?: boolean;
+};
+
 const updateMemberField = async (
-  uid: string,
-  fieldName: string,
-  newData: string | string[],
-  currentUser: string,
-  suggestedFilter: boolean,
+  reqBody: UpdateMemberRequest,
 ): Promise<FirebaseFirestore.WriteResult | null> => {
   await initializeAdmin();
   const docRef = admin
     .firestore()
     .collection(FirebaseTablesEnum.MEMBERS)
-    .doc(uid);
+    .doc(reqBody.uid);
   const doc = await docRef.get();
 
   if (!doc.exists) {
-    throw new Error(`Member with uid ${uid} does not exist`);
+    throw new Error(`Member with uid ${reqBody.uid} does not exist`);
   }
 
-  if (!Object.values(mFields).includes(fieldName as mFields)) {
+  if (!Object.values(mFields).includes(reqBody.fieldName as mFields)) {
     throw new Error(
-      `Field ${fieldName} does not exist in the FirebaseMemberFieldsEnum`,
+      `Field ${reqBody.fieldName} does not exist in the ` +
+        `FirebaseMemberFieldsEnum`,
     );
   }
 
-  if (doc.get(fieldName) === undefined) {
-    throw new Error(`Field ${fieldName} does not exist for user ${uid}`);
+  if (doc.get(reqBody.fieldName) === undefined) {
+    throw new Error(
+      `Field ${reqBody.fieldName} does not exist for user ${reqBody.uid}`,
+    );
   }
 
   const arrayFields = [
@@ -53,28 +60,30 @@ const updateMemberField = async (
     [mFields.REGIONS]: FirebaseTablesEnum.REGIONS,
   };
 
-  if (suggestedFilter && !arrayFields.includes(fieldName)) {
-    throw new Error(`Field ${fieldName} is not a suggested filter`);
+  if (reqBody.suggestedFilter && !arrayFields.includes(reqBody.fieldName)) {
+    throw new Error(`Field ${reqBody.fieldName} is not a suggested filter`);
   }
 
-  if (!suggestedFilter && arrayFields.includes(fieldName)) {
-    if (typeof newData === "string") {
+  if (!reqBody.suggestedFilter && arrayFields.includes(reqBody.fieldName)) {
+    if (typeof reqBody.newData === "string") {
       throw new Error(
-        `Field ${fieldName} is supposed to be a string array, but newData is a string`,
+        `Field ${reqBody.fieldName} is supposed to be a string array, but ` +
+          `newData is a string`,
       );
     }
 
     const data = doc.data();
 
-    // Deal with filter references (change publicly since we have the functions available) before updating the member
-    const oldReferenceIds = data[fieldName].map((ref) => ref.id);
+    // Deal with filter references (change publicly since we have the
+    //  functions available) before updating the member
+    const oldReferenceIds = data[reqBody.fieldName].map((ref) => ref.id);
     const newReferences: DocumentReference[] = await getReferencesPublic(
-      newData,
-      fieldNameToTable[fieldName],
+      reqBody.newData,
+      fieldNameToTable[reqBody.fieldName],
     );
     const oldReferences = await getReferencesPublic(
       oldReferenceIds,
-      fieldNameToTable[fieldName],
+      fieldNameToTable[reqBody.fieldName],
     );
     const referencesToDelete: DocumentReference[] = oldReferences.filter(
       (ref) => !newReferences.includes(ref),
@@ -82,82 +91,91 @@ const updateMemberField = async (
     const referencesToAdd: DocumentReference[] = newReferences.filter(
       (ref) => !oldReferences.includes(ref),
     );
-    const memberRefPublic = await getMemberRefPublic(uid);
+    const memberRefPublic = await getMemberRefPublic(reqBody.uid);
     await deleteReferencesPublic(memberRefPublic, referencesToDelete);
     await addMemberToReferencesPublic(
       memberRefPublic,
       referencesToAdd,
-      currentUser,
+      reqBody.currentUser,
     );
 
-    // Need to convert to admin.firestore.DocumentReference, difference in how they're handled
+    // Need to convert to admin.firestore.DocumentReference, difference in
+    //  how they're handled
     const adminReferencesToAdd = referencesToAdd.map((ref) =>
       admin.firestore().doc(ref.path),
     );
     const adminReferencesToDelete = referencesToDelete.map((ref) =>
       admin.firestore().doc(ref.path),
     );
-    const oldData = doc.get(fieldName);
+    const oldData = doc.get(reqBody.fieldName);
     let writeResult = null;
     if (adminReferencesToDelete.length !== 0) {
       let writeResult = await docRef.update({
-        [fieldName]: admin.firestore.FieldValue.arrayRemove(
+        [reqBody.fieldName]: admin.firestore.FieldValue.arrayRemove(
           ...adminReferencesToDelete,
         ),
         last_modified: admin.firestore.FieldValue.serverTimestamp(),
-        last_modified_by: currentUser || "admin edit",
+        last_modified_by: reqBody.currentUser || "admin edit",
       });
       console.log(
-        `Deleted references ${adminReferencesToDelete} from ${fieldName} for ${uid}: ${writeResult}`,
+        `Deleted references ${adminReferencesToDelete} from ` +
+          `$reqBody.{fieldName} for ${reqBody.uid}: ${writeResult}`,
       );
     }
     if (adminReferencesToAdd.length !== 0) {
       let writeResult = await docRef.update({
-        [fieldName]: admin.firestore.FieldValue.arrayUnion(
+        [reqBody.fieldName]: admin.firestore.FieldValue.arrayUnion(
           ...adminReferencesToAdd,
         ),
         last_modified: admin.firestore.FieldValue.serverTimestamp(),
-        last_modified_by: currentUser || "admin edit",
+        last_modified_by: reqBody.currentUser || "admin edit",
       });
       console.log(
-        `Added references ${adminReferencesToAdd} to ${fieldName} for ${uid}: ${writeResult}`,
+        `Added references ${adminReferencesToAdd} to ${reqBody.fieldName} ` +
+          `for ${reqBody.uid}: ${writeResult}`,
       );
     }
     console.log(
-      `Updated ${fieldName} from ${oldData} to ${newData} for ${uid}`,
+      `Updated ${reqBody.fieldName} from ${oldData} to ${reqBody.newData} ` +
+        `for ${reqBody.uid}`,
     );
     return writeResult;
-  } else if (suggestedFilter && arrayFields.includes(fieldName)) {
-    for (const newFitler of newData) {
+  } else if (
+    reqBody.suggestedFilter &&
+    arrayFields.includes(reqBody.fieldName)
+  ) {
+    for (const newFitler of reqBody.newData) {
       if (typeof newFitler !== "string") {
         throw new Error(
-          `Field ${fieldName} is supposed to be a string array, but newData contains a non-string`,
+          `Field ${reqBody.fieldName} is supposed to be a string array, but ` +
+            `newData contains a non-string`,
         );
       }
-      const memberRefPublic = await getMemberRefPublic(uid);
+      const memberRefPublic = await getMemberRefPublic(reqBody.uid);
       const newLabelRef = await addLabelRefPublic(
         newFitler,
-        fieldNameToTable[fieldName],
+        fieldNameToTable[reqBody.fieldName],
       );
       await addMemberToLabelsPublic([newLabelRef], memberRefPublic);
       const writeResult = await docRef.update({
-        [fieldName]: admin.firestore.FieldValue.arrayUnion(
+        [reqBody.fieldName]: admin.firestore.FieldValue.arrayUnion(
           ...[admin.firestore().doc(newLabelRef.path)],
         ),
         last_modified: admin.firestore.FieldValue.serverTimestamp(),
-        last_modified_by: currentUser || "admin edit",
+        last_modified_by: reqBody.currentUser || "admin edit",
       });
       console.log(writeResult);
     }
   } else {
-    const oldData = doc.get(fieldName);
+    const oldData = doc.get(reqBody.fieldName);
     const writeResult = await docRef.update({
-      [fieldName]: newData,
+      [reqBody.fieldName]: reqBody.newData,
       last_modified: admin.firestore.FieldValue.serverTimestamp(),
-      last_modified_by: currentUser || "admin edit",
+      last_modified_by: reqBody.currentUser || "admin edit",
     });
     console.log(
-      `Updated ${fieldName} from ${oldData} to ${newData} for ${uid}`,
+      `Updated ${reqBody.fieldName} from ${oldData} to 
+      ${reqBody.newData} for ${reqBody.uid}`,
     );
     return writeResult;
   }
@@ -187,16 +205,11 @@ export default async function handler(
       return res.status(403).json({ message: "Not authorized" });
     }
 
-    const suggestedFilter: boolean =
+    const updateRequest: UpdateMemberRequest = req.body;
+    updateRequest.suggestedFilter =
       req.body.suggestedFilter === undefined ? false : true;
 
-    await updateMemberField(
-      req.body.uid,
-      req.body.fieldName,
-      req.body.newData,
-      req.body.currentUser,
-      suggestedFilter,
-    ).then((writeResult) => {
+    await updateMemberField(updateRequest).then((writeResult) => {
       console.debug("writeResult for /update-member:", writeResult);
     });
     return res.status(200).json({
