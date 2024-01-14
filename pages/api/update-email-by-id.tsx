@@ -1,7 +1,8 @@
-import { verifyAdminToken } from "@/lib/auth";
+import { verifyAdminToken, verifyAuthHeader } from "@/lib/auth";
 import { FirebaseTablesEnum } from "@/lib/enums";
 import { initializeAdmin } from "@/lib/firebase-admin";
 import * as admin from "firebase-admin";
+import { NextApiRequest, NextApiResponse } from "next";
 
 async function updateEmailById(
   uid: string,
@@ -27,7 +28,10 @@ async function updateEmailById(
   return writeResult;
 }
 
-export default async function handler(req, res) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "PUT") {
     return res.status(405).json({ message: "Only PUT requests allowed" });
   }
@@ -41,19 +45,19 @@ export default async function handler(req, res) {
   }
 
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      return res.status(401).json({ message: "Authorization header missing" });
-    }
-    const token = authHeader.split(" ")[1];
+    const token = await verifyAuthHeader(req, res);
+    if (!token) return;
     const isAdmin = await verifyAdminToken(token);
     if (!isAdmin) {
       return res.status(401).json({ message: "Not authorized" });
     }
 
     await updateEmailById(req.body.uid, req.body.email, req.body.currentUser);
-    return res.status(200);
+    res.status(200).json({
+      message: `Successfully updated email for ${req.body.currentUser}`,
+    });
   } catch (error) {
+    console.error(error);
     return res.status(error.statusCode || 500).json({ error: error.message });
   }
 }

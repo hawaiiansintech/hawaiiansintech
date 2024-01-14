@@ -1,4 +1,4 @@
-import { verifyAdminToken } from "@/lib/auth";
+import { verifyAdminToken, verifyAuthHeader } from "@/lib/auth";
 import { FirebaseTablesEnum } from "@/lib/enums";
 import { initializeAdmin } from "@/lib/firebase-admin";
 import * as admin from "firebase-admin";
@@ -12,6 +12,7 @@ import {
   addLabelRef as addLabelRefPublic,
   addMemberToLabels as addMemberToLabelsPublic,
 } from "@/lib/firebase-helpers/public/directory";
+import { NextApiRequest, NextApiResponse } from "next";
 
 const updateMemberField = async (
   uid: string,
@@ -162,7 +163,10 @@ const updateMemberField = async (
   }
 };
 
-export default async function handler(req, res) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "PUT") {
     return res.status(405).json({ message: "Only PUT requests allowed" });
   }
@@ -176,11 +180,8 @@ export default async function handler(req, res) {
     } else if (req.body.currentUser === undefined) {
       return res.status(422).json({ message: "Missing currentUser" });
     }
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      return res.status(401).json({ message: "Authorization header missing" });
-    }
-    const token = authHeader.split(" ")[1];
+    const token = await verifyAuthHeader(req, res);
+    if (!token) return;
     const isAdmin = await verifyAdminToken(token);
     if (!isAdmin) {
       return res.status(403).json({ message: "Not authorized" });
