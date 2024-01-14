@@ -70,7 +70,6 @@ import { FC, ReactNode, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
 import { FirebaseMemberFieldsEnum as mFields } from "@/lib/enums";
-import { set } from "lodash";
 import AdminFilter from "@/components/admin/FilterEditor";
 export async function getStaticProps() {
   return {
@@ -576,7 +575,7 @@ const MemberEdit: FC<{
   };
 
   const updateSecureEmail = async (uid: string, email: string) => {
-    const response = await fetch("/api/update-email-by-id", {
+    const response = await fetch("/api/update-secure-email-by-id", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
