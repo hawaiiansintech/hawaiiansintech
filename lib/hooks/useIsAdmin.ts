@@ -8,11 +8,12 @@ export default function useIsAdmin(user: User | null, loading: boolean) {
   useEffect(() => {
     const fetchIsAdmin = async () => {
       try {
-        const idToken = await user?.getIdToken();
         const response = await fetch("/api/is-admin", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(idToken),
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${await user.getIdToken()}`,
+          },
         });
         const data = await response.json();
         setIsAdmin(data.isAdmin);
@@ -27,6 +28,8 @@ export default function useIsAdmin(user: User | null, loading: boolean) {
       fetchIsAdmin();
     }
   }, [loading, user]);
+
+  if (user === null) return [false, false];
 
   return [isAdmin, isAdminLoading];
 }
