@@ -7,12 +7,10 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { FirebaseTablesEnum, StatusEnum, YearsOfExperienceEnum } from "./enums";
-import { memberConverter } from "./firestore-converters/member";
 
 const statusEnumValues = Object.values(StatusEnum);
 
 export interface MemberPublic {
-  name?: string;
   companySize?: string;
   emailAbbr?: string;
   focus?: { name: string; id: string }[] | string[];
@@ -20,14 +18,15 @@ export interface MemberPublic {
   id?: string;
   industry?: { name: string; id: string }[] | string[];
   industrySuggested?: string;
+  lastModified?: Timestamp;
   link?: string;
   location?: string;
+  name?: string;
   region?: string;
   status?: StatusEnum;
   title?: string;
-  yearsExperience?: string;
-  lastModified?: Timestamp;
   unsubscribed?: boolean;
+  yearsExperience?: string;
 }
 
 export interface MemberPublicEditing extends MemberPublic {

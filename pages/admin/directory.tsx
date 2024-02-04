@@ -47,7 +47,7 @@ import {
 import {
   DocumentData,
   MemberEmail,
-  MemberSecure,
+  MemberPublic,
   RegionPublic,
   getFirebaseTable,
 } from "@/lib/api";
@@ -83,7 +83,7 @@ export async function getStaticProps() {
 export default function DirectoryPage(props) {
   const { pageTitle } = props;
   const auth = getAuth();
-  const [members, setMembers] = useState<MemberSecure[]>([]);
+  const [members, setMembers] = useState<MemberPublic[]>([]);
   const [regions, setRegions] = useState<DocumentData[]>([]);
   const [user, loading, error] = useAuthState(auth);
   const [isAdmin, isAdminLoading] = useIsAdmin(user, loading);
@@ -149,7 +149,7 @@ export default function DirectoryPage(props) {
 }
 
 interface MemberDirectoryProps {
-  members?: MemberSecure[];
+  members?: MemberPublic[];
   regions?: DocumentData[];
   user?: User;
 }
@@ -178,7 +178,7 @@ const Directory: MemberDirectoryType = ({ members, regions, user }) => {
     DirectorySortOrder.LastModified,
   );
   const [error, setError] = useState<ErrorMessageProps>(null);
-  const [filteredMembers, setFilteredMembers] = useState<MemberSecure[]>();
+  const [filteredMembers, setFilteredMembers] = useState<MemberPublic[]>();
 
   useEffect(() => {
     setFilteredMembers(
@@ -281,7 +281,7 @@ const Directory: MemberDirectoryType = ({ members, regions, user }) => {
 };
 
 interface CardProps {
-  member: MemberSecure;
+  member: MemberPublic;
   regions?: DocumentData[];
   user?: User;
 }
@@ -477,7 +477,7 @@ function Card({ member, regions, user }: CardProps) {
 }
 
 const MemberEdit: FC<{
-  member: MemberSecure;
+  member: MemberPublic;
   regions?: DocumentData[];
   onClose: () => void;
   onDelete: () => void;
@@ -539,6 +539,7 @@ const MemberEdit: FC<{
           setLoadingEmail(false);
           return;
         }
+        setOriginalEmail(email.email);
         setEmail(email);
         setLoadingEmail(false);
       });
@@ -547,12 +548,7 @@ const MemberEdit: FC<{
     }
   };
 
-  const updateMemberField = async (
-    uid: string,
-    fieldName: string,
-    newData: any,
-    suggestedFilter?: boolean,
-  ) => {
+  const updateMember = async (memberPublic: MemberPublic) => {
     const response = await fetch("/api/update-member", {
       method: "PUT",
       headers: {
@@ -560,17 +556,18 @@ const MemberEdit: FC<{
         Authorization: `Bearer ${await user.getIdToken()}`,
       },
       body: JSON.stringify({
-        uid: uid,
-        fieldName: fieldName,
-        newData: newData,
+        memberPublic: memberPublic,
         currentUser: user.displayName || user.uid,
-        suggestedFilter: suggestedFilter,
       }),
     });
-    if (response.status !== 200) {
-      throw new Error(`Error updating ${fieldName} for ${uid}`);
+    if (!response.ok) {
+      return response.json().then((err) => {
+        throw new Error(
+          `Error updating ${memberPublic.name} in firebase: err.message`,
+        );
+      });
     }
-    console.log(`✅ updated ${fieldName} in firebase for ${uid}`);
+    console.log(`✅ updated ${memberPublic.name} in firebase`);
     return response;
   };
 
@@ -595,73 +592,28 @@ const MemberEdit: FC<{
   };
 
   const saveChanges = async () => {
-    name !== member.name &&
-      (await updateMemberField(member.id, mFields.NAME, name));
-    title !== member.title &&
-      (await updateMemberField(member.id, mFields.TITLE, title));
-    link !== member.link &&
-      (await updateMemberField(member.id, mFields.LINK, link));
-    location !== member.location &&
-      (await updateMemberField(member.id, mFields.LOCATION, location));
-    region !== member.region &&
-      (await updateMemberField(member.id, mFields.REGIONS, [region]));
-    companySize !== member.companySize &&
-      (await updateMemberField(member.id, mFields.COMPANY_SIZE, companySize));
-    status !== member.status &&
-      (await updateMemberField(member.id, mFields.STATUS, status));
-    unsubscribed !== member.unsubscribed &&
-      (await updateMemberField(member.id, mFields.UNSUBSCRIBED, unsubscribed));
-    yearsOfExperience !== member.yearsExperience &&
-      (await updateMemberField(
-        member.id,
-        mFields.YEARS_EXPERIENCE,
-        yearsOfExperience,
-      ));
-    if (
-      email !== null &&
-      email.email !== null &&
-      email.email !== originalEmail
-    ) {
-      await updateSecureEmail(member.id, email.email);
-      await updateMemberField(
-        member.id,
-        mFields.MASKED_EMAIL,
-        useEmailCloaker(email.email),
-      );
-    }
-    focuses !== member.focus &&
-      (await updateMemberField(
-        member.id,
-        mFields.FOCUSES,
-        focuses.map((f) => f.id),
-      ));
-    industries !== member.industry &&
-      (await updateMemberField(
-        member.id,
-        mFields.INDUSTRIES,
-        industries.map((i) => i.id),
-      ));
-    if (suggestedFocus && !focuses.map((f) => f.id).includes(suggestedFocus)) {
-      await updateMemberField(
-        member.id,
-        mFields.FOCUSES,
-        [suggestedFocus],
-        true,
-      );
-      setSuggestedFocus(null);
-    }
-    if (
-      suggestedIndustry &&
-      !industries.map((i) => i.id).includes(suggestedIndustry)
-    ) {
-      await updateMemberField(
-        member.id,
-        mFields.INDUSTRIES,
-        [suggestedIndustry],
-        true,
-      );
-      setSuggestedIndustry(null);
-    }
+    const emailChanged: boolean = email?.email && email.email !== originalEmail;
+    const updatedMember: MemberPublic = {
+      ...member,
+      companySize: companySize,
+      emailAbbr: emailChanged ? useEmailCloaker(email.email) : member.emailAbbr,
+      focus: focuses,
+      focusSuggested: suggestedFocus,
+      industry: industries,
+      industrySuggested: suggestedIndustry,
+      link: link,
+      location: location,
+      name: name,
+      region: !regions.find((r) => r.id === region)
+        ? getRegionIdFromName(region)
+        : region,
+      status: status,
+      title: title,
+      unsubscribed: unsubscribed,
+      yearsExperience: yearsOfExperience,
+    };
+    await updateMember(updatedMember);
+    emailChanged && (await updateSecureEmail(member.id, email.email));
     window.location.reload();
   };
 
@@ -813,10 +765,12 @@ const MemberEdit: FC<{
             <div className="relative flex flex-col gap-2">
               <Input
                 name="email"
+                className={
+                  email && email.email !== originalEmail && "text-brown-600"
+                }
                 disabled={email === null}
                 value={email?.email || member.emailAbbr}
                 onChange={(e) => {
-                  originalEmail === null && setOriginalEmail(email.email);
                   let newEmail = { ...email };
                   newEmail.email = e.target.value;
                   setEmail(newEmail);

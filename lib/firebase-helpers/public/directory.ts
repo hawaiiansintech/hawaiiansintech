@@ -58,7 +58,6 @@ export async function deleteReferences(
     const updatedMemberRefs = memberRefs.filter(
       (ref) => ref.id !== memberRefToDelete,
     );
-    console.log("Removing member from:", reference.id);
     await updateDoc(reference, {
       members: updatedMemberRefs,
       last_modified: serverTimestamp(),
