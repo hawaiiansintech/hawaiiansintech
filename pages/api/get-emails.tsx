@@ -1,8 +1,9 @@
 import { DocumentData, getFirebaseTable, MemberEmail } from "@/lib/api";
-import { verifyAdminToken } from "@/lib/auth";
+import { verifyAdminToken, verifyAuthHeader } from "@/lib/auth";
 import { FirebaseTablesEnum } from "@/lib/enums";
 import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { NextApiRequest, NextApiResponse } from "next";
 
 interface getEmailsProps {
   /**
@@ -58,17 +59,17 @@ async function getEmails({ token }: getEmailsProps): Promise<MemberEmail[]> {
   return emails as MemberEmail[];
 }
 
-export default async function handler(req, res) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "GET") {
     return res.status(405).json({ message: "Only GET requests allowed" });
   }
 
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      return res.status(401).json({ message: "Authorization header missing" });
-    }
-    const token = authHeader.split(" ")[1];
+    const token = await verifyAuthHeader(req, res);
+    if (!token) return;
     const emails = await getEmails({ token: token });
     return res.status(200).send({ emails });
   } catch (error) {

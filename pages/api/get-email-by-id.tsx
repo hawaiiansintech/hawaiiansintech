@@ -1,12 +1,13 @@
 import { DocumentData, getFirebaseTable, MemberEmail } from "@/lib/api";
-import { verifyAdminToken } from "@/lib/auth";
+import { verifyAdminToken, verifyAuthHeader } from "@/lib/auth";
 import { FirebaseTablesEnum } from "@/lib/enums";
 import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { NextApiRequest, NextApiResponse } from "next";
 
 async function getEmailById(userId: string): Promise<MemberEmail> {
   const secureMemberData: DocumentData[] = await getFirebaseTable(
-    FirebaseTablesEnum.SECURE_MEMBER_DATA
+    FirebaseTablesEnum.SECURE_MEMBER_DATA,
   );
   const emails = await Promise.all(
     secureMemberData
@@ -30,13 +31,16 @@ async function getEmailById(userId: string): Promise<MemberEmail> {
         }
         return null;
       })
-      .filter((email) => email !== null)
+      .filter((email) => email !== null),
   );
-  const email = emails.find((e) => e.id === userId);
+  const email = emails.find((e) => e && e.id === userId);
   return email;
 }
 
-export default async function handler(req, res) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "GET") {
     return res.status(405).json({ message: "Only GET requests allowed" });
   }
@@ -47,13 +51,13 @@ export default async function handler(req, res) {
   if (req.query.id === undefined) {
     return res.status(422).json({ error: "Missing id parameter" });
   }
+  if (Array.isArray(req.query.id)) {
+    return res.status(400).json({ error: "Invalid id parameter" });
+  }
 
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      return res.status(401).json({ message: "Authorization header missing" });
-    }
-    const token = authHeader.split(" ")[1];
+    const token = await verifyAuthHeader(req, res);
+    if (!token) return;
     const isAdmin = await verifyAdminToken(token);
     if (!isAdmin) {
       return res.status(401).json({ message: "Not authorized" });
@@ -62,6 +66,7 @@ export default async function handler(req, res) {
     const email = await getEmailById(req.query.id);
     return res.status(200).send({ email });
   } catch (error) {
+    console.error(error);
     return res.status(error.statusCode || 500).json({ error: error.message });
   }
 }

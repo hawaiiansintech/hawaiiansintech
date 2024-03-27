@@ -1,5 +1,6 @@
 import * as admin from "firebase-admin";
 import { initializeAdmin } from "./firebase-admin";
+import { NextApiRequest, NextApiResponse } from "next";
 
 class TokenVerificationError extends Error {
   constructor(message: string) {
@@ -44,4 +45,21 @@ export const verifyAdminToken = async (token: string): Promise<boolean> => {
     const error_msg = "Error verifying token: " + error.message;
     throw new TokenVerificationError(error_msg);
   }
+};
+
+export const verifyAuthHeader = async (
+  req: NextApiRequest,
+  res: NextApiResponse,
+): Promise<string | void> => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).json({ message: "Authorization header missing" });
+  }
+  const token = authHeader.split(" ")[1];
+  if (!token) {
+    return res
+      .status(401)
+      .json({ message: "Authorization token missing in header" });
+  }
+  return token;
 };

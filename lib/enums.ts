@@ -54,3 +54,21 @@ export enum StorageEnum {
   LOGIN_TYPE_IMAGE = "loginTypeImage",
   LOGIN_ERROR_MESSAGE = "loginErrorMessage",
 }
+
+export enum FirebaseMemberFieldsEnum {
+  COMPANY_SIZE = "company_size",
+  FOCUSES = "focuses",
+  INDUSTRIES = "industries",
+  LAST_MODIFIED = "last_modified",
+  LAST_MODIFIED_BY = "last_modified_by",
+  LINK = "link",
+  LOCATION = "location",
+  MASKED_EMAIL = "masked_email",
+  NAME = "name",
+  REGIONS = "regions",
+  REQUESTS = "requests",
+  STATUS = "status",
+  TITLE = "title",
+  UNSUBSCRIBED = "unsubscribed",
+  YEARS_EXPERIENCE = "years_experience",
+}

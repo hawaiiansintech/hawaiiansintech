@@ -9,6 +9,11 @@ import {
 } from "@/lib/enums";
 import { db } from "@/lib/firebase";
 import { initializeAdmin } from "@/lib/firebase-admin";
+import {
+  addLabelRef,
+  addMemberToLabels,
+  addPendingReviewRecord,
+} from "@/lib/firebase-helpers/public/directory";
 import Client from "@sendgrid/client";
 import SendGrid from "@sendgrid/mail";
 import * as admin from "firebase-admin";
@@ -28,53 +33,6 @@ import { useEmailCloaker } from "helpers";
 
 SendGrid.setApiKey(process.env.SENDGRID_API_KEY);
 Client.setApiKey(process.env.SENDGRID_API_KEY);
-
-const addPendingReviewRecord = async (
-  docReviewRef: DocumentReference,
-  collectionName: string,
-) => {
-  const collectionRef = collection(db, "review");
-  const docRef = doc(collectionRef, collectionName);
-  await updateDoc(docRef, {
-    [collectionName]: arrayUnion(docReviewRef),
-    last_modified: serverTimestamp(),
-  });
-};
-
-const addLabelRef = async (
-  label: string,
-  collectionName: string,
-): Promise<DocumentReference> => {
-  const collectionRef = collection(db, collectionName);
-  const q = query(collectionRef, where("name", "==", label));
-  const querySnapshot = await getDocs(q);
-  let docRef: DocumentReference;
-  if (!querySnapshot.empty) {
-    // Catches the case where the label already exists but it's pending review
-    docRef = querySnapshot.docs[0].ref;
-  } else {
-    docRef = await addDoc(collectionRef, {
-      name: label,
-      status: StatusEnum.PENDING,
-      last_modified: serverTimestamp(),
-      members: [],
-    });
-  }
-  addPendingReviewRecord(docRef, collectionName);
-  return docRef;
-};
-
-const addMemberToLabels = async (
-  labelReferences: DocumentReference[],
-  memberRef: DocumentReference,
-) => {
-  for (const labelRef of labelReferences) {
-    await updateDoc(labelRef, {
-      members: arrayUnion(memberRef),
-      last_modified: serverTimestamp(),
-    });
-  }
-};
 
 const addSecureEmail = async (
   email: string,

@@ -42,12 +42,12 @@ import {
 import {
   deleteDocument,
   deleteReferences,
-  getReferencesToDelete,
-} from "@/lib/admin/directory-helpers";
+  getAllMemberReferencesToDelete,
+} from "@/lib/firebase-helpers/public/directory";
 import {
   DocumentData,
   MemberEmail,
-  MemberSecure,
+  MemberPublic,
   RegionPublic,
   getFirebaseTable,
 } from "@/lib/api";
@@ -59,7 +59,7 @@ import {
 } from "@/lib/enums";
 import { useIsAdmin } from "@/lib/hooks";
 import { getAuth, User } from "firebase/auth";
-import { convertStringSnake } from "helpers";
+import { convertStringSnake, useEmailCloaker } from "helpers";
 import { cn } from "@/lib/utils";
 import { ExternalLink, Trash } from "lucide-react";
 import moment from "moment";
@@ -69,7 +69,8 @@ import { useRouter } from "next/router";
 import { FC, ReactNode, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { signInWithGoogle, signOutWithGoogle } from "../../lib/firebase";
-
+import { FirebaseMemberFieldsEnum as mFields } from "@/lib/enums";
+import AdminFilter from "@/components/admin/FilterEditor";
 export async function getStaticProps() {
   return {
     props: {
@@ -82,7 +83,7 @@ export async function getStaticProps() {
 export default function DirectoryPage(props) {
   const { pageTitle } = props;
   const auth = getAuth();
-  const [members, setMembers] = useState<MemberSecure[]>([]);
+  const [members, setMembers] = useState<MemberPublic[]>([]);
   const [regions, setRegions] = useState<DocumentData[]>([]);
   const [user, loading, error] = useAuthState(auth);
   const [isAdmin, isAdminLoading] = useIsAdmin(user, loading);
@@ -148,7 +149,7 @@ export default function DirectoryPage(props) {
 }
 
 interface MemberDirectoryProps {
-  members?: MemberSecure[];
+  members?: MemberPublic[];
   regions?: DocumentData[];
   user?: User;
 }
@@ -177,7 +178,7 @@ const Directory: MemberDirectoryType = ({ members, regions, user }) => {
     DirectorySortOrder.LastModified,
   );
   const [error, setError] = useState<ErrorMessageProps>(null);
-  const [filteredMembers, setFilteredMembers] = useState<MemberSecure[]>();
+  const [filteredMembers, setFilteredMembers] = useState<MemberPublic[]>();
 
   useEffect(() => {
     setFilteredMembers(
@@ -280,7 +281,7 @@ const Directory: MemberDirectoryType = ({ members, regions, user }) => {
 };
 
 interface CardProps {
-  member: MemberSecure;
+  member: MemberPublic;
   regions?: DocumentData[];
   user?: User;
 }
@@ -293,7 +294,7 @@ function Card({ member, regions, user }: CardProps) {
   const handleDelete = async () => {
     alert("NOT ACTUALLY DELETING!!! RETURNING EARLY");
     return;
-    const references = await getReferencesToDelete(member.id);
+    const references = await getAllMemberReferencesToDelete(member.id);
     const memberRef = references.memberRef;
     // CONFIRM THAT THIS CHECKS IF OTHER MEMBERS USE THE SAME FOCUSES
     console.log("removing focuses references");
@@ -476,7 +477,7 @@ function Card({ member, regions, user }: CardProps) {
 }
 
 const MemberEdit: FC<{
-  member: MemberSecure;
+  member: MemberPublic;
   regions?: DocumentData[];
   onClose: () => void;
   onDelete: () => void;
@@ -484,7 +485,37 @@ const MemberEdit: FC<{
 }> = ({ member, regions, onClose, onDelete, user }) => {
   const [email, setEmail] = useState<MemberEmail>(null);
   const [loadingEmail, setLoadingEmail] = useState<boolean>(null);
+  const [originalEmail, setOriginalEmail] = useState<string>(null);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [name, setName] = useState<string>(member.name);
+  const [title, setTitle] = useState<string>(member.title);
+  const [link, setLink] = useState<string>(member.link);
+  const [location, setLocation] = useState<string>(member.location);
+  const [region, setRegion] = useState<string>(member.region);
+  const [companySize, setCompanySize] = useState<string>(member.companySize);
+  const [yearsOfExperience, setYearsOfExperience] = useState<string>(
+    member.yearsExperience,
+  );
+  const [status, setStatus] = useState<StatusEnum>(member.status);
+  const [unsubscribed, setUnsubscribed] = useState<boolean>(
+    member.unsubscribed,
+  );
+  const [focuses, setFocuses] = useState<
+    { name: string; id: string }[] | string[]
+  >(member.focus);
+  const [suggestedFocus, setSuggestedFocus] = useState<string>(null);
+  const [industries, setIndustries] = useState<
+    { name: string; id: string }[] | string[]
+  >(member.industry);
+  const [suggestedIndustry, setSuggestedIndustry] = useState<string>(null);
+
+  const getRegionIdFromName = (name: string): string => {
+    const region = regions.find((r) => r.fields.name === name);
+    if (!region) {
+      return null;
+    }
+    return region.id;
+  };
 
   const fetchEmailById = async () => {
     const response = await fetch(`/api/get-email-by-id?id=${member.id}`, {
@@ -508,6 +539,7 @@ const MemberEdit: FC<{
           setLoadingEmail(false);
           return;
         }
+        setOriginalEmail(email.email);
         setEmail(email);
         setLoadingEmail(false);
       });
@@ -516,12 +548,73 @@ const MemberEdit: FC<{
     }
   };
 
-  const handleRegionChange = (value: string) => {
-    if (value === "New") {
-      console.log("create new region");
-      return;
+  const updateMember = async (memberPublic: MemberPublic) => {
+    const response = await fetch("/api/update-member", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await user.getIdToken()}`,
+      },
+      body: JSON.stringify({
+        memberPublic: memberPublic,
+        currentUser: user.displayName || user.uid,
+      }),
+    });
+    if (!response.ok) {
+      return response.json().then((err) => {
+        throw new Error(
+          `Error updating ${memberPublic.name} in firebase: err.message`,
+        );
+      });
     }
-    console.log(value);
+    console.log(`✅ updated ${memberPublic.name} in firebase`);
+    return response;
+  };
+
+  const updateSecureEmail = async (uid: string, email: string) => {
+    const response = await fetch("/api/update-secure-email-by-id", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await user.getIdToken()}`,
+      },
+      body: JSON.stringify({
+        uid: uid,
+        email: email,
+        currentUser: user.displayName || user.uid,
+      }),
+    });
+    if (response.status !== 200) {
+      throw new Error(`Error updating email for ${uid}`);
+    }
+    console.log(`✅ updated email in firebase for ${uid}`);
+    return response;
+  };
+
+  const saveChanges = async () => {
+    const emailChanged: boolean = email?.email && email.email !== originalEmail;
+    const updatedMember: MemberPublic = {
+      ...member,
+      companySize: companySize,
+      emailAbbr: emailChanged ? useEmailCloaker(email.email) : member.emailAbbr,
+      focus: focuses,
+      focusSuggested: suggestedFocus,
+      industry: industries,
+      industrySuggested: suggestedIndustry,
+      link: link,
+      location: location,
+      name: name,
+      region: !regions.find((r) => r.id === region)
+        ? getRegionIdFromName(region)
+        : region,
+      status: status,
+      title: title,
+      unsubscribed: unsubscribed,
+      yearsExperience: yearsOfExperience,
+    };
+    await updateMember(updatedMember);
+    emailChanged && (await updateSecureEmail(member.id, email.email));
+    window.location.reload();
   };
 
   const mapTabsTriggerToVariant = (
@@ -575,7 +668,7 @@ const MemberEdit: FC<{
           <Tabs
             defaultValue={member.status}
             onValueChange={(value) => {
-              // setTabVisible(value as DirectoryFilter);
+              setStatus(value as StatusEnum);
             }}
             // value={tabVisible}
             className="col-span-2"
@@ -596,25 +689,60 @@ const MemberEdit: FC<{
             </TabsList>
           </Tabs>
           <div className="col-span-2 flex flex-col items-start gap-1">
-            <h2 className="text-sm font-semibold">Name</h2>
-            <Input name={"usernamef"} value={member.name} />
+            <h2
+              className={`text-sm font-semibold ${
+                name !== member.name && "text-brown-600"
+              }`}
+            >
+              Name
+            </h2>
+            <Input
+              name={"usernamef"}
+              value={name}
+              className={name !== member.name && "text-brown-600"}
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+            />
           </div>
           <div className="col-span-2 flex flex-col items-start gap-1">
-            <h2 className="text-sm font-semibold">Title</h2>
-            <Input name={"title"} value={member.title} />
+            <h2
+              className={`text-sm font-semibold ${
+                title !== member.title && "text-brown-600"
+              }`}
+            >
+              Title
+            </h2>
+            <Input
+              name={"title"}
+              value={title}
+              className={title !== member.title && "text-brown-600"}
+              onChange={(e) => {
+                setTitle(e.target.value);
+              }}
+            />
           </div>
           <div className="col-span-2 flex flex-col items-start gap-1">
             <div className="flex w-full items-center">
-              <h2 className="grow text-sm font-semibold">Website</h2>
-              <Link
-                href={member.link}
-                target="_blank"
-                referrerPolicy="no-referrer"
+              <h2
+                className={`grow text-sm font-semibold ${
+                  link !== member.link && "text-brown-600"
+                }`}
               >
+                Website / Link
+              </h2>
+              <Link href={link} target="_blank" referrerPolicy="no-referrer">
                 <ExternalLink className="h-4 w-4 text-primary" />
               </Link>
             </div>
-            <Input name={"link"} value={member.link} />
+            <Input
+              name={"link"}
+              value={link}
+              className={link !== member.link && "text-brown-600"}
+              onChange={(e) => {
+                setLink(e.target.value);
+              }}
+            />
           </div>
           <div className="relative col-span-2 flex flex-col gap-1">
             <div className="flex items-center gap-2">
@@ -637,15 +765,26 @@ const MemberEdit: FC<{
             <div className="relative flex flex-col gap-2">
               <Input
                 name="email"
+                className={
+                  email && email.email !== originalEmail && "text-brown-600"
+                }
                 disabled={email === null}
                 value={email?.email || member.emailAbbr}
+                onChange={(e) => {
+                  let newEmail = { ...email };
+                  newEmail.email = e.target.value;
+                  setEmail(newEmail);
+                }}
               />
               {email ? (
                 <>
                   <section className="flex items-start gap-2">
                     <Checkbox
                       id="subscribed"
-                      checked={!member.unsubscribed}
+                      checked={!unsubscribed}
+                      onCheckedChange={(e) => {
+                        setUnsubscribed(!e);
+                      }}
                       defaultChecked
                     />
                     <div className="text-xs leading-relaxed">
@@ -662,15 +801,15 @@ const MemberEdit: FC<{
                     </div>
                   </section>
                   <section className="flex items-start gap-2">
-                    <Checkbox id="verified" />
+                    <Checkbox disabled id="verified" />
                     <div className="text-xs leading-relaxed">
                       <label
                         htmlFor="verified"
-                        className="font-semibold peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        className="font-semibold peer-disabled:cursor-not-allowed peer-disabled:opacity-70 opacity-40"
                       >
-                        Verified
+                        Verified (to be implemented)
                       </label>
-                      <p className="leading-relaxed text-secondary-foreground">
+                      <p className="leading-relaxed text-secondary-foreground opacity-50">
                         Members verify their email address by replying or
                         authenticating.
                       </p>
@@ -737,12 +876,31 @@ const MemberEdit: FC<{
           </div> */}
 
           <div className="flex flex-col items-start gap-1">
-            <h2 className="text-sm font-semibold">Location</h2>
-            <Input name={"location"} value={member.location} />
+            <h2
+              className={`text-sm font-semibold ${
+                location !== member.location && "text-brown-600"
+              }`}
+            >
+              Location
+            </h2>
+            <Input
+              name={"location"}
+              value={location}
+              className={location !== member.location && "text-brown-600"}
+              onChange={(e) => {
+                setLocation(e.target.value);
+              }}
+            />
           </div>
           <div className="flex flex-col items-start gap-1">
             <div className="flex w-full items-center">
-              <h2 className="grow text-sm font-semibold">Region</h2>
+              <h2
+                className={`grow text-sm font-semibold ${
+                  region !== member.region && "text-brown-600"
+                }`}
+              >
+                Region
+              </h2>
               <Popover>
                 <PopoverTrigger>
                   <h2 className="text-xs font-medium text-primary">Add</h2>
@@ -759,15 +917,19 @@ const MemberEdit: FC<{
               </Popover>
             </div>
             <Select
-              defaultValue={member.region}
-              onValueChange={handleRegionChange}
+              defaultValue={getRegionIdFromName(member.region)}
+              onValueChange={(e) => {
+                setRegion(e);
+              }}
             >
-              <SelectTrigger>
+              <SelectTrigger
+                className={region !== member.region && "text-brown-600"}
+              >
                 <SelectValue placeholder="Region" />
               </SelectTrigger>
               <SelectContent className="max-h-72">
                 {regions?.map((region) => (
-                  <SelectItem value={region.fields.name} key={region.fields.id}>
+                  <SelectItem value={region.id} key={region.fields.id}>
                     {region.fields.name}
                   </SelectItem>
                 ))}
@@ -775,12 +937,25 @@ const MemberEdit: FC<{
             </Select>
           </div>
           <div className="flex flex-col items-start gap-1">
-            <h2 className="text-sm font-semibold">Years of Experience</h2>
+            <h2
+              className={`text-sm font-semibold ${
+                yearsOfExperience !== member.yearsExperience && "text-brown-600"
+              }`}
+            >
+              Years of Experience
+            </h2>
             <Select
               defaultValue={member.yearsExperience}
-              onValueChange={handleRegionChange}
+              onValueChange={(e) => {
+                setYearsOfExperience(e);
+              }}
             >
-              <SelectTrigger>
+              <SelectTrigger
+                className={
+                  yearsOfExperience !== member.yearsExperience &&
+                  "text-brown-600"
+                }
+              >
                 <SelectValue placeholder="Company Size" />
               </SelectTrigger>
               <SelectContent className="max-h-72">
@@ -793,12 +968,24 @@ const MemberEdit: FC<{
             </Select>
           </div>
           <div className="flex flex-col items-start gap-1">
-            <h2 className="text-sm font-semibold">Company Size</h2>
+            <h2
+              className={`text-sm font-semibold ${
+                companySize !== member.companySize && "text-brown-600"
+              }`}
+            >
+              Company Size
+            </h2>
             <Select
               defaultValue={member.companySize}
-              onValueChange={handleRegionChange}
+              onValueChange={(e) => {
+                setCompanySize(e);
+              }}
             >
-              <SelectTrigger>
+              <SelectTrigger
+                className={
+                  companySize !== member.companySize && "text-brown-600"
+                }
+              >
                 <SelectValue placeholder="Company Size" />
               </SelectTrigger>
               <SelectContent className="max-h-72">
@@ -810,54 +997,26 @@ const MemberEdit: FC<{
               </SelectContent>
             </Select>
           </div>
-          <div className="col-span-2">
-            <h4 className="text-sm font-semibold">Focuses</h4>
-            <div className="flex flex-wrap gap-1">
-              {member.focus &&
-                member.focus.map((focus, i) => {
-                  const focusNotApproved = focus.status !== StatusEnum.APPROVED;
-                  return (
-                    <span
-                      className={cn(
-                        "inline-block rounded-xl border px-3 py-0.5 text-sm tracking-wide text-secondary-foreground",
-                        focusNotApproved &&
-                          `bg-violet-600/20 font-medium text-violet-600`,
-                      )}
-                      key={member.id + focus.id}
-                    >
-                      {focus.name}
-                      {focusNotApproved ? ` (${focus.status})` : null}
-                    </span>
-                  );
-                })}
-            </div>
-          </div>
-
-          <div className="col-span-2">
-            <h4 className="text-sm font-semibold">Industries</h4>
-            <div className="flex flex-wrap gap-1">
-              {member.industry &&
-                member.industry.map((industry, i) => {
-                  const industryNotApproved =
-                    industry.status !== StatusEnum.APPROVED;
-                  return (
-                    <span
-                      className={cn(
-                        "inline-block rounded-xl border px-3 py-0.5 text-sm tracking-wide text-secondary-foreground",
-                        industryNotApproved &&
-                          `bg-violet-600/20 font-medium text-violet-600`,
-                      )}
-                      key={member.id + industry.id}
-                    >
-                      {industry.name}
-                      {industryNotApproved ? (
-                        <span> ({industry.status})</span>
-                      ) : null}
-                    </span>
-                  );
-                })}
-            </div>
-          </div>
+          <AdminFilter
+            labels={{ singular: "Focus", plural: "Focuses" }}
+            filterTable={FirebaseTablesEnum.FOCUSES}
+            memberId={member.id}
+            filters={focuses as { name: string; id: string; status: string }[]}
+            setFilters={setFocuses}
+            suggestedFilter={suggestedFocus}
+            setSuggestedFilter={setSuggestedFocus}
+          />
+          <AdminFilter
+            labels={{ singular: "Industry", plural: "Industries" }}
+            filterTable={FirebaseTablesEnum.INDUSTRIES}
+            memberId={member.id}
+            filters={
+              industries as { name: string; id: string; status: string }[]
+            }
+            setFilters={setIndustries}
+            suggestedFilter={suggestedIndustry}
+            setSuggestedFilter={setSuggestedIndustry}
+          />
 
           <section>
             <h4 className="text-sm font-semibold">ID</h4>
@@ -893,18 +1052,9 @@ const MemberEdit: FC<{
               </Tooltip>
             </TooltipProvider>
             <div className="flex grow justify-end">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Button disabled onClick={onClose} size="sm">
-                      Save
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Disabled · Read-only</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Button onClick={saveChanges} size="sm">
+                Save
+              </Button>
             </div>
           </div>
         </div>
