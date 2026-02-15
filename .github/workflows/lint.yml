@@ -1,0 +1,41 @@
+name: Lint, Type Check, and Format Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  quality-checks:
+    runs-on: ubuntu-latest
+    name: Code Quality Checks
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run TypeScript Type Check
+        run: pnpm run type-check
+
+      - name: Run ESLint
+        run: pnpm run lint
+
+      - name: Check Code Formatting
+        run: pnpm run format:check
+
+      # TODO: Add build check once Firebase dependencies in getStaticProps are refactored to use mock data during CI
+      # - name: Build Check
+      #   run: pnpm run build

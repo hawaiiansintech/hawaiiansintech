@@ -1,5 +1,6 @@
 import { AccordionLink } from "@/components/Accordion";
 import { DISCORD_URL } from "@/pages/about";
+import React from "react";
 
 export const CONTACT_METHODS: { label: string; body: React.ReactNode }[] = [
   {
@@ -7,8 +8,8 @@ export const CONTACT_METHODS: { label: string; body: React.ReactNode }[] = [
     body: (
       <>
         <p>
-          Who doesn't have a Linkedin, right? Connect and mention it in the
-          message!
+          Who doesn&rsquo;t have a Linkedin, right? Connect and mention it in
+          the message!
         </p>
         <AccordionLink href="https://www.linkedin.com/in/emmit-parubrub/">
           Emmit Parubrub
@@ -27,8 +28,8 @@ export const CONTACT_METHODS: { label: string; body: React.ReactNode }[] = [
     body: (
       <>
         <p>
-          This works better when your avatar isn't an anime character; but we'll
-          work it out.
+          This works better when your avatar isn&rsquo;t an anime character; but
+          we&rsquo;ll work it out.
         </p>
         <AccordionLink href="https://twitter.com/tellaho">
           @tellaho

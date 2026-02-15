@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactElement } from "react";
 
 export enum StatusIndicatorType {
   InProgress = "in-progress",
@@ -12,7 +12,7 @@ interface StatusIndicatorProps {
 }
 
 export function StatusIndicator({ type }: StatusIndicatorProps) {
-  const getAsset = (): JSX.Element => {
+  const getAsset = (): ReactElement => {
     switch (type) {
       case StatusIndicatorType.Approved:
         return (

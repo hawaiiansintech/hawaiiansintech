@@ -1,0 +1,14 @@
+[
+  { "name": "Engineering", "id": "focus_engineering" },
+  { "name": "Design", "id": "focus_design" },
+  { "name": "Product", "id": "focus_product" },
+  { "name": "Data Science", "id": "focus_data_science" },
+  { "name": "DevOps", "id": "focus_devops" },
+  { "name": "Security", "id": "focus_security" },
+  { "name": "Mobile", "id": "focus_mobile" },
+  { "name": "Frontend", "id": "focus_frontend" },
+  { "name": "Backend", "id": "focus_backend" },
+  { "name": "Machine Learning", "id": "focus_ml" },
+  { "name": "Cloud", "id": "focus_cloud" },
+  { "name": "QA/Testing", "id": "focus_qa" }
+]

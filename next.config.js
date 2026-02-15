@@ -14,7 +14,13 @@ module.exports = {
       {
         source: "/discord",
         destination: "https://discord.gg/WHpCrPqeqx",
-        permanent: true,
+        permanent: false,
+      },
+      {
+        source: "/linkedin",
+        destination:
+          "https://www.linkedin.com/company/hawaiians-in-technology/",
+        permanent: false,
       },
     ];
   },

@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, ReactElement } from "react";
 import theme from "styles/theme";
 
 interface DropdownProps {
-  links: Object;
-  button: JSX.Element;
+  links: Record<string, string>;
+  button: ReactElement;
 }
 
 export default function Dropdown({ links, button }: DropdownProps) {
-  const [showDropdown, setShow] = useState<Boolean>(false);
+  const [showDropdown, setShow] = useState<boolean>(false);
 
   return (
     <div
@@ -19,10 +19,10 @@ export default function Dropdown({ links, button }: DropdownProps) {
         <div className="BubbleBox">
           <ul>
             {Object.keys(links).map(function (key) {
-              let twitter = links[key].includes("twitter");
-              let instagram = links[key].includes("instagram");
+              const twitter = links[key].includes("twitter");
+              const instagram = links[key].includes("instagram");
               return (
-                <div className="link-wrapper">
+                <div key={key} className="link-wrapper">
                   <a href={links[key]}>
                     <li>
                       {twitter ? <img src="images/twitter.png" /> : null}

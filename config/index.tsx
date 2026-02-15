@@ -1,5 +1,5 @@
-const dev = process.env.NODE_ENV !== "production";
+import { ENV_CONFIG } from "@/lib/config/environment";
 
-export const server = dev
+export const server = ENV_CONFIG.isDevelopment
   ? "http://localhost:3000"
-  : "https://hawaiiansintech-git-tho-join-page-hawaiians.vercel.app";
+  : "https://hawaiiansintech-git-tho-changelog-hawaiians-projects.vercel.app";

@@ -5,7 +5,9 @@ import WorkExperience, {
 } from "@/components/intake-form/WorkExperience";
 import MetaTags from "@/components/Metatags";
 import Nav from "@/components/Nav";
-import { getFocuses } from "@/lib/api";
+import Plausible from "@/components/Plausible";
+import { getFilters } from "@/lib/firebase-helpers/filters";
+import { FirebaseTablesEnum } from "@/lib/enums";
 import { useStorage } from "@/lib/hooks";
 import { FORM_LINKS, useInvalid } from "@/lib/utils";
 import Head from "next/head";
@@ -13,7 +15,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export async function getStaticProps() {
-  let focuses = (await getFocuses()) ?? [];
+  const focuses = (await getFilters(FirebaseTablesEnum.FOCUSES)) ?? [];
   return {
     props: {
       focuses: focuses.sort((a, b) => b.count - a.count),
@@ -38,13 +40,13 @@ export default function JoinStep2({ focuses, pageTitle }) {
 
   // check localStorage and set pre-defined fields
   useEffect(() => {
-    let storedFocuses = getItem("jfFocuses");
-    let storedFocusSuggested = getItem("jfFocusSuggested");
-    let storedTitle = getItem("jfTitle");
-    let storedDeferTitle = getItem("jfDeferTitle");
-    let storedYearsExperience = getItem("jfYearsExperience");
+    const storedFocuses = getItem("jfFocuses");
+    const storedFocusSuggested = getItem("jfFocusSuggested");
+    const storedTitle = getItem("jfTitle");
+    const storedDeferTitle = getItem("jfDeferTitle");
+    const storedYearsExperience = getItem("jfYearsExperience");
     if (storedFocuses) {
-      let match = focuses
+      const match = focuses
         .filter((foc) => JSON.parse(storedFocuses).includes(foc.id))
         .map((foc) => foc.id);
       setFocusesSelected(match);
@@ -82,10 +84,11 @@ export default function JoinStep2({ focuses, pageTitle }) {
   return (
     <>
       <Head>
+        <Plausible />
         <MetaTags title={pageTitle} />
         <title>{pageTitle}</title>
       </Head>
-      <Nav backUrl="01-you" />
+      <Nav backLinkTo="01-you" variant="minimized" />
 
       <Heading>Welcome to our little hui.</Heading>
 
@@ -101,7 +104,7 @@ export default function JoinStep2({ focuses, pageTitle }) {
         onSubmit={handleSubmit}
       />
 
-      <div style={{ margin: "1rem 0 4rem" }}>
+      <div className="mt-6 pb-12">
         <ProgressBar currentCount={2} totalCount={4} width="6.4rem" />
       </div>
     </>

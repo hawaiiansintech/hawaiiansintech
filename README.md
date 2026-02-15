@@ -1,6 +1,6 @@
 # Hawaiians in Tech
 
-The website is built using [Airtable](https://airtable.com/), [Next.js](https://nextjs.org/) and deployed at [Vercel](https://vercel.com/).
+The website is built using [Firebase](https://console.firebase.google.com/), [Next.js](https://nextjs.org/) and deployed at [Vercel](https://vercel.com/).
 
 ## Development
 
@@ -11,36 +11,83 @@ The code was forked from [Brazillians who Design](https://brazilianswho.design/)
 Making sure you're in the correct project folder and install the dependencies:
 
 ```
-yarn install
+pnpm install
 ```
 
 ### Run the project locally
 
-To start the development server run:
+To start the development server with mock data run:
 
 ```
-yarn dev
+pnpm dev
+```
+
+This sets `NODE_ENV=development` and uses mock user data for local development.
+
+To start the server with real Firebase data run:
+
+```
+pnpm test
+```
+
+This sets `NODE_ENV=test` and connects to the actual Firebase database.
+
+To start the email templating server run:
+
+```
+pnpm dev:email
 ```
 
 In your browser, open `localhost:3000`.
 
-## Airtable Access
+### Code Quality
 
-If you are looking to access the Airtable data, please reach out to our Hawaiians In Tech website development team on our [Discord](https://discord.gg/p7338Z5MJQ).
+This project includes linting that integrates ESLint, TypeScript, and Prettier:
 
-You can also load mock data in `index.tsx` by updating the import statement to `"@/lib/stubApi"`
+```bash
+# Lint your code (shows warnings but won't fail)
+pnpm run lint
 
-```javascript
-import {
-  Focus,
-  getFocuses,
-  getIndustries,
-  getMembers,
-  Industry,
-  MemberPublic,
-} from "@/lib/api";
-/* 🔺🔺🔺🔺🔺🔺🔺 */
+# Auto-fix many linting issues
+pnpm run lint:fix
+
+# Type checking (must pass for production)
+pnpm run type-check
+
+# Format code with Prettier
+pnpm run format
+
+# Run both type checking and linting
+pnpm run check
 ```
+
+See [LINTING.md](./LINTING.md) for detailed information about the linting setup.
+
+## Testing
+
+This project uses Jest for unit testing, particularly focused on API endpoint testing with comprehensive mocking for Firebase and external dependencies.
+
+### Test Commands
+
+```bash
+# Run all tests
+pnpm run test:unit
+
+# Run tests in watch mode (auto-reruns on file changes)
+pnpm run test:unit:watch
+
+# Run tests with coverage report
+pnpm run test:unit:coverage
+
+# Run specific test file
+pnpm run test:unit tests/api/is-admin.test.ts
+```
+
+## Firebase Access
+
+If you are looking to access the Firebase data, please reach out to our Hawaiians In Tech website development team on our [Discord](https://discord.gg/p7338Z5MJQ).
+
+**Note:** You no longer need to manually switch imports to use mock data. The application automatically uses mock data when running in development mode (`pnpm dev`) and real Firebase data when running in test mode (`pnpm test` with Firebase access).
 
 ### Deploy at vercel
 

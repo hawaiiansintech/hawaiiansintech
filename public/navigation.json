@@ -1,0 +1,85 @@
+{
+  "items": [
+    {
+      "label": "About",
+      "variant": "default",
+      "layout": "default",
+      "items": [
+        {
+          "title": "About Us",
+          "href": "/about",
+          "description": "A directory and community of Native Hawaiians in the technology industry"
+        },
+        {
+          "title": "Changelog",
+          "href": "/changelog",
+          "description": "What we've been up to"
+        }
+      ]
+    },
+    {
+      "label": "Events",
+      "variant": "default",
+      "layout": "default",
+      "items": [
+        {
+          "title": "Pasifika at the Park",
+          "href": "https://lu.ma/jcb5e4y2",
+          "description": "Bay Area · March 8, 2025",
+          "image": "/images/pasifika-at-the-park-10.jpg",
+          "external": true
+        },
+        {
+          "title": "Pasifika in Tech: Bay Area Happy Hour",
+          "href": "https://lu.ma/ofzvwvaj",
+          "description": "Bay Area · May 29, 2024",
+          "image": "/images/pasifika-in-tech.png",
+          "external": true
+        },
+        {
+          "title": "Hawaiians in Tech & Purple Maiʻa Hackathon",
+          "href": "/hackathon",
+          "description": "Hawai'i · July 29 – 31, 2022",
+          "image": "/images/hackathon-03.png"
+        }
+      ]
+    },
+    {
+      "label": "Community",
+      "variant": "accent",
+      "layout": "3-column",
+      "items": [
+        {
+          "title": "Join Directory",
+          "href": "/join/01-you",
+          "description": "We simply ask that you are Native Hawaiian and work in the field / industry of technology to join the list",
+          "featured": true
+        },
+        {
+          "title": "Update Profile",
+          "href": "/edit",
+          "description": "Manage your profile on the directory",
+          "variant": "accent"
+        },
+        {
+          "title": "Discord",
+          "href": "/discord",
+          "description": "Our community mostly congregates on our Discord server",
+          "external": true
+        },
+        {
+          "title": "Github",
+          "href": "https://github.com/hawaiians/hawaiiansintech",
+          "description": "Contributions are welcome on our projects, including this website",
+          "external": true
+        },
+        {
+          "title": "LinkedIn",
+          "href": "https://www.linkedin.com/company/hawaiians-in-technology/",
+          "description": "Join our community on the professional network",
+          "external": true
+        }
+      ]
+    }
+  ]
+}

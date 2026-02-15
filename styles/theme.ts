@@ -46,6 +46,7 @@ const theme = {
     sm: "0.5rem",
     md: "1rem",
     lg: "1.25rem",
+    rounded: "1000rem",
   },
   fontFamily: {
     base: `"Helvetica Now Display", "Helvetica Neue", "Helvetica"`,
@@ -58,6 +59,7 @@ const theme = {
     breakPoints: {
       small: "40rem",
       medium: "60rem",
+      large: "80rem",
     },
     zIndex: {
       below: "100",

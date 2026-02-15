@@ -30,3 +30,11 @@ yarn-error.log*
 .env.production.local
 
 .vercel
+
+#firebase
+.firebaserc
+
+#ai
+copilot-instructions.md
+copilot-prompts.md
+

@@ -1,0 +1,14 @@
+[
+  { "name": "Internet / Technology", "id": "industry_tech" },
+  { "name": "Healthcare", "id": "industry_healthcare" },
+  { "name": "Financial Services", "id": "industry_fintech" },
+  { "name": "E-commerce", "id": "industry_ecommerce" },
+  { "name": "Education", "id": "industry_education" },
+  { "name": "Gaming", "id": "industry_gaming" },
+  { "name": "Media & Entertainment", "id": "industry_media" },
+  { "name": "Transportation", "id": "industry_transport" },
+  { "name": "Real Estate", "id": "industry_realestate" },
+  { "name": "Non-profit", "id": "industry_nonprofit" },
+  { "name": "Government", "id": "industry_government" },
+  { "name": "Consulting", "id": "industry_consulting" }
+]

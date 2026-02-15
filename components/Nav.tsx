@@ -1,216 +1,249 @@
-import HitLogo from "@/components/HitLogo";
-import { Icon, IconAsset, IconColor } from "@/components/icon/icon";
+import * as React from "react";
+import Image from "next/image";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+
+import Logo from "@/components/Logo";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 import Link from "next/link";
-import { cssHelperButtonReset } from "styles/global";
-import theme from "styles/theme";
+import { useRouter } from "next/router";
+import { MobileNav } from "@/components/MobileNav";
+import navigationData from "@/public/navigation.json";
+import { ArrowUpRight } from "lucide-react";
+import { Icon, IconAsset } from "./icon/icon";
 
 interface NavProps {
-  backUrl?: string;
+  backLinkTo?: string;
   children?: React.ReactNode;
-  primaryNav?: {
-    show?: boolean;
-  };
-  toggle?: {
-    byline?: string;
-    headline?: string;
-    onClick?: (any) => void;
-    show?: boolean;
-  };
+  variant?: "primary" | "minimized";
+}
+
+export interface NavigationItem {
+  title: string;
+  href: string;
+  description?: string;
+  image?: string;
+  external?: boolean;
+  featured?: boolean;
+  variant?: string;
+}
+
+export interface NavigationSection {
+  label: string;
+  variant?: string;
+  layout?: string;
+  items: NavigationItem[];
+}
+
+export interface NavigationData {
+  items: NavigationSection[];
+}
+
+export enum NavAppearance {
+  ToShow = "to-show",
+  ToMin = "to-min",
+  ToFade = "to-fade",
+}
+
+const navLogoVariants = {
+  floatLeft: { x: -40 },
+  default: { x: 0 },
+  fadeDefault: { x: 0, opacity: 0 },
+};
+
+export function generateNavUrl(href: string, appearance?: NavAppearance) {
+  if (!appearance) return href;
+  return `${href}?nav=${appearance}`;
 }
 
 export default function Nav({
-  backUrl,
+  backLinkTo,
   children,
-  primaryNav,
-  toggle,
+  variant = "primary",
 }: NavProps) {
-  return (
-    <header className="nav">
-      <nav className="nav__menu">
-        <div style={{ display: "flex", alignItems: "center" }}>
-          {backUrl ? (
-            <Link href={backUrl} shallow={true}>
-              <a className="back-link">
-                <Icon asset={IconAsset.CaretLeft} color={IconColor.Inherit} />
-              </a>
-            </Link>
-          ) : null}
-          {primaryNav?.show ? (
-            <div className="nav__links">
-              <Link href="/about">
-                <a className="nav-link">About</a>
-              </Link>
-              <Link href="/join/01-you">
-                <a className="primary-link">Join the list</a>
-              </Link>
-              <Link href="/edit">
-                <a className="nav-link">Request Changes</a>
-              </Link>
-              <Link href="/hackathon">
-                <a className="hackathon-link">Hackathon</a>
-              </Link>
-            </div>
-          ) : null}
-          {toggle?.show && (
-            <NavToggle
-              byline={toggle?.byline || "On the List?"}
-              headline={toggle?.headline || "Request Changes"}
-              toggleEdit={toggle?.onClick}
-            />
-          )}
+  const router = useRouter();
+  const { nav } = router.query;
+
+  const renderLogo = () => {
+    const logo = <Logo />;
+    if (!backLinkTo) return logo;
+
+    return (
+      <>
+        <Link href={backLinkTo} shallow={true}>
+          <div className="transition-transform hover:scale-105 active:scale-95">
+            <Icon asset={IconAsset.CaretLeft} />
+          </div>
+        </Link>
+        <motion.a
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          animate={
+            nav === NavAppearance.ToFade
+              ? navLogoVariants.fadeDefault
+              : navLogoVariants.default
+          }
+          initial={
+            nav === NavAppearance.ToMin || nav === NavAppearance.ToFade
+              ? navLogoVariants.floatLeft
+              : navLogoVariants.default
+          }
+          href="/"
+        >
+          {logo}
+        </motion.a>
+      </>
+    );
+  };
+
+  const renderNavItems = () => {
+    if (variant !== "primary" || !navigationData) return null;
+
+    const navigationItems = (
+      <NavigationMenuList>
+        {navigationData.items.map((section) => (
+          <NavigationMenuItem key={section.label}>
+            <NavigationMenuTrigger
+              variant={section.variant as "default" | "accent"}
+            >
+              {section.label}
+            </NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul
+                className={cn(
+                  "grid gap-1.5 p-3",
+                  "md:w-[400px]",
+                  section.layout === "3-column" &&
+                    "lg:w-[780px] lg:grid-cols-[1fr_1fr_1fr]",
+                )}
+              >
+                {section.items.map((item) =>
+                  item.featured ? (
+                    <li key={item.title} className="row-span-2">
+                      <NavigationMenuLink asChild>
+                        <a
+                          className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/25 to-muted/50 p-3 no-underline outline-none hover:from-muted/60 hover:to-muted/60 focus:shadow-md"
+                          href={generateNavUrl(item.href, NavAppearance.ToMin)}
+                        >
+                          <h6 className="mb-1 font-medium">{item.title}</h6>
+                          <p className="text-sm leading-tight text-muted-foreground">
+                            {item.description}
+                          </p>
+                        </a>
+                      </NavigationMenuLink>
+                    </li>
+                  ) : (
+                    <ListItem
+                      key={item.title}
+                      href={
+                        item.external
+                          ? item.href
+                          : generateNavUrl(item.href, NavAppearance.ToMin)
+                      }
+                      title={item.title}
+                      variant={item.variant}
+                      target={item.external ? "_blank" : undefined}
+                      image={
+                        item.image && (
+                          <Image
+                            src={item.image}
+                            alt={item.title}
+                            width={36}
+                            height={36}
+                          />
+                        )
+                      }
+                    >
+                      {item.description}
+                    </ListItem>
+                  ),
+                )}
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+        ))}
+      </NavigationMenuList>
+    );
+
+    return (
+      <div className="flex grow items-center justify-end sm:justify-start">
+        <div className="hidden sm:block">
+          <NavigationMenu>{navigationItems}</NavigationMenu>
         </div>
-      </nav>
-      {children ? <div className="nav__main">{children}</div> : null}
-      <div className="nav__logo">
-        <HitLogo inline />
+        <div className="sm:hidden">
+          <MobileNav navigation={navigationData} />
+        </div>
       </div>
-      <style jsx>{`
-        .nav {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          width: 100%;
-          padding: 1rem;
-          column-gap: 0.5rem;
-        }
-        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-          .nav {
-            padding-left: 2rem;
-          }
-        }
-        .nav__links {
-          display: flex;
-          align-items: center;
-          flex-wrap: wrap;
-          gap: 0.25rem 2rem;
-          padding: 0 0.5rem;
-        }
-        @media screen and (min-width: ${theme.layout.breakPoints.small}) {
-          .nav__links {
-            gap: 0 2rem;
-          }
-        }
-        .nav-link {
-          padding: 0.25rem;
-          color: ${theme.color.text.base};
-        }
-        .nav-link:hover {
-          color: ${theme.color.brand.base};
-        }
-        .nav-link span {
-          color: ${theme.color.brand.base};
-          opacity: 0.5;
-          padding: 0 0.125rem;
-        }
-        .primary-link {
-          background: ${theme.color.background.alt};
-          color: ${theme.color.text.base};
-          padding: 0.5rem 0.75rem;
-          border-radius: ${theme.borderRadius.xs};
-          border: 0.25rem solid transparent;
-          transition: all 70ms ease-out;
-        }
-        .primary-link:hover,
-        .primary-link:active {
-          transform: scale(1.05);
-          color: ${theme.color.text.overlay.base};
-          background: ${theme.color.brand.base};
-          border-color: ${theme.color.brand.alt};
-        }
-        .primary-link:active {
-          transform: scale(1);
-        }
-        .hackathon-link {
-          font-family: ${theme.fontFamily.hackathon};
-          font-size: 1.5rem;
-        }
-        .back-link {
-          display: block;
-          border-radius: ${theme.borderRadius.sm};
-          color: ${theme.color.text.alt};
-          padding: 0.25rem;
-          margin-right: 2rem;
-          transition: all 70ms ease-out;
-        }
-        .back-link:hover,
-        .back-link:focus {
-          color: ${theme.color.brand.base};
-          transform: scale(1.25);
-        }
-        .back-link:active {
-          transform: scale(1);
-          color: ${theme.color.brand.alt};
-        }
-        button {
-          ${cssHelperButtonReset}
-          background: ${theme.color.background.base};
-          border-radius: ${theme.borderRadius.lg};
-        }
-        span {
-          flex-shrink: 0;
-        }
-      `}</style>
+    );
+  };
+
+  return (
+    <header className="flex w-full items-center justify-between gap-4 p-4 backdrop-blur-sm sm:gap-8 sm:pl-8">
+      <nav
+        className={cn(
+          "flex w-full items-center gap-4",
+          variant === "primary" && "md:gap-8",
+        )}
+      >
+        {renderLogo()}
+        {renderNavItems()}
+      </nav>
+      {children && (
+        <div className="flex grow items-center gap-4">{children}</div>
+      )}
     </header>
   );
 }
 
-interface NavToggleProps {
-  headline: string;
-  byline: string;
-  toggleEdit?: (any) => void;
-}
+const ListItem = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a"> & {
+    variant?: "default" | "accent";
+    image?: React.ReactNode;
+    // target?: React.HTMLAttributeAnchorTarget;
+  }
+>(({ className, title, variant, children, image, ...props }, ref) => {
+  const isExternal = props.target === "_blank";
 
-export function NavToggle({ byline, headline, toggleEdit }: NavToggleProps) {
   return (
-    <button onClick={toggleEdit}>
-      <h4>{byline}</h4>
-      <h3>{headline}</h3>
-      <style jsx>{`
-        button {
-          ${cssHelperButtonReset}
-          display: block;
-          text-align: initial;
-          background: ${theme.color.background.alt};
-          padding: 0.5rem 1rem;
-          border-radius: ${theme.borderRadius.sm};
-          border: transparent 0.25rem solid;
-          transition: all 70ms ease-out;
-        }
-        button:hover,
-        button:active {
-          transform: scale(1.05);
-          color: ${theme.color.text.overlay};
-          background: ${theme.color.brand.base};
-          border-color: ${theme.color.brand.alt};
-        }
-        button:active {
-          transform: scale(1);
-        }
-        h3,
-        h4 {
-          margin: 0;
-          white-space: nowrap;
-          transition: color 70ms ease-out;
-        }
-        h3 {
-          font-size: 1rem;
-          color: ${theme.color.text.alt};
-        }
-        h4 {
-          font-weight: 500;
-          font-size: 0.875rem;
-          color: ${theme.color.text.alt3};
-        }
-
-        button:hover h3,
-        button:active h3 {
-          color: ${theme.color.text.overlay.base};
-        }
-        button:hover h4,
-        button:active h4 {
-          color: ${theme.color.text.overlay.alt};
-        }
-      `}</style>
-    </button>
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "group flex select-none items-start gap-3 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-muted/20 hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            variant === "accent" &&
+              "border border-brown-600/20 hover:bg-brown-600/5",
+            "max-w-[calc(100vw-2rem)] sm:max-w-none",
+            className,
+          )}
+          target={props.target}
+          {...props}
+        >
+          {image && (
+            <div className="flex-shrink-0 overflow-hidden rounded">{image}</div>
+          )}
+          <div className="space-y-1">
+            <div className="text-sm font-medium leading-none">
+              {title}{" "}
+              {isExternal && (
+                <ArrowUpRight className="relative -top-0.5 inline size-3.5 text-secondary-foreground opacity-50 transition-opacity group-hover:opacity-100" />
+              )}
+            </div>
+            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+              {children}
+            </p>
+          </div>
+        </a>
+      </NavigationMenuLink>
+    </li>
   );
-}
+});
+ListItem.displayName = "ListItem";

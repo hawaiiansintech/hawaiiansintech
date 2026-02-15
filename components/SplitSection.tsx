@@ -1,4 +1,5 @@
 import theme from "styles/theme";
+import React from "react";
 
 interface SplitSectionProps {
   children: React.ReactNode;

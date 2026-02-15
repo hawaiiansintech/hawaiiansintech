@@ -11,11 +11,7 @@ interface ProgressBarProps {
 
 const bar = {
   hidden: { opacity: 0, transform: "scaleX(0)" },
-  show: {
-    opacity: 1,
-    transform: "scaleX(1)",
-    transition: { duration: 1, ease: "easeOut" },
-  },
+  show: { opacity: 1, transform: "scaleX(1)" },
 };
 
 export default function ProgressBar({
@@ -45,6 +41,7 @@ export default function ProgressBar({
                   variants={bar}
                   initial="hidden"
                   animate="show"
+                  transition={{ duration: 1, ease: "easeOut" }}
                   style={{
                     margin: "0",
                     width: "100%",

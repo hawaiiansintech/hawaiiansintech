@@ -9,7 +9,7 @@ interface MetaTagsProps {
 
 export default function MetaTags({
   description = "A directory and community of Native Hawaiians in the technology industry.",
-  image = "https://hawaiiansintech.org/images/HitLogoMetatag.png",
+  image = "https://hawaiiansintech.org/images/logo - hawaiians in tech@44.png",
   pathname = "https://hawaiiansintech.org",
   title = "Hawaiians in Technology",
 }: MetaTagsProps) {

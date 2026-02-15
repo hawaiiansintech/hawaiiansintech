@@ -1,3 +1,7 @@
 {
-  "recommendations": ["blanu.vscode-styled-jsx", "esbenp.prettier-vscode"]
+  "recommendations": [
+    "blanu.vscode-styled-jsx",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss"
+  ]
 }

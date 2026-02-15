@@ -1,0 +1,140 @@
+[
+  {
+    "date": "2025-09-03",
+    "title": "Migrated from SendGrid to Resend for email delivery",
+    "slug": "migrated-sendgrid-to-resend",
+    "content": "We've upgraded our email infrastructure from SendGrid to [Resend](https://resend.com), a modern email API built for developers. This change improves our email delivery reliability and provides better React Email integration.\n\n### Key improvements\n* Email delivery via Resend API",
+    "href": ["https://github.com/hawaiians/hawaiiansintech/pull/46"]
+  },
+  {
+    "date": "2025-08-30",
+    "title": "Improved development workflow and mock data system",
+    "slug": "development-workflow-and-mock-data-improvements",
+    "content": "Improved the development experience with automated code quality checks and environment-based data mocking.\n\n### Key improvements\n* Added GitHub workflow for automated linting, type checking, and formatting on pull requests\n* Development mode now uses mock data instead of live Firebase data\n* Environment detection automatically switches between mock and real data\n* Updated shaka.gif image",
+    "href": ["https://github.com/hawaiians/hawaiiansintech/pull/47"]
+  },
+  {
+    "date": "2025-08-02",
+    "title": "Added pagination to homepage for improved performance",
+    "slug": "homepage-pagination-performance-improvement",
+    "content": "We've implemented pagination on the homepage to enhance site performance as our community continues to grow. This update ensures faster homepage load times and a smoother browsing experience.",
+    "href": ["https://github.com/hawaiians/hawaiiansintech/pull/43"]
+  },
+  {
+    "date": "2025-03-08",
+    "title": "Hosted Pasifika at the Park",
+    "slug": "pasifika-at-the-park-2025",
+    "content": "We brought our Bay Area Pasifika community back together for a family-friendly community potluck at the Robin Williams Meadow at Golden Gate Park.\n\n### Event highlights\n* Family-friendly potluck gathering in Golden Gate Park\n* Community building focused on connection and ʻohana\n* Relaxed outdoor setting encouraging informal networking\n",
+    "imageURL": "/images/changelog/pasifika-at-the-park.jpg",
+    "href": [
+      "https://www.linkedin.com/posts/taylorho_what-an-amazing-time-at-our-inaugural-hawaiians-activity-7304708054388785152-MBd8/"
+    ]
+  },
+  {
+    "date": "2024-08-02",
+    "title": "Updated privacy policy & added terms of use",
+    "slug": "updated-privacy-policy-and-terms-of-use",
+    "content": "Updated the language of our [Privacy Policy](/terms-of-use) to be more clear and concise; merged with Terms of Use."
+  },
+  {
+    "date": "2024-07-29",
+    "title": "Added profile editing and API improvements",
+    "slug": "profile-editing-and-api-improvements",
+    "content": "Introducing [profile editing](/edit), empowering members to manage their data on our site.\n\n### Key features\n* Significant API improvements\n* Email verification using Firebase and Sendgrid\n* Captcha using Cloudflare",
+    "imageURL": "/images/changelog/changelog-member-profile-editing-and-api-improvements.jpg",
+    "href": [
+      "https://github.com/hawaiians/hawaiiansintech/pull/27",
+      "https://github.com/hawaiians/hawaiiansintech/pull/31",
+      "https://github.com/hawaiians/hawaiiansintech/pull/32",
+      "https://github.com/hawaiians/hawaiiansintech/pull/33",
+      "https://github.com/hawaiians/hawaiiansintech/pull/35",
+      "https://github.com/hawaiians/hawaiiansintech/pull/36",
+      "https://github.com/hawaiians/hawaiiansintech/pull/37"
+    ]
+  },
+  {
+    "date": "2024-05-29",
+    "title": "Co-hosted a celebration for AANHPI Heritage Month",
+    "slug": "pasifika-in-tech-2024",
+    "content": "Announcing the first-ever **Pasifika in Tech Bay Area Happy Hour**, co-hosted with several industry partners. The event showcased the vibrant Polynesian, Melanesian, and Micronesian tech community, fostering connections and amplifying Pasifika voices in the industry.\n\n### Highlights of the event\n* 80+ indigenous Pacific Islander and ally attendees\n* Hosted at Twitch HQ in Downtown San Francisco\n* Culturally-driven cuisine, creativity, and networking\n* Representation from tech companies including Amazon, Google, Apple, Netflix, and more",
+    "imageURL": "/images/changelog/changelog-pasifika-in-tech-2024.jpg",
+    "href": [
+      "https://www.linkedin.com/posts/jenai-akina_aanhpimonth-aanhpi-bayarea-activity-7192291794066276353-ENUT",
+      "https://www.linkedin.com/posts/jenai-akina_aanhpimonth-hawaiian-chamoru-activity-7202121706532974592-pPft",
+      "https://www.linkedin.com/posts/taylorho_pasifikatech-pasifikaintech-pidiaspora-activity-7196158257768415232-Y_vA",
+      "https://www.linkedin.com/posts/taylorho_five-days-later-im-still-buzzing-from-last-activity-7203474822150934530-inTY",
+      "https://www.linkedin.com/posts/pacific-professionals-network_pasifikaintech-networking-culturalcelebration-activity-7204297742192451585-ZXo0",
+      "https://www.linkedin.com/posts/matthew-hattori_aanhpimonth-aanhpi-bayarea-activity-7192304572273512450-D-mP"
+    ]
+  },
+  {
+    "date": "2024-04-07",
+    "title": "Upgraded email templates with react-email",
+    "slug": "upgraded-email-templates-react-email",
+    "content": "We updated our email communication to use [react-email](https://github.com/resend/react-email/) and Tailwind. This change allows us to deliver a more polished and professional email experience to our community members.",
+    "imageURL": "/images/changelog/changelog-react-email-upgrade.jpg",
+    "href": ["https://github.com/hawaiians/hawaiiansintech/pull/26"]
+  },
+  {
+    "date": "2024-03-26",
+    "title": "Added admin dashboard",
+    "slug": "admin-ui-community-management",
+    "content": "The new Admin dashboard gives community managers an interface for reviewing and approving members.\n\n### Key features\n* Streamlined process for approving new members and updating profiles\n* Added email list for administrators",
+    "imageURL": "/images/changelog/changelog-admin-ui.jpg",
+    "href": [
+      "https://github.com/hawaiians/hawaiiansintech/pull/23",
+      "https://github.com/hawaiians/hawaiiansintech/pull/25"
+    ]
+  },
+  {
+    "date": "2023-09-21",
+    "title": "Co-hosted virtual event with ThriveHI",
+    "slug": "virtual-event-building-for-social-causes-thrivehi",
+    "content": "We collaborated with ThriveHI to host a virtual event connecting kama'āina and kanaka throughout tech.\n\n* Connected tech professionals in Hawaii and on the mainland\n* Discussed culture, identity, and community building",
+    "imageURL": "/images/changelog/changelog-thrivehi-virtual-event-2023.jpg",
+    "href": ["https://www.meetup.com/thrivehi/events/295723950/"]
+  },
+  {
+    "date": "2023-08-03",
+    "title": "Added privacy policy",
+    "slug": "added-privacy-policy",
+    "content": "Added a privacy policy now that we are giving users the ability to sign up."
+  },
+  {
+    "date": "2022-07-18",
+    "title": "Co-organized Hackathon with Purple Maiʻa",
+    "slug": "hawaiians-in-tech-hackathon-2022",
+    "content": "The hackathon showcased the talent within our community and demonstrated how technology can be leveraged to address important cultural and social issues.\n\n### Highlights of the event:\n* Projects focused on Hawaiian language preservation, cultural education, and community resources\n* 48-hour in-person & virtual hackathon\n* Mentorship from experienced Native Hawaiian and ally tech professionals",
+    "imageURL": "/images/changelog/changelog-hackathon.jpg",
+    "href": [
+      "https://hawaiiansintech.org/hackathon",
+      "https://www.linkedin.com/posts/emmit-parubrub_working-as-a-native-hawaiian-in-the-technology-activity-6959932576031522816-gY6R",
+      "https://www.linkedin.com/posts/taylorho_at-the-end-of-the-day-what-we-do-all-day-activity-6948659449066635264-y0II",
+      "https://www.linkedin.com/posts/purplemaia_we-are-planning-a-hackathon-come-help-activity-6945142140477845504-_dD8",
+      "https://github.com/hawaiians/hawaiiansintech/pull/4",
+      "https://github.com/hawaiiansintech/hawaiiansintech/pull/10",
+      "https://github.com/hawaiiansintech/hawaiiansintech/pull/12",
+      "https://github.com/hawaiiansintech/hawaiiansintech/pull/13",
+      "https://github.com/hawaiiansintech/hawaiiansintech/pull/15",
+      "https://github.com/hawaiiansintech/hawaiiansintech/pull/16",
+      "https://github.com/hawaiiansintech/hawaiiansintech/pull/19",
+      "https://github.com/hawaiiansintech/hawaiiansintech/pull/20"
+    ]
+  },
+  {
+    "date": "2021-08-30",
+    "title": "Featured in Pacific Business News",
+    "slug": "featured-in-pacific-business-news",
+    "content": "Pacific Business News featured our initiative to connect Native Hawaiians in tech.\n\n### Highlights from the article\n* The need for representation and community in the tech industry\n* The importance of connecting Hawaiian tech professionals who might otherwise not know about each other\n* The diversity of roles represented, from software engineers to CEOs",
+    "imageURL": "/images/changelog/changelog-pacific-business-news.jpg",
+    "href": [
+      "https://www.bizjournals.com/pacific/news/2021/08/30/website-hawaiians-in-technology.html"
+    ]
+  },
+  {
+    "date": "2021-05-28",
+    "title": "Launched the website",
+    "slug": "launched-the-website",
+    "content": "The Hawaiians in Tech website was launched to provide a platform for Native Hawaiians in the tech industry to be represented."
+  }
+]
